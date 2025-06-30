@@ -82,8 +82,8 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Pilote</th>
+                <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Équipe</th>
                 {races.map(race => (
                   <th key={race.id} className="text-center p-2 font-semibold min-w-[80px]">
@@ -113,11 +113,6 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                     }`}
                   >
                     <td className="p-4">
-                      <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
-                        {standing.position}
-                      </Badge>
-                    </td>
-                    <td className="p-4">
                       <div className="font-semibold text-gray-900">
                         {standing.driver.name}
                       </div>
@@ -126,6 +121,11 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                           #{standing.driver.number}
                         </div>
                       )}
+                    </td>
+                    <td className="p-4">
+                      <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
+                        {standing.position}
+                      </Badge>
                     </td>
                     <td className="p-4 text-gray-700">
                       {standing.driver.team || 'Indépendant'}
