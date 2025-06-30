@@ -6,9 +6,11 @@ import { ChampionshipStanding } from '@/types/championship';
 
 interface HomePageProps {
   standings: ChampionshipStanding[];
+  championshipTitle: string;
+  championshipYear: string;
 }
 
-const HomePage = ({ standings }: HomePageProps) => {
+const HomePage = ({ standings, championshipTitle, championshipYear }: HomePageProps) => {
   const leader = standings[0];
   const totalDrivers = standings.length;
   const totalRaces = 4; // 2 montagne + 2 rallye
@@ -18,10 +20,10 @@ const HomePage = ({ standings }: HomePageProps) => {
       {/* Hero Section */}
       <div className="text-center py-12">
         <h1 className="text-5xl md:text-6xl font-bold gradient-caribbean bg-clip-text text-transparent mb-4">
-          Championnat Automobile
+          {championshipTitle}
         </h1>
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-          de Guadeloupe 2024
+          {championshipYear}
         </h2>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           Suivez les performances de nos pilotes à travers les courses de côte et les rallyes 

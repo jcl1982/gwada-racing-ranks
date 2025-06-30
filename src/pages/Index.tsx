@@ -16,6 +16,8 @@ const Index = () => {
   const [montagneRaces, setMontagneRaces] = useState<Race[]>(initialMontagneRaces);
   const [rallyeRaces, setRallyeRaces] = useState<Race[]>(initialRallyeRaces);
   const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
+  const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
+  const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2024');
   
   const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
 
@@ -49,10 +51,21 @@ const Index = () => {
     setRallyeRaces(newRallyeRaces);
   };
 
+  const handleTitleChange = (title: string, year: string) => {
+    setChampionshipTitle(title);
+    setChampionshipYear(year);
+  };
+
   const renderCurrentView = () => {
     switch (currentView) {
       case 'home':
-        return <HomePage standings={standings} />;
+        return (
+          <HomePage 
+            standings={standings} 
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+          />
+        );
       case 'general':
         return <GeneralStandings standings={standings} />;
       case 'montagne':
@@ -87,13 +100,22 @@ const Index = () => {
             montagneRaces={montagneRaces}
             rallyeRaces={rallyeRaces}
             standings={standings}
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
             onDriversChange={setDrivers}
             onRacesChange={handleRacesChange}
             onReset={handleReset}
+            onTitleChange={handleTitleChange}
           />
         );
       default:
-        return <HomePage standings={standings} />;
+        return (
+          <HomePage 
+            standings={standings} 
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+          />
+        );
     }
   };
 
