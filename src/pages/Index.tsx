@@ -1,15 +1,17 @@
+
 import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import ExcelImport from '@/components/ExcelImport';
+import AdminPanel from '@/components/AdminPanel';
 import { drivers as initialDrivers, montagneRaces as initialMontagneRaces, rallyeRaces as initialRallyeRaces } from '@/data/mockData';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general' | 'import'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general' | 'import' | 'admin'>('home');
   const [drivers, setDrivers] = useState<Driver[]>(initialDrivers);
   const [montagneRaces, setMontagneRaces] = useState<Race[]>(initialMontagneRaces);
   const [rallyeRaces, setRallyeRaces] = useState<Race[]>(initialRallyeRaces);
@@ -33,6 +35,18 @@ const Index = () => {
     
     setMontagneRaces(prev => [...prev, ...newMontagneRaces]);
     setRallyeRaces(prev => [...prev, ...newRallyeRaces]);
+  };
+
+  const handleReset = () => {
+    setDrivers([]);
+    setMontagneRaces([]);
+    setRallyeRaces([]);
+    setPreviousStandings([]);
+  };
+
+  const handleRacesChange = (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
+    setMontagneRaces(newMontagneRaces);
+    setRallyeRaces(newRallyeRaces);
   };
 
   const renderCurrentView = () => {
@@ -64,6 +78,18 @@ const Index = () => {
           <ExcelImport
             drivers={drivers}
             onImport={handleImport}
+          />
+        );
+      case 'admin':
+        return (
+          <AdminPanel
+            drivers={drivers}
+            montagneRaces={montagneRaces}
+            rallyeRaces={rallyeRaces}
+            standings={standings}
+            onDriversChange={setDrivers}
+            onRacesChange={handleRacesChange}
+            onReset={handleReset}
           />
         );
       default:
