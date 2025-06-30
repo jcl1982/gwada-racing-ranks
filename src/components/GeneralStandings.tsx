@@ -34,7 +34,6 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
                 <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Évolution</th>
                 <th className="text-left p-4 font-semibold">Pilote</th>
-                <th className="text-left p-4 font-semibold">Équipe</th>
                 <th className="text-center p-4 font-semibold">
                   <div className="flex items-center justify-center gap-1">
                     <Mountain size={16} />
@@ -70,14 +69,6 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
                     <div className="font-semibold text-gray-900">
                       {standing.driver.name}
                     </div>
-                    {standing.driver.number && (
-                      <div className="text-sm text-gray-500">
-                        #{standing.driver.number}
-                      </div>
-                    )}
-                  </td>
-                  <td className="p-4 text-gray-700">
-                    {standing.driver.team || 'Indépendant'}
                   </td>
                   <td className="p-4 text-center">
                     <Badge variant="outline" className="bg-green-50 border-green-200">

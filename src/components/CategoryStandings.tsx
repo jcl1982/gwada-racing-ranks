@@ -1,10 +1,8 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { calculateDriverPoints, getPositionBadgeColor } from '@/utils/championship';
-import PositionChange from '@/components/PositionChange';
 
 interface CategoryStandingsProps {
   title: string;
@@ -23,7 +21,7 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
     .map((standing, index) => ({
       ...standing,
       position: index + 1,
-      positionChange: 0 // Pour les catégories individuelles, on pourrait implémenter une logique similaire
+      positionChange: 0
     }));
 
   const Icon = type === 'montagne' ? Mountain : Car;
@@ -84,7 +82,6 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
               <tr>
                 <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Pilote</th>
-                <th className="text-left p-4 font-semibold">Équipe</th>
                 {races.map(race => (
                   <th key={race.id} className="text-center p-2 font-semibold min-w-[80px]">
                     <div className="text-xs">
@@ -121,14 +118,6 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                       <div className="font-semibold text-gray-900">
                         {standing.driver.name}
                       </div>
-                      {standing.driver.number && (
-                        <div className="text-sm text-gray-500">
-                          #{standing.driver.number}
-                        </div>
-                      )}
-                    </td>
-                    <td className="p-4 text-gray-700">
-                      {standing.driver.team || 'Indépendant'}
                     </td>
                     {races.map(race => {
                       const points = getDriverPointsForRace(standing.driver.id, race);
@@ -184,9 +173,6 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                 {standing.driver.name}
               </p>
               <p className="text-gray-600">{standing.points} points</p>
-              <p className="text-sm text-gray-500 mt-1">
-                {standing.driver.team}
-              </p>
             </Card>
           );
         })}
