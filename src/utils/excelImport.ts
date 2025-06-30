@@ -10,8 +10,6 @@ export interface ExcelRaceData {
     driverName: string;
     position: number;
     points: number;
-    time?: string;
-    dnf?: boolean;
   }>;
 }
 
@@ -41,9 +39,7 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
           const results = jsonData.slice(2).map((row, index) => ({
             driverName: row[0] || `Pilote ${index + 1}`,
             position: parseInt(row[1]) || index + 1,
-            points: parseInt(row[2]) || 0,
-            time: row[3] || undefined,
-            dnf: row[4] === 'DNF' || row[4] === true
+            points: parseInt(row[2]) || 0
           })).filter(result => result.driverName && result.driverName !== '');
           
           races.push({
@@ -96,9 +92,7 @@ export const convertExcelDataToRaces = (
       results.push({
         driverId: driver.id,
         position: result.position,
-        points: result.points,
-        time: result.time,
-        dnf: result.dnf
+        points: result.points
       });
     });
     

@@ -107,7 +107,7 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
             <ul className="list-disc list-inside space-y-1">
               <li>Chaque feuille = une course</li>
               <li>Ligne 1 : Nom de la course, Date (AAAA-MM-JJ), Type (montagne/rallye)</li>
-              <li>Ligne 2 : En-têtes (Pilote, Position, Points, Temps, DNF)</li>
+              <li>Ligne 2 : En-têtes (Pilote, Position, Points)</li>
               <li>Lignes suivantes : Résultats des pilotes</li>
             </ul>
           </div>
@@ -133,8 +133,6 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
                       <TableHead>Position</TableHead>
                       <TableHead>Pilote</TableHead>
                       <TableHead>Points</TableHead>
-                      <TableHead>Temps</TableHead>
-                      <TableHead>Statut</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -143,13 +141,11 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
                         <TableCell>{result.position}</TableCell>
                         <TableCell>{result.driverName}</TableCell>
                         <TableCell>{result.points}</TableCell>
-                        <TableCell>{result.time || '-'}</TableCell>
-                        <TableCell>{result.dnf ? 'DNF' : 'Terminé'}</TableCell>
                       </TableRow>
                     ))}
                     {race.results.length > 5 && (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center text-gray-500">
+                        <TableCell colSpan={3} className="text-center text-gray-500">
                           ... et {race.results.length - 5} autres résultats
                         </TableCell>
                       </TableRow>
