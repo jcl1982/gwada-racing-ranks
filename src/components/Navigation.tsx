@@ -1,11 +1,11 @@
 
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Trophy, Mountain, Car, Home } from 'lucide-react';
+import { Trophy, Mountain, Car, Home, Upload } from 'lucide-react';
 
 interface NavigationProps {
-  currentView: 'home' | 'montagne' | 'rallye' | 'general';
-  onViewChange: (view: 'home' | 'montagne' | 'rallye' | 'general') => void;
+  currentView: 'home' | 'montagne' | 'rallye' | 'general' | 'import';
+  onViewChange: (view: 'home' | 'montagne' | 'rallye' | 'general' | 'import') => void;
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
@@ -14,6 +14,7 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
     { id: 'general' as const, label: 'Classement Général', icon: Trophy },
     { id: 'montagne' as const, label: 'Courses de Côte', icon: Mountain },
     { id: 'rallye' as const, label: 'Rallyes', icon: Car },
+    { id: 'import' as const, label: 'Import Excel', icon: Upload },
   ];
 
   return (

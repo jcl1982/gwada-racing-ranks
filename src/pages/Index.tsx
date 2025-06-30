@@ -4,13 +4,33 @@ import Navigation from '@/components/Navigation';
 import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
-import { drivers, montagneRaces, rallyeRaces } from '@/data/mockData';
+import ExcelImport from '@/components/ExcelImport';
+import { drivers as initialDrivers, montagneRaces as initialMontagneRaces, rallyeRaces as initialRallyeRaces } from '@/data/mockData';
 import { calculateChampionshipStandings } from '@/utils/championship';
+import { Driver, Race } from '@/types/championship';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general' | 'import'>('home');
+  const [drivers, setDrivers] = useState<Driver[]>(initialDrivers);
+  const [montagneRaces, setMontagneRaces] = useState<Race[]>(initialMontagneRaces);
+  const [rallyeRaces, setRallyeRaces] = useState<Race[]>(initialRallyeRaces);
   
   const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces);
+
+  const handleImport = (newRaces: Race[], newDrivers: Driver[]) => {
+    console.log('Importing races:', newRaces);
+    console.log('New drivers:', newDrivers);
+    
+    // Update drivers
+    setDrivers(newDrivers);
+    
+    // Separate races by type and add to existing races
+    const newMontagneRaces = newRaces.filter(race => race.type === 'montagne');
+    const newRallyeRaces = newRaces.filter(race => race.type === 'rallye');
+    
+    setMontagneRaces(prev => [...prev, ...newMontagneRaces]);
+    setRallyeRaces(prev => [...prev, ...newRallyeRaces]);
+  };
 
   const renderCurrentView = () => {
     switch (currentView) {
@@ -34,6 +54,13 @@ const Index = () => {
             races={rallyeRaces}
             drivers={drivers}
             type="rallye"
+          />
+        );
+      case 'import':
+        return (
+          <ExcelImport
+            drivers={drivers}
+            onImport={handleImport}
           />
         );
       default:
