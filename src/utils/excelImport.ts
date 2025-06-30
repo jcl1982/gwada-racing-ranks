@@ -1,3 +1,4 @@
+
 import * as XLSX from 'xlsx';
 import { Driver, Race, RaceResult } from '@/types/championship';
 
@@ -34,7 +35,7 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
           const raceDate = String(raceInfo[1] || new Date().toISOString().split('T')[0]);
           const raceType = (String(raceInfo[2]).toLowerCase() === 'rallye' ? 'rallye' : 'montagne') as 'montagne' | 'rallye';
           
-          // Second row contains headers: [Pilote, Position, Points]
+          // Second row contains headers: [Position, Pilote, Points]
           // Log headers for debugging
           console.log('Headers found:', jsonData[1]);
           
@@ -43,9 +44,9 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
             // Log raw row data for debugging
             console.log('Processing row:', row);
             
-            // Format should be: [Pilote, Position, Points]
-            const driverName = String(row[0] || '').trim(); // Column 0 = Pilote
-            const position = parseInt(String(row[1])) || index + 1; // Column 1 = Position
+            // Format should be: [Position, Pilote, Points]
+            const position = parseInt(String(row[0])) || index + 1; // Column 0 = Position
+            const driverName = String(row[1] || '').trim(); // Column 1 = Pilote
             const points = parseInt(String(row[2])) || 0; // Column 2 = Points
             
             console.log('Mapped data:', { driverName, position, points });
