@@ -7,16 +7,18 @@ import PositionChange from '@/components/PositionChange';
 
 interface GeneralStandingsProps {
   standings: ChampionshipStanding[];
+  championshipTitle: string;
+  championshipYear: string;
 }
 
-const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
+const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
-          Championnat Automobile de Guadeloupe
+          {championshipTitle}
         </h1>
-        <p className="text-xl text-gray-600">Classement Général 2024</p>
+        <p className="text-xl text-gray-600">Classement Général {championshipYear}</p>
       </div>
 
       <Card className="card-glass overflow-hidden">

@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
@@ -9,9 +10,10 @@ interface CategoryStandingsProps {
   races: Race[];
   drivers: Driver[];
   type: 'montagne' | 'rallye';
+  championshipYear: string;
 }
 
-const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsProps) => {
+const CategoryStandings = ({ title, races, drivers, type, championshipYear }: CategoryStandingsProps) => {
   const standings = drivers
     .map(driver => ({
       driver,
@@ -39,7 +41,7 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
         <h1 className="text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
           {title}
         </h1>
-        <p className="text-xl text-gray-600">Saison 2024</p>
+        <p className="text-xl text-gray-600">Saison {championshipYear}</p>
       </div>
 
       {/* Race Calendar */}

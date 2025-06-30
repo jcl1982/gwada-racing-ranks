@@ -168,7 +168,13 @@ const Index = () => {
           />
         );
       case 'general':
-        return <GeneralStandings standings={standings} />;
+        return (
+          <GeneralStandings 
+            standings={standings} 
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+          />
+        );
       case 'montagne':
         return (
           <CategoryStandings
@@ -176,6 +182,7 @@ const Index = () => {
             races={montagneRaces}
             drivers={drivers}
             type="montagne"
+            championshipYear={championshipYear}
           />
         );
       case 'rallye':
@@ -185,6 +192,7 @@ const Index = () => {
             races={rallyeRaces}
             drivers={drivers}
             type="rallye"
+            championshipYear={championshipYear}
           />
         );
       case 'import':
