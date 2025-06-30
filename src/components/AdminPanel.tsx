@@ -4,20 +4,24 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Users, Trophy, BarChart3, Trash2 } from 'lucide-react';
+import { Users, Trophy, BarChart3, Trash2, Settings } from 'lucide-react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import DriversManagement from './DriversManagement';
 import RacesManagement from './RacesManagement';
 import AdminStats from './AdminStats';
+import ChampionshipSettings from './ChampionshipSettings';
 
 interface AdminPanelProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
   standings: ChampionshipStanding[];
+  championshipTitle: string;
+  championshipYear: string;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onReset: () => void;
+  onTitleChange: (title: string, year: string) => void;
 }
 
 const AdminPanel = ({
@@ -25,9 +29,12 @@ const AdminPanel = ({
   montagneRaces,
   rallyeRaces,
   standings,
+  championshipTitle,
+  championshipYear,
   onDriversChange,
   onRacesChange,
-  onReset
+  onReset,
+  onTitleChange
 }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('drivers');
 
@@ -61,7 +68,7 @@ const AdminPanel = ({
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="drivers" className="flex items-center gap-2">
               <Users size={16} />
               Pilotes
@@ -73,6 +80,10 @@ const AdminPanel = ({
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <BarChart3 size={16} />
               Statistiques
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings size={16} />
+              Paramètres
             </TabsTrigger>
           </TabsList>
 
@@ -98,6 +109,14 @@ const AdminPanel = ({
               montagneRaces={montagneRaces}
               rallyeRaces={rallyeRaces}
               standings={standings}
+            />
+          </TabsContent>
+
+          <TabsContent value="settings" className="mt-6">
+            <ChampionshipSettings
+              championshipTitle={championshipTitle}
+              championshipYear={championshipYear}
+              onTitleChange={onTitleChange}
             />
           </TabsContent>
         </Tabs>
