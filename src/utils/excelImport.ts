@@ -1,4 +1,3 @@
-
 import * as XLSX from 'xlsx';
 import { Driver, Race, RaceResult } from '@/types/championship';
 
@@ -27,19 +26,29 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
           
-          if (jsonData.length < 2) return; // Skip empty sheets
+          if (jsonData.length < 3) return; // Skip sheets with insufficient data
           
-          // Assume first row contains race info: [Race Name, Date, Type]
+          // First row contains race info: [Race Name, Date, Type]
           const raceInfo = jsonData[0];
           const raceName = String(raceInfo[0] || sheetName);
           const raceDate = String(raceInfo[1] || new Date().toISOString().split('T')[0]);
           const raceType = (String(raceInfo[2]).toLowerCase() === 'rallye' ? 'rallye' : 'montagne') as 'montagne' | 'rallye';
           
-          // Skip header rows and process results
+          // Second row contains headers: [Pilote, Position, Points]
+          // Log headers for debugging
+          console.log('Headers found:', jsonData[1]);
+          
+          // Process results starting from row 3 (index 2)
           const results = jsonData.slice(2).map((row, index) => {
-            const driverName = String(row[0] || '').trim();
-            const position = parseInt(String(row[1])) || index + 1;
-            const points = parseInt(String(row[2])) || 0;
+            // Log raw row data for debugging
+            console.log('Processing row:', row);
+            
+            // Format should be: [Pilote, Position, Points]
+            const driverName = String(row[0] || '').trim(); // Column 0 = Pilote
+            const position = parseInt(String(row[1])) || index + 1; // Column 1 = Position
+            const points = parseInt(String(row[2])) || 0; // Column 2 = Points
+            
+            console.log('Mapped data:', { driverName, position, points });
             
             return {
               driverName,
@@ -47,6 +56,8 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
               points
             };
           }).filter(result => result.driverName && result.driverName !== '');
+          
+          console.log('Race results:', results);
           
           races.push({
             raceName,
