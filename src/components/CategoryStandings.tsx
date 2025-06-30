@@ -29,6 +29,12 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
 
+  // Fonction pour obtenir les points d'un pilote pour une course spécifique
+  const getDriverPointsForRace = (driverId: string, race: Race): number => {
+    const result = race.results.find(r => r.driverId === driverId);
+    return result?.points || 0;
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -79,7 +85,20 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                 <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Pilote</th>
                 <th className="text-left p-4 font-semibold">Équipe</th>
-                <th className="text-center p-4 font-semibold">Points</th>
+                {races.map(race => (
+                  <th key={race.id} className="text-center p-2 font-semibold min-w-[80px]">
+                    <div className="text-xs">
+                      {race.name}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(race.date).toLocaleDateString('fr-FR', {
+                        day: '2-digit',
+                        month: '2-digit'
+                      })}
+                    </div>
+                  </th>
+                ))}
+                <th className="text-center p-4 font-semibold">Total</th>
                 <th className="text-center p-4 font-semibold">Écart</th>
               </tr>
             </thead>
@@ -111,6 +130,28 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
                     <td className="p-4 text-gray-700">
                       {standing.driver.team || 'Indépendant'}
                     </td>
+                    {races.map(race => {
+                      const points = getDriverPointsForRace(standing.driver.id, race);
+                      const result = race.results.find(r => r.driverId === standing.driver.id);
+                      return (
+                        <td key={race.id} className="p-2 text-center">
+                          {points > 0 ? (
+                            <div className="text-center">
+                              <Badge variant="outline" className="text-xs mb-1">
+                                {points} pts
+                              </Badge>
+                              {result && (
+                                <div className="text-xs text-gray-500">
+                                  P{result.position}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 text-xs">-</span>
+                          )}
+                        </td>
+                      );
+                    })}
                     <td className="p-4 text-center">
                       <Badge className={`bg-gradient-to-r ${gradientClass} text-white font-bold`}>
                         {standing.points} pts
