@@ -1,11 +1,11 @@
 
-import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Trophy, Mountain, Car, Home, Upload, Settings } from 'lucide-react';
+import { ViewType } from '@/hooks/useViewNavigation';
 
 interface NavigationProps {
-  currentView: 'home' | 'montagne' | 'rallye' | 'general' | 'import' | 'admin';
-  onViewChange: (view: 'home' | 'montagne' | 'rallye' | 'general' | 'import' | 'admin') => void;
+  currentView: ViewType;
+  onViewChange: (view: ViewType) => void;
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
