@@ -66,7 +66,7 @@ const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminSta
             <Star className="text-yellow-500 w-8 h-8" />
             <div>
               <h3 className="text-lg font-semibold">Leader du Championnat</h3>
-              <p className="text-gray-600">{topDriver.driverName}</p>
+              <p className="text-gray-600">{topDriver.driver.name}</p>
               <p className="text-sm text-gray-500">{topDriver.totalPoints} points</p>
             </div>
           </div>
