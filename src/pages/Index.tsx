@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
@@ -9,6 +8,8 @@ import AdminPanel from '@/components/AdminPanel';
 import { drivers as initialDrivers, montagneRaces as initialMontagneRaces, rallyeRaces as initialRallyeRaces } from '@/data/mockData';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general' | 'import' | 'admin'>('home');
@@ -19,7 +20,47 @@ const Index = () => {
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2024');
   
+  const { data: savedData, saveData, clearData } = useLocalStorage();
+  const { toast } = useToast();
+
+  // Charger les données sauvegardées au démarrage
+  useEffect(() => {
+    if (savedData) {
+      setDrivers(savedData.drivers);
+      setMontagneRaces(savedData.montagneRaces);
+      setRallyeRaces(savedData.rallyeRaces);
+      setPreviousStandings(savedData.previousStandings);
+      setChampionshipTitle(savedData.championshipTitle);
+      setChampionshipYear(savedData.championshipYear);
+      
+      toast({
+        title: "Données chargées",
+        description: "Vos données précédentes ont été restaurées.",
+      });
+    }
+  }, [savedData, toast]);
+
   const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
+
+  // Fonction pour sauvegarder automatiquement les données
+  const saveCurrentData = (
+    newDrivers: Driver[],
+    newMontagneRaces: Race[],
+    newRallyeRaces: Race[],
+    newPreviousStandings: ChampionshipStanding[],
+    newTitle: string,
+    newYear: string
+  ) => {
+    const dataToSave = {
+      drivers: newDrivers,
+      montagneRaces: newMontagneRaces,
+      rallyeRaces: newRallyeRaces,
+      previousStandings: newPreviousStandings,
+      championshipTitle: newTitle,
+      championshipYear: newYear
+    };
+    saveData(dataToSave);
+  };
 
   const handleImport = (newRaces: Race[], newDrivers: Driver[]) => {
     console.log('Importing races:', newRaces);
@@ -35,8 +76,26 @@ const Index = () => {
     const newMontagneRaces = newRaces.filter(race => race.type === 'montagne');
     const newRallyeRaces = newRaces.filter(race => race.type === 'rallye');
     
-    setMontagneRaces(prev => [...prev, ...newMontagneRaces]);
-    setRallyeRaces(prev => [...prev, ...newRallyeRaces]);
+    const updatedMontagneRaces = [...montagneRaces, ...newMontagneRaces];
+    const updatedRallyeRaces = [...rallyeRaces, ...newRallyeRaces];
+    
+    setMontagneRaces(updatedMontagneRaces);
+    setRallyeRaces(updatedRallyeRaces);
+
+    // Sauvegarder automatiquement après l'import
+    saveCurrentData(
+      newDrivers,
+      updatedMontagneRaces,
+      updatedRallyeRaces,
+      standings,
+      championshipTitle,
+      championshipYear
+    );
+
+    toast({
+      title: "Import sauvegardé",
+      description: "Les données ont été importées et sauvegardées automatiquement.",
+    });
   };
 
   const handleReset = () => {
@@ -44,16 +103,58 @@ const Index = () => {
     setMontagneRaces([]);
     setRallyeRaces([]);
     setPreviousStandings([]);
+    
+    // Supprimer les données sauvegardées
+    clearData();
+    
+    toast({
+      title: "Données effacées",
+      description: "Toutes les données ont été supprimées.",
+    });
   };
 
   const handleRacesChange = (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
     setMontagneRaces(newMontagneRaces);
     setRallyeRaces(newRallyeRaces);
+    
+    // Sauvegarder automatiquement après modification des courses
+    saveCurrentData(
+      drivers,
+      newMontagneRaces,
+      newRallyeRaces,
+      previousStandings,
+      championshipTitle,
+      championshipYear
+    );
+  };
+
+  const handleDriversChange = (newDrivers: Driver[]) => {
+    setDrivers(newDrivers);
+    
+    // Sauvegarder automatiquement après modification des pilotes
+    saveCurrentData(
+      newDrivers,
+      montagneRaces,
+      rallyeRaces,
+      previousStandings,
+      championshipTitle,
+      championshipYear
+    );
   };
 
   const handleTitleChange = (title: string, year: string) => {
     setChampionshipTitle(title);
     setChampionshipYear(year);
+    
+    // Sauvegarder automatiquement après modification du titre
+    saveCurrentData(
+      drivers,
+      montagneRaces,
+      rallyeRaces,
+      previousStandings,
+      title,
+      year
+    );
   };
 
   const renderCurrentView = () => {
@@ -102,7 +203,7 @@ const Index = () => {
             standings={standings}
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
-            onDriversChange={setDrivers}
+            onDriversChange={handleDriversChange}
             onRacesChange={handleRacesChange}
             onReset={handleReset}
             onTitleChange={handleTitleChange}
