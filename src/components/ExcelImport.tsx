@@ -6,6 +6,7 @@ import { useExcelImport } from '@/hooks/useExcelImport';
 import ExcelFileUpload from '@/components/ExcelFileUpload';
 import ExcelPreview from '@/components/ExcelPreview';
 import ExcelImportInstructions from '@/components/ExcelImportInstructions';
+import RaceTypeSelector from '@/components/RaceTypeSelector';
 
 interface ExcelImportProps {
   drivers: Driver[];
@@ -18,6 +19,8 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
     error,
     previewData,
     success,
+    selectedRaceType,
+    setSelectedRaceType,
     handleFileUpload,
     handleImport,
     resetForm,
@@ -60,6 +63,10 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <RaceTypeSelector
+            selectedType={selectedRaceType}
+            onTypeChange={setSelectedRaceType}
+          />
           <ExcelFileUpload
             onFileUpload={handleFileUploadWrapper}
             isLoading={isLoading}

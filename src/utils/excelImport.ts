@@ -1,4 +1,3 @@
-
 import * as XLSX from 'xlsx';
 import { Driver, Race, RaceResult } from '@/types/championship';
 
@@ -13,7 +12,7 @@ export interface ExcelRaceData {
   }>;
 }
 
-export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
+export const parseExcelFile = (file: File, selectedRaceType: 'montagne' | 'rallye'): Promise<ExcelRaceData[]> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
@@ -29,11 +28,12 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
           
           if (jsonData.length < 3) return; // Skip sheets with insufficient data
           
-          // First row contains race info: [Race Name, Date, Type]
+          // First row contains race info: [Race Name, Date] - Type is now selected by user
           const raceInfo = jsonData[0];
           const raceName = String(raceInfo[0] || sheetName);
           const raceDate = String(raceInfo[1] || new Date().toISOString().split('T')[0]);
-          const raceType = (String(raceInfo[2]).toLowerCase() === 'rallye' ? 'rallye' : 'montagne') as 'montagne' | 'rallye';
+          // Use the selected race type instead of reading from file
+          const raceType = selectedRaceType;
           
           // Second row contains headers: [Position, Pilote, Points]
           // Log headers for debugging
