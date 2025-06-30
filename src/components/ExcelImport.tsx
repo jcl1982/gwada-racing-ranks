@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Upload, FileSpreadsheet, Check, AlertCircle } from 'lucide-react';
 import { parseExcelFile, convertExcelDataToRaces, ExcelRaceData } from '@/utils/excelImport';
 import { Driver, Race } from '@/types/championship';
+import { useToast } from '@/hooks/use-toast';
 
 interface ExcelImportProps {
   drivers: Driver[];
@@ -19,6 +20,7 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
   const [error, setError] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ExcelRaceData[] | null>(null);
   const [success, setSuccess] = useState(false);
+  const { toast } = useToast();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,8 +34,18 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
     try {
       const excelData = await parseExcelFile(file);
       setPreviewData(excelData);
+      toast({
+        title: "Fichier analysé",
+        description: `${excelData.length} course(s) trouvée(s) dans le fichier Excel.`,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de la lecture du fichier');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la lecture du fichier';
+      setError(errorMessage);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -42,16 +54,48 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
   const handleImport = () => {
     if (!previewData) return;
 
-    const { races, newDrivers } = convertExcelDataToRaces(previewData, drivers);
-    onImport(races, newDrivers);
-    setSuccess(true);
-    setPreviewData(null);
+    try {
+      const { races, newDrivers } = convertExcelDataToRaces(previewData, drivers);
+      
+      // Calculer les statistiques d'import
+      const newDriversCount = newDrivers.length - drivers.length;
+      const racesCount = races.length;
+      
+      onImport(races, newDrivers);
+      setSuccess(true);
+      setPreviewData(null);
+      
+      // Réinitialiser le champ de fichier
+      const fileInput = document.getElementById('excel-file') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      
+      toast({
+        title: "Import réussi !",
+        description: `${racesCount} course(s) et ${newDriversCount} nouveau(x) pilote(s) ajouté(s) aux classements.`,
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de l\'import';
+      setError(errorMessage);
+      toast({
+        variant: "destructive",
+        title: "Erreur d'import",
+        description: errorMessage,
+      });
+    }
   };
 
   const resetForm = () => {
     setError(null);
     setSuccess(false);
     setPreviewData(null);
+    
+    // Réinitialiser le champ de fichier
+    const fileInput = document.getElementById('excel-file') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   };
 
   return (
