@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -32,9 +31,9 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="text-left p-4 font-semibold">Pilote</th>
                 <th className="text-left p-4 font-semibold">Position</th>
                 <th className="text-left p-4 font-semibold">Évolution</th>
+                <th className="text-left p-4 font-semibold">Pilote</th>
                 <th className="text-left p-4 font-semibold">Équipe</th>
                 <th className="text-center p-4 font-semibold">
                   <div className="flex items-center justify-center gap-1">
@@ -60,6 +59,14 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
                   }`}
                 >
                   <td className="p-4">
+                    <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
+                      {standing.position}
+                    </Badge>
+                  </td>
+                  <td className="p-4">
+                    <PositionChange change={standing.positionChange} />
+                  </td>
+                  <td className="p-4">
                     <div className="font-semibold text-gray-900">
                       {standing.driver.name}
                     </div>
@@ -68,14 +75,6 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
                         #{standing.driver.number}
                       </div>
                     )}
-                  </td>
-                  <td className="p-4">
-                    <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
-                      {standing.position}
-                    </Badge>
-                  </td>
-                  <td className="p-4">
-                    <PositionChange change={standing.positionChange} />
                   </td>
                   <td className="p-4 text-gray-700">
                     {standing.driver.team || 'Indépendant'}

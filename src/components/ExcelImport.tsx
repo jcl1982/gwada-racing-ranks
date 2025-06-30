@@ -174,16 +174,16 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Pilote</TableHead>
                       <TableHead>Position</TableHead>
+                      <TableHead>Pilote</TableHead>
                       <TableHead>Points</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {race.results.slice(0, 5).map((result, resultIndex) => (
                       <TableRow key={resultIndex}>
-                        <TableCell>{result.driverName}</TableCell>
                         <TableCell>{result.position}</TableCell>
+                        <TableCell>{result.driverName}</TableCell>
                         <TableCell>{result.points}</TableCell>
                       </TableRow>
                     ))}
