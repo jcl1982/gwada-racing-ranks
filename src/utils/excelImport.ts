@@ -31,16 +31,22 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
           
           // Assume first row contains race info: [Race Name, Date, Type]
           const raceInfo = jsonData[0];
-          const raceName = raceInfo[0] || sheetName;
-          const raceDate = raceInfo[1] || new Date().toISOString().split('T')[0];
-          const raceType = (raceInfo[2] === 'rallye' ? 'rallye' : 'montagne') as 'montagne' | 'rallye';
+          const raceName = String(raceInfo[0] || sheetName);
+          const raceDate = String(raceInfo[1] || new Date().toISOString().split('T')[0]);
+          const raceType = (String(raceInfo[2]).toLowerCase() === 'rallye' ? 'rallye' : 'montagne') as 'montagne' | 'rallye';
           
           // Skip header rows and process results
-          const results = jsonData.slice(2).map((row, index) => ({
-            driverName: row[0] || `Pilote ${index + 1}`,
-            position: parseInt(row[1]) || index + 1,
-            points: parseInt(row[2]) || 0
-          })).filter(result => result.driverName && result.driverName !== '');
+          const results = jsonData.slice(2).map((row, index) => {
+            const driverName = String(row[0] || '').trim();
+            const position = parseInt(String(row[1])) || index + 1;
+            const points = parseInt(String(row[2])) || 0;
+            
+            return {
+              driverName,
+              position,
+              points
+            };
+          }).filter(result => result.driverName && result.driverName !== '');
           
           races.push({
             raceName,
@@ -52,6 +58,7 @@ export const parseExcelFile = (file: File): Promise<ExcelRaceData[]> => {
         
         resolve(races);
       } catch (error) {
+        console.error('Excel parsing error:', error);
         reject(new Error('Erreur lors de la lecture du fichier Excel'));
       }
     };
@@ -67,22 +74,26 @@ export const convertExcelDataToRaces = (
 ): { races: Race[], newDrivers: Driver[] } => {
   const races: Race[] = [];
   const newDrivers: Driver[] = [...existingDrivers];
-  let nextDriverId = Math.max(...existingDrivers.map(d => parseInt(d.id))) + 1;
+  let nextDriverId = Math.max(...existingDrivers.map(d => parseInt(d.id)), 0) + 1;
   
   excelData.forEach((excelRace, raceIndex) => {
     const raceId = `imported_${Date.now()}_${raceIndex}`;
     const results: RaceResult[] = [];
     
     excelRace.results.forEach(result => {
+      // Ensure driverName is a string and not empty
+      const driverName = String(result.driverName || '').trim();
+      if (!driverName) return;
+      
       // Find or create driver
       let driver = newDrivers.find(d => 
-        d.name.toLowerCase() === result.driverName.toLowerCase()
+        String(d.name).toLowerCase() === driverName.toLowerCase()
       );
       
       if (!driver) {
         driver = {
           id: nextDriverId.toString(),
-          name: result.driverName,
+          name: driverName,
           number: nextDriverId
         };
         newDrivers.push(driver);
