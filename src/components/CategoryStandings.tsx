@@ -1,0 +1,155 @@
+
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
+import { Driver, Race } from '@/types/championship';
+import { calculateDriverPoints, getPositionBadgeColor } from '@/utils/championship';
+
+interface CategoryStandingsProps {
+  title: string;
+  races: Race[];
+  drivers: Driver[];
+  type: 'montagne' | 'rallye';
+}
+
+const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsProps) => {
+  const standings = drivers
+    .map(driver => ({
+      driver,
+      points: calculateDriverPoints(driver.id, races)
+    }))
+    .sort((a, b) => b.points - a.points)
+    .map((standing, index) => ({
+      ...standing,
+      position: index + 1
+    }));
+
+  const Icon = type === 'montagne' ? Mountain : Car;
+  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
+          {title}
+        </h1>
+        <p className="text-xl text-gray-600">Saison 2024</p>
+      </div>
+
+      {/* Race Calendar */}
+      <Card className="card-glass p-6">
+        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Calendar size={24} />
+          Calendrier des Courses
+        </h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          {races.map(race => (
+            <div key={race.id} className="bg-white/70 rounded-lg p-4 border border-white/20">
+              <h4 className="font-semibold text-lg flex items-center gap-2">
+                <MapPin size={16} />
+                {race.name}
+              </h4>
+              <p className="text-gray-600">
+                {new Date(race.date).toLocaleDateString('fr-FR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Standings Table */}
+      <Card className="card-glass overflow-hidden">
+        <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white`}>
+          <div className="flex items-center gap-3">
+            <Icon size={32} />
+            <h2 className="text-2xl font-bold">Classement {title}</h2>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="text-left p-4 font-semibold">Position</th>
+                <th className="text-left p-4 font-semibold">Pilote</th>
+                <th className="text-left p-4 font-semibold">Équipe</th>
+                <th className="text-center p-4 font-semibold">Points</th>
+                <th className="text-center p-4 font-semibold">Écart</th>
+              </tr>
+            </thead>
+            <tbody>
+              {standings.map((standing, index) => {
+                const gap = standings[0].points - standing.points;
+                return (
+                  <tr
+                    key={standing.driver.id}
+                    className={`border-b transition-colors hover:bg-blue-50/50 ${
+                      index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
+                    }`}
+                  >
+                    <td className="p-4">
+                      <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
+                        {standing.position}
+                      </Badge>
+                    </td>
+                    <td className="p-4">
+                      <div className="font-semibold text-gray-900">
+                        {standing.driver.name}
+                      </div>
+                      {standing.driver.number && (
+                        <div className="text-sm text-gray-500">
+                          #{standing.driver.number}
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-4 text-gray-700">
+                      {standing.driver.team || 'Indépendant'}
+                    </td>
+                    <td className="p-4 text-center">
+                      <Badge className={`bg-gradient-to-r ${gradientClass} text-white font-bold`}>
+                        {standing.points} pts
+                      </Badge>
+                    </td>
+                    <td className="p-4 text-center text-gray-600">
+                      {gap === 0 ? 'Leader' : `-${gap} pts`}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Top 3 Podium */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {standings.slice(0, 3).map((standing, index) => {
+          const positions = ['🥇', '🥈', '🥉'];
+          const colors = ['from-yellow-400 to-yellow-600', 'from-gray-400 to-gray-600', 'from-amber-600 to-amber-800'];
+          
+          return (
+            <Card key={standing.driver.id} className="card-glass p-6 text-center">
+              <div className={`bg-gradient-to-r ${colors[index]} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl`}>
+                {positions[index]}
+              </div>
+              <h3 className="text-lg font-bold mb-2">{standing.position}ᵉ Place</h3>
+              <p className="text-xl font-bold text-gray-800">
+                {standing.driver.name}
+              </p>
+              <p className="text-gray-600">{standing.points} points</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {standing.driver.team}
+              </p>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default CategoryStandings;
