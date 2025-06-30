@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { calculateDriverPoints, getPositionBadgeColor } from '@/utils/championship';
+import PositionChange from '@/components/PositionChange';
 
 interface CategoryStandingsProps {
   title: string;
@@ -21,7 +22,8 @@ const CategoryStandings = ({ title, races, drivers, type }: CategoryStandingsPro
     .sort((a, b) => b.points - a.points)
     .map((standing, index) => ({
       ...standing,
-      position: index + 1
+      position: index + 1,
+      positionChange: 0 // Pour les catégories individuelles, on pourrait implémenter une logique similaire
     }));
 
   const Icon = type === 'montagne' ? Mountain : Car;

@@ -11,19 +11,25 @@ export const calculateDriverPoints = (driverId: string, races: Race[]): number =
 export const calculateChampionshipStandings = (
   drivers: Driver[],
   montagneRaces: Race[],
-  rallyeRaces: Race[]
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
   const standings = drivers.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
     const totalPoints = montagnePoints + rallyePoints;
 
+    // Trouver la position précédente du pilote
+    const previousPosition = previousStandings?.find(s => s.driver.id === driver.id)?.position;
+
     return {
       driver,
       montagnePoints,
       rallyePoints,
       totalPoints,
-      position: 0 // Will be calculated after sorting
+      position: 0, // Will be calculated after sorting
+      previousPosition,
+      positionChange: 0 // Will be calculated after sorting
     };
   });
 
@@ -31,6 +37,13 @@ export const calculateChampionshipStandings = (
   standings.sort((a, b) => b.totalPoints - a.totalPoints);
   standings.forEach((standing, index) => {
     standing.position = index + 1;
+    
+    // Calculer le changement de position
+    if (standing.previousPosition) {
+      standing.positionChange = standing.previousPosition - standing.position;
+    } else {
+      standing.positionChange = 0; // Nouveau pilote ou première course
+    }
   });
 
   return standings;

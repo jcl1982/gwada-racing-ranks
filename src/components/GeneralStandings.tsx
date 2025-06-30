@@ -1,9 +1,9 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
 import { ChampionshipStanding } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
+import PositionChange from '@/components/PositionChange';
 
 interface GeneralStandingsProps {
   standings: ChampionshipStanding[];
@@ -32,6 +32,7 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
             <thead className="bg-gray-50">
               <tr>
                 <th className="text-left p-4 font-semibold">Position</th>
+                <th className="text-left p-4 font-semibold">Évolution</th>
                 <th className="text-left p-4 font-semibold">Pilote</th>
                 <th className="text-left p-4 font-semibold">Équipe</th>
                 <th className="text-center p-4 font-semibold">
@@ -61,6 +62,9 @@ const GeneralStandings = ({ standings }: GeneralStandingsProps) => {
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
                       {standing.position}
                     </Badge>
+                  </td>
+                  <td className="p-4">
+                    <PositionChange change={standing.positionChange} />
                   </td>
                   <td className="p-4">
                     <div className="font-semibold text-gray-900">

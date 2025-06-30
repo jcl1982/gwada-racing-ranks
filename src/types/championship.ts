@@ -28,4 +28,6 @@ export interface ChampionshipStanding {
   rallyePoints: number;
   totalPoints: number;
   position: number;
+  previousPosition?: number;
+  positionChange: number;
 }

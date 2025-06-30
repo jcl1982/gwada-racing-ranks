@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import HomePage from '@/components/HomePage';
@@ -7,19 +6,23 @@ import CategoryStandings from '@/components/CategoryStandings';
 import ExcelImport from '@/components/ExcelImport';
 import { drivers as initialDrivers, montagneRaces as initialMontagneRaces, rallyeRaces as initialRallyeRaces } from '@/data/mockData';
 import { calculateChampionshipStandings } from '@/utils/championship';
-import { Driver, Race } from '@/types/championship';
+import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'home' | 'montagne' | 'rallye' | 'general' | 'import'>('home');
   const [drivers, setDrivers] = useState<Driver[]>(initialDrivers);
   const [montagneRaces, setMontagneRaces] = useState<Race[]>(initialMontagneRaces);
   const [rallyeRaces, setRallyeRaces] = useState<Race[]>(initialRallyeRaces);
+  const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
   
-  const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces);
+  const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
 
   const handleImport = (newRaces: Race[], newDrivers: Driver[]) => {
     console.log('Importing races:', newRaces);
     console.log('New drivers:', newDrivers);
+    
+    // Sauvegarder les classements actuels comme précédents
+    setPreviousStandings(standings);
     
     // Update drivers
     setDrivers(newDrivers);
