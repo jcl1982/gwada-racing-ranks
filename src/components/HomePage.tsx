@@ -2,18 +2,28 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car, Calendar, Users, Award } from 'lucide-react';
-import { ChampionshipStanding } from '@/types/championship';
+import { ChampionshipStanding, Race } from '@/types/championship';
 
 interface HomePageProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
+  montagneRaces: Race[];
+  rallyeRaces: Race[];
 }
 
-const HomePage = ({ standings, championshipTitle, championshipYear }: HomePageProps) => {
+const HomePage = ({ standings, championshipTitle, championshipYear, montagneRaces, rallyeRaces }: HomePageProps) => {
   const leader = standings[0];
   const totalDrivers = standings.length;
-  const totalRaces = 4; // 2 montagne + 2 rallye
+  const totalRaces = montagneRaces.length + rallyeRaces.length;
+  const totalMontagneRaces = montagneRaces.length;
+  const totalRallyeRaces = rallyeRaces.length;
+
+  // Obtenir les courses les plus récentes pour les actualités
+  const allRaces = [...montagneRaces, ...rallyeRaces].sort((a, b) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+  const recentRaces = allRaces.slice(0, 3);
 
   return (
     <div className="space-y-8">
@@ -53,7 +63,7 @@ const HomePage = ({ standings, championshipTitle, championshipYear }: HomePagePr
           <div className="bg-gradient-to-r from-green-500 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Mountain className="text-white" size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-gray-800">2</h3>
+          <h3 className="text-2xl font-bold text-gray-800">{totalMontagneRaces}</h3>
           <p className="text-gray-600">Courses de Côte</p>
         </Card>
 
@@ -61,7 +71,7 @@ const HomePage = ({ standings, championshipTitle, championshipYear }: HomePagePr
           <div className="bg-gradient-to-r from-red-500 to-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Car className="text-white" size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-gray-800">2</h3>
+          <h3 className="text-2xl font-bold text-gray-800">{totalRallyeRaces}</h3>
           <p className="text-gray-600">Rallyes</p>
         </Card>
       </div>
@@ -150,21 +160,33 @@ const HomePage = ({ standings, championshipTitle, championshipYear }: HomePagePr
           Actualités du Championnat
         </h3>
         <div className="space-y-4">
-          <div className="border-l-4 border-blue-500 pl-4">
-            <h4 className="font-semibold">Rallye des Îles - Victoire de {standings[0]?.driver.name}</h4>
-            <p className="text-gray-600 text-sm">Une course spectaculaire avec un final serré</p>
-            <p className="text-xs text-gray-500">15 juin 2024</p>
-          </div>
-          <div className="border-l-4 border-green-500 pl-4">
-            <h4 className="font-semibold">Montée de Basse-Terre - Performance remarquable</h4>
-            <p className="text-gray-600 text-sm">Des conditions météo difficiles mais un spectacle garanti</p>
-            <p className="text-xs text-gray-500">20 avril 2024</p>
-          </div>
-          <div className="border-l-4 border-yellow-500 pl-4">
-            <h4 className="font-semibold">Ouverture de saison à la Soufrière</h4>
-            <p className="text-gray-600 text-sm">Démarrage en beauté du championnat 2024</p>
-            <p className="text-xs text-gray-500">15 mars 2024</p>
-          </div>
+          {recentRaces.length > 0 ? (
+            recentRaces.map((race, index) => (
+              <div key={race.id} className={`border-l-4 ${race.type === 'rallye' ? 'border-blue-500' : 'border-green-500'} pl-4`}>
+                <h4 className="font-semibold">
+                  {race.name} - {race.type === 'rallye' ? 'Rallye' : 'Course de Côte'}
+                </h4>
+                <p className="text-gray-600 text-sm">
+                  {race.results.length > 0 && standings.find(s => s.driver.id === race.results[0]?.driverId) ? 
+                    `Victoire de ${standings.find(s => s.driver.id === race.results[0]?.driverId)?.driver.name}` :
+                    'Course terminée'
+                  }
+                </p>
+                <p className="text-xs text-gray-500">
+                  {new Date(race.date).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </p>
+              </div>
+            ))
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              <p>Aucune course programmée pour le moment.</p>
+              <p className="text-sm mt-2">Les actualités apparaîtront ici dès qu'il y aura des courses.</p>
+            </div>
+          )}
         </div>
       </Card>
     </div>

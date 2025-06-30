@@ -165,6 +165,8 @@ const Index = () => {
             standings={standings} 
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
+            montagneRaces={montagneRaces}
+            rallyeRaces={rallyeRaces}
           />
         );
       case 'general':
@@ -223,6 +225,8 @@ const Index = () => {
             standings={standings} 
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
+            montagneRaces={montagneRaces}
+            rallyeRaces={rallyeRaces}
           />
         );
     }
