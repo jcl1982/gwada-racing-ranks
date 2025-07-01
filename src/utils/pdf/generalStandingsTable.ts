@@ -30,49 +30,80 @@ export const createGeneralStandingsTable = (
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {
       fontSize: PDF_STYLES.fonts.normalSize,
-      cellPadding: 4,
-      lineColor: PDF_STYLES.colors.darkBlue,
-      lineWidth: 0.5,
+      cellPadding: PDF_STYLES.spacing.cellPadding,
+      lineColor: [220, 220, 220],
+      lineWidth: 0.3,
+      textColor: [44, 62, 80],
+      overflow: 'linebreak'
     },
     headStyles: {
-      fillColor: PDF_STYLES.colors.headerBlue,
-      textColor: 255,
+      fillColor: PDF_STYLES.colors.primary,
+      textColor: [255, 255, 255],
       fontStyle: 'bold',
-      fontSize: PDF_STYLES.fonts.normalSize + 1,
+      fontSize: PDF_STYLES.fonts.normalSize + 2,
       halign: 'center',
       valign: 'middle',
-      cellPadding: 5
+      cellPadding: 8,
+      minCellHeight: 15
     },
     alternateRowStyles: {
       fillColor: PDF_STYLES.colors.champagne
     },
     columnStyles: {
-      0: { cellWidth: 22, halign: 'center', fontStyle: 'bold' },
-      1: { cellWidth: 25, halign: 'center', fontSize: PDF_STYLES.fonts.smallSize },
-      2: { cellWidth: 55, cellPadding: 5 },
-      3: { cellWidth: 30, halign: 'center' },
-      4: { cellWidth: 30, halign: 'center' },
-      5: { cellWidth: 28, halign: 'center', fontStyle: 'bold', fontSize: PDF_STYLES.fonts.normalSize + 1 }
+      0: { 
+        cellWidth: 24, 
+        halign: 'center', 
+        fontStyle: 'bold',
+        fontSize: PDF_STYLES.fonts.normalSize + 1
+      },
+      1: { 
+        cellWidth: 28, 
+        halign: 'center', 
+        fontSize: PDF_STYLES.fonts.smallSize + 1,
+        fontStyle: 'bold'
+      },
+      2: { 
+        cellWidth: 60, 
+        cellPadding: 8,
+        fontSize: PDF_STYLES.fonts.normalSize + 1
+      },
+      3: { 
+        cellWidth: 32, 
+        halign: 'center',
+        fontSize: PDF_STYLES.fonts.normalSize
+      },
+      4: { 
+        cellWidth: 32, 
+        halign: 'center',
+        fontSize: PDF_STYLES.fonts.normalSize
+      },
+      5: { 
+        cellWidth: 30, 
+        halign: 'center', 
+        fontStyle: 'bold', 
+        fontSize: PDF_STYLES.fonts.normalSize + 2,
+        textColor: PDF_STYLES.colors.primary
+      }
     },
     didParseCell: function(data) {
-      // Styling pour la colonne évolution
+      // Styling pour la colonne évolution avec de meilleures couleurs
       if (data.column.index === 1) {
         const cellText = data.cell.text[0];
         if (cellText && cellText.startsWith('+')) {
-          data.cell.styles.textColor = PDF_STYLES.colors.green;
+          data.cell.styles.textColor = PDF_STYLES.colors.success;
           data.cell.styles.fontStyle = 'bold';
         } else if (cellText && cellText.startsWith('-')) {
-          data.cell.styles.textColor = PDF_STYLES.colors.red;
+          data.cell.styles.textColor = PDF_STYLES.colors.danger;
           data.cell.styles.fontStyle = 'bold';
         } else if (cellText && cellText === 'NEW') {
-          data.cell.styles.textColor = PDF_STYLES.colors.orange;
+          data.cell.styles.textColor = PDF_STYLES.colors.warning;
           data.cell.styles.fontStyle = 'bold';
         } else {
-          data.cell.styles.textColor = PDF_STYLES.colors.gray;
+          data.cell.styles.textColor = PDF_STYLES.colors.secondary;
         }
       }
       
-      // Styling spécial pour les positions du podium et top 5
+      // Styling amélioré pour les positions du podium et top 5
       if (data.section === 'body') {
         const position = parseInt(data.row.raw[0]);
         const positionStyle = getPositionRowStyle(position);
@@ -81,15 +112,22 @@ export const createGeneralStandingsTable = (
           data.cell.styles.fillColor = [...positionStyle.fillColor] as [number, number, number];
           data.cell.styles.textColor = [...positionStyle.textColor] as [number, number, number];
           
-          // Mettre en gras pour le podium
+          // Mise en forme spéciale pour le podium
           if (position <= 3) {
             data.cell.styles.fontStyle = 'bold';
+            data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize + 1;
           }
         }
       }
     },
-    margin: { top: 60, left: 15, right: 15 },
+    margin: { 
+      top: PDF_STYLES.spacing.marginVertical, 
+      left: PDF_STYLES.spacing.marginHorizontal, 
+      right: PDF_STYLES.spacing.marginHorizontal 
+    },
     tableWidth: 'auto',
-    theme: 'grid'
+    theme: 'grid',
+    tableLineColor: [220, 220, 220],
+    tableLineWidth: 0.3
   });
 };

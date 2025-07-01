@@ -3,60 +3,90 @@ import jsPDF from 'jspdf';
 import { PDF_STYLES } from '../pdfStyles';
 
 export const addLegendToDoc = (doc: jsPDF) => {
-  const finalY = (doc as any).lastAutoTable.finalY + 15;
+  const finalY = (doc as any).lastAutoTable.finalY + PDF_STYLES.spacing.sectionGap;
   
-  // Titre de la légende avec un fond coloré
-  doc.setFillColor(PDF_STYLES.colors.lightBlue[0], PDF_STYLES.colors.lightBlue[1], PDF_STYLES.colors.lightBlue[2]);
-  doc.rect(15, finalY - 5, 170, 12, 'F');
+  // Titre de la légende avec un design moderne
+  doc.setFillColor(PDF_STYLES.colors.primary[0], PDF_STYLES.colors.primary[1], PDF_STYLES.colors.primary[2]);
+  doc.roundedRect(PDF_STYLES.spacing.marginHorizontal, finalY - 3, 170, 14, 2, 2, 'F');
   
-  doc.setFontSize(PDF_STYLES.fonts.normalSize + 1);
+  doc.setFontSize(PDF_STYLES.fonts.normalSize + 2);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(PDF_STYLES.colors.darkBlue[0], PDF_STYLES.colors.darkBlue[1], PDF_STYLES.colors.darkBlue[2]);
-  doc.text('Légende des indicateurs d\'évolution:', 20, finalY + 2);
+  doc.setTextColor(255, 255, 255);
+  doc.text('Légende des indicateurs', PDF_STYLES.spacing.marginHorizontal + 5, finalY + 5);
   
-  // Contenu de la légende
+  // Contenu de la légende avec meilleur espacement
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(PDF_STYLES.fonts.smallSize);
+  doc.setFontSize(PDF_STYLES.fonts.smallSize + 1);
   
-  // Indicateurs d'évolution
-  doc.setTextColor(PDF_STYLES.colors.green[0], PDF_STYLES.colors.green[1], PDF_STYLES.colors.green[2]);
-  doc.text('+X : Montée de X positions', 20, finalY + 12);
+  const legendStartY = finalY + 20;
+  const lineHeight = 10;
+  let currentY = legendStartY;
   
-  doc.setTextColor(PDF_STYLES.colors.red[0], PDF_STYLES.colors.red[1], PDF_STYLES.colors.red[2]);
-  doc.text('-X : Descente de X positions', 20, finalY + 20);
+  // Indicateurs d'évolution avec couleurs améliorées
+  doc.setTextColor(PDF_STYLES.colors.success[0], PDF_STYLES.colors.success[1], PDF_STYLES.colors.success[2]);
+  doc.setFont('helvetica', 'bold');
+  doc.text('+X', PDF_STYLES.spacing.marginHorizontal + 5, currentY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.text('Montée de X positions', PDF_STYLES.spacing.marginHorizontal + 20, currentY);
   
-  doc.setTextColor(PDF_STYLES.colors.gray[0], PDF_STYLES.colors.gray[1], PDF_STYLES.colors.gray[2]);
-  doc.text('= : Position stable', 20, finalY + 28);
+  currentY += lineHeight;
+  doc.setTextColor(PDF_STYLES.colors.danger[0], PDF_STYLES.colors.danger[1], PDF_STYLES.colors.danger[2]);
+  doc.setFont('helvetica', 'bold');
+  doc.text('-X', PDF_STYLES.spacing.marginHorizontal + 5, currentY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.text('Descente de X positions', PDF_STYLES.spacing.marginHorizontal + 20, currentY);
   
-  doc.setTextColor(PDF_STYLES.colors.orange[0], PDF_STYLES.colors.orange[1], PDF_STYLES.colors.orange[2]);
-  doc.text('NEW : Nouveau pilote', 20, finalY + 36);
+  currentY += lineHeight;
+  doc.setTextColor(PDF_STYLES.colors.secondary[0], PDF_STYLES.colors.secondary[1], PDF_STYLES.colors.secondary[2]);
+  doc.setFont('helvetica', 'bold');
+  doc.text('=', PDF_STYLES.spacing.marginHorizontal + 5, currentY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.text('Position stable', PDF_STYLES.spacing.marginHorizontal + 20, currentY);
   
-  // Légende des couleurs avec des petits rectangles colorés
+  currentY += lineHeight;
+  doc.setTextColor(PDF_STYLES.colors.warning[0], PDF_STYLES.colors.warning[1], PDF_STYLES.colors.warning[2]);
+  doc.setFont('helvetica', 'bold');
+  doc.text('NEW', PDF_STYLES.spacing.marginHorizontal + 5, currentY);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(60, 60, 60);
+  doc.text('Nouveau pilote', PDF_STYLES.spacing.marginHorizontal + 20, currentY);
+  
+  // Légende des couleurs avec design amélioré
+  const colorsStartX = 120;
+  currentY = legendStartY;
+  
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
-  doc.text('Couleurs des positions:', 100, finalY + 12);
+  doc.text('Couleurs des positions:', colorsStartX, currentY);
   
   doc.setFont('helvetica', 'normal');
+  currentY += lineHeight;
   
-  // Champion (Or)
+  // Champion (Or) avec rectangle arrondi
   doc.setFillColor(PDF_STYLES.colors.gold[0], PDF_STYLES.colors.gold[1], PDF_STYLES.colors.gold[2]);
-  doc.rect(100, finalY + 16, 8, 6, 'F');
-  doc.text('1ère place (Champion)', 110, finalY + 20);
+  doc.roundedRect(colorsStartX, currentY - 4, 10, 6, 1, 1, 'F');
+  doc.text('1ère place (Champion)', colorsStartX + 15, currentY);
   
+  currentY += lineHeight;
   // Vice-champion (Argent)
   doc.setFillColor(PDF_STYLES.colors.silver[0], PDF_STYLES.colors.silver[1], PDF_STYLES.colors.silver[2]);
-  doc.rect(100, finalY + 24, 8, 6, 'F');
-  doc.text('2ème place (Vice-champion)', 110, finalY + 28);
+  doc.roundedRect(colorsStartX, currentY - 4, 10, 6, 1, 1, 'F');
+  doc.text('2ème place', colorsStartX + 15, currentY);
   
+  currentY += lineHeight;
   // Podium (Bronze)
   doc.setFillColor(PDF_STYLES.colors.bronze[0], PDF_STYLES.colors.bronze[1], PDF_STYLES.colors.bronze[2]);
-  doc.rect(100, finalY + 32, 8, 6, 'F');
-  doc.text('3ème place (Podium)', 110, finalY + 36);
+  doc.roundedRect(colorsStartX, currentY - 4, 10, 6, 1, 1, 'F');
+  doc.text('3ème place', colorsStartX + 15, currentY);
   
-  // Top 5 (Bleu clair)
+  currentY += lineHeight;
+  // Top 5
   doc.setFillColor(PDF_STYLES.colors.lightBlue[0], PDF_STYLES.colors.lightBlue[1], PDF_STYLES.colors.lightBlue[2]);
-  doc.rect(100, finalY + 40, 8, 6, 'F');
-  doc.text('Top 5', 110, finalY + 44);
+  doc.roundedRect(colorsStartX, currentY - 4, 10, 6, 1, 1, 'F');
+  doc.text('Top 5', colorsStartX + 15, currentY);
   
   // Reset couleur
   doc.setTextColor(0, 0, 0);

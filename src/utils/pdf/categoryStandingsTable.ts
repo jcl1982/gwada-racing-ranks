@@ -23,10 +23,10 @@ export const createCategoryStandingsTable = (
       if (result) {
         const currentRacePoints = result.points;
         const newTotal = previousTotal + currentRacePoints;
-        row.push(`${currentRacePoints} pts (P${result.position}) [${newTotal}]`);
+        row.push(`${currentRacePoints} pts (P${result.position})`);
         previousTotal = newTotal;
       } else {
-        row.push(`- [${previousTotal}]`);
+        row.push('-');
       }
     });
     
@@ -41,21 +41,72 @@ export const createCategoryStandingsTable = (
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {
-      fontSize: 7,
-      cellPadding: 2,
+      fontSize: PDF_STYLES.fonts.smallSize + 1,
+      cellPadding: 4,
+      lineColor: [220, 220, 220],
+      lineWidth: 0.2,
+      textColor: [44, 62, 80],
+      overflow: 'linebreak'
     },
     headStyles: {
-      fillColor: PDF_STYLES.colors.headerBlue,
-      textColor: 255,
-      fontStyle: 'bold'
+      fillColor: PDF_STYLES.colors.primary,
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      fontSize: PDF_STYLES.fonts.normalSize,
+      halign: 'center',
+      valign: 'middle',
+      cellPadding: 6,
+      minCellHeight: 12
     },
     alternateRowStyles: {
-      fillColor: PDF_STYLES.colors.lightGray
+      fillColor: PDF_STYLES.colors.champagne
     },
     columnStyles: {
-      0: { cellWidth: 20, halign: 'center' },
-      1: { cellWidth: 35 },
-      [headers.length - 1]: { cellWidth: 25, halign: 'center', fontStyle: 'bold' }
-    }
+      0: { 
+        cellWidth: 22, 
+        halign: 'center', 
+        fontStyle: 'bold',
+        fontSize: PDF_STYLES.fonts.normalSize
+      },
+      1: { 
+        cellWidth: 40,
+        fontSize: PDF_STYLES.fonts.normalSize,
+        cellPadding: 5
+      },
+      [headers.length - 1]: { 
+        cellWidth: 28, 
+        halign: 'center', 
+        fontStyle: 'bold',
+        fontSize: PDF_STYLES.fonts.normalSize + 1,
+        textColor: PDF_STYLES.colors.primary
+      }
+    },
+    didParseCell: function(data) {
+      // Styling pour les positions
+      if (data.section === 'body' && data.column.index === 0) {
+        const position = parseInt(data.cell.text[0]);
+        if (position === 1) {
+          data.cell.styles.fillColor = PDF_STYLES.colors.gold;
+          data.cell.styles.textColor = [0, 0, 0];
+        } else if (position === 2) {
+          data.cell.styles.fillColor = PDF_STYLES.colors.silver;
+          data.cell.styles.textColor = [0, 0, 0];
+        } else if (position === 3) {
+          data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
+          data.cell.styles.textColor = [255, 255, 255];
+        } else if (position <= 5) {
+          data.cell.styles.fillColor = PDF_STYLES.colors.lightBlue;
+          data.cell.styles.textColor = [0, 0, 0];
+        }
+      }
+    },
+    margin: { 
+      top: PDF_STYLES.spacing.marginVertical, 
+      left: PDF_STYLES.spacing.marginHorizontal, 
+      right: PDF_STYLES.spacing.marginHorizontal 
+    },
+    theme: 'grid',
+    tableLineColor: [220, 220, 220],
+    tableLineWidth: 0.2
   });
 };
