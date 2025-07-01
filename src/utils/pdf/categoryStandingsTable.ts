@@ -21,14 +21,17 @@ export const createCategoryStandingsTable = (
     let evolutionBetweenRaces = 0;
     
     if (races.length >= 2) {
+      // Calculer la position du pilote après la première course
       const firstRaceResults = races[0].results;
       const firstRaceResult = firstRaceResults.find(r => r.driverId === standing.driver.id);
       const firstRacePosition = firstRaceResult ? firstRaceResult.position : 999;
       
+      // Calculer la position du pilote après la deuxième course
       const secondRaceResults = races[1].results;
       const secondRaceResult = secondRaceResults.find(r => r.driverId === standing.driver.id);
       const secondRacePosition = secondRaceResult ? secondRaceResult.position : 999;
       
+      // Si le pilote a participé aux deux courses, calculer l'évolution
       if (firstRaceResult && secondRaceResult) {
         evolutionBetweenRaces = firstRacePosition - secondRacePosition;
       }
@@ -66,6 +69,7 @@ export const createCategoryStandingsTable = (
 
   console.log('📄 Données du tableau PDF (catégorie):', tableData);
   
+  // Mise à jour de l'en-tête pour remplacer "Position" par "Pos"
   const updatedHeaders = [...headers];
   updatedHeaders[0] = 'Pos';
   
@@ -74,27 +78,7 @@ export const createCategoryStandingsTable = (
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
-      // Styliser la colonne position (index 0) avec couleurs et formes
-      if (data.column.index === 0 && data.section === 'body') {
-        const standing = standings[data.row.index];
-        const positionStyle = getPositionRowStyle(standing.position);
-        
-        if (positionStyle) {
-          data.cell.styles.fillColor = positionStyle.fillColor;
-          data.cell.styles.textColor = positionStyle.textColor;
-          data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.halign = 'center';
-          data.cell.styles.valign = 'middle';
-        } else {
-          // Style par défaut pour les autres positions
-          data.cell.styles.fillColor = PDF_STYLES.colors.gray100;
-          data.cell.styles.textColor = PDF_STYLES.colors.gray800;
-          data.cell.styles.fontStyle = 'bold';
-          data.cell.styles.halign = 'center';
-        }
-      }
-      
-      // Styliser la colonne évolution (index 1)
+      // Colorer la colonne évolution (index 1)
       if (data.column.index === 1 && data.section === 'body') {
         const standing = standingsWithEvolution[data.row.index];
         if (races.length >= 2 && standing.evolutionBetweenRaces !== 0) {
@@ -108,64 +92,16 @@ export const createCategoryStandingsTable = (
         }
       }
       
-      // Styliser les colonnes de points des courses (indices variables selon le nombre de courses)
-      if (data.section === 'body' && data.column.index >= 3 && data.column.index < updatedHeaders.length - 1) {
-        const cellText = data.cell.text[0];
-        if (cellText && cellText !== '-' && cellText.includes('pts')) {
-          // Extraire les points et la position
-          const pointsMatch = cellText.match(/(\d+) pts/);
-          const positionMatch = cellText.match(/P(\d+)/);
-          
-          if (pointsMatch && positionMatch) {
-            const points = parseInt(pointsMatch[1]);
-            const position = parseInt(positionMatch[1]);
-            
-            // Couleurs selon les points obtenus
-            if (points >= 25) {
-              data.cell.styles.fillColor = PDF_STYLES.colors.gold;
-              data.cell.styles.textColor = [255, 255, 255];
-            } else if (points >= 18) {
-              data.cell.styles.fillColor = PDF_STYLES.colors.silver;
-              data.cell.styles.textColor = [255, 255, 255];
-            } else if (points >= 12) {
-              data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
-              data.cell.styles.textColor = [255, 255, 255];
-            } else if (points > 0) {
-              data.cell.styles.fillColor = PDF_STYLES.colors.blueBadge;
-              data.cell.styles.textColor = PDF_STYLES.colors.blue;
-            }
-            
-            data.cell.styles.fontStyle = 'bold';
-            data.cell.styles.halign = 'center';
-          }
-        }
-      }
-      
-      // Styliser la colonne total des points (dernière colonne)
-      if (data.column.index === updatedHeaders.length - 1 && data.section === 'body') {
+      // Colorer les lignes selon la position
+      if (data.section === 'body') {
         const standing = standings[data.row.index];
+        const positionStyle = getPositionRowStyle(standing.position);
         
-        // Couleurs graduées selon le total de points
-        if (standing.position === 1) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.gold;
-          data.cell.styles.textColor = [255, 255, 255];
-        } else if (standing.position === 2) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.silver;
-          data.cell.styles.textColor = [255, 255, 255];
-        } else if (standing.position === 3) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
-          data.cell.styles.textColor = [255, 255, 255];
-        } else if (standing.position <= 5) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.blue;
-          data.cell.styles.textColor = [255, 255, 255];
-        } else {
-          data.cell.styles.fillColor = PDF_STYLES.colors.gray200;
-          data.cell.styles.textColor = PDF_STYLES.colors.gray800;
+        if (positionStyle) {
+          data.cell.styles.fillColor = positionStyle.fillColor;
+          data.cell.styles.textColor = positionStyle.textColor;
+          data.cell.styles.fontStyle = 'bold';
         }
-        
-        data.cell.styles.fontStyle = 'bold';
-        data.cell.styles.halign = 'center';
-        data.cell.styles.valign = 'middle';
       }
     }
   });
