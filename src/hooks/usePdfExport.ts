@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
-import { calculateDriverPoints } from '@/utils/championship';
+import { calculateDriverPoints, calculateChampionshipStandings } from '@/utils/championship';
 
 export const usePdfExport = () => {
   // Fonction pour convertir une image en base64
@@ -54,7 +54,7 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
-    // Tableau des classements
+    // Utiliser directement les standings fournis (déjà triés et calculés correctement)
     const tableData = standings.map(standing => [
       standing.position.toString(),
       standing.driver.name,
@@ -116,7 +116,7 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Saison ${championshipYear}`, 148, 45, { align: 'center' });
     
-    // Calcul des classements
+    // Utiliser la même logique de calcul que sur le site web
     const standings = drivers
       .map(driver => ({
         driver,
