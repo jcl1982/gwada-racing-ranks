@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -111,10 +112,10 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-0.5 px-1 font-semibold">Position</th>
-              <th className="text-left py-0.5 px-1 font-semibold">Pilote</th>
+              <th className="text-left py-1 px-1 font-semibold">Position</th>
+              <th className="text-left py-1 px-1 font-semibold">Pilote</th>
               {races.map(race => (
-                <th key={race.id} className="text-center py-0.5 px-1 font-semibold min-w-[80px]">
+                <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
                   </div>
@@ -126,8 +127,8 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                   </div>
                 </th>
               ))}
-              <th className="text-center py-0.5 px-1 font-semibold">Total</th>
-              <th className="text-center py-0.5 px-1 font-semibold">Écart</th>
+              <th className="text-center py-1 px-1 font-semibold">Total</th>
+              <th className="text-center py-1 px-1 font-semibold">Écart</th>
             </tr>
           </thead>
           <tbody>
@@ -140,12 +141,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
                   }`}
                 >
-                  <td className="py-0.5 px-1">
+                  <td className="py-1 px-1">
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
                     </Badge>
                   </td>
-                  <td className="py-0.5 px-1">
+                  <td className="py-1 px-1">
                     <div className="font-semibold text-gray-900 unicode-enhanced">
                       {standing.driver.name}
                     </div>
@@ -154,7 +155,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     const points = getDriverPointsForRace(standing.driver.id, race);
                     const result = race.results.find(r => r.driverId === standing.driver.id);
                     return (
-                      <td key={race.id} className="py-0.5 px-1 text-center">
+                      <td key={race.id} className="py-1 px-1 text-center">
                         {points > 0 ? (
                           <div className="text-center">
                             <Badge variant="outline" className="text-xs mb-1">
@@ -172,12 +173,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                       </td>
                     );
                   })}
-                  <td className="py-0.5 px-1 text-center">
+                  <td className="py-1 px-1 text-center">
                     <Badge className={`bg-gradient-to-r ${gradientClass} text-white font-bold`}>
                       {standing.points} pts
                     </Badge>
                   </td>
-                  <td className="py-0.5 px-1 text-center text-gray-600">
+                  <td className="py-1 px-1 text-center text-gray-600">
                     {gap === 0 ? 'Leader' : `-${gap} pts`}
                   </td>
                 </tr>
