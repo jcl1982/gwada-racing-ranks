@@ -20,6 +20,7 @@ export const useChampionshipData = () => {
   // Load saved data on startup
   useEffect(() => {
     if (savedData) {
+      console.log('Loading saved data:', savedData);
       setDrivers(savedData.drivers);
       setMontagneRaces(savedData.montagneRaces);
       setRallyeRaces(savedData.rallyeRaces);
@@ -53,6 +54,7 @@ export const useChampionshipData = () => {
       championshipTitle: newTitle,
       championshipYear: newYear
     };
+    console.log('Saving data to localStorage:', dataToSave);
     saveData(dataToSave);
   };
 
@@ -108,7 +110,9 @@ export const useChampionshipData = () => {
   };
 
   const handleRacesChange = (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
-    console.log('Updating races and saving data...');
+    console.log('handleRacesChange called with:', { newMontagneRaces, newRallyeRaces });
+    console.log('Current state before update:', { montagneRaces, rallyeRaces });
+    
     setMontagneRaces(newMontagneRaces);
     setRallyeRaces(newRallyeRaces);
     
@@ -129,6 +133,7 @@ export const useChampionshipData = () => {
   };
 
   const handleDriversChange = (newDrivers: Driver[]) => {
+    console.log('Updating drivers:', newDrivers);
     setDrivers(newDrivers);
     
     // Auto-save after drivers modification

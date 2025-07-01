@@ -26,6 +26,8 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
       results: []
     };
     
+    console.log('Adding new race:', newRace);
+    
     if (raceData.type === 'montagne') {
       onRacesChange([...montagneRaces, newRace], rallyeRaces);
     } else {
@@ -34,6 +36,7 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
   };
 
   const handleEditRace = (race: Race) => {
+    console.log('Editing race:', race);
     setEditingRace(race);
     setIsEditDialogOpen(true);
   };
@@ -41,12 +44,16 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
   const handleUpdateRace = (updatedRace: Race) => {
     if (!editingRace) return;
 
+    console.log('Updating race from:', editingRace);
+    console.log('Updating race to:', updatedRace);
+
     // Copier les listes existantes
     let updatedMontagneRaces = [...montagneRaces];
     let updatedRallyeRaces = [...rallyeRaces];
 
     // Si le type de la course a changé, on doit la déplacer
     if (editingRace.type !== updatedRace.type) {
+      console.log('Race type changed, moving between lists');
       // Supprimer de l'ancienne liste
       if (editingRace.type === 'montagne') {
         updatedMontagneRaces = montagneRaces.filter(race => race.id !== editingRace.id);
@@ -56,6 +63,7 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
         updatedMontagneRaces.push(updatedRace);
       }
     } else {
+      console.log('Race type unchanged, updating in same list');
       // Le type n'a pas changé, on met juste à jour dans la liste appropriée
       if (updatedRace.type === 'montagne') {
         const raceIndex = updatedMontagneRaces.findIndex(race => race.id === editingRace.id);
@@ -70,11 +78,15 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
       }
     }
 
+    console.log('Final montagne races:', updatedMontagneRaces);
+    console.log('Final rallye races:', updatedRallyeRaces);
+
     onRacesChange(updatedMontagneRaces, updatedRallyeRaces);
     setEditingRace(null);
   };
 
   const handleDeleteRace = (raceId: string) => {
+    console.log('Deleting race with id:', raceId);
     const updatedMontagneRaces = montagneRaces.filter(race => race.id !== raceId);
     const updatedRallyeRaces = rallyeRaces.filter(race => race.id !== raceId);
     onRacesChange(updatedMontagneRaces, updatedRallyeRaces);
