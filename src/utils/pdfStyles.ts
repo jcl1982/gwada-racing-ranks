@@ -1,3 +1,4 @@
+
 export const PDF_STYLES = {
   colors: {
     // Couleurs modernes et élégantes
@@ -101,15 +102,15 @@ export const getStatusText = (index: number): string => {
   else return `${index + 1}eme`;
 };
 
-export const getPositionRowStyle = (position: number) => {
+export const getPositionRowStyle = (position: number): { fillColor: [number, number, number], textColor: [number, number, number] } | null => {
   if (position === 1) {
-    return { fillColor: PDF_STYLES.colors.gold, textColor: [255, 255, 255] };
+    return { fillColor: PDF_STYLES.colors.gold, textColor: [255, 255, 255] as [number, number, number] };
   } else if (position === 2) {
-    return { fillColor: PDF_STYLES.colors.silver, textColor: [255, 255, 255] };
+    return { fillColor: PDF_STYLES.colors.silver, textColor: [255, 255, 255] as [number, number, number] };
   } else if (position === 3) {
-    return { fillColor: PDF_STYLES.colors.bronze, textColor: [255, 255, 255] };
+    return { fillColor: PDF_STYLES.colors.bronze, textColor: [255, 255, 255] as [number, number, number] };
   } else if (position <= 5) {
-    return { fillColor: PDF_STYLES.colors.blue, textColor: [255, 255, 255] };
+    return { fillColor: PDF_STYLES.colors.blue, textColor: [255, 255, 255] as [number, number, number] };
   }
   return null;
 };
