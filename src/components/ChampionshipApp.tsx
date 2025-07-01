@@ -1,5 +1,6 @@
 
 import Navigation from '@/components/Navigation';
+import Header from '@/components/Header';
 import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
@@ -103,6 +104,7 @@ const ChampionshipApp = () => {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        <Header />
         <Navigation currentView={currentView} onViewChange={setCurrentView} />
         {renderCurrentView()}
       </div>
