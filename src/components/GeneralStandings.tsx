@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -16,14 +17,17 @@ interface GeneralStandingsProps {
 const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
   const { exportGeneralStandings } = usePdfExport();
 
+  // S'assurer que les standings sont triés par position pour l'affichage
+  const sortedStandings = [...standings].sort((a, b) => a.position - b.position);
+
   const handlePrintPdf = () => {
-    console.log('🖨️ Impression PDF demandée - Classement site web:', standings.map(s => ({
+    console.log('🖨️ Impression PDF demandée - Classement site web:', sortedStandings.map(s => ({
       position: s.position,
       name: s.driver.name,
       totalPoints: s.totalPoints
     })));
     
-    exportGeneralStandings(standings, championshipTitle, championshipYear);
+    exportGeneralStandings(sortedStandings, championshipTitle, championshipYear);
   };
 
   return (
@@ -69,7 +73,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
               </tr>
             </thead>
             <tbody>
-              {standings.map((standing, index) => (
+              {sortedStandings.map((standing, index) => (
                 <tr
                   key={standing.driver.id}
                   className={`border-b transition-colors hover:bg-blue-50/50 ${
@@ -118,9 +122,9 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
           </div>
           <h3 className="text-lg font-bold mb-2">Leader du Championnat</h3>
           <p className="text-2xl font-bold text-blue-600">
-            {standings[0]?.driver.name}
+            {sortedStandings[0]?.driver.name}
           </p>
-          <p className="text-gray-600">{standings[0]?.totalPoints} points</p>
+          <p className="text-gray-600">{sortedStandings[0]?.totalPoints} points</p>
         </Card>
 
         <Card className="card-glass p-6 text-center">
@@ -129,10 +133,10 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
           </div>
           <h3 className="text-lg font-bold mb-2">Meilleur en Montagne</h3>
           <p className="text-2xl font-bold text-green-600">
-            {standings.sort((a, b) => b.montagnePoints - a.montagnePoints)[0]?.driver.name}
+            {sortedStandings.sort((a, b) => b.montagnePoints - a.montagnePoints)[0]?.driver.name}
           </p>
           <p className="text-gray-600">
-            {standings.sort((a, b) => b.montagnePoints - a.montagnePoints)[0]?.montagnePoints} points
+            {sortedStandings.sort((a, b) => b.montagnePoints - a.montagnePoints)[0]?.montagnePoints} points
           </p>
         </Card>
 
@@ -142,10 +146,10 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
           </div>
           <h3 className="text-lg font-bold mb-2">Meilleur en Rallye</h3>
           <p className="text-2xl font-bold text-red-600">
-            {standings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0]?.driver.name}
+            {sortedStandings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0]?.driver.name}
           </p>
           <p className="text-gray-600">
-            {standings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0]?.rallyePoints} points
+            {sortedStandings.sort((a, b) => b.rallyePoints - a.rallyeRaces)[0]?.rallyePoints} points
           </p>
         </Card>
       </div>
