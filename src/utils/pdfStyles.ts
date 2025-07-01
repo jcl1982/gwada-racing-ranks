@@ -73,9 +73,9 @@ export const PDF_STYLES = {
 
 export const getPositionEvolutionIndicator = (positionChange: number, previousPosition?: number): string => {
   if (positionChange > 0) {
-    return `^ +${positionChange}`;
+    return `+${positionChange}`;
   } else if (positionChange < 0) {
-    return `v ${positionChange}`;
+    return `${positionChange}`;
   } else if (previousPosition) {
     return '=';
   } else {
