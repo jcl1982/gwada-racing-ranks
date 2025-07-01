@@ -1,5 +1,7 @@
 
 import { useCallback } from 'react';
+import { getPrintStyles, getBasicPrintStyles } from '@/utils/printStyles';
+import { createPrintWindow, executePrint } from '@/utils/printWindow';
 
 export const useWebPrint = () => {
   const printWebPage = useCallback((
@@ -23,66 +25,15 @@ export const useWebPrint = () => {
           return;
         }
 
-        // Créer une nouvelle fenêtre pour l'impression
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-          console.error('Unable to open print window');
-          return;
+        const printWindow = createPrintWindow(
+          element,
+          title || document.title,
+          getBasicPrintStyles()
+        );
+
+        if (printWindow) {
+          executePrint(printWindow);
         }
-
-        // Copier les styles de la page principale
-        const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-          .map(style => style.outerHTML)
-          .join('');
-
-        // Créer le contenu HTML pour l'impression avec support Unicode complet
-        const printContent = `
-          <!DOCTYPE html>
-          <html lang="fr">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-              <title>${title || document.title}</title>
-              ${styles}
-              <style>
-                @media print {
-                  body { 
-                    margin: 0; 
-                    padding: 20px; 
-                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                  }
-                  .no-print { display: none !important; }
-                  * {
-                    color-adjust: exact !important;
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                  }
-                }
-                @page {
-                  margin: 1cm;
-                  size: A4;
-                }
-              </style>
-            </head>
-            <body>
-              ${element.outerHTML}
-            </body>
-          </html>
-        `;
-
-        // Écrire le contenu avec encodage UTF-8
-        printWindow.document.open('text/html', 'replace');
-        printWindow.document.write(printContent);
-        printWindow.document.close();
-        
-        // Attendre que le contenu soit chargé puis imprimer
-        printWindow.onload = () => {
-          printWindow.print();
-          printWindow.close();
-        };
       } else {
         // Imprimer la page entière
         window.print();
@@ -117,75 +68,16 @@ export const useWebPrint = () => {
           return;
         }
 
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-          console.error('Unable to open print window');
-          return;
+        const printWindow = createPrintWindow(
+          element,
+          title || document.title,
+          getPrintStyles(customStyles),
+          true
+        );
+
+        if (printWindow) {
+          executePrint(printWindow);
         }
-
-        // Styles optimisés pour Unicode
-        const styles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-          .map(style => style.outerHTML)
-          .join('');
-
-        const unicodeOptimizedContent = `
-          <!DOCTYPE html>
-          <html lang="fr">
-            <head>
-              <meta charset="UTF-8">
-              <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>${title || document.title}</title>
-              ${styles}
-              <style>
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-                
-                @media print {
-                  body { 
-                    margin: 0; 
-                    padding: 20px; 
-                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-                    font-variant-ligatures: common-ligatures;
-                    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
-                    text-rendering: optimizeLegibility;
-                    -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
-                    unicode-bidi: embed;
-                    direction: ltr;
-                  }
-                  .no-print { display: none !important; }
-                  * {
-                    color-adjust: exact !important;
-                    -webkit-print-color-adjust: exact !important;
-                    print-color-adjust: exact !important;
-                  }
-                  /* Support pour les caractères spéciaux */
-                  .unicode-text {
-                    font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
-                    text-rendering: optimizeLegibility;
-                  }
-                }
-                @page {
-                  margin: 1cm;
-                  size: A4;
-                }
-                ${customStyles || ''}
-              </style>
-            </head>
-            <body class="unicode-text">
-              ${element.outerHTML}
-            </body>
-          </html>
-        `;
-
-        printWindow.document.open('text/html', 'replace');
-        printWindow.document.write(unicodeOptimizedContent);
-        printWindow.document.close();
-        
-        printWindow.onload = () => {
-          printWindow.print();
-          printWindow.close();
-        };
       } else {
         window.print();
       }
