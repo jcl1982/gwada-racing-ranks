@@ -2,7 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
-import { getPositionEvolutionIndicator, getEvolutionColor } from '../pdfStyles';
+import { getPositionEvolutionIndicator, getEvolutionColor, getPositionRowStyle } from '../pdfStyles';
 
 export const createCategoryStandingsTable = (
   doc: jsPDF,
@@ -53,6 +53,18 @@ export const createCategoryStandingsTable = (
         const color = getEvolutionColor(standing.positionChange || 0, standing.previousPosition);
         data.cell.styles.textColor = color;
         data.cell.styles.fontStyle = 'bold';
+      }
+      
+      // Colorer les lignes selon la position
+      if (data.section === 'body') {
+        const standing = standings[data.row.index];
+        const positionStyle = getPositionRowStyle(standing.position);
+        
+        if (positionStyle) {
+          data.cell.styles.fillColor = positionStyle.fillColor;
+          data.cell.styles.textColor = positionStyle.textColor;
+          data.cell.styles.fontStyle = 'bold';
+        }
       }
     }
   });
