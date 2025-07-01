@@ -10,7 +10,7 @@ const GeneralStandingsHeader = ({ championshipTitle, championshipYear }: General
       <h1 className="text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
         {championshipTitle}
       </h1>
-      <p className="text-xl text-gray-600">Classement Général {championshipYear}</p>
+      <p className="text-xl text-gray-600">Classement Général de la LSAG {championshipYear}</p>
     </div>
   );
 };
