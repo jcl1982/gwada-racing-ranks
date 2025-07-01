@@ -108,6 +108,7 @@ export const useChampionshipData = () => {
   };
 
   const handleRacesChange = (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
+    console.log('Updating races and saving data...');
     setMontagneRaces(newMontagneRaces);
     setRallyeRaces(newRallyeRaces);
     
@@ -120,6 +121,11 @@ export const useChampionshipData = () => {
       championshipTitle,
       championshipYear
     );
+
+    toast({
+      title: "Courses mises à jour",
+      description: "Les modifications ont été sauvegardées automatiquement.",
+    });
   };
 
   const handleDriversChange = (newDrivers: Driver[]) => {
