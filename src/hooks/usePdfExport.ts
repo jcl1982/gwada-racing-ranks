@@ -36,20 +36,20 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
-    // Tableau des classements - avec évolution
+    // Tableau des classements - avec évolution en texte simple
     const tableData = standings
       .sort((a, b) => a.position - b.position)
       .map(standing => {
-        // Indicateur d'évolution
+        // Indicateur d'évolution avec du texte simple
         let evolutionIndicator = '';
         if (standing.positionChange > 0) {
-          evolutionIndicator = `↗ +${standing.positionChange}`;
+          evolutionIndicator = `+${standing.positionChange}`;
         } else if (standing.positionChange < 0) {
-          evolutionIndicator = `↘ ${standing.positionChange}`;
+          evolutionIndicator = `${standing.positionChange}`;
         } else if (standing.previousPosition) {
-          evolutionIndicator = '→ =';
+          evolutionIndicator = '=';
         } else {
-          evolutionIndicator = '★ NEW';
+          evolutionIndicator = 'NEW';
         }
 
         return [
@@ -82,7 +82,7 @@ export const usePdfExport = () => {
       },
       columnStyles: {
         0: { cellWidth: 20, halign: 'center' },
-        1: { cellWidth: 20, halign: 'center', fontSize: 8 },
+        1: { cellWidth: 25, halign: 'center', fontSize: 9 },
         2: { cellWidth: 50 },
         3: { cellWidth: 25, halign: 'center' },
         4: { cellWidth: 25, halign: 'center' },
@@ -92,12 +92,15 @@ export const usePdfExport = () => {
         // Colorer les indicateurs d'évolution
         if (data.column.index === 1) {
           const cellText = data.cell.text[0];
-          if (cellText && cellText.includes('↗')) {
+          if (cellText && cellText.startsWith('+')) {
             data.cell.styles.textColor = [34, 139, 34]; // Vert pour montée
-          } else if (cellText && cellText.includes('↘')) {
+            data.cell.styles.fontStyle = 'bold';
+          } else if (cellText && cellText.startsWith('-')) {
             data.cell.styles.textColor = [220, 20, 60]; // Rouge pour descente
-          } else if (cellText && cellText.includes('★')) {
+            data.cell.styles.fontStyle = 'bold';
+          } else if (cellText && cellText === 'NEW') {
             data.cell.styles.textColor = [255, 140, 0]; // Orange pour nouveau
+            data.cell.styles.fontStyle = 'bold';
           } else {
             data.cell.styles.textColor = [128, 128, 128]; // Gris pour stable
           }
@@ -105,7 +108,7 @@ export const usePdfExport = () => {
       }
     });
     
-    // Légende des indicateurs
+    // Légende des indicateurs mise à jour
     const finalY = (doc as any).lastAutoTable.finalY + 10;
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
@@ -114,13 +117,13 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(34, 139, 34);
-    doc.text('↗ Montée au classement', 15, finalY + 8);
+    doc.text('+X : Montée de X positions', 15, finalY + 8);
     doc.setTextColor(220, 20, 60);
-    doc.text('↘ Descente au classement', 15, finalY + 15);
+    doc.text('-X : Descente de X positions', 15, finalY + 15);
     doc.setTextColor(128, 128, 128);
-    doc.text('→ Position stable', 15, finalY + 22);
+    doc.text('= : Position stable', 15, finalY + 22);
     doc.setTextColor(255, 140, 0);
-    doc.text('★ Nouveau pilote', 15, finalY + 29);
+    doc.text('NEW : Nouveau pilote', 15, finalY + 29);
     
     // Reset couleur
     doc.setTextColor(0, 0, 0);
@@ -193,9 +196,9 @@ export const usePdfExport = () => {
       headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
     });
     headers.push('Total');
-    headers.push('Évolution');
+    headers.push('Statut');
     
-    // Construction des données avec évolution des points
+    // Construction des données avec statut textuel simple
     const tableData = standings.map((standing, index) => {
       const row = [standing.position.toString(), standing.driver.name];
       
@@ -214,15 +217,15 @@ export const usePdfExport = () => {
       
       row.push(`${standing.points} pts`);
       
-      // Calcul de l'évolution basée sur la position finale
-      let evolution = '';
-      if (index === 0) evolution = '👑 Leader';
-      else if (index === 1) evolution = '🥈 Vice-champion';
-      else if (index === 2) evolution = '🥉 Podium';
-      else if (index < 5) evolution = '📈 Top 5';
-      else evolution = `${index + 1}ème`;
+      // Statut textuel simple
+      let status = '';
+      if (index === 0) status = 'CHAMPION';
+      else if (index === 1) status = 'VICE-CHAMP';
+      else if (index === 2) status = 'PODIUM';
+      else if (index < 5) status = 'TOP 5';
+      else status = `${index + 1}eme`;
       
-      row.push(evolution);
+      row.push(status);
       return row;
     });
 
@@ -248,19 +251,22 @@ export const usePdfExport = () => {
         0: { cellWidth: 20, halign: 'center' },
         1: { cellWidth: 35 },
         [headers.length - 2]: { cellWidth: 25, halign: 'center', fontStyle: 'bold' },
-        [headers.length - 1]: { cellWidth: 30, halign: 'center', fontSize: 6 }
+        [headers.length - 1]: { cellWidth: 30, halign: 'center', fontSize: 8 }
       },
       didParseCell: function(data) {
-        // Colorer la colonne évolution
+        // Colorer la colonne statut
         if (data.column.index === headers.length - 1) {
           const cellText = data.cell.text[0];
-          if (cellText && cellText.includes('👑')) {
-            data.cell.styles.fillColor = [255, 215, 0]; // Or pour le leader
-          } else if (cellText && cellText.includes('🥈')) {
+          if (cellText && cellText === 'CHAMPION') {
+            data.cell.styles.fillColor = [255, 215, 0]; // Or pour le champion
+            data.cell.styles.fontStyle = 'bold';
+          } else if (cellText && cellText === 'VICE-CHAMP') {
             data.cell.styles.fillColor = [192, 192, 192]; // Argent
-          } else if (cellText && cellText.includes('🥉')) {
+            data.cell.styles.fontStyle = 'bold';
+          } else if (cellText && cellText === 'PODIUM') {
             data.cell.styles.fillColor = [205, 127, 50]; // Bronze
-          } else if (cellText && cellText.includes('📈')) {
+            data.cell.styles.fontStyle = 'bold';
+          } else if (cellText && cellText === 'TOP 5') {
             data.cell.styles.fillColor = [144, 238, 144]; // Vert clair pour top 5
           }
         }
