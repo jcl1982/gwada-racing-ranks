@@ -5,6 +5,7 @@ import { Mountain, Car } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
+import Logo from '@/components/Logo';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 
@@ -73,17 +74,19 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
     <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white relative`}>
         {/* Logo de la ligue (haut gauche) */}
-        <img 
+        <Logo 
           src="/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png" 
           alt="Logo Ligue" 
           className="absolute top-4 left-4 w-12 h-12 object-contain"
+          removeBackground={true}
         />
         
         {/* Logo de la fédération (haut droite) */}
-        <img 
+        <Logo 
           src="/lovable-uploads/1bf8922d-c9c0-423c-93bd-29ddb120e512.png" 
           alt="Logo Fédération" 
           className="absolute top-4 right-20 w-12 h-12 object-contain"
+          removeBackground={true}
         />
 
         <div className="flex items-center justify-between">
