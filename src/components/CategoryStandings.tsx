@@ -33,10 +33,13 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
 
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
+  
+  // Remplacer le titre pour les courses de montagne
+  const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : title;
 
   const handlePrintPdf = () => {
     // Passe les classements déjà calculés au PDF pour garantir la cohérence
-    exportCategoryStandings(title, races, drivers, championshipYear, standings);
+    exportCategoryStandings(displayTitle, races, drivers, championshipYear, standings);
   };
 
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
@@ -49,7 +52,7 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
     <div className="space-y-6">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
-          {title}
+          {displayTitle}
         </h1>
         <p className="text-xl text-gray-600">Saison {championshipYear}</p>
       </div>
@@ -85,7 +88,7 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon size={32} />
-              <h2 className="text-2xl font-bold">Classement {title}</h2>
+              <h2 className="text-2xl font-bold">Classement {displayTitle}</h2>
             </div>
             <PrintButton onClick={handlePrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30" />
           </div>
