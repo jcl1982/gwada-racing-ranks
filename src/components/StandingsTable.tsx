@@ -179,15 +179,6 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
           </tbody>
         </table>
       </div>
-
-      {/* Pied de page avec texte d'affiliation */}
-      <div className="bg-gray-50 px-4 py-3 border-t">
-        <div className="text-center text-xs text-gray-600 leading-relaxed">
-          <div className="font-semibold">Affilié à la Fédération Française du Sport Automobile sous le code 21</div>
-          <div>Déclaré au J.O N°Y0046 DU 15/11/2014 sous le n°01987</div>
-          <div>Agréée par le Ministère de la Ville, de la Jeunesse et des Sports sous Je N° RNA: W9G2003313</div>
-        </div>
-      </div>
     </Card>
   );
 };
