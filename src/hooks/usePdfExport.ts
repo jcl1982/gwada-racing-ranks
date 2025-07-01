@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
-import { calculateDriverPoints } from '@/utils/championship';
 
 export const usePdfExport = () => {
   const exportGeneralStandings = useCallback((
@@ -22,7 +21,7 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 30, { align: 'center' });
     
-    // Tableau des classements
+    // Tableau des classements - utilise directement les standings passés en paramètre
     const tableData = standings.map(standing => [
       standing.position.toString(),
       standing.driver.name,
@@ -57,7 +56,12 @@ export const usePdfExport = () => {
     title: string,
     races: Race[],
     drivers: Driver[],
-    championshipYear: string
+    championshipYear: string,
+    preCalculatedStandings?: Array<{
+      driver: Driver;
+      points: number;
+      position: number;
+    }>
   ) => {
     const doc = new jsPDF('landscape');
     
@@ -70,17 +74,26 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Saison ${championshipYear}`, 148, 30, { align: 'center' });
     
-    // Calcul des classements
-    const standings = drivers
-      .map(driver => ({
-        driver,
-        points: calculateDriverPoints(driver.id, races)
-      }))
-      .sort((a, b) => b.points - a.points)
-      .map((standing, index) => ({
-        ...standing,
-        position: index + 1
-      }));
+    // Utilise les classements pré-calculés s'ils sont fournis, sinon recalcule
+    let standings;
+    if (preCalculatedStandings) {
+      standings = preCalculatedStandings;
+    } else {
+      // Fallback - calcul des classements si pas fournis
+      standings = drivers
+        .map(driver => {
+          const points = races.reduce((total, race) => {
+            const result = race.results.find(r => r.driverId === driver.id);
+            return total + (result?.points || 0);
+          }, 0);
+          return { driver, points };
+        })
+        .sort((a, b) => b.points - a.points)
+        .map((standing, index) => ({
+          ...standing,
+          position: index + 1
+        }));
+    }
     
     // Construction des en-têtes de colonnes
     const headers = ['Position', 'Pilote'];

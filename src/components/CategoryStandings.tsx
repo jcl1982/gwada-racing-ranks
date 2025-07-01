@@ -33,7 +33,8 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
 
   const handlePrintPdf = () => {
-    exportCategoryStandings(title, races, drivers, championshipYear);
+    // Passe les classements déjà calculés au PDF pour garantir la cohérence
+    exportCategoryStandings(title, races, drivers, championshipYear, standings);
   };
 
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
