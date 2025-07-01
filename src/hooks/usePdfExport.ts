@@ -18,14 +18,25 @@ export const usePdfExport = () => {
 
     const doc = new jsPDF();
     
+    // Logos
+    // Logo de la ligue (haut gauche)
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LOGO LIGUE', 20, 15);
+    doc.rect(15, 10, 30, 8); // Rectangle pour représenter le logo
+    
+    // Logo de la fédération (haut droite)
+    doc.text('LOGO FÉDÉRATION', 155, 15);
+    doc.rect(150, 10, 40, 8); // Rectangle pour représenter le logo
+    
     // Titre
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(championshipTitle, 105, 20, { align: 'center' });
+    doc.text(championshipTitle, 105, 35, { align: 'center' });
     
     doc.setFontSize(14);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Classement Général ${championshipYear}`, 105, 30, { align: 'center' });
+    doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
     // Tableau des classements - IMPORTANT: on respecte l'ordre exact des standings passés
     const tableData = standings
@@ -43,7 +54,7 @@ export const usePdfExport = () => {
     autoTable(doc, {
       head: [['Position', 'Pilote', 'Montagne', 'Rallye', 'Total']],
       body: tableData,
-      startY: 40,
+      startY: 55,
       styles: {
         fontSize: 10,
         cellPadding: 3,
@@ -81,14 +92,25 @@ export const usePdfExport = () => {
 
     const doc = new jsPDF('landscape');
     
+    // Logos
+    // Logo de la ligue (haut gauche)
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('LOGO LIGUE', 20, 15);
+    doc.rect(15, 10, 30, 8); // Rectangle pour représenter le logo
+    
+    // Logo de la fédération (haut droite)
+    doc.text('LOGO FÉDÉRATION', 245, 15);
+    doc.rect(240, 10, 40, 8); // Rectangle pour représenter le logo
+    
     // Titre
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(title, 148, 20, { align: 'center' });
+    doc.text(title, 148, 35, { align: 'center' });
     
     doc.setFontSize(14);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Saison ${championshipYear}`, 148, 30, { align: 'center' });
+    doc.text(`Saison ${championshipYear}`, 148, 45, { align: 'center' });
     
     // Utilise les classements pré-calculés s'ils sont fournis, sinon recalcule
     let standings;
@@ -140,7 +162,7 @@ export const usePdfExport = () => {
     autoTable(doc, {
       head: [headers],
       body: tableData,
-      startY: 40,
+      startY: 55,
       styles: {
         fontSize: 8,
         cellPadding: 2,
