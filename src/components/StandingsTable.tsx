@@ -119,12 +119,6 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                   <div className="text-xs">
                     {race.name}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {new Date(race.date).toLocaleDateString('fr-FR', {
-                      day: '2-digit',
-                      month: '2-digit'
-                    })}
-                  </div>
                 </th>
               ))}
               <th className="text-center py-1 px-1 font-semibold">Total</th>

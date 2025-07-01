@@ -24,7 +24,7 @@ const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
           <div>
             <h3 className="font-medium">{race.name}</h3>
             <p className="text-sm text-gray-600">
-              {new Date(race.date).toLocaleDateString('fr-FR')} • {race.results.length} participants
+              {race.results.length} participants
             </p>
           </div>
         </div>

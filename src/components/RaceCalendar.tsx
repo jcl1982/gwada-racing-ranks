@@ -21,13 +21,6 @@ const RaceCalendar = ({ races }: RaceCalendarProps) => {
               <MapPin size={16} />
               {race.name}
             </h4>
-            <p className="text-gray-600">
-              {new Date(race.date).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
-            </p>
           </div>
         ))}
       </div>

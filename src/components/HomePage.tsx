@@ -172,13 +172,6 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
                     'Course terminée'
                   }
                 </p>
-                <p className="text-xs text-gray-500">
-                  {new Date(race.date).toLocaleDateString('fr-FR', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  })}
-                </p>
               </div>
             ))
           ) : (
