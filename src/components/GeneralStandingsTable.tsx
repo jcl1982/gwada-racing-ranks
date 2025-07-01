@@ -86,16 +86,6 @@ const GeneralStandingsTable = ({
               </th>
               <th className="text-center py-1 px-1 font-semibold">Total</th>
             </tr>
-            <tr>
-              <th className="py-1 px-1"></th>
-              <th className="py-1 px-1"></th>
-              <th className="text-left py-1 px-1 font-semibold text-sm text-gray-600">
-                Classement Général de la LSAG
-              </th>
-              <th className="py-1 px-1"></th>
-              <th className="py-1 px-1"></th>
-              <th className="py-1 px-1"></th>
-            </tr>
           </thead>
           <tbody>
             {standings.map((standing, index) => (
