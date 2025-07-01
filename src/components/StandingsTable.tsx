@@ -5,6 +5,7 @@ import { Mountain, Car } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
+import { useImageExport } from '@/hooks/useImageExport';
 
 interface StandingsTableProps {
   displayTitle: string;
@@ -21,6 +22,7 @@ interface StandingsTableProps {
 }
 
 const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: StandingsTableProps) => {
+  const { exportToImage } = useImageExport();
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
 
@@ -30,15 +32,30 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
     return result?.points || 0;
   };
 
+  const handlePrintImage = () => {
+    console.log('📸 Export image demandé - Classement catégorie:', displayTitle);
+    const filename = displayTitle.toLowerCase().replace(/\s+/g, '-');
+    exportToImage(
+      'category-standings-table',
+      `${filename}-2024`,
+      `${displayTitle} - Saison 2024`
+    );
+  };
+
   return (
-    <Card className="card-glass overflow-hidden">
+    <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Icon size={32} />
             <h2 className="text-2xl font-bold">Classement {displayTitle}</h2>
           </div>
-          <PrintButton onClick={onPrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30" />
+          <PrintButton 
+            onPrintPdf={onPrintPdf} 
+            onPrintImage={handlePrintImage}
+            variant="outline" 
+            className="bg-white/20 hover:bg-white/30 border-white/30" 
+          />
         </div>
       </div>
 

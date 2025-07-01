@@ -7,6 +7,7 @@ import { getPositionBadgeColor } from '@/utils/championship';
 import PositionChange from '@/components/PositionChange';
 import PrintButton from '@/components/PrintButton';
 import { usePdfExport } from '@/hooks/usePdfExport';
+import { useImageExport } from '@/hooks/useImageExport';
 
 interface GeneralStandingsProps {
   standings: ChampionshipStanding[];
@@ -16,6 +17,7 @@ interface GeneralStandingsProps {
 
 const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
   const { exportGeneralStandings } = usePdfExport();
+  const { exportToImage } = useImageExport();
 
   // S'assurer que les standings sont triés par position pour l'affichage
   const sortedStandings = [...standings].sort((a, b) => a.position - b.position);
@@ -30,6 +32,15 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     exportGeneralStandings(sortedStandings, championshipTitle, championshipYear);
   };
 
+  const handlePrintImage = () => {
+    console.log('📸 Export image demandé - Classement général');
+    exportToImage(
+      'general-standings-table',
+      `classement-general-${championshipYear}`,
+      `${championshipTitle} - Classement Général ${championshipYear}`
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -39,14 +50,19 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
         <p className="text-xl text-gray-600">Classement Général {championshipYear}</p>
       </div>
 
-      <Card className="card-glass overflow-hidden">
+      <Card className="card-glass overflow-hidden" id="general-standings-table">
         <div className="gradient-ocean p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Trophy size={32} />
               <h2 className="text-2xl font-bold">Classement Général</h2>
             </div>
-            <PrintButton onClick={handlePrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30" />
+            <PrintButton 
+              onPrintPdf={handlePrintPdf} 
+              onPrintImage={handlePrintImage}
+              variant="outline" 
+              className="bg-white/20 hover:bg-white/30 border-white/30" 
+            />
           </div>
         </div>
 
