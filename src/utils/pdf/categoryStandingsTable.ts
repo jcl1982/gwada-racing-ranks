@@ -42,64 +42,81 @@ export const createCategoryStandingsTable = (
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {
       fontSize: PDF_STYLES.fonts.normalSize,
-      cellPadding: PDF_STYLES.spacing.cellPadding,
-      lineColor: PDF_STYLES.colors.gray200,
+      cellPadding: 10,
+      lineColor: [229, 231, 235],
       lineWidth: 0.5,
-      textColor: PDF_STYLES.colors.gray900,
+      textColor: [51, 51, 51],
       overflow: 'linebreak'
     },
     headStyles: {
-      fillColor: PDF_STYLES.colors.oceanBlue, // Style gradient-ocean
-      textColor: [255, 255, 255],
+      fillColor: [248, 250, 252],
+      textColor: [71, 85, 105],
       fontStyle: 'bold',
-      fontSize: PDF_STYLES.fonts.normalSize + 1,
-      halign: 'center',
+      fontSize: PDF_STYLES.fonts.normalSize,
+      halign: 'left',
       valign: 'middle',
-      cellPadding: 8,
-      minCellHeight: 16
+      cellPadding: 12,
+      minCellHeight: 18
     },
     alternateRowStyles: {
-      fillColor: PDF_STYLES.colors.backgroundLight // Même alternance que le site
+      fillColor: [255, 255, 255]
+    },
+    rowStyles: {
+      fillColor: [249, 250, 251],
+      minCellHeight: 16
     },
     columnStyles: {
       0: { 
-        cellWidth: 25, 
-        halign: 'center', 
-        fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize + 1
+        cellWidth: 20, 
+        halign: 'center'
       },
       1: { 
         cellWidth: 45,
         fontSize: PDF_STYLES.fonts.normalSize + 1,
-        cellPadding: 6,
         fontStyle: 'bold'
       },
       [headers.length - 1]: { 
-        cellWidth: 32, 
+        cellWidth: 25, 
         halign: 'center', 
-        fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize + 2,
-        textColor: PDF_STYLES.colors.primary
+        fontStyle: 'bold'
       }
     },
     didParseCell: function(data) {
-      // Styling pour les positions (comme sur le site)
-      if (data.section === 'body' && data.column.index === 0) {
-        const position = parseInt(data.cell.text[0]);
+      const position = parseInt(data.row.raw[0]);
+      
+      // Style pour la colonne position avec badges colorés
+      if (data.column.index === 0) {
+        data.cell.styles.halign = 'center';
+        data.cell.styles.valign = 'middle';
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize;
+        data.cell.styles.textColor = [255, 255, 255];
+        
         if (position === 1) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.gold;
-          data.cell.styles.textColor = [255, 255, 255];
+          data.cell.styles.fillColor = [245, 158, 11]; // Orange/Gold
         } else if (position === 2) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.silver;
-          data.cell.styles.textColor = [255, 255, 255];
+          data.cell.styles.fillColor = [107, 114, 128]; // Gris
         } else if (position === 3) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
-          data.cell.styles.textColor = [255, 255, 255];
+          data.cell.styles.fillColor = [180, 83, 9]; // Bronze
         } else if (position <= 5) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.blueBadge;
-          data.cell.styles.textColor = [0, 0, 0];
+          data.cell.styles.fillColor = [59, 130, 246]; // Bleu
+        } else {
+          data.cell.styles.fillColor = [107, 114, 128]; // Gris par défaut
         }
       }
+      
+      // Style pour la colonne Total
+      if (data.column.index === headers.length - 1) {
+        data.cell.styles.halign = 'center';
+        data.cell.styles.fillColor = [245, 158, 11]; // Orange
+        data.cell.styles.textColor = [255, 255, 255];
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize + 1;
+      }
+      
+      // Bordures plus fines
+      data.cell.styles.lineWidth = 0.5;
+      data.cell.styles.lineColor = [229, 231, 235];
     },
     margin: { 
       top: PDF_STYLES.spacing.marginVertical, 
@@ -107,7 +124,7 @@ export const createCategoryStandingsTable = (
       right: PDF_STYLES.spacing.marginHorizontal 
     },
     theme: 'grid',
-    tableLineColor: PDF_STYLES.colors.gray200,
+    tableLineColor: [229, 231, 235],
     tableLineWidth: 0.5
   });
 };

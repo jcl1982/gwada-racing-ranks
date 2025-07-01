@@ -1,58 +1,52 @@
 
 export const PDF_STYLES = {
   colors: {
-    // Couleurs principales du site (converties en RGB)
-    primary: [58, 131, 255] as [number, number, number], // hsl(220 91% 52%) -> bleu principal
-    secondary: [255, 206, 84] as [number, number, number], // hsl(45 93% 47%) -> jaune secondaire
-    accent: [239, 68, 68] as [number, number, number], // hsl(0 84% 60%) -> rouge accent
+    // Couleurs modernes basées sur l'image
+    primary: [59, 130, 246] as [number, number, number], // Bleu moderne
+    secondary: [245, 158, 11] as [number, number, number], // Orange/Gold
+    accent: [239, 68, 68] as [number, number, number], // Rouge
     
-    // Dégradés Caribbean (bleu -> jaune -> rouge)
-    gradientBlue: [59, 130, 246] as [number, number, number], // blue-500
-    gradientYellow: [245, 158, 11] as [number, number, number], // yellow-500
-    gradientRed: [239, 68, 68] as [number, number, number], // red-500
+    // Couleurs de badges position (comme dans l'image)
+    gold: [245, 158, 11] as [number, number, number], // Orange/Gold pour 1er
+    silver: [107, 114, 128] as [number, number, number], // Gris pour 2ème
+    bronze: [180, 83, 9] as [number, number, number], // Bronze pour 3ème
+    blue: [59, 130, 246] as [number, number, number], // Bleu pour top 5
     
-    // Dégradé Ocean (bleu -> cyan)
-    oceanBlue: [37, 99, 235] as [number, number, number], // blue-600
-    oceanCyan: [6, 182, 212] as [number, number, number], // cyan-500
+    // Couleurs de fond propres
+    backgroundLight: [249, 250, 251] as [number, number, number],
+    backgroundWhite: [255, 255, 255] as [number, number, number],
+    headerBg: [248, 250, 252] as [number, number, number],
     
-    // Couleurs de fond du site
-    backgroundLight: [239, 245, 255] as [number, number, number], // blue-50
-    backgroundYellow: [254, 252, 232] as [number, number, number], // yellow-50
-    backgroundRed: [254, 242, 242] as [number, number, number], // red-50
+    // Couleurs pour les badges points
+    montagneLight: [220, 252, 231] as [number, number, number], // Vert clair
+    montagneDark: [21, 128, 61] as [number, number, number], // Vert foncé
+    rallyeLight: [219, 234, 254] as [number, number, number], // Bleu clair
+    rallyeDark: [30, 64, 175] as [number, number, number], // Bleu foncé
     
-    // Couleurs card-glass
-    cardGlass: [255, 255, 255] as [number, number, number], // bg-white/90
-    cardBorder: [255, 255, 255] as [number, number, number], // border-white/20
-    
-    // Couleurs de podium avec style moderne
-    gold: [245, 158, 11] as [number, number, number], // yellow-500 (style site)
-    silver: [148, 163, 184] as [number, number, number], // slate-400
-    bronze: [194, 120, 3] as [number, number, number], // yellow-700
-    
-    // Couleurs d'état modernes
-    success: [34, 197, 94] as [number, number, number], // green-500
-    warning: [245, 158, 11] as [number, number, number], // yellow-500
-    danger: [239, 68, 68] as [number, number, number], // red-500
+    // Couleurs d'évolution
+    success: [34, 197, 94] as [number, number, number], // Vert pour +
+    danger: [239, 68, 68] as [number, number, number], // Rouge pour -
+    warning: [245, 158, 11] as [number, number, number], // Orange pour NEW
     
     // Couleurs neutres modernes
     gray50: [248, 250, 252] as [number, number, number],
     gray100: [241, 245, 249] as [number, number, number],
-    gray200: [226, 232, 240] as [number, number, number],
+    gray200: [229, 231, 235] as [number, number, number],
+    gray400: [156, 163, 175] as [number, number, number],
     gray600: [71, 85, 105] as [number, number, number],
+    gray700: [51, 65, 85] as [number, number, number],
     gray900: [15, 23, 42] as [number, number, number],
     
-    // Couleurs spécifiques aux badges du site
-    greenBadge: [220, 252, 231] as [number, number, number], // green-50
-    greenBorder: [187, 247, 208] as [number, number, number], // green-200
-    blueBadge: [219, 234, 254] as [number, number, number], // blue-50
-    blueBorder: [147, 197, 253] as [number, number, number] // blue-300
+    // Dégradés pour les en-têtes
+    oceanBlue: [59, 130, 246] as [number, number, number],
+    oceanCyan: [6, 182, 212] as [number, number, number]
   },
   fonts: {
-    titleSize: 24, // Plus grand comme sur le site
-    subtitleSize: 20,
-    normalSize: 11,
-    smallSize: 9,
-    legendSize: 9
+    titleSize: 22,
+    subtitleSize: 18,
+    normalSize: 10,
+    smallSize: 8,
+    legendSize: 8
   },
   positions: {
     logoLeft: { x: 20, y: 15, width: 30, height: 30 },
@@ -63,9 +57,9 @@ export const PDF_STYLES = {
     tableStart: { y: 75 }
   },
   spacing: {
-    sectionGap: 25,
-    rowHeight: 14,
-    cellPadding: 8,
+    sectionGap: 20,
+    rowHeight: 16,
+    cellPadding: 10,
     marginHorizontal: 20,
     marginVertical: 15
   }
@@ -73,11 +67,11 @@ export const PDF_STYLES = {
 
 export const getPositionEvolutionIndicator = (positionChange: number, previousPosition?: number): string => {
   if (positionChange > 0) {
-    return `+${positionChange}`;
+    return `↑ +${positionChange}`;
   } else if (positionChange < 0) {
-    return `${positionChange}`;
+    return `↓ ${positionChange}`;
   } else if (previousPosition) {
-    return '=';
+    return '—';
   } else {
     return 'NEW';
   }
@@ -99,7 +93,7 @@ export const getPositionRowStyle = (position: number) => {
   } else if (position === 3) {
     return { fillColor: PDF_STYLES.colors.bronze, textColor: [255, 255, 255] };
   } else if (position <= 5) {
-    return { fillColor: PDF_STYLES.colors.blueBadge, textColor: [0, 0, 0] };
+    return { fillColor: PDF_STYLES.colors.blue, textColor: [255, 255, 255] };
   }
   return null;
 };

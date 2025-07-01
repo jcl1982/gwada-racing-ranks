@@ -28,14 +28,10 @@ export const addLogosToDoc = (doc: jsPDF, isLandscape: boolean = false) => {
 };
 
 export const addTitleToDoc = (doc: jsPDF, title: string, subtitle: string, centerX: number = 105) => {
-  // Fond dégradé pour le titre (simulation du gradient caribbean)
-  doc.setFillColor(PDF_STYLES.colors.primary[0], PDF_STYLES.colors.primary[1], PDF_STYLES.colors.primary[2]);
-  doc.roundedRect(centerX - 80, PDF_STYLES.positions.title.y - 8, 160, 25, 3, 3, 'F');
-  
-  // Titre principal avec style du site
+  // Titre principal moderne et épuré
   doc.setFontSize(PDF_STYLES.fonts.titleSize);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(255, 255, 255); // Texte blanc sur fond coloré
+  doc.setTextColor(PDF_STYLES.colors.gray900[0], PDF_STYLES.colors.gray900[1], PDF_STYLES.colors.gray900[2]);
   doc.text(title, centerX, PDF_STYLES.positions.title.y, { align: 'center' });
   
   // Sous-titre avec style moderne
@@ -44,8 +40,8 @@ export const addTitleToDoc = (doc: jsPDF, title: string, subtitle: string, cente
   doc.setTextColor(PDF_STYLES.colors.gray600[0], PDF_STYLES.colors.gray600[1], PDF_STYLES.colors.gray600[2]);
   doc.text(subtitle, centerX, PDF_STYLES.positions.subtitle.y, { align: 'center' });
   
-  // Ligne de séparation avec couleur du site
-  doc.setDrawColor(PDF_STYLES.colors.secondary[0], PDF_STYLES.colors.secondary[1], PDF_STYLES.colors.secondary[2]);
-  doc.setLineWidth(2);
-  doc.line(centerX - 60, PDF_STYLES.positions.subtitle.y + 8, centerX + 60, PDF_STYLES.positions.subtitle.y + 8);
+  // Ligne de séparation subtile
+  doc.setDrawColor(PDF_STYLES.colors.gray200[0], PDF_STYLES.colors.gray200[1], PDF_STYLES.colors.gray200[2]);
+  doc.setLineWidth(1);
+  doc.line(centerX - 80, PDF_STYLES.positions.subtitle.y + 8, centerX + 80, PDF_STYLES.positions.subtitle.y + 8);
 };
