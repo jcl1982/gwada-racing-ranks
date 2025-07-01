@@ -1,4 +1,3 @@
-
 export const PDF_STYLES = {
   colors: {
     // Couleurs modernes et élégantes
@@ -72,13 +71,25 @@ export const PDF_STYLES = {
 
 export const getPositionEvolutionIndicator = (positionChange: number, previousPosition?: number): string => {
   if (positionChange > 0) {
-    return `^ +${positionChange}`;
+    return `↑ +${positionChange}`;
   } else if (positionChange < 0) {
-    return `v ${positionChange}`;
+    return `↓ ${positionChange}`;
   } else if (previousPosition) {
-    return '=';
+    return '—';
   } else {
     return 'NEW';
+  }
+};
+
+export const getEvolutionColor = (positionChange: number, previousPosition?: number): [number, number, number] => {
+  if (positionChange > 0) {
+    return PDF_STYLES.colors.success; // Vert pour progression
+  } else if (positionChange < 0) {
+    return PDF_STYLES.colors.danger; // Rouge pour régression
+  } else if (previousPosition) {
+    return PDF_STYLES.colors.gray600; // Gris pour pas de changement
+  } else {
+    return PDF_STYLES.colors.primary; // Bleu pour nouveau
   }
 };
 
