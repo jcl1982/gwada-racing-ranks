@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -153,20 +152,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                   </td>
                   {races.map(race => {
                     const points = getDriverPointsForRace(standing.driver.id, race);
-                    const result = race.results.find(r => r.driverId === standing.driver.id);
                     return (
                       <td key={race.id} className="py-1 px-1 text-center">
                         {points > 0 ? (
-                          <div className="text-center">
-                            <Badge variant="outline" className="text-xs mb-1">
-                              {points} pts
-                            </Badge>
-                            {result && (
-                              <div className="text-xs text-gray-500">
-                                P{result.position}
-                              </div>
-                            )}
-                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {points} pts
+                          </Badge>
                         ) : (
                           <span className="text-gray-400 text-xs">-</span>
                         )}

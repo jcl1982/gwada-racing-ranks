@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -68,22 +69,22 @@ const GeneralStandingsTable = ({
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-0.5 px-1 font-semibold">Position</th>
-              <th className="text-left py-0.5 px-1 font-semibold">Évolution</th>
-              <th className="text-left py-0.5 px-1 font-semibold">Pilote</th>
-              <th className="text-center py-0.5 px-1 font-semibold">
+              <th className="text-left py-1 px-1 font-semibold">Position</th>
+              <th className="text-left py-1 px-1 font-semibold">Évolution</th>
+              <th className="text-left py-1 px-1 font-semibold">Pilote</th>
+              <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
                   <Mountain size={16} />
                   <span>Montagne</span>
                 </div>
               </th>
-              <th className="text-center py-0.5 px-1 font-semibold">
+              <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
                   <Car size={16} />
                   <span>Rallye</span>
                 </div>
               </th>
-              <th className="text-center py-0.5 px-1 font-semibold">Total</th>
+              <th className="text-center py-1 px-1 font-semibold">Total</th>
             </tr>
           </thead>
           <tbody>
@@ -94,30 +95,30 @@ const GeneralStandingsTable = ({
                   index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
                 } ${standing.position === 1 ? 'champion-row' : ''}`}
               >
-                <td className="py-0.5 px-1">
+                <td className="py-1 px-1">
                   <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
                     {standing.position}
                   </Badge>
                 </td>
-                <td className="py-0.5 px-1">
+                <td className="py-1 px-1">
                   <PositionChange change={standing.positionChange} />
                 </td>
-                <td className="py-0.5 px-1">
+                <td className="py-1 px-1">
                   <div className="font-semibold text-gray-900 unicode-enhanced">
                     {standing.driver.name}
                   </div>
                 </td>
-                <td className="py-0.5 px-1 text-center">
+                <td className="py-1 px-1 text-center">
                   <Badge variant="outline" className="bg-green-50 border-green-200">
                     {standing.montagnePoints} pts
                   </Badge>
                 </td>
-                <td className="py-0.5 px-1 text-center">
+                <td className="py-1 px-1 text-center">
                   <Badge variant="outline" className="bg-blue-50 border-blue-200">
                     {standing.rallyePoints} pts
                   </Badge>
                 </td>
-                <td className="py-0.5 px-1 text-center">
+                <td className="py-1 px-1 text-center">
                   <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold">
                     {standing.totalPoints} pts
                   </Badge>
@@ -132,3 +133,4 @@ const GeneralStandingsTable = ({
 };
 
 export default GeneralStandingsTable;
+
