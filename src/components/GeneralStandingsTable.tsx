@@ -119,7 +119,7 @@ const GeneralStandingsTable = ({
                   </Badge>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-bold">
+                  <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
                     {standing.totalPoints} pts
                   </Badge>
                 </td>
@@ -133,4 +133,3 @@ const GeneralStandingsTable = ({
 };
 
 export default GeneralStandingsTable;
-

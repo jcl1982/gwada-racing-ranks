@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -165,7 +166,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     );
                   })}
                   <td className="py-1 px-1 text-center">
-                    <Badge className={`bg-gradient-to-r ${gradientClass} text-white font-bold`}>
+                    <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
                       {standing.points} pts
                     </Badge>
                   </td>
