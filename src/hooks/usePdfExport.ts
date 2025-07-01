@@ -1,9 +1,8 @@
-
 import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
-import { calculateDriverPoints, calculateChampionshipStandings } from '@/utils/championship';
+import { calculateDriverPoints } from '@/utils/championship';
 
 export const usePdfExport = () => {
   // Fonction pour convertir une image en base64
@@ -54,17 +53,29 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
-    // Utiliser directement les standings fournis (déjà triés et calculés correctement)
-    const tableData = standings.map(standing => [
-      standing.position.toString(),
-      standing.driver.name,
-      standing.montagnePoints.toString(),
-      standing.rallyePoints.toString(),
-      standing.totalPoints.toString()
-    ]);
+    // Tableau des classements avec évolution
+    const tableData = standings.map(standing => {
+      let evolution = '-';
+      if (standing.positionChange > 0) {
+        evolution = `↑${standing.positionChange}`;
+      } else if (standing.positionChange < 0) {
+        evolution = `↓${Math.abs(standing.positionChange)}`;
+      } else if (standing.previousPosition) {
+        evolution = '=';
+      }
+      
+      return [
+        standing.position.toString(),
+        evolution,
+        standing.driver.name,
+        standing.montagnePoints.toString(),
+        standing.rallyePoints.toString(),
+        standing.totalPoints.toString()
+      ];
+    });
     
     autoTable(doc, {
-      head: [['Position', 'Pilote', 'Montagne', 'Rallye', 'Total']],
+      head: [['Position', 'Évolution', 'Pilote', 'Montagne', 'Rallye', 'Total']],
       body: tableData,
       startY: 55,
       styles: {
@@ -78,6 +89,12 @@ export const usePdfExport = () => {
       },
       alternateRowStyles: {
         fillColor: [245, 245, 245]
+      },
+      columnStyles: {
+        1: { 
+          cellWidth: 20,
+          halign: 'center'
+        }
       }
     });
     
@@ -116,7 +133,7 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Saison ${championshipYear}`, 148, 45, { align: 'center' });
     
-    // Utiliser la même logique de calcul que sur le site web
+    // Calcul des classements
     const standings = drivers
       .map(driver => ({
         driver,
