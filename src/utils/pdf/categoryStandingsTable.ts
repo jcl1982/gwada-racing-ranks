@@ -1,5 +1,4 @@
 
-
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
@@ -43,8 +42,12 @@ export const createCategoryStandingsTable = (
 
   console.log('📄 Données du tableau PDF (catégorie):', tableData);
   
+  // Mise à jour de l'en-tête pour remplacer "Position" par "Pos"
+  const updatedHeaders = [...headers];
+  updatedHeaders[0] = 'Pos';
+  
   autoTable(doc, {
-    head: [headers],
+    head: [updatedHeaders],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
@@ -70,4 +73,3 @@ export const createCategoryStandingsTable = (
     }
   });
 };
-
