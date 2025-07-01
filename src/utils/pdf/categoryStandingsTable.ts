@@ -2,6 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
+import { getPositionEvolutionIndicator } from '../pdfStyles';
 
 export const createCategoryStandingsTable = (
   doc: jsPDF,
@@ -10,11 +11,17 @@ export const createCategoryStandingsTable = (
     driver: Driver;
     points: number;
     position: number;
+    positionChange?: number;
+    previousPosition?: number;
   }>,
   races: Race[]
 ) => {
   const tableData = standings.map((standing) => {
-    const row = [standing.position.toString(), standing.driver.name];
+    const evolutionIndicator = getPositionEvolutionIndicator(
+      standing.positionChange || 0, 
+      standing.previousPosition
+    );
+    const row = [standing.position.toString(), evolutionIndicator, standing.driver.name];
     
     let previousTotal = 0;
     races.forEach(race => {

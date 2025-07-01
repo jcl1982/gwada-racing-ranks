@@ -42,6 +42,8 @@ export const usePdfExport = () => {
       driver: Driver;
       points: number;
       position: number;
+      positionChange?: number;
+      previousPosition?: number;
     }>
   ) => {
     console.log('🏁 Export PDF - Classement Catégorie:', title, preCalculatedStandings?.map(s => ({
@@ -70,7 +72,12 @@ export const usePdfExport = () => {
             const result = race.results.find(r => r.driverId === driver.id);
             return total + (result?.points || 0);
           }, 0);
-          return { driver, points };
+          return { 
+            driver, 
+            points, 
+            positionChange: 0, 
+            previousPosition: undefined 
+          };
         })
         .sort((a, b) => b.points - a.points)
         .map((standing, index) => ({
@@ -80,7 +87,7 @@ export const usePdfExport = () => {
     }
     
     // Construction des en-têtes de colonnes
-    const headers = ['Position', 'Pilote'];
+    const headers = ['Position', 'Évol.', 'Pilote'];
     races.forEach(race => {
       headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
     });

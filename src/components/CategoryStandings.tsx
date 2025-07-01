@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
@@ -26,7 +27,8 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
     .map((standing, index) => ({
       ...standing,
       position: index + 1,
-      positionChange: 0
+      positionChange: 0,
+      previousPosition: undefined
     }));
 
   const Icon = type === 'montagne' ? Mountain : Car;
