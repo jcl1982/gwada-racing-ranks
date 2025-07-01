@@ -26,11 +26,11 @@ export const usePdfExport = () => {
 
   // Fonction pour obtenir les couleurs de badge selon la position
   const getPositionColors = (position: number) => {
-    if (position === 1) return { bg: [255, 215, 0], text: [0, 0, 0] }; // Or
-    if (position === 2) return { bg: [192, 192, 192], text: [0, 0, 0] }; // Argent
-    if (position === 3) return { bg: [205, 127, 50], text: [255, 255, 255] }; // Bronze
-    if (position <= 10) return { bg: [34, 197, 94], text: [255, 255, 255] }; // Vert
-    return { bg: [107, 114, 128], text: [255, 255, 255] }; // Gris
+    if (position === 1) return { bg: [255, 215, 0] as [number, number, number], text: [0, 0, 0] as [number, number, number] }; // Or
+    if (position === 2) return { bg: [192, 192, 192] as [number, number, number], text: [0, 0, 0] as [number, number, number] }; // Argent
+    if (position === 3) return { bg: [205, 127, 50] as [number, number, number], text: [255, 255, 255] as [number, number, number] }; // Bronze
+    if (position <= 10) return { bg: [34, 197, 94] as [number, number, number], text: [255, 255, 255] as [number, number, number] }; // Vert
+    return { bg: [107, 114, 128] as [number, number, number], text: [255, 255, 255] as [number, number, number] }; // Gris
   };
 
   const exportGeneralStandings = useCallback(async (
@@ -96,47 +96,47 @@ export const usePdfExport = () => {
       styles: {
         fontSize: 10,
         cellPadding: 4,
-        lineColor: [229, 231, 235],
+        lineColor: [229, 231, 235] as [number, number, number],
         lineWidth: 0.1,
       },
       headStyles: {
-        fillColor: [41, 128, 185],
-        textColor: [255, 255, 255],
+        fillColor: [41, 128, 185] as [number, number, number],
+        textColor: [255, 255, 255] as [number, number, number],
         fontStyle: 'bold',
         fontSize: 11,
       },
       alternateRowStyles: {
-        fillColor: [248, 250, 252]
+        fillColor: [248, 250, 252] as [number, number, number]
       },
       columnStyles: {
-        0: { 
+        '0': { 
           cellWidth: 20,
           halign: 'center',
           fontStyle: 'bold'
         },
-        1: { 
+        '1': { 
           cellWidth: 20,
           halign: 'center',
-          textColor: [34, 197, 94] // Vert pour les flèches
+          textColor: [34, 197, 94] as [number, number, number] // Vert pour les flèches
         },
-        2: {
+        '2': {
           cellWidth: 60,
           fontStyle: 'bold'
         },
-        3: {
+        '3': {
           halign: 'center',
-          fillColor: [240, 253, 244], // Vert clair pour montagne
-          textColor: [21, 128, 61]
+          fillColor: [240, 253, 244] as [number, number, number], // Vert clair pour montagne
+          textColor: [21, 128, 61] as [number, number, number]
         },
-        4: {
+        '4': {
           halign: 'center',
-          fillColor: [239, 246, 255], // Bleu clair pour rallye
-          textColor: [29, 78, 216]
+          fillColor: [239, 246, 255] as [number, number, number], // Bleu clair pour rallye
+          textColor: [29, 78, 216] as [number, number, number]
         },
-        5: {
+        '5': {
           halign: 'center',
-          fillColor: [254, 240, 138], // Jaune pour total
-          textColor: [180, 83, 9],
+          fillColor: [254, 240, 138] as [number, number, number], // Jaune pour total
+          textColor: [180, 83, 9] as [number, number, number],
           fontStyle: 'bold'
         }
       },
@@ -262,9 +262,9 @@ export const usePdfExport = () => {
     
     // Couleur selon le type de course
     const isRally = title.toLowerCase().includes('rallye');
-    const headerColor = isRally ? [29, 78, 216] : [34, 197, 94]; // Bleu pour rallye, vert pour montagne
-    const totalBgColor = isRally ? [239, 246, 255] : [240, 253, 244];
-    const totalTextColor = isRally ? [29, 78, 216] : [21, 128, 61];
+    const headerColor: [number, number, number] = isRally ? [29, 78, 216] : [34, 197, 94]; // Bleu pour rallye, vert pour montagne
+    const totalBgColor: [number, number, number] = isRally ? [239, 246, 255] : [240, 253, 244];
+    const totalTextColor: [number, number, number] = isRally ? [29, 78, 216] : [21, 128, 61];
     
     autoTable(doc, {
       head: [headers],
@@ -273,38 +273,38 @@ export const usePdfExport = () => {
       styles: {
         fontSize: 8,
         cellPadding: 3,
-        lineColor: [229, 231, 235],
+        lineColor: [229, 231, 235] as [number, number, number],
         lineWidth: 0.1,
         valign: 'middle'
       },
       headStyles: {
         fillColor: headerColor,
-        textColor: [255, 255, 255],
+        textColor: [255, 255, 255] as [number, number, number],
         fontStyle: 'bold',
         fontSize: 9
       },
       alternateRowStyles: {
-        fillColor: [248, 250, 252]
+        fillColor: [248, 250, 252] as [number, number, number]
       },
       columnStyles: {
-        0: { 
+        '0': { 
           cellWidth: 15,
           halign: 'center',
           fontStyle: 'bold'
         },
-        1: { 
+        '1': { 
           cellWidth: 40,
           fontStyle: 'bold'
         },
-        [headers.length - 2]: { // Colonne Total
+        [`${headers.length - 2}`]: { // Colonne Total
           halign: 'center',
           fillColor: totalBgColor,
           textColor: totalTextColor,
           fontStyle: 'bold'
         },
-        [headers.length - 1]: { // Colonne Écart
+        [`${headers.length - 1}`]: { // Colonne Écart
           halign: 'center',
-          textColor: [107, 114, 128]
+          textColor: [107, 114, 128] as [number, number, number]
         }
       },
       didParseCell: function(data) {
@@ -319,8 +319,8 @@ export const usePdfExport = () => {
         // Colonnes des courses individuelles
         if (data.column.index >= 2 && data.column.index < headers.length - 2 && data.section === 'body') {
           if (data.cell.text[0] !== '-') {
-            data.cell.styles.fillColor = [249, 250, 251];
-            data.cell.styles.textColor = [75, 85, 99];
+            data.cell.styles.fillColor = [249, 250, 251] as [number, number, number];
+            data.cell.styles.textColor = [75, 85, 99] as [number, number, number];
             data.cell.styles.halign = 'center';
           }
         }
@@ -332,7 +332,7 @@ export const usePdfExport = () => {
     
     if (standings.length >= 3) {
       const podiumPositions = ['🥇', '🥈', '🥉'];
-      const podiumColors = [[255, 215, 0], [192, 192, 192], [205, 127, 50]];
+      const podiumColors: [number, number, number][] = [[255, 215, 0], [192, 192, 192], [205, 127, 50]];
       
       for (let i = 0; i < 3 && i < standings.length; i++) {
         const x = 50 + (i * 80);
