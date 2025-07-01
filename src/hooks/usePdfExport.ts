@@ -3,7 +3,9 @@ import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
 import { addLogosToDoc, addTitleToDoc } from '@/utils/pdfLogos';
-import { createGeneralStandingsTable, createCategoryStandingsTable, addLegendToDoc } from '@/utils/pdfTables';
+import { createGeneralStandingsTable } from '@/utils/pdf/generalStandingsTable';
+import { createCategoryStandingsTable } from '@/utils/pdf/categoryStandingsTable';
+import { addLegendToDoc } from '@/utils/pdf/pdfLegend';
 
 export const usePdfExport = () => {
   const exportGeneralStandings = useCallback((
