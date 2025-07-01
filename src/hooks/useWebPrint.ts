@@ -51,8 +51,12 @@ export const useWebPrint = () => {
                     margin: 0; 
                     padding: 20px; 
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                    font-size: calc(1rem - 3pt);
                     -webkit-font-smoothing: antialiased;
                     -moz-osx-font-smoothing: grayscale;
+                  }
+                  * {
+                    font-size: calc(1em - 3pt) !important;
                   }
                   .no-print { display: none !important; }
                   * {
@@ -91,7 +95,7 @@ export const useWebPrint = () => {
       // Restaurer le titre original
       document.title = originalTitle;
       
-      console.log('✅ Impression web lancée avec support Unicode');
+      console.log('✅ Impression web lancée avec police réduite de 3 points');
     } catch (error) {
       console.error('Erreur lors de l\'impression web:', error);
     }
@@ -145,6 +149,7 @@ export const useWebPrint = () => {
                     margin: 0; 
                     padding: 20px; 
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+                    font-size: calc(1rem - 3pt);
                     font-variant-ligatures: common-ligatures;
                     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
                     text-rendering: optimizeLegibility;
@@ -152,6 +157,9 @@ export const useWebPrint = () => {
                     -moz-osx-font-smoothing: grayscale;
                     unicode-bidi: embed;
                     direction: ltr;
+                  }
+                  * {
+                    font-size: calc(1em - 3pt) !important;
                   }
                   .no-print { display: none !important; }
                   * {
@@ -191,7 +199,7 @@ export const useWebPrint = () => {
       }
 
       document.title = originalTitle;
-      console.log('✅ Impression Unicode optimisée lancée');
+      console.log('✅ Impression Unicode optimisée lancée avec police réduite');
     } catch (error) {
       console.error('Erreur lors de l\'impression Unicode:', error);
     }
