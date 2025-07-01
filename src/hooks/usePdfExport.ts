@@ -5,7 +5,6 @@ import { ChampionshipStanding, Race, Driver } from '@/types/championship';
 import { addLogosToDoc, addTitleToDoc } from '@/utils/pdfLogos';
 import { createGeneralStandingsTable } from '@/utils/pdf/generalStandingsTable';
 import { createCategoryStandingsTable } from '@/utils/pdf/categoryStandingsTable';
-import { addLegendToDoc } from '@/utils/pdf/pdfLegend';
 
 export const usePdfExport = () => {
   const exportGeneralStandings = useCallback((
@@ -29,9 +28,6 @@ export const usePdfExport = () => {
     
     // Création du tableau
     createGeneralStandingsTable(doc, standings);
-    
-    // Ajout de la légende
-    addLegendToDoc(doc);
     
     // Sauvegarde
     doc.save(`classement-general-${championshipYear}.pdf`);
@@ -83,13 +79,12 @@ export const usePdfExport = () => {
         }));
     }
     
-    // Construction des en-têtes de colonnes (suppression de la colonne Statut)
+    // Construction des en-têtes de colonnes
     const headers = ['Position', 'Pilote'];
     races.forEach(race => {
       headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
     });
     headers.push('Total');
-    // Suppression de headers.push('Statut');
     
     // Création du tableau
     createCategoryStandingsTable(doc, headers, standings, races);
