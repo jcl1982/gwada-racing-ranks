@@ -34,8 +34,8 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
   
-  // Remplacer le titre pour les courses de montagne
-  const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : title;
+  // Remplacer les titres pour les deux catégories
+  const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : 'Trophée des Rallyes';
 
   const handlePrintPdf = () => {
     // Passe les classements déjà calculés au PDF pour garantir la cohérence
