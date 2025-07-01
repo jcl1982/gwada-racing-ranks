@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -45,11 +46,14 @@ const GeneralStandingsTable = ({
           removeBackground={false}
         />
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 ml-16">
+        <div className="flex items-center justify-center">
+          <div className="flex items-center gap-3">
             <Trophy size={32} />
             <h2 className="text-2xl font-bold">Classement Général</h2>
           </div>
+        </div>
+        
+        <div className="absolute top-6 right-4">
           <PrintButton 
             onPrintPdf={onPrintPdf} 
             onPrintImage={onPrintImage}
