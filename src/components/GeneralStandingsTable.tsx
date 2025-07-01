@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -32,16 +31,16 @@ const GeneralStandingsTable = ({
       <div className="gradient-ocean p-6 text-white relative">
         {/* Logo de la ligue (haut gauche) */}
         <Logo 
-          src="/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png" 
-          alt="Logo Ligue" 
+          src="/lovable-uploads/a51e24a3-77b9-4a08-a1b1-c446ea39eb10.png" 
+          alt="Logo Ligue Sport Automobile Guadeloupe" 
           className="absolute top-4 left-4 w-12 h-12 object-contain"
           removeBackground={true}
         />
         
         {/* Logo de la fédération (haut droite) */}
         <Logo 
-          src="/lovable-uploads/1bf8922d-c9c0-423c-93bd-29ddb120e512.png" 
-          alt="Logo Fédération" 
+          src="/lovable-uploads/b4f87f86-04ce-4966-aca2-cd5ab7745508.png" 
+          alt="Logo FFSA" 
           className="absolute top-4 right-20 w-12 h-12 object-contain"
           removeBackground={true}
         />

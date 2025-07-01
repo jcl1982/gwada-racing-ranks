@@ -27,7 +27,7 @@ const Logo = ({ src, alt, className, removeBackground = true }: LogoProps) => {
     <img 
       src={imageSrc}
       alt={alt}
-      className={`${className} ${isProcessing ? 'opacity-50' : ''}`}
+      className={`${className} ${isProcessing ? 'opacity-50' : ''} rounded-lg`}
     />
   );
 };
