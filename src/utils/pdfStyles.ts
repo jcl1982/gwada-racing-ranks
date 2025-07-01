@@ -1,5 +1,3 @@
-
-
 export const PDF_STYLES = {
   colors: {
     // Couleurs modernes et élégantes
@@ -77,9 +75,9 @@ export const getPositionEvolutionIndicator = (positionChange: number, previousPo
   } else if (positionChange < 0) {
     return `${positionChange}`;
   } else if (previousPosition) {
-    return '=';
+    return '-';
   } else {
-    return '=';
+    return '-';
   }
 };
 
