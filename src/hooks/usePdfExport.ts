@@ -6,21 +6,53 @@ import { ChampionshipStanding, Race, Driver } from '@/types/championship';
 import { calculateDriverPoints } from '@/utils/championship';
 
 export const usePdfExport = () => {
-  const exportGeneralStandings = useCallback((
+  // Fonction pour convertir une image en base64
+  const getImageAsBase64 = useCallback((imagePath: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx?.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = () => resolve('');
+      img.src = imagePath;
+    });
+  }, []);
+
+  const exportGeneralStandings = useCallback(async (
     standings: ChampionshipStanding[],
     championshipTitle: string,
     championshipYear: string
   ) => {
     const doc = new jsPDF();
     
+    // Charger les logos
+    const [logoLigue, logoFFSA] = await Promise.all([
+      getImageAsBase64('/lovable-uploads/62684b57-67a9-4b26-8c45-289e8ea186da.png'),
+      getImageAsBase64('/lovable-uploads/174d8472-4f55-4be5-bd4c-6cad2885ed7d.png')
+    ]);
+    
+    // Ajouter les logos
+    if (logoLigue) {
+      doc.addImage(logoLigue, 'PNG', 10, 10, 30, 15);
+    }
+    if (logoFFSA) {
+      doc.addImage(logoFFSA, 'PNG', 170, 10, 30, 15);
+    }
+    
     // Titre
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(championshipTitle, 105, 20, { align: 'center' });
+    doc.text(championshipTitle, 105, 35, { align: 'center' });
     
     doc.setFontSize(14);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Classement Général ${championshipYear}`, 105, 30, { align: 'center' });
+    doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
     // Tableau des classements
     const tableData = standings.map(standing => [
@@ -34,7 +66,7 @@ export const usePdfExport = () => {
     autoTable(doc, {
       head: [['Position', 'Pilote', 'Montagne', 'Rallye', 'Total']],
       body: tableData,
-      startY: 40,
+      startY: 55,
       styles: {
         fontSize: 10,
         cellPadding: 3,
@@ -51,9 +83,9 @@ export const usePdfExport = () => {
     
     // Sauvegarde
     doc.save(`classement-general-${championshipYear}.pdf`);
-  }, []);
+  }, [getImageAsBase64]);
 
-  const exportCategoryStandings = useCallback((
+  const exportCategoryStandings = useCallback(async (
     title: string,
     races: Race[],
     drivers: Driver[],
@@ -61,14 +93,28 @@ export const usePdfExport = () => {
   ) => {
     const doc = new jsPDF('landscape');
     
+    // Charger les logos
+    const [logoLigue, logoFFSA] = await Promise.all([
+      getImageAsBase64('/lovable-uploads/62684b57-67a9-4b26-8c45-289e8ea186da.png'),
+      getImageAsBase64('/lovable-uploads/174d8472-4f55-4be5-bd4c-6cad2885ed7d.png')
+    ]);
+    
+    // Ajouter les logos
+    if (logoLigue) {
+      doc.addImage(logoLigue, 'PNG', 10, 10, 30, 15);
+    }
+    if (logoFFSA) {
+      doc.addImage(logoFFSA, 'PNG', 257, 10, 30, 15);
+    }
+    
     // Titre
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
-    doc.text(title, 148, 20, { align: 'center' });
+    doc.text(title, 148, 35, { align: 'center' });
     
     doc.setFontSize(14);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Saison ${championshipYear}`, 148, 30, { align: 'center' });
+    doc.text(`Saison ${championshipYear}`, 148, 45, { align: 'center' });
     
     // Calcul des classements
     const standings = drivers
@@ -109,7 +155,7 @@ export const usePdfExport = () => {
     autoTable(doc, {
       head: [headers],
       body: tableData,
-      startY: 40,
+      startY: 55,
       styles: {
         fontSize: 8,
         cellPadding: 2,
@@ -131,7 +177,7 @@ export const usePdfExport = () => {
     // Sauvegarde
     const filename = title.toLowerCase().replace(/\s+/g, '-');
     doc.save(`${filename}-${championshipYear}.pdf`);
-  }, []);
+  }, [getImageAsBase64]);
 
   return {
     exportGeneralStandings,
