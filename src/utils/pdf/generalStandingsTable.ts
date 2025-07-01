@@ -16,68 +16,78 @@ export const createGeneralStandingsTable = (
         standing.position.toString(),
         evolutionIndicator,
         standing.driver.name,
-        `${standing.montagnePoints} pts`,
-        `${standing.rallyePoints} pts`,
-        `${standing.totalPoints} pts`
+        `${standing.montagnePoints}`,
+        `${standing.rallyePoints}`,
+        `${standing.totalPoints}`
       ];
     });
 
   console.log('📄 Données du tableau PDF:', tableData);
   
   autoTable(doc, {
-    head: [['Position', 'Évolution', 'Pilote', '⛰️ Montagne', '🏎️ Rallye', 'Total']],
+    head: [['#', 'Évol.', 'Pilote', '⛰️ Montagne', '🏎️ Rallye', 'Total']],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {
-      fontSize: PDF_STYLES.fonts.normalSize,
-      cellPadding: 12,
+      fontSize: 11,
+      cellPadding: { top: 8, right: 6, bottom: 8, left: 6 },
       lineColor: [240, 240, 240],
-      lineWidth: 1,
+      lineWidth: 0.3,
       textColor: [51, 51, 51],
       overflow: 'linebreak',
-      halign: 'left',
-      fillColor: [249, 250, 251],
-      minCellHeight: 18
+      halign: 'center',
+      valign: 'middle',
+      fillColor: [255, 255, 255],
+      minCellHeight: 20
     },
     headStyles: {
       fillColor: [248, 250, 252],
-      textColor: [71, 85, 105],
+      textColor: [30, 41, 59],
       fontStyle: 'bold',
-      fontSize: PDF_STYLES.fonts.normalSize,
-      halign: 'left',
+      fontSize: 12,
+      halign: 'center',
       valign: 'middle',
-      cellPadding: 12,
-      minCellHeight: 20
+      cellPadding: { top: 12, right: 8, bottom: 12, left: 8 },
+      minCellHeight: 24,
+      lineColor: [226, 232, 240],
+      lineWidth: 0.5
     },
     alternateRowStyles: {
-      fillColor: [255, 255, 255]
+      fillColor: [248, 250, 252]
     },
     columnStyles: {
       0: { 
-        cellWidth: 20, 
-        halign: 'center'
-      },
-      1: { 
-        cellWidth: 25, 
-        halign: 'center'
-      },
-      2: { 
-        cellWidth: 60,
-        fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize + 1
-      },
-      3: { 
-        cellWidth: 30, 
-        halign: 'center'
-      },
-      4: { 
-        cellWidth: 30, 
-        halign: 'center'
-      },
-      5: { 
-        cellWidth: 25, 
+        cellWidth: 18,
         halign: 'center',
         fontStyle: 'bold'
+      },
+      1: { 
+        cellWidth: 22,
+        halign: 'center',
+        fontSize: 10
+      },
+      2: { 
+        cellWidth: 65,
+        halign: 'left',
+        fontStyle: 'bold',
+        fontSize: 12,
+        cellPadding: { top: 8, right: 12, bottom: 8, left: 12 }
+      },
+      3: { 
+        cellWidth: 28,
+        halign: 'center',
+        fontStyle: 'bold'
+      },
+      4: { 
+        cellWidth: 28,
+        halign: 'center',
+        fontStyle: 'bold'
+      },
+      5: { 
+        cellWidth: 28,
+        halign: 'center',
+        fontStyle: 'bold',
+        fontSize: 13
       }
     },
     didParseCell: function(data) {
@@ -85,80 +95,101 @@ export const createGeneralStandingsTable = (
       const colIndex = data.column.index;
       const position = parseInt(data.row.raw[0]);
       
-      // Style pour la colonne position avec badges colorés
+      // Style pour la colonne position avec badges modernes
       if (colIndex === 0) {
         data.cell.styles.halign = 'center';
         data.cell.styles.valign = 'middle';
         data.cell.styles.fontStyle = 'bold';
-        data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize;
+        data.cell.styles.fontSize = 12;
         data.cell.styles.textColor = [255, 255, 255];
         
         if (position === 1) {
-          data.cell.styles.fillColor = [245, 158, 11]; // Orange/Gold
+          data.cell.styles.fillColor = [251, 191, 36]; // Gold plus vibrant
         } else if (position === 2) {
-          data.cell.styles.fillColor = [107, 114, 128]; // Gris
+          data.cell.styles.fillColor = [148, 163, 184]; // Silver moderne
         } else if (position === 3) {
-          data.cell.styles.fillColor = [180, 83, 9]; // Bronze
+          data.cell.styles.fillColor = [194, 65, 12]; // Bronze plus riche
         } else if (position <= 5) {
-          data.cell.styles.fillColor = [59, 130, 246]; // Bleu
+          data.cell.styles.fillColor = [59, 130, 246]; // Bleu moderne
         } else {
-          data.cell.styles.fillColor = [107, 114, 128]; // Gris par défaut
+          data.cell.styles.fillColor = [100, 116, 139]; // Gris moderne
+          data.cell.styles.textColor = [255, 255, 255];
         }
       }
       
-      // Style pour la colonne évolution
+      // Style pour la colonne évolution avec icônes
       if (colIndex === 1) {
         const cellText = data.cell.text[0];
         data.cell.styles.halign = 'center';
         data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = 10;
         
-        if (cellText && cellText.startsWith('+')) {
-          data.cell.styles.textColor = [34, 197, 94]; // Vert
-        } else if (cellText && cellText.startsWith('-')) {
-          data.cell.styles.textColor = [239, 68, 68]; // Rouge
+        if (cellText && cellText.includes('↑')) {
+          data.cell.styles.textColor = [22, 163, 74]; // Vert plus saturé
+          data.cell.styles.fillColor = [220, 252, 231]; // Fond vert très clair
+        } else if (cellText && cellText.includes('↓')) {
+          data.cell.styles.textColor = [220, 38, 38]; // Rouge plus saturé
+          data.cell.styles.fillColor = [254, 226, 226]; // Fond rouge très clair
         } else if (cellText === 'NEW') {
           data.cell.styles.textColor = [245, 158, 11]; // Orange
+          data.cell.styles.fillColor = [255, 237, 213]; // Fond orange très clair
+          data.cell.styles.fontStyle = 'bold';
         } else {
           data.cell.styles.textColor = [107, 114, 128]; // Gris
+          data.cell.styles.fillColor = [249, 250, 251]; // Fond gris très clair
         }
       }
       
-      // Style pour les colonnes de points (Montagne et Rallye)
-      if (colIndex === 3 || colIndex === 4) {
-        data.cell.styles.halign = 'center';
-        
-        if (colIndex === 3) { // Montagne
-          data.cell.styles.fillColor = [220, 252, 231]; // Vert clair
-          data.cell.styles.textColor = [21, 128, 61]; // Vert foncé
-        } else { // Rallye
-          data.cell.styles.fillColor = [219, 234, 254]; // Bleu clair
-          data.cell.styles.textColor = [30, 64, 175]; // Bleu foncé
-        }
-        
+      // Style pour la colonne nom du pilote
+      if (colIndex === 2) {
+        data.cell.styles.halign = 'left';
         data.cell.styles.fontStyle = 'bold';
-        data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize;
+        data.cell.styles.fontSize = 12;
+        data.cell.styles.textColor = [30, 41, 59]; // Gris foncé moderne
+        
+        // Surbrillance subtile pour le podium
+        if (position <= 3) {
+          data.cell.styles.fillColor = [248, 250, 252]; // Fond très subtil
+        }
       }
       
-      // Style pour la colonne Total
+      // Style pour les colonnes de points spécialisées
+      if (colIndex === 3) { // Montagne
+        data.cell.styles.halign = 'center';
+        data.cell.styles.fillColor = [220, 252, 231]; // Vert très clair
+        data.cell.styles.textColor = [21, 128, 61]; // Vert foncé
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = 11;
+      }
+      
+      if (colIndex === 4) { // Rallye
+        data.cell.styles.halign = 'center';
+        data.cell.styles.fillColor = [219, 234, 254]; // Bleu très clair
+        data.cell.styles.textColor = [30, 64, 175]; // Bleu foncé
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = 11;
+      }
+      
+      // Style pour la colonne Total - mise en valeur
       if (colIndex === 5) {
         data.cell.styles.halign = 'center';
-        data.cell.styles.fillColor = [245, 158, 11]; // Orange
+        data.cell.styles.fillColor = [59, 130, 246]; // Bleu moderne
         data.cell.styles.textColor = [255, 255, 255];
         data.cell.styles.fontStyle = 'bold';
-        data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize + 1;
+        data.cell.styles.fontSize = 13;
       }
       
-      // Suppression des bordures pour un look plus propre
-      data.cell.styles.lineWidth = 0.5;
-      data.cell.styles.lineColor = [229, 231, 235];
+      // Bordures ultra-fines et modernes
+      data.cell.styles.lineWidth = 0.3;
+      data.cell.styles.lineColor = [226, 232, 240];
     },
     margin: { 
-      top: PDF_STYLES.spacing.marginVertical, 
-      left: PDF_STYLES.spacing.marginHorizontal, 
-      right: PDF_STYLES.spacing.marginHorizontal 
+      top: 15, 
+      left: 20, 
+      right: 20 
     },
     theme: 'grid',
-    tableLineColor: [229, 231, 235],
-    tableLineWidth: 0.5
+    tableLineColor: [226, 232, 240],
+    tableLineWidth: 0.3
   });
 };

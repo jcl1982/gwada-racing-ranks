@@ -1,19 +1,19 @@
 
 export const PDF_STYLES = {
   colors: {
-    // Couleurs modernes basées sur l'image
+    // Couleurs modernes et élégantes
     primary: [59, 130, 246] as [number, number, number], // Bleu moderne
     secondary: [245, 158, 11] as [number, number, number], // Orange/Gold
     accent: [239, 68, 68] as [number, number, number], // Rouge
     
-    // Couleurs de badges position (comme dans l'image)
-    gold: [245, 158, 11] as [number, number, number], // Orange/Gold pour 1er
-    silver: [107, 114, 128] as [number, number, number], // Gris pour 2ème
-    bronze: [180, 83, 9] as [number, number, number], // Bronze pour 3ème
-    blue: [59, 130, 246] as [number, number, number], // Bleu pour top 5
-    blueBadge: [219, 234, 254] as [number, number, number], // Bleu clair pour badge
+    // Couleurs de badges position premium
+    gold: [251, 191, 36] as [number, number, number], // Or plus vibrant
+    silver: [148, 163, 184] as [number, number, number], // Argent moderne
+    bronze: [194, 65, 12] as [number, number, number], // Bronze riche
+    blue: [59, 130, 246] as [number, number, number], // Bleu moderne
+    blueBadge: [219, 234, 254] as [number, number, number], // Bleu clair
     
-    // Couleurs de fond propres
+    // Couleurs de fond élégantes
     backgroundLight: [249, 250, 251] as [number, number, number],
     backgroundWhite: [255, 255, 255] as [number, number, number],
     headerBg: [248, 250, 252] as [number, number, number],
@@ -24,18 +24,22 @@ export const PDF_STYLES = {
     rallyeLight: [219, 234, 254] as [number, number, number], // Bleu clair
     rallyeDark: [30, 64, 175] as [number, number, number], // Bleu foncé
     
-    // Couleurs d'évolution
-    success: [34, 197, 94] as [number, number, number], // Vert pour +
-    danger: [239, 68, 68] as [number, number, number], // Rouge pour -
-    warning: [245, 158, 11] as [number, number, number], // Orange pour NEW
+    // Couleurs d'évolution modernes
+    success: [22, 163, 74] as [number, number, number], // Vert plus saturé
+    successLight: [220, 252, 231] as [number, number, number], // Fond vert clair
+    danger: [220, 38, 38] as [number, number, number], // Rouge plus saturé
+    dangerLight: [254, 226, 226] as [number, number, number], // Fond rouge clair
+    warning: [245, 158, 11] as [number, number, number], // Orange
+    warningLight: [255, 237, 213] as [number, number, number], // Fond orange clair
     
-    // Couleurs neutres modernes
+    // Couleurs neutres premium
     gray50: [248, 250, 252] as [number, number, number],
     gray100: [241, 245, 249] as [number, number, number],
-    gray200: [229, 231, 235] as [number, number, number],
-    gray400: [156, 163, 175] as [number, number, number],
+    gray200: [226, 232, 240] as [number, number, number],
+    gray400: [148, 163, 184] as [number, number, number],
     gray600: [71, 85, 105] as [number, number, number],
     gray700: [51, 65, 85] as [number, number, number],
+    gray800: [30, 41, 59] as [number, number, number],
     gray900: [15, 23, 42] as [number, number, number],
     
     // Dégradés pour les en-têtes
@@ -43,11 +47,11 @@ export const PDF_STYLES = {
     oceanCyan: [6, 182, 212] as [number, number, number]
   },
   fonts: {
-    titleSize: 22,
+    titleSize: 24,
     subtitleSize: 18,
-    normalSize: 10,
-    smallSize: 8,
-    legendSize: 8
+    normalSize: 11,
+    smallSize: 9,
+    legendSize: 9
   },
   positions: {
     logoLeft: { x: 20, y: 15, width: 30, height: 30 },
@@ -58,9 +62,9 @@ export const PDF_STYLES = {
     tableStart: { y: 75 }
   },
   spacing: {
-    sectionGap: 20,
-    rowHeight: 16,
-    cellPadding: 10,
+    sectionGap: 25,
+    rowHeight: 20,
+    cellPadding: 12,
     marginHorizontal: 20,
     marginVertical: 15
   }
