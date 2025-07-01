@@ -10,14 +10,17 @@ export const PDF_STYLES = {
     gold: [255, 215, 0] as [number, number, number],
     silver: [192, 192, 192] as [number, number, number],
     bronze: [205, 127, 50] as [number, number, number],
-    lightGreen: [144, 238, 144] as [number, number, number]
+    lightGreen: [144, 238, 144] as [number, number, number],
+    darkBlue: [25, 25, 112] as [number, number, number],
+    lightBlue: [173, 216, 230] as [number, number, number],
+    champagne: [247, 231, 206] as [number, number, number]
   },
   fonts: {
-    titleSize: 18,
-    subtitleSize: 14,
-    normalSize: 10,
-    smallSize: 8,
-    legendSize: 8
+    titleSize: 20,
+    subtitleSize: 16,
+    normalSize: 11,
+    smallSize: 9,
+    legendSize: 9
   },
   positions: {
     logoLeft: { x: 15, y: 10, width: 25, height: 25 },
@@ -25,7 +28,7 @@ export const PDF_STYLES = {
     logoRightLandscape: { x: 250 },
     title: { y: 35 },
     subtitle: { y: 45 },
-    tableStart: { y: 55 }
+    tableStart: { y: 60 }
   }
 };
 
@@ -47,4 +50,17 @@ export const getStatusText = (index: number): string => {
   else if (index === 2) return 'PODIUM';
   else if (index < 5) return 'TOP 5';
   else return `${index + 1}eme`;
+};
+
+export const getPositionRowStyle = (position: number) => {
+  if (position === 1) {
+    return { fillColor: PDF_STYLES.colors.gold, textColor: [0, 0, 0] };
+  } else if (position === 2) {
+    return { fillColor: PDF_STYLES.colors.silver, textColor: [0, 0, 0] };
+  } else if (position === 3) {
+    return { fillColor: PDF_STYLES.colors.bronze, textColor: [255, 255, 255] };
+  } else if (position <= 5) {
+    return { fillColor: PDF_STYLES.colors.lightBlue, textColor: [0, 0, 0] };
+  }
+  return null;
 };
