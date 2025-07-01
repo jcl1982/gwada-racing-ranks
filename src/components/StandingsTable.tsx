@@ -1,3 +1,4 @@
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -105,8 +106,8 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left p-4 font-semibold">Position</th>
-              <th className="text-left p-4 font-semibold">Pilote</th>
+              <th className="text-left p-2 font-semibold">Position</th>
+              <th className="text-left p-2 font-semibold">Pilote</th>
               {races.map(race => (
                 <th key={race.id} className="text-center p-2 font-semibold min-w-[80px]">
                   <div className="text-xs">
@@ -120,8 +121,8 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                   </div>
                 </th>
               ))}
-              <th className="text-center p-4 font-semibold">Total</th>
-              <th className="text-center p-4 font-semibold">Écart</th>
+              <th className="text-center p-2 font-semibold">Total</th>
+              <th className="text-center p-2 font-semibold">Écart</th>
             </tr>
           </thead>
           <tbody>
@@ -134,12 +135,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
                   }`}
                 >
-                  <td className="p-4">
+                  <td className="p-2">
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
                     </Badge>
                   </td>
-                  <td className="p-4">
+                  <td className="p-2">
                     <div className="font-semibold text-gray-900 unicode-enhanced">
                       {standing.driver.name}
                     </div>
@@ -166,12 +167,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                       </td>
                     );
                   })}
-                  <td className="p-4 text-center">
+                  <td className="p-2 text-center">
                     <Badge className={`bg-gradient-to-r ${gradientClass} text-white font-bold`}>
                       {standing.points} pts
                     </Badge>
                   </td>
-                  <td className="p-4 text-center text-gray-600">
+                  <td className="p-2 text-center text-gray-600">
                     {gap === 0 ? 'Leader' : `-${gap} pts`}
                   </td>
                 </tr>
