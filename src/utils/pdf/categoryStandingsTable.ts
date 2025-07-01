@@ -46,7 +46,9 @@ export const createCategoryStandingsTable = (
       lineColor: [229, 231, 235],
       lineWidth: 0.5,
       textColor: [51, 51, 51],
-      overflow: 'linebreak'
+      overflow: 'linebreak',
+      fillColor: [249, 250, 251],
+      minCellHeight: 16
     },
     headStyles: {
       fillColor: [248, 250, 252],
@@ -60,10 +62,6 @@ export const createCategoryStandingsTable = (
     },
     alternateRowStyles: {
       fillColor: [255, 255, 255]
-    },
-    rowStyles: {
-      fillColor: [249, 250, 251],
-      minCellHeight: 16
     },
     columnStyles: {
       0: { 

@@ -35,7 +35,9 @@ export const createGeneralStandingsTable = (
       lineWidth: 1,
       textColor: [51, 51, 51],
       overflow: 'linebreak',
-      halign: 'left'
+      halign: 'left',
+      fillColor: [249, 250, 251],
+      minCellHeight: 18
     },
     headStyles: {
       fillColor: [248, 250, 252],
@@ -49,10 +51,6 @@ export const createGeneralStandingsTable = (
     },
     alternateRowStyles: {
       fillColor: [255, 255, 255]
-    },
-    rowStyles: {
-      fillColor: [249, 250, 251],
-      minCellHeight: 18
     },
     columnStyles: {
       0: { 

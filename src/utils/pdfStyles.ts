@@ -11,6 +11,7 @@ export const PDF_STYLES = {
     silver: [107, 114, 128] as [number, number, number], // Gris pour 2ème
     bronze: [180, 83, 9] as [number, number, number], // Bronze pour 3ème
     blue: [59, 130, 246] as [number, number, number], // Bleu pour top 5
+    blueBadge: [219, 234, 254] as [number, number, number], // Bleu clair pour badge
     
     // Couleurs de fond propres
     backgroundLight: [249, 250, 251] as [number, number, number],
