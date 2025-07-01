@@ -20,9 +20,9 @@ export const PDF_STYLES = {
     legendSize: 8
   },
   positions: {
-    logoLeft: { x: 15, y: 10, width: 35, height: 15 },
-    logoRight: { x: 150, y: 10, width: 40, height: 15 },
-    logoRightLandscape: { x: 240 },
+    logoLeft: { x: 15, y: 10, width: 25, height: 25 },
+    logoRight: { x: 160, y: 10, width: 25, height: 25 },
+    logoRightLandscape: { x: 250 },
     title: { y: 35 },
     subtitle: { y: 45 },
     tableStart: { y: 55 }
