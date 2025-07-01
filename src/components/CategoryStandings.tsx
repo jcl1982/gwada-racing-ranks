@@ -1,9 +1,10 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Calendar, MapPin } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { calculateDriverPoints, getPositionBadgeColor } from '@/utils/championship';
+import PrintButton from '@/components/PrintButton';
+import { usePdfExport } from '@/hooks/usePdfExport';
 
 interface CategoryStandingsProps {
   title: string;
@@ -14,6 +15,8 @@ interface CategoryStandingsProps {
 }
 
 const CategoryStandings = ({ title, races, drivers, type, championshipYear }: CategoryStandingsProps) => {
+  const { exportCategoryStandings } = usePdfExport();
+
   const standings = drivers
     .map(driver => ({
       driver,
@@ -28,6 +31,10 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
 
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
+
+  const handlePrintPdf = () => {
+    exportCategoryStandings(title, races, drivers, championshipYear);
+  };
 
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
   const getDriverPointsForRace = (driverId: string, race: Race): number => {
@@ -72,9 +79,12 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear }: Ca
       {/* Standings Table */}
       <Card className="card-glass overflow-hidden">
         <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white`}>
-          <div className="flex items-center gap-3">
-            <Icon size={32} />
-            <h2 className="text-2xl font-bold">Classement {title}</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon size={32} />
+              <h2 className="text-2xl font-bold">Classement {title}</h2>
+            </div>
+            <PrintButton onClick={handlePrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30" />
           </div>
         </div>
 

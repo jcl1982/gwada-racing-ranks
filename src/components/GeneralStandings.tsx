@@ -4,6 +4,8 @@ import { Trophy, Mountain, Car } from 'lucide-react';
 import { ChampionshipStanding } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PositionChange from '@/components/PositionChange';
+import PrintButton from '@/components/PrintButton';
+import { usePdfExport } from '@/hooks/usePdfExport';
 
 interface GeneralStandingsProps {
   standings: ChampionshipStanding[];
@@ -12,6 +14,12 @@ interface GeneralStandingsProps {
 }
 
 const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
+  const { exportGeneralStandings } = usePdfExport();
+
+  const handlePrintPdf = () => {
+    exportGeneralStandings(standings, championshipTitle, championshipYear);
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -23,9 +31,12 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
 
       <Card className="card-glass overflow-hidden">
         <div className="gradient-ocean p-6 text-white">
-          <div className="flex items-center gap-3">
-            <Trophy size={32} />
-            <h2 className="text-2xl font-bold">Classement Général</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Trophy size={32} />
+              <h2 className="text-2xl font-bold">Classement Général</h2>
+            </div>
+            <PrintButton onClick={handlePrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30" />
           </div>
         </div>
 
