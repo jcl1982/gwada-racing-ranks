@@ -10,6 +10,12 @@ export const usePdfExport = () => {
     championshipTitle: string,
     championshipYear: string
   ) => {
+    console.log('🏆 Export PDF - Classement Général:', standings.map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      totalPoints: s.totalPoints
+    })));
+
     const doc = new jsPDF();
     
     // Titre
@@ -21,14 +27,18 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 30, { align: 'center' });
     
-    // Tableau des classements - utilise directement les standings passés en paramètre
-    const tableData = standings.map(standing => [
-      standing.position.toString(),
-      standing.driver.name,
-      standing.montagnePoints.toString(),
-      standing.rallyePoints.toString(),
-      standing.totalPoints.toString()
-    ]);
+    // Tableau des classements - IMPORTANT: on respecte l'ordre exact des standings passés
+    const tableData = standings
+      .sort((a, b) => a.position - b.position) // Tri par position croissante pour garantir l'ordre
+      .map(standing => [
+        standing.position.toString(),
+        standing.driver.name,
+        standing.montagnePoints.toString(),
+        standing.rallyePoints.toString(),
+        standing.totalPoints.toString()
+      ]);
+
+    console.log('📄 Données du tableau PDF:', tableData);
     
     autoTable(doc, {
       head: [['Position', 'Pilote', 'Montagne', 'Rallye', 'Total']],
@@ -63,6 +73,12 @@ export const usePdfExport = () => {
       position: number;
     }>
   ) => {
+    console.log('🏁 Export PDF - Classement Catégorie:', title, preCalculatedStandings?.map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      points: s.points
+    })));
+
     const doc = new jsPDF('landscape');
     
     // Titre
@@ -77,7 +93,7 @@ export const usePdfExport = () => {
     // Utilise les classements pré-calculés s'ils sont fournis, sinon recalcule
     let standings;
     if (preCalculatedStandings) {
-      standings = preCalculatedStandings;
+      standings = preCalculatedStandings.sort((a, b) => a.position - b.position); // Tri par position
     } else {
       // Fallback - calcul des classements si pas fournis
       standings = drivers
@@ -118,6 +134,8 @@ export const usePdfExport = () => {
       row.push(`${standing.points} pts`);
       return row;
     });
+
+    console.log('📄 Données du tableau PDF (catégorie):', tableData);
     
     autoTable(doc, {
       head: [headers],

@@ -17,6 +17,12 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
   const { exportGeneralStandings } = usePdfExport();
 
   const handlePrintPdf = () => {
+    console.log('🖨️ Impression PDF demandée - Classement site web:', standings.map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      totalPoints: s.totalPoints
+    })));
+    
     exportGeneralStandings(standings, championshipTitle, championshipYear);
   };
 
