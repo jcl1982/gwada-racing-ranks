@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -24,7 +23,7 @@ interface StandingsTableProps {
 
 const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: StandingsTableProps) => {
   const { exportToImage } = useImageExport();
-  const { printWebPage } = useWebPrint();
+  const { printWebPage, printWithUnicodeSupport } = useWebPrint();
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
 
@@ -52,6 +51,23 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
     );
   };
 
+  const handlePrintUnicode = () => {
+    console.log('🔤 Impression Unicode demandée - Classement catégorie:', displayTitle);
+    printWithUnicodeSupport(
+      'category-standings-table',
+      `${displayTitle} - Saison 2024 • Classement avec caractères spéciaux ✓`,
+      `
+        .unicode-enhanced {
+          font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
+          text-rendering: optimizeLegibility;
+        }
+        .position-badge {
+          font-variant-numeric: tabular-nums;
+        }
+      `
+    );
+  };
+
   return (
     <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white`}>
@@ -64,6 +80,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
             onPrintPdf={onPrintPdf} 
             onPrintImage={handlePrintImage}
             onPrintWeb={handlePrintWeb}
+            onPrintUnicode={handlePrintUnicode}
             variant="outline" 
             className="bg-white/20 hover:bg-white/30 border-white/30" 
           />
@@ -104,12 +121,12 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                   }`}
                 >
                   <td className="p-4">
-                    <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
+                    <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
                     </Badge>
                   </td>
                   <td className="p-4">
-                    <div className="font-semibold text-gray-900">
+                    <div className="font-semibold text-gray-900 unicode-enhanced">
                       {standing.driver.name}
                     </div>
                   </td>

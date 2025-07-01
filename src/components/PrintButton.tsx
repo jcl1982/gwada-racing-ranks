@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { FileDown, Image, ChevronDown, Printer } from 'lucide-react';
+import { FileDown, Image, ChevronDown, Printer, Type } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ interface PrintButtonProps {
   onPrintPdf: () => void;
   onPrintImage?: () => void;
   onPrintWeb?: () => void;
+  onPrintUnicode?: () => void;
   variant?: 'default' | 'outline';
   className?: string;
 }
@@ -20,11 +21,12 @@ const PrintButton = ({
   onPrintPdf, 
   onPrintImage, 
   onPrintWeb, 
+  onPrintUnicode,
   variant = 'outline', 
   className = '' 
 }: PrintButtonProps) => {
   // Si aucune option supplémentaire, afficher le bouton simple PDF
-  if (!onPrintImage && !onPrintWeb) {
+  if (!onPrintImage && !onPrintWeb && !onPrintUnicode) {
     return (
       <Button
         onClick={onPrintPdf}
@@ -65,6 +67,12 @@ const PrintButton = ({
           <DropdownMenuItem onClick={onPrintWeb}>
             <Printer size={16} className="mr-2" />
             Imprimer la page
+          </DropdownMenuItem>
+        )}
+        {onPrintUnicode && (
+          <DropdownMenuItem onClick={onPrintUnicode}>
+            <Type size={16} className="mr-2" />
+            Impression Unicode
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

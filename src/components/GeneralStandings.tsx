@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -19,7 +18,7 @@ interface GeneralStandingsProps {
 const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
   const { exportGeneralStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
-  const { printWebPage } = useWebPrint();
+  const { printWebPage, printWithUnicodeSupport } = useWebPrint();
 
   // S'assurer que les standings sont triés par position pour l'affichage
   const sortedStandings = [...standings].sort((a, b) => a.position - b.position);
@@ -51,6 +50,25 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     );
   };
 
+  const handlePrintUnicode = () => {
+    console.log('🔤 Impression Unicode demandée - Classement général');
+    printWithUnicodeSupport(
+      'general-standings-table',
+      `${championshipTitle} • Classement Général ${championshipYear} ★`,
+      `
+        .unicode-enhanced {
+          font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
+          text-rendering: optimizeLegibility;
+        }
+        .champion-row {
+          background: linear-gradient(135deg, #ffd700, #ffed4e);
+          color: #1a1a1a;
+          font-weight: 700;
+        }
+      `
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -71,6 +89,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
               onPrintPdf={handlePrintPdf} 
               onPrintImage={handlePrintImage}
               onPrintWeb={handlePrintWeb}
+              onPrintUnicode={handlePrintUnicode}
               variant="outline" 
               className="bg-white/20 hover:bg-white/30 border-white/30" 
             />
@@ -105,7 +124,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
                   key={standing.driver.id}
                   className={`border-b transition-colors hover:bg-blue-50/50 ${
                     index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
-                  }`}
+                  } ${standing.position === 1 ? 'champion-row' : ''}`}
                 >
                   <td className="p-4">
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
@@ -116,7 +135,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
                     <PositionChange change={standing.positionChange} />
                   </td>
                   <td className="p-4">
-                    <div className="font-semibold text-gray-900">
+                    <div className="font-semibold text-gray-900 unicode-enhanced">
                       {standing.driver.name}
                     </div>
                   </td>
