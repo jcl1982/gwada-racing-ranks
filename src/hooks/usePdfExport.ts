@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -20,14 +19,12 @@ export const usePdfExport = () => {
     
     // Logos
     // Logo de la ligue (haut gauche)
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('LOGO LIGUE', 20, 15);
-    doc.rect(15, 10, 30, 8); // Rectangle pour représenter le logo
+    const ligueLogoUrl = '/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png';
+    doc.addImage(ligueLogoUrl, 'PNG', 15, 10, 35, 15);
     
-    // Logo de la fédération (haut droite)
-    doc.text('LOGO FÉDÉRATION', 155, 15);
-    doc.rect(150, 10, 40, 8); // Rectangle pour représenter le logo
+    // Logo de la fédération (haut droite) 
+    const federationLogoUrl = '/lovable-uploads/1bf8922d-c9c0-423c-93bd-29ddb120e512.png';
+    doc.addImage(federationLogoUrl, 'PNG', 150, 10, 40, 15);
     
     // Titre
     doc.setFontSize(18);
@@ -94,14 +91,12 @@ export const usePdfExport = () => {
     
     // Logos
     // Logo de la ligue (haut gauche)
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('LOGO LIGUE', 20, 15);
-    doc.rect(15, 10, 30, 8); // Rectangle pour représenter le logo
+    const ligueLogoUrl = '/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png';
+    doc.addImage(ligueLogoUrl, 'PNG', 20, 10, 35, 15);
     
     // Logo de la fédération (haut droite)
-    doc.text('LOGO FÉDÉRATION', 245, 15);
-    doc.rect(240, 10, 40, 8); // Rectangle pour représenter le logo
+    const federationLogoUrl = '/lovable-uploads/1bf8922d-c9c0-423c-93bd-29ddb120e512.png';
+    doc.addImage(federationLogoUrl, 'PNG', 240, 10, 40, 15);
     
     // Titre
     doc.setFontSize(18);
