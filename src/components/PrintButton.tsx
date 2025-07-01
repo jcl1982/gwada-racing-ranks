@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { FileDown, Image, ChevronDown } from 'lucide-react';
+import { FileDown, Image, ChevronDown, Printer } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +11,20 @@ import {
 interface PrintButtonProps {
   onPrintPdf: () => void;
   onPrintImage?: () => void;
+  onPrintWeb?: () => void;
   variant?: 'default' | 'outline';
   className?: string;
 }
 
-const PrintButton = ({ onPrintPdf, onPrintImage, variant = 'outline', className = '' }: PrintButtonProps) => {
-  // Si pas d'export image, afficher le bouton simple
-  if (!onPrintImage) {
+const PrintButton = ({ 
+  onPrintPdf, 
+  onPrintImage, 
+  onPrintWeb, 
+  variant = 'outline', 
+  className = '' 
+}: PrintButtonProps) => {
+  // Si aucune option supplémentaire, afficher le bouton simple PDF
+  if (!onPrintImage && !onPrintWeb) {
     return (
       <Button
         onClick={onPrintPdf}
@@ -30,7 +37,7 @@ const PrintButton = ({ onPrintPdf, onPrintImage, variant = 'outline', className 
     );
   }
 
-  // Si export image disponible, afficher le menu déroulant
+  // Afficher le menu déroulant avec toutes les options
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -43,15 +50,23 @@ const PrintButton = ({ onPrintPdf, onPrintImage, variant = 'outline', className 
           <ChevronDown size={14} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="bg-white">
         <DropdownMenuItem onClick={onPrintPdf}>
           <FileDown size={16} className="mr-2" />
           Exporter en PDF
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onPrintImage}>
-          <Image size={16} className="mr-2" />
-          Exporter en Image
-        </DropdownMenuItem>
+        {onPrintImage && (
+          <DropdownMenuItem onClick={onPrintImage}>
+            <Image size={16} className="mr-2" />
+            Exporter en Image
+          </DropdownMenuItem>
+        )}
+        {onPrintWeb && (
+          <DropdownMenuItem onClick={onPrintWeb}>
+            <Printer size={16} className="mr-2" />
+            Imprimer la page
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

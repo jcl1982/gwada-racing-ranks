@@ -6,6 +6,7 @@ import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
 import { useImageExport } from '@/hooks/useImageExport';
+import { useWebPrint } from '@/hooks/useWebPrint';
 
 interface StandingsTableProps {
   displayTitle: string;
@@ -23,6 +24,7 @@ interface StandingsTableProps {
 
 const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: StandingsTableProps) => {
   const { exportToImage } = useImageExport();
+  const { printWebPage } = useWebPrint();
   const Icon = type === 'montagne' ? Mountain : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
 
@@ -42,6 +44,14 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
     );
   };
 
+  const handlePrintWeb = () => {
+    console.log('🖨️ Impression web demandée - Classement catégorie:', displayTitle);
+    printWebPage(
+      'category-standings-table',
+      `${displayTitle} - Saison 2024`
+    );
+  };
+
   return (
     <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white`}>
@@ -53,6 +63,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
           <PrintButton 
             onPrintPdf={onPrintPdf} 
             onPrintImage={handlePrintImage}
+            onPrintWeb={handlePrintWeb}
             variant="outline" 
             className="bg-white/20 hover:bg-white/30 border-white/30" 
           />

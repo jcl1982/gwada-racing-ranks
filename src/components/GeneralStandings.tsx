@@ -8,6 +8,7 @@ import PositionChange from '@/components/PositionChange';
 import PrintButton from '@/components/PrintButton';
 import { usePdfExport } from '@/hooks/usePdfExport';
 import { useImageExport } from '@/hooks/useImageExport';
+import { useWebPrint } from '@/hooks/useWebPrint';
 
 interface GeneralStandingsProps {
   standings: ChampionshipStanding[];
@@ -18,6 +19,7 @@ interface GeneralStandingsProps {
 const GeneralStandings = ({ standings, championshipTitle, championshipYear }: GeneralStandingsProps) => {
   const { exportGeneralStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
+  const { printWebPage } = useWebPrint();
 
   // S'assurer que les standings sont triés par position pour l'affichage
   const sortedStandings = [...standings].sort((a, b) => a.position - b.position);
@@ -41,6 +43,14 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     );
   };
 
+  const handlePrintWeb = () => {
+    console.log('🖨️ Impression web demandée - Classement général');
+    printWebPage(
+      'general-standings-table',
+      `${championshipTitle} - Classement Général ${championshipYear}`
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -60,6 +70,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
             <PrintButton 
               onPrintPdf={handlePrintPdf} 
               onPrintImage={handlePrintImage}
+              onPrintWeb={handlePrintWeb}
               variant="outline" 
               className="bg-white/20 hover:bg-white/30 border-white/30" 
             />
