@@ -1,8 +1,7 @@
-
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
-import { PDF_STYLES, getPositionEvolutionIndicator, getStatusText } from './pdfStyles';
+import { PDF_STYLES, getPositionEvolutionIndicator } from './pdfStyles';
 
 export const createGeneralStandingsTable = (
   doc: jsPDF, 
@@ -95,7 +94,6 @@ export const createCategoryStandingsTable = (
     });
     
     row.push(`${standing.points} pts`);
-    row.push(getStatusText(index));
     return row;
   });
 
@@ -120,25 +118,7 @@ export const createCategoryStandingsTable = (
     columnStyles: {
       0: { cellWidth: 20, halign: 'center' },
       1: { cellWidth: 35 },
-      [headers.length - 2]: { cellWidth: 25, halign: 'center', fontStyle: 'bold' },
-      [headers.length - 1]: { cellWidth: 30, halign: 'center', fontSize: 8 }
-    },
-    didParseCell: function(data) {
-      if (data.column.index === headers.length - 1) {
-        const cellText = data.cell.text[0];
-        if (cellText && cellText === 'CHAMPION') {
-          data.cell.styles.fillColor = PDF_STYLES.colors.gold;
-          data.cell.styles.fontStyle = 'bold';
-        } else if (cellText && cellText === 'VICE-CHAMP') {
-          data.cell.styles.fillColor = PDF_STYLES.colors.silver;
-          data.cell.styles.fontStyle = 'bold';
-        } else if (cellText && cellText === 'PODIUM') {
-          data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
-          data.cell.styles.fontStyle = 'bold';
-        } else if (cellText && cellText === 'TOP 5') {
-          data.cell.styles.fillColor = PDF_STYLES.colors.lightGreen;
-        }
-      }
+      [headers.length - 1]: { cellWidth: 25, halign: 'center', fontStyle: 'bold' }
     }
   });
 };

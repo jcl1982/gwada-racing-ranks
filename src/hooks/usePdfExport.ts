@@ -81,13 +81,13 @@ export const usePdfExport = () => {
         }));
     }
     
-    // Construction des en-têtes de colonnes
+    // Construction des en-têtes de colonnes (suppression de la colonne Statut)
     const headers = ['Position', 'Pilote'];
     races.forEach(race => {
       headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
     });
     headers.push('Total');
-    headers.push('Statut');
+    // Suppression de headers.push('Statut');
     
     // Création du tableau
     createCategoryStandingsTable(doc, headers, standings, races);
