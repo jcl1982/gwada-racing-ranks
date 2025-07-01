@@ -1,3 +1,4 @@
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
@@ -24,7 +25,7 @@ export const createGeneralStandingsTable = (
   console.log('📄 Données du tableau PDF:', tableData);
   
   autoTable(doc, {
-    head: [['Position', 'Évolution', 'Pilote', 'Montagne', 'Rallye', 'Total']],
+    head: [['Position', 'Évolution', 'Pilote', 'Trophée Montagne', 'Trophée Rallyes', 'Total']],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {

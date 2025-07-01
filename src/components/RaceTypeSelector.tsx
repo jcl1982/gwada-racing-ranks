@@ -23,14 +23,14 @@ const RaceTypeSelector = ({ selectedType, onTypeChange }: RaceTypeSelectorProps)
             <RadioGroupItem value="montagne" id="montagne" />
             <Label htmlFor="montagne" className="flex items-center gap-2 cursor-pointer">
               <Mountain className="w-5 h-5 text-green-600" />
-              <span>Course de Côte</span>
+              <span>Trophée de la montagne</span>
             </Label>
           </div>
           <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors">
             <RadioGroupItem value="rallye" id="rallye" />
             <Label htmlFor="rallye" className="flex items-center gap-2 cursor-pointer">
               <Car className="w-5 h-5 text-blue-600" />
-              <span>Rallye</span>
+              <span>Trophée des rallyes</span>
             </Label>
           </div>
         </RadioGroup>

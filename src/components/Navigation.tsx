@@ -12,8 +12,8 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
   const navItems = [
     { id: 'home' as const, label: 'Accueil', icon: Home },
     { id: 'general' as const, label: 'Classement Général', icon: Trophy },
-    { id: 'montagne' as const, label: 'Courses de Côte', icon: Mountain },
-    { id: 'rallye' as const, label: 'Rallyes', icon: Car },
+    { id: 'montagne' as const, label: 'Trophée de la montagne', icon: Mountain },
+    { id: 'rallye' as const, label: 'Trophée des rallyes', icon: Car },
     { id: 'import' as const, label: 'Import Excel', icon: Upload },
     { id: 'admin' as const, label: 'Administration', icon: Settings },
   ];
