@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import { PDF_STYLES } from './pdfStyles';
 
 export const addLogosToDoc = (doc: jsPDF, isLandscape: boolean = false) => {
-  // Logo de la ligue (haut gauche) avec meilleure position
+  // Logo de la ligue (haut gauche)
   const ligueLogoUrl = '/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png';
   doc.addImage(
     ligueLogoUrl, 
@@ -14,7 +14,7 @@ export const addLogosToDoc = (doc: jsPDF, isLandscape: boolean = false) => {
     PDF_STYLES.positions.logoLeft.height
   );
   
-  // Logo de la fédération (haut droite) avec meilleure position
+  // Logo de la fédération (haut droite)
   const federationLogoUrl = '/lovable-uploads/1bf8922d-c9c0-423c-93bd-29ddb120e512.png';
   const rightX = isLandscape ? PDF_STYLES.positions.logoRightLandscape.x : PDF_STYLES.positions.logoRight.x;
   doc.addImage(
@@ -28,20 +28,24 @@ export const addLogosToDoc = (doc: jsPDF, isLandscape: boolean = false) => {
 };
 
 export const addTitleToDoc = (doc: jsPDF, title: string, subtitle: string, centerX: number = 105) => {
-  // Titre principal avec couleur moderne
+  // Fond dégradé pour le titre (simulation du gradient caribbean)
+  doc.setFillColor(PDF_STYLES.colors.primary[0], PDF_STYLES.colors.primary[1], PDF_STYLES.colors.primary[2]);
+  doc.roundedRect(centerX - 80, PDF_STYLES.positions.title.y - 8, 160, 25, 3, 3, 'F');
+  
+  // Titre principal avec style du site
   doc.setFontSize(PDF_STYLES.fonts.titleSize);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(PDF_STYLES.colors.darkBlue[0], PDF_STYLES.colors.darkBlue[1], PDF_STYLES.colors.darkBlue[2]);
+  doc.setTextColor(255, 255, 255); // Texte blanc sur fond coloré
   doc.text(title, centerX, PDF_STYLES.positions.title.y, { align: 'center' });
   
-  // Sous-titre avec style amélioré
+  // Sous-titre avec style moderne
   doc.setFontSize(PDF_STYLES.fonts.subtitleSize);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(PDF_STYLES.colors.secondary[0], PDF_STYLES.colors.secondary[1], PDF_STYLES.colors.secondary[2]);
+  doc.setTextColor(PDF_STYLES.colors.gray600[0], PDF_STYLES.colors.gray600[1], PDF_STYLES.colors.gray600[2]);
   doc.text(subtitle, centerX, PDF_STYLES.positions.subtitle.y, { align: 'center' });
   
-  // Ligne de séparation élégante
-  doc.setDrawColor(PDF_STYLES.colors.primary[0], PDF_STYLES.colors.primary[1], PDF_STYLES.colors.primary[2]);
-  doc.setLineWidth(1);
-  doc.line(centerX - 60, PDF_STYLES.positions.subtitle.y + 5, centerX + 60, PDF_STYLES.positions.subtitle.y + 5);
+  // Ligne de séparation avec couleur du site
+  doc.setDrawColor(PDF_STYLES.colors.secondary[0], PDF_STYLES.colors.secondary[1], PDF_STYLES.colors.secondary[2]);
+  doc.setLineWidth(2);
+  doc.line(centerX - 60, PDF_STYLES.positions.subtitle.y + 8, centerX + 60, PDF_STYLES.positions.subtitle.y + 8);
 };

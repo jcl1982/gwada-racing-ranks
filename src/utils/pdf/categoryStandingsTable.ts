@@ -41,61 +41,62 @@ export const createCategoryStandingsTable = (
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     styles: {
-      fontSize: PDF_STYLES.fonts.smallSize + 1,
-      cellPadding: 4,
-      lineColor: [220, 220, 220],
-      lineWidth: 0.2,
-      textColor: [44, 62, 80],
+      fontSize: PDF_STYLES.fonts.normalSize,
+      cellPadding: PDF_STYLES.spacing.cellPadding,
+      lineColor: PDF_STYLES.colors.gray200,
+      lineWidth: 0.5,
+      textColor: PDF_STYLES.colors.gray900,
       overflow: 'linebreak'
     },
     headStyles: {
-      fillColor: PDF_STYLES.colors.primary,
+      fillColor: PDF_STYLES.colors.oceanBlue, // Style gradient-ocean
       textColor: [255, 255, 255],
       fontStyle: 'bold',
-      fontSize: PDF_STYLES.fonts.normalSize,
+      fontSize: PDF_STYLES.fonts.normalSize + 1,
       halign: 'center',
       valign: 'middle',
-      cellPadding: 6,
-      minCellHeight: 12
+      cellPadding: 8,
+      minCellHeight: 16
     },
     alternateRowStyles: {
-      fillColor: PDF_STYLES.colors.champagne
+      fillColor: PDF_STYLES.colors.backgroundLight // Même alternance que le site
     },
     columnStyles: {
       0: { 
-        cellWidth: 22, 
+        cellWidth: 25, 
         halign: 'center', 
         fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize
+        fontSize: PDF_STYLES.fonts.normalSize + 1
       },
       1: { 
-        cellWidth: 40,
-        fontSize: PDF_STYLES.fonts.normalSize,
-        cellPadding: 5
+        cellWidth: 45,
+        fontSize: PDF_STYLES.fonts.normalSize + 1,
+        cellPadding: 6,
+        fontStyle: 'bold'
       },
       [headers.length - 1]: { 
-        cellWidth: 28, 
+        cellWidth: 32, 
         halign: 'center', 
         fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize + 1,
+        fontSize: PDF_STYLES.fonts.normalSize + 2,
         textColor: PDF_STYLES.colors.primary
       }
     },
     didParseCell: function(data) {
-      // Styling pour les positions
+      // Styling pour les positions (comme sur le site)
       if (data.section === 'body' && data.column.index === 0) {
         const position = parseInt(data.cell.text[0]);
         if (position === 1) {
           data.cell.styles.fillColor = PDF_STYLES.colors.gold;
-          data.cell.styles.textColor = [0, 0, 0];
+          data.cell.styles.textColor = [255, 255, 255];
         } else if (position === 2) {
           data.cell.styles.fillColor = PDF_STYLES.colors.silver;
-          data.cell.styles.textColor = [0, 0, 0];
+          data.cell.styles.textColor = [255, 255, 255];
         } else if (position === 3) {
           data.cell.styles.fillColor = PDF_STYLES.colors.bronze;
           data.cell.styles.textColor = [255, 255, 255];
         } else if (position <= 5) {
-          data.cell.styles.fillColor = PDF_STYLES.colors.lightBlue;
+          data.cell.styles.fillColor = PDF_STYLES.colors.blueBadge;
           data.cell.styles.textColor = [0, 0, 0];
         }
       }
@@ -106,7 +107,7 @@ export const createCategoryStandingsTable = (
       right: PDF_STYLES.spacing.marginHorizontal 
     },
     theme: 'grid',
-    tableLineColor: [220, 220, 220],
-    tableLineWidth: 0.2
+    tableLineColor: PDF_STYLES.colors.gray200,
+    tableLineWidth: 0.5
   });
 };

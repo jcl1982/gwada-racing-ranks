@@ -31,62 +31,63 @@ export const createGeneralStandingsTable = (
     styles: {
       fontSize: PDF_STYLES.fonts.normalSize,
       cellPadding: PDF_STYLES.spacing.cellPadding,
-      lineColor: [220, 220, 220],
-      lineWidth: 0.3,
-      textColor: [44, 62, 80],
+      lineColor: PDF_STYLES.colors.gray200,
+      lineWidth: 0.5,
+      textColor: PDF_STYLES.colors.gray900,
       overflow: 'linebreak'
     },
     headStyles: {
-      fillColor: PDF_STYLES.colors.primary,
+      fillColor: PDF_STYLES.colors.oceanBlue, // Style gradient-ocean du site
       textColor: [255, 255, 255],
       fontStyle: 'bold',
       fontSize: PDF_STYLES.fonts.normalSize + 2,
       halign: 'center',
       valign: 'middle',
-      cellPadding: 8,
-      minCellHeight: 15
+      cellPadding: 10,
+      minCellHeight: 18
     },
     alternateRowStyles: {
-      fillColor: PDF_STYLES.colors.champagne
+      fillColor: PDF_STYLES.colors.backgroundLight // Même style que le site
     },
     columnStyles: {
       0: { 
-        cellWidth: 24, 
-        halign: 'center', 
-        fontStyle: 'bold',
-        fontSize: PDF_STYLES.fonts.normalSize + 1
-      },
-      1: { 
         cellWidth: 28, 
         halign: 'center', 
-        fontSize: PDF_STYLES.fonts.smallSize + 1,
+        fontStyle: 'bold',
+        fontSize: PDF_STYLES.fonts.normalSize + 2
+      },
+      1: { 
+        cellWidth: 32, 
+        halign: 'center', 
+        fontSize: PDF_STYLES.fonts.normalSize,
         fontStyle: 'bold'
       },
       2: { 
-        cellWidth: 60, 
-        cellPadding: 8,
-        fontSize: PDF_STYLES.fonts.normalSize + 1
+        cellWidth: 65, 
+        cellPadding: 10,
+        fontSize: PDF_STYLES.fonts.normalSize + 1,
+        fontStyle: 'bold'
       },
       3: { 
-        cellWidth: 32, 
+        cellWidth: 36, 
         halign: 'center',
         fontSize: PDF_STYLES.fonts.normalSize
       },
       4: { 
-        cellWidth: 32, 
+        cellWidth: 36, 
         halign: 'center',
         fontSize: PDF_STYLES.fonts.normalSize
       },
       5: { 
-        cellWidth: 30, 
+        cellWidth: 32, 
         halign: 'center', 
         fontStyle: 'bold', 
-        fontSize: PDF_STYLES.fonts.normalSize + 2,
+        fontSize: PDF_STYLES.fonts.normalSize + 3,
         textColor: PDF_STYLES.colors.primary
       }
     },
     didParseCell: function(data) {
-      // Styling pour la colonne évolution avec de meilleures couleurs
+      // Styling pour la colonne évolution (comme sur le site)
       if (data.column.index === 1) {
         const cellText = data.cell.text[0];
         if (cellText && cellText.startsWith('+')) {
@@ -99,11 +100,11 @@ export const createGeneralStandingsTable = (
           data.cell.styles.textColor = PDF_STYLES.colors.warning;
           data.cell.styles.fontStyle = 'bold';
         } else {
-          data.cell.styles.textColor = PDF_STYLES.colors.secondary;
+          data.cell.styles.textColor = PDF_STYLES.colors.gray600;
         }
       }
       
-      // Styling amélioré pour les positions du podium et top 5
+      // Styling pour les positions (même logique que le site)
       if (data.section === 'body') {
         const position = parseInt(data.row.raw[0]);
         const positionStyle = getPositionRowStyle(position);
@@ -112,10 +113,10 @@ export const createGeneralStandingsTable = (
           data.cell.styles.fillColor = [...positionStyle.fillColor] as [number, number, number];
           data.cell.styles.textColor = [...positionStyle.textColor] as [number, number, number];
           
-          // Mise en forme spéciale pour le podium
+          // Style spécial pour le podium
           if (position <= 3) {
             data.cell.styles.fontStyle = 'bold';
-            data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize + 1;
+            data.cell.styles.fontSize = PDF_STYLES.fonts.normalSize + 2;
           }
         }
       }
@@ -127,7 +128,7 @@ export const createGeneralStandingsTable = (
     },
     tableWidth: 'auto',
     theme: 'grid',
-    tableLineColor: [220, 220, 220],
-    tableLineWidth: 0.3
+    tableLineColor: PDF_STYLES.colors.gray200,
+    tableLineWidth: 0.5
   });
 };
