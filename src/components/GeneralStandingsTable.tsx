@@ -34,7 +34,7 @@ const GeneralStandingsTable = ({
           src="/lovable-uploads/a51e24a3-77b9-4a08-a1b1-c446ea39eb10.png" 
           alt="Logo Ligue Sport Automobile Guadeloupe" 
           className="absolute top-4 left-4 w-12 h-12 object-contain"
-          removeBackground={true}
+          removeBackground={false}
         />
         
         {/* Logo de la fédération (haut droite) */}
@@ -42,7 +42,7 @@ const GeneralStandingsTable = ({
           src="/lovable-uploads/b4f87f86-04ce-4966-aca2-cd5ab7745508.png" 
           alt="Logo FFSA" 
           className="absolute top-4 right-20 w-12 h-12 object-contain"
-          removeBackground={true}
+          removeBackground={false}
         />
 
         <div className="flex items-center justify-between">
