@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -42,7 +41,7 @@ const GeneralStandingsTable = ({
         <Logo 
           src="/lovable-uploads/b4f87f86-04ce-4966-aca2-cd5ab7745508.png" 
           alt="Logo FFSA" 
-          className="absolute top-4 right-20 w-12 h-12 object-contain"
+          className="absolute top-4 right-4 w-12 h-12 object-contain"
           removeBackground={false}
         />
 
@@ -53,7 +52,7 @@ const GeneralStandingsTable = ({
           </div>
         </div>
         
-        <div className="absolute top-6 right-4">
+        <div className="absolute top-6 right-20">
           <PrintButton 
             onPrintPdf={onPrintPdf} 
             onPrintImage={onPrintImage}
