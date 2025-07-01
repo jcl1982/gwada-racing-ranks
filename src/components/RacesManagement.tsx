@@ -70,25 +70,29 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
       type: formData.type
     };
 
-    // Si le type de la course a changé, on doit la déplacer vers la bonne liste
-    const updatedMontagneRaces = montagneRaces.filter(race => race.id !== editingRace.id);
-    const updatedRallyeRaces = rallyeRaces.filter(race => race.id !== editingRace.id);
+    // Copier les listes existantes
+    let updatedMontagneRaces = [...montagneRaces];
+    let updatedRallyeRaces = [...rallyeRaces];
 
-    if (formData.type === 'montagne') {
-      updatedMontagneRaces.push(updatedRace);
+    // Si le type de la course a changé, on doit la déplacer
+    if (editingRace.type !== formData.type) {
+      // Supprimer de l'ancienne liste
+      if (editingRace.type === 'montagne') {
+        updatedMontagneRaces = montagneRaces.filter(race => race.id !== editingRace.id);
+        updatedRallyeRaces.push(updatedRace);
+      } else {
+        updatedRallyeRaces = rallyeRaces.filter(race => race.id !== editingRace.id);
+        updatedMontagneRaces.push(updatedRace);
+      }
     } else {
-      updatedRallyeRaces.push(updatedRace);
-    }
-
-    // Si le type n'a pas changé, on met à jour la course dans sa liste actuelle
-    if (editingRace.type === formData.type) {
+      // Le type n'a pas changé, on met juste à jour dans la liste appropriée
       if (formData.type === 'montagne') {
-        const raceIndex = montagneRaces.findIndex(race => race.id === editingRace.id);
+        const raceIndex = updatedMontagneRaces.findIndex(race => race.id === editingRace.id);
         if (raceIndex !== -1) {
           updatedMontagneRaces[raceIndex] = updatedRace;
         }
       } else {
-        const raceIndex = rallyeRaces.findIndex(race => race.id === editingRace.id);
+        const raceIndex = updatedRallyeRaces.findIndex(race => race.id === editingRace.id);
         if (raceIndex !== -1) {
           updatedRallyeRaces[raceIndex] = updatedRace;
         }
