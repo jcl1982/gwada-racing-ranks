@@ -1,3 +1,4 @@
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
@@ -77,8 +78,8 @@ export const createGeneralStandingsTable = (
         const positionStyle = getPositionRowStyle(position);
         
         if (positionStyle) {
-          data.cell.styles.fillColor = positionStyle.fillColor;
-          data.cell.styles.textColor = positionStyle.textColor;
+          data.cell.styles.fillColor = [...positionStyle.fillColor] as [number, number, number];
+          data.cell.styles.textColor = [...positionStyle.textColor] as [number, number, number];
           
           // Mettre en gras pour le podium
           if (position <= 3) {
