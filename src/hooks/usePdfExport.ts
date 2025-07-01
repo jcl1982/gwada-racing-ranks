@@ -1,3 +1,4 @@
+
 import { useCallback } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -35,21 +36,36 @@ export const usePdfExport = () => {
     doc.setFont('helvetica', 'normal');
     doc.text(`Classement Général ${championshipYear}`, 105, 45, { align: 'center' });
     
-    // Tableau des classements - IMPORTANT: on respecte l'ordre exact des standings passés
+    // Tableau des classements - avec évolution
     const tableData = standings
-      .sort((a, b) => a.position - b.position) // Tri par position croissante pour garantir l'ordre
-      .map(standing => [
-        standing.position.toString(),
-        standing.driver.name,
-        standing.montagnePoints.toString(),
-        standing.rallyePoints.toString(),
-        standing.totalPoints.toString()
-      ]);
+      .sort((a, b) => a.position - b.position)
+      .map(standing => {
+        // Indicateur d'évolution
+        let evolutionIndicator = '';
+        if (standing.positionChange > 0) {
+          evolutionIndicator = `↗ +${standing.positionChange}`;
+        } else if (standing.positionChange < 0) {
+          evolutionIndicator = `↘ ${standing.positionChange}`;
+        } else if (standing.previousPosition) {
+          evolutionIndicator = '→ =';
+        } else {
+          evolutionIndicator = '★ NEW';
+        }
+
+        return [
+          standing.position.toString(),
+          evolutionIndicator,
+          standing.driver.name,
+          standing.montagnePoints.toString(),
+          standing.rallyePoints.toString(),
+          standing.totalPoints.toString()
+        ];
+      });
 
     console.log('📄 Données du tableau PDF:', tableData);
     
     autoTable(doc, {
-      head: [['Position', 'Pilote', 'Montagne', 'Rallye', 'Total']],
+      head: [['Position', 'Évolution', 'Pilote', 'Montagne', 'Rallye', 'Total']],
       body: tableData,
       startY: 55,
       styles: {
@@ -63,8 +79,51 @@ export const usePdfExport = () => {
       },
       alternateRowStyles: {
         fillColor: [245, 245, 245]
+      },
+      columnStyles: {
+        0: { cellWidth: 20, halign: 'center' },
+        1: { cellWidth: 20, halign: 'center', fontSize: 8 },
+        2: { cellWidth: 50 },
+        3: { cellWidth: 25, halign: 'center' },
+        4: { cellWidth: 25, halign: 'center' },
+        5: { cellWidth: 25, halign: 'center', fontStyle: 'bold' }
+      },
+      didParseCell: function(data) {
+        // Colorer les indicateurs d'évolution
+        if (data.column.index === 1) {
+          const cellText = data.cell.text[0];
+          if (cellText && cellText.includes('↗')) {
+            data.cell.styles.textColor = [34, 139, 34]; // Vert pour montée
+          } else if (cellText && cellText.includes('↘')) {
+            data.cell.styles.textColor = [220, 20, 60]; // Rouge pour descente
+          } else if (cellText && cellText.includes('★')) {
+            data.cell.styles.textColor = [255, 140, 0]; // Orange pour nouveau
+          } else {
+            data.cell.styles.textColor = [128, 128, 128]; // Gris pour stable
+          }
+        }
       }
     });
+    
+    // Légende des indicateurs
+    const finalY = (doc as any).lastAutoTable.finalY + 10;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Légende:', 15, finalY);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(34, 139, 34);
+    doc.text('↗ Montée au classement', 15, finalY + 8);
+    doc.setTextColor(220, 20, 60);
+    doc.text('↘ Descente au classement', 15, finalY + 15);
+    doc.setTextColor(128, 128, 128);
+    doc.text('→ Position stable', 15, finalY + 22);
+    doc.setTextColor(255, 140, 0);
+    doc.text('★ Nouveau pilote', 15, finalY + 29);
+    
+    // Reset couleur
+    doc.setTextColor(0, 0, 0);
     
     // Sauvegarde
     doc.save(`classement-general-${championshipYear}.pdf`);
@@ -110,7 +169,7 @@ export const usePdfExport = () => {
     // Utilise les classements pré-calculés s'ils sont fournis, sinon recalcule
     let standings;
     if (preCalculatedStandings) {
-      standings = preCalculatedStandings.sort((a, b) => a.position - b.position); // Tri par position
+      standings = preCalculatedStandings.sort((a, b) => a.position - b.position);
     } else {
       // Fallback - calcul des classements si pas fournis
       standings = drivers
@@ -134,21 +193,36 @@ export const usePdfExport = () => {
       headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
     });
     headers.push('Total');
+    headers.push('Évolution');
     
-    // Construction des données
-    const tableData = standings.map(standing => {
+    // Construction des données avec évolution des points
+    const tableData = standings.map((standing, index) => {
       const row = [standing.position.toString(), standing.driver.name];
       
+      let previousTotal = 0;
       races.forEach(race => {
         const result = race.results.find(r => r.driverId === standing.driver.id);
         if (result) {
-          row.push(`${result.points} pts (P${result.position})`);
+          const currentRacePoints = result.points;
+          const newTotal = previousTotal + currentRacePoints;
+          row.push(`${currentRacePoints} pts (P${result.position}) [${newTotal}]`);
+          previousTotal = newTotal;
         } else {
-          row.push('-');
+          row.push(`- [${previousTotal}]`);
         }
       });
       
       row.push(`${standing.points} pts`);
+      
+      // Calcul de l'évolution basée sur la position finale
+      let evolution = '';
+      if (index === 0) evolution = '👑 Leader';
+      else if (index === 1) evolution = '🥈 Vice-champion';
+      else if (index === 2) evolution = '🥉 Podium';
+      else if (index < 5) evolution = '📈 Top 5';
+      else evolution = `${index + 1}ème`;
+      
+      row.push(evolution);
       return row;
     });
 
@@ -159,7 +233,7 @@ export const usePdfExport = () => {
       body: tableData,
       startY: 55,
       styles: {
-        fontSize: 8,
+        fontSize: 7,
         cellPadding: 2,
       },
       headStyles: {
@@ -171,8 +245,25 @@ export const usePdfExport = () => {
         fillColor: [245, 245, 245]
       },
       columnStyles: {
-        0: { cellWidth: 20 },
-        1: { cellWidth: 40 }
+        0: { cellWidth: 20, halign: 'center' },
+        1: { cellWidth: 35 },
+        [headers.length - 2]: { cellWidth: 25, halign: 'center', fontStyle: 'bold' },
+        [headers.length - 1]: { cellWidth: 30, halign: 'center', fontSize: 6 }
+      },
+      didParseCell: function(data) {
+        // Colorer la colonne évolution
+        if (data.column.index === headers.length - 1) {
+          const cellText = data.cell.text[0];
+          if (cellText && cellText.includes('👑')) {
+            data.cell.styles.fillColor = [255, 215, 0]; // Or pour le leader
+          } else if (cellText && cellText.includes('🥈')) {
+            data.cell.styles.fillColor = [192, 192, 192]; // Argent
+          } else if (cellText && cellText.includes('🥉')) {
+            data.cell.styles.fillColor = [205, 127, 50]; // Bronze
+          } else if (cellText && cellText.includes('📈')) {
+            data.cell.styles.fillColor = [144, 238, 144]; // Vert clair pour top 5
+          }
+        }
       }
     });
     
