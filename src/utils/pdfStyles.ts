@@ -81,6 +81,21 @@ export const getPositionEvolutionIndicator = (positionChange: number, previousPo
   }
 };
 
+// Nouvelle fonction pour l'évolution entre les courses d'une même catégorie
+export const getCategoryEvolutionIndicator = (evolutionBetweenRaces: number, hasParticipatedInBothRaces: boolean): string => {
+  if (!hasParticipatedInBothRaces) {
+    return '-';
+  }
+  
+  if (evolutionBetweenRaces > 0) {
+    return `+${evolutionBetweenRaces}`;
+  } else if (evolutionBetweenRaces < 0) {
+    return `${evolutionBetweenRaces}`;
+  } else {
+    return '-';
+  }
+};
+
 export const getEvolutionColor = (positionChange: number, previousPosition?: number): [number, number, number] => {
   if (positionChange > 0) {
     return PDF_STYLES.colors.success; // Vert pour progression
