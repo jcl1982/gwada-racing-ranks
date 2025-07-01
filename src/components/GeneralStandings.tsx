@@ -28,7 +28,8 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
       totalPoints: s.totalPoints
     })));
     
-    exportGeneralStandings(sortedStandings, championshipTitle, championshipYear);
+    // Utiliser le titre complet pour l'export PDF
+    exportGeneralStandings(sortedStandings, championshipTitle, "Classement Général de la LSAG", championshipYear);
   };
 
   const handlePrintImage = () => {

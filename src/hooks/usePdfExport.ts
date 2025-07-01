@@ -10,8 +10,13 @@ export const usePdfExport = () => {
   const exportGeneralStandings = useCallback((
     standings: ChampionshipStanding[],
     championshipTitle: string,
-    championshipYear: string
+    customTitle?: string,
+    championshipYear?: string
   ) => {
+    // Utiliser le titre personnalisé s'il est fourni, sinon utiliser "Classement Général"
+    const displayTitle = customTitle || 'Classement Général';
+    const year = championshipYear || new Date().getFullYear().toString();
+    
     console.log('🏆 Export PDF - Classement Général:', standings.map(s => ({
       position: s.position,
       name: s.driver.name,
@@ -23,14 +28,14 @@ export const usePdfExport = () => {
     // Ajout des logos
     addLogosToDoc(doc);
     
-    // Ajout du titre
-    addTitleToDoc(doc, championshipTitle, `Classement Général ${championshipYear}`);
+    // Ajout du titre avec le titre personnalisé
+    addTitleToDoc(doc, championshipTitle, `${displayTitle} ${year}`);
     
     // Création du tableau
     createGeneralStandingsTable(doc, standings);
     
     // Sauvegarde
-    doc.save(`classement-general-${championshipYear}.pdf`);
+    doc.save(`classement-general-${year}.pdf`);
   }, []);
 
   const exportCategoryStandings = useCallback((
