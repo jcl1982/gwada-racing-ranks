@@ -149,7 +149,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
             {sortedStandings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0]?.driver.name}
           </p>
           <p className="text-gray-600">
-            {sortedStandings.sort((a, b) => b.rallyePoints - a.rallyeRaces)[0]?.rallyePoints} points
+            {sortedStandings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0]?.rallyePoints} points
           </p>
         </Card>
       </div>
