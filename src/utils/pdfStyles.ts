@@ -1,4 +1,3 @@
-
 export const PDF_STYLES = {
   colors: {
     // Couleurs modernes et élégantes
@@ -57,9 +56,9 @@ export const PDF_STYLES = {
     logoLeft: { x: 20, y: 15, width: 30, height: 30 },
     logoRight: { x: 155, y: 15, width: 30, height: 30 },
     logoRightLandscape: { x: 245 },
-    title: { y: 42 },
-    subtitle: { y: 55 },
-    tableStart: { y: 75 }
+    title: { y: 60 }, // Augmenté de 42 à 60
+    subtitle: { y: 75 }, // Augmenté de 55 à 75
+    tableStart: { y: 95 } // Augmenté de 75 à 95
   },
   spacing: {
     sectionGap: 25,

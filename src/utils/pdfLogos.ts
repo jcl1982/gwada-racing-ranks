@@ -43,5 +43,6 @@ export const addTitleToDoc = (doc: jsPDF, title: string, subtitle: string, cente
   // Ligne de séparation subtile
   doc.setDrawColor(PDF_STYLES.colors.gray200[0], PDF_STYLES.colors.gray200[1], PDF_STYLES.colors.gray200[2]);
   doc.setLineWidth(1);
-  doc.line(centerX - 80, PDF_STYLES.positions.subtitle.y + 8, centerX + 80, PDF_STYLES.positions.subtitle.y + 8);
+  doc.line(centerX - 80, PDF_STYLES.positions.subtitle.y + 10, centerX + 80, PDF_STYLES.positions.subtitle.y + 10);
 };
+

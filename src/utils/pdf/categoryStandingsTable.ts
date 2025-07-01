@@ -1,8 +1,9 @@
 
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
-import { getPositionEvolutionIndicator, getEvolutionColor, getPositionRowStyle } from '../pdfStyles';
+import { getPositionEvolutionIndicator, getEvolutionColor, getPositionRowStyle, PDF_STYLES } from '../pdfStyles';
 
 export const createCategoryStandingsTable = (
   doc: jsPDF,
@@ -45,7 +46,7 @@ export const createCategoryStandingsTable = (
   autoTable(doc, {
     head: [headers],
     body: tableData,
-    startY: 75,
+    startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
       // Colorer la colonne évolution (index 1)
       if (data.column.index === 1 && data.section === 'body') {
@@ -69,3 +70,4 @@ export const createCategoryStandingsTable = (
     }
   });
 };
+

@@ -1,4 +1,5 @@
 
+
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding } from '@/types/championship';
@@ -27,7 +28,7 @@ export const createGeneralStandingsTable = (
   autoTable(doc, {
     head: [['#', 'Évol.', 'Pilote', 'Montagne', 'Rallye', 'Total']],
     body: tableData,
-    startY: 75,
+    startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
       // Colorer la colonne évolution (index 1)
       if (data.column.index === 1 && data.section === 'body') {
@@ -51,3 +52,4 @@ export const createGeneralStandingsTable = (
     }
   });
 };
+
