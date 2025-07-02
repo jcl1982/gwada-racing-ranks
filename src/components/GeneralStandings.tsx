@@ -29,31 +29,31 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     })));
     
     // Utiliser le titre complet pour l'export PDF
-    exportGeneralStandings(sortedStandings, championshipTitle, "Classement Général de la LSAG", championshipYear);
+    exportGeneralStandings(sortedStandings, championshipTitle, "Classement Général Provisoire de la LSAG", championshipYear);
   };
 
   const handlePrintImage = () => {
-    console.log('📸 Export image demandé - Classement général');
+    console.log('📸 Export image demandé - Classement général provisoire');
     exportToImage(
       'general-standings-table',
-      `classement-general-${championshipYear}`,
-      `${championshipTitle} - Classement Général ${championshipYear}`
+      `classement-general-provisoire-${championshipYear}`,
+      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`
     );
   };
 
   const handlePrintWeb = () => {
-    console.log('🖨️ Impression web demandée - Classement général');
+    console.log('🖨️ Impression web demandée - Classement général provisoire');
     printWebPage(
       'general-standings-table',
-      `${championshipTitle} - Classement Général ${championshipYear}`
+      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`
     );
   };
 
   const handlePrintUnicode = () => {
-    console.log('🔤 Impression Unicode demandée - Classement général');
+    console.log('🔤 Impression Unicode demandée - Classement général provisoire');
     printWithUnicodeSupport(
       'general-standings-table',
-      `${championshipTitle} • Classement Général ${championshipYear} ★`,
+      `${championshipTitle} • Classement Général Provisoire ${championshipYear} ★`,
       `
         .unicode-enhanced {
           font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
