@@ -1,4 +1,3 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car } from 'lucide-react';
@@ -92,7 +91,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Icon size={32} />
-            <h2 className="text-2xl font-bold">Classement {displayTitle}</h2>
+            <h2 className="text-2xl font-bold">Classement provisoire {displayTitle}</h2>
           </div>
         </div>
         
