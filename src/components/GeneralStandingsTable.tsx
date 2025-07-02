@@ -1,4 +1,5 @@
 
+
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -49,7 +50,7 @@ const GeneralStandingsTable = ({
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Trophy size={32} />
-            <h2 className="text-2xl font-bold">Classement Général Provisoire de la LSAG</h2>
+            <h2 className="text-2xl font-bold">Classement Général Provisoire de la LSAG Pilote</h2>
           </div>
         </div>
         
@@ -142,3 +143,4 @@ const GeneralStandingsTable = ({
 };
 
 export default GeneralStandingsTable;
+
