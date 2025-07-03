@@ -4,6 +4,8 @@ import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
+import RoleProtectedComponent from '@/components/RoleProtectedComponent';
+import AdminAccessDenied from '@/components/AdminAccessDenied';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 
@@ -85,29 +87,39 @@ const ViewRenderer = ({
       );
     case 'import':
       return (
-        <ExcelImport
-          drivers={drivers}
-          onImport={handleImport}
-        />
+        <RoleProtectedComponent 
+          requiredRole="admin" 
+          fallback={<AdminAccessDenied />}
+        >
+          <ExcelImport
+            drivers={drivers}
+            onImport={handleImport}
+          />
+        </RoleProtectedComponent>
       );
     case 'admin':
       return (
-        <AdminPanel
-          drivers={drivers}
-          montagneRaces={montagneRaces}
-          rallyeRaces={rallyeRaces}
-          standings={standings}
-          championshipTitle={championshipTitle}
-          championshipYear={championshipYear}
-          onDriversChange={handleDriversChange}
-          onRacesChange={handleRacesChange}
-          onReset={handleReset}
-          onTitleChange={handleTitleChange}
-          saveDriver={saveDriver}
-          deleteDriver={deleteDriver}
-          saveRace={saveRace}
-          deleteRace={deleteRace}
-        />
+        <RoleProtectedComponent 
+          requiredRole="admin" 
+          fallback={<AdminAccessDenied />}
+        >
+          <AdminPanel
+            drivers={drivers}
+            montagneRaces={montagneRaces}
+            rallyeRaces={rallyeRaces}
+            standings={standings}
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+            onDriversChange={handleDriversChange}
+            onRacesChange={handleRacesChange}
+            onReset={handleReset}
+            onTitleChange={handleTitleChange}
+            saveDriver={saveDriver}
+            deleteDriver={deleteDriver}
+            saveRace={saveRace}
+            deleteRace={deleteRace}
+          />
+        </RoleProtectedComponent>
       );
     default:
       return (

@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface PrintButtonProps {
   onPrintPdf: () => void;
@@ -15,6 +16,7 @@ interface PrintButtonProps {
   onPrintUnicode?: () => void;
   variant?: 'default' | 'outline';
   className?: string;
+  adminOnly?: boolean;
 }
 
 const PrintButton = ({ 
@@ -23,8 +25,16 @@ const PrintButton = ({
   onPrintWeb, 
   onPrintUnicode,
   variant = 'outline', 
-  className = '' 
+  className = '',
+  adminOnly = false
 }: PrintButtonProps) => {
+  const { isAdmin, isAuthenticated } = useUserRole();
+
+  // If admin only and user is not admin, don't show the button
+  if (adminOnly && (!isAuthenticated || !isAdmin)) {
+    return null;
+  }
+
   // Si aucune option supplémentaire, afficher le bouton simple PDF
   if (!onPrintImage && !onPrintWeb && !onPrintUnicode) {
     return (

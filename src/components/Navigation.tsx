@@ -2,6 +2,7 @@
 import { Card } from '@/components/ui/card';
 import { Trophy, Mountain, Car, Home, Upload, Settings } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface NavigationProps {
   currentView: ViewType;
@@ -9,19 +10,29 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
+  const { isAdmin, isAuthenticated } = useUserRole();
+
   const navItems = [
-    { id: 'home' as const, label: 'Accueil', icon: Home },
-    { id: 'general' as const, label: 'Classement Général', icon: Trophy },
-    { id: 'montagne' as const, label: 'Trophée de la montagne', icon: Mountain },
-    { id: 'rallye' as const, label: 'Trophée des rallyes', icon: Car },
-    { id: 'import' as const, label: 'Import Excel', icon: Upload },
-    { id: 'admin' as const, label: 'Administration', icon: Settings },
+    { id: 'home' as const, label: 'Accueil', icon: Home, requiresAuth: false },
+    { id: 'general' as const, label: 'Classement Général', icon: Trophy, requiresAuth: false },
+    { id: 'montagne' as const, label: 'Trophée de la montagne', icon: Mountain, requiresAuth: false },
+    { id: 'rallye' as const, label: 'Trophée des rallyes', icon: Car, requiresAuth: false },
+    { id: 'import' as const, label: 'Import Excel', icon: Upload, requiresAuth: true, adminOnly: true },
+    { id: 'admin' as const, label: 'Administration', icon: Settings, requiresAuth: true, adminOnly: true },
   ];
+
+  // Filter nav items based on authentication and role
+  const visibleNavItems = navItems.filter(item => {
+    if (!item.requiresAuth) return true;
+    if (!isAuthenticated) return false;
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  });
 
   return (
     <Card className="card-glass p-4 mb-8">
       <nav className="flex flex-wrap justify-center gap-2 md:gap-4">
-        {navItems.map(({ id, label, icon: Icon }) => (
+        {visibleNavItems.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => onViewChange(id)}
