@@ -22,6 +22,10 @@ interface AdminPanelProps {
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onReset: () => void;
   onTitleChange: (title: string, year: string) => void;
+  saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
+  deleteDriver: (driverId: string) => Promise<void>;
+  saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
+  deleteRace: (raceId: string) => Promise<void>;
 }
 
 const AdminPanel = ({
@@ -34,7 +38,11 @@ const AdminPanel = ({
   onDriversChange,
   onRacesChange,
   onReset,
-  onTitleChange
+  onTitleChange,
+  saveDriver,
+  deleteDriver,
+  saveRace,
+  deleteRace
 }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('drivers');
 
@@ -91,6 +99,8 @@ const AdminPanel = ({
             <DriversManagement
               drivers={drivers}
               onDriversChange={onDriversChange}
+              saveDriver={saveDriver}
+              deleteDriver={deleteDriver}
             />
           </TabsContent>
 
@@ -100,6 +110,8 @@ const AdminPanel = ({
               montagneRaces={montagneRaces}
               rallyeRaces={rallyeRaces}
               onRacesChange={onRacesChange}
+              saveRace={saveRace}
+              deleteRace={deleteRace}
             />
           </TabsContent>
 

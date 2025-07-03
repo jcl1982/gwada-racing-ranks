@@ -20,6 +20,10 @@ interface ViewRendererProps {
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
   handleDriversChange: (newDrivers: Driver[]) => void;
   handleTitleChange: (title: string, year: string) => void;
+  saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
+  deleteDriver: (driverId: string) => Promise<void>;
+  saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
+  deleteRace: (raceId: string) => Promise<void>;
 }
 
 const ViewRenderer = ({
@@ -34,7 +38,11 @@ const ViewRenderer = ({
   handleReset,
   handleRacesChange,
   handleDriversChange,
-  handleTitleChange
+  handleTitleChange,
+  saveDriver,
+  deleteDriver,
+  saveRace,
+  deleteRace
 }: ViewRendererProps) => {
   switch (currentView) {
     case 'home':
@@ -95,6 +103,10 @@ const ViewRenderer = ({
           onRacesChange={handleRacesChange}
           onReset={handleReset}
           onTitleChange={handleTitleChange}
+          saveDriver={saveDriver}
+          deleteDriver={deleteDriver}
+          saveRace={saveRace}
+          deleteRace={deleteRace}
         />
       );
     default:

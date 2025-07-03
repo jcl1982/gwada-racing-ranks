@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
@@ -131,7 +130,12 @@ export const useSupabaseData = () => {
 
       const appRaces = racesData?.map(race => {
         const raceResults = resultsData?.filter(result => result.race_id === race.id) || [];
-        return convertSupabaseRaceToApp(race, raceResults);
+        // Cast the type to ensure it matches our union type
+        const typedRace: SupabaseRace = {
+          ...race,
+          type: race.type as 'montagne' | 'rallye'
+        };
+        return convertSupabaseRaceToApp(typedRace, raceResults);
       }) || [];
       setRaces(appRaces);
 
