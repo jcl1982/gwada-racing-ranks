@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
@@ -185,8 +186,14 @@ export const useSupabaseData = () => {
       
       setPreviousStandings(appPreviousStandings);
 
+      console.log('✅ Data loaded successfully:', {
+        drivers: appDrivers.length,
+        races: appRaces.length,
+        standings: appPreviousStandings.length
+      });
+
     } catch (error) {
-      console.error('Error loading data from Supabase:', error);
+      console.error('❌ Error loading data from Supabase:', error);
       toast({
         title: "Erreur de chargement",
         description: "Impossible de charger les données depuis la base de données.",
@@ -200,12 +207,12 @@ export const useSupabaseData = () => {
   // Save driver to Supabase
   const saveDriver = async (driver: Omit<Driver, 'id'> | Driver) => {
     try {
-      console.log('Saving driver:', driver);
+      console.log('💾 Saving driver:', driver);
 
       if ('id' in driver) {
         // Update existing driver - validate UUID first
         if (!isValidUUID(driver.id)) {
-          console.error('Invalid UUID for driver update:', driver.id);
+          console.error('❌ Invalid UUID for driver update:', driver.id);
           throw new Error('ID du pilote invalide');
         }
 
@@ -219,12 +226,14 @@ export const useSupabaseData = () => {
           .eq('id', driver.id);
 
         if (error) {
-          console.error('Update driver error:', error);
+          console.error('❌ Update driver error:', error);
           throw error;
         }
+
+        console.log('✅ Driver updated successfully');
       } else {
         // Create new driver
-        console.log('Creating new driver with data:', {
+        console.log('➕ Creating new driver with data:', {
           name: driver.name,
           number: driver.number
         });
@@ -239,11 +248,11 @@ export const useSupabaseData = () => {
           .single();
 
         if (error) {
-          console.error('Insert driver error:', error);
+          console.error('❌ Insert driver error:', error);
           throw error;
         }
 
-        console.log('Driver created successfully:', data);
+        console.log('✅ Driver created successfully:', data);
       }
 
       await loadData();
@@ -252,7 +261,7 @@ export const useSupabaseData = () => {
         description: "Le pilote a été sauvegardé avec succès.",
       });
     } catch (error) {
-      console.error('Error saving driver:', error);
+      console.error('❌ Error saving driver:', error);
       toast({
         title: "Erreur de sauvegarde",
         description: error instanceof Error ? error.message : "Impossible de sauvegarder le pilote.",
@@ -265,11 +274,11 @@ export const useSupabaseData = () => {
   // Delete driver from Supabase
   const deleteDriver = async (driverId: string) => {
     try {
-      console.log('Deleting driver with ID:', driverId);
+      console.log('🗑️ Deleting driver with ID:', driverId);
 
       // Validate UUID
       if (!isValidUUID(driverId)) {
-        console.error('Invalid UUID for driver deletion:', driverId);
+        console.error('❌ Invalid UUID for driver deletion:', driverId);
         throw new Error('ID du pilote invalide');
       }
 
@@ -279,17 +288,18 @@ export const useSupabaseData = () => {
         .eq('id', driverId);
 
       if (error) {
-        console.error('Delete driver error:', error);
+        console.error('❌ Delete driver error:', error);
         throw error;
       }
 
+      console.log('✅ Driver deleted successfully');
       await loadData();
       toast({
         title: "Pilote supprimé",
         description: "Le pilote a été supprimé avec succès.",
       });
     } catch (error) {
-      console.error('Error deleting driver:', error);
+      console.error('❌ Error deleting driver:', error);
       toast({
         title: "Erreur de suppression",
         description: error instanceof Error ? error.message : "Impossible de supprimer le pilote.",
@@ -302,12 +312,13 @@ export const useSupabaseData = () => {
   // Save race to Supabase
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     try {
+      console.log('💾 Saving race:', race);
       let raceId: string;
       
       if ('id' in race) {
         // Validate UUID for existing race
         if (!isValidUUID(race.id)) {
-          console.error('Invalid UUID for race update:', race.id);
+          console.error('❌ Invalid UUID for race update:', race.id);
           throw new Error('ID de la course invalide');
         }
 
@@ -321,14 +332,24 @@ export const useSupabaseData = () => {
           })
           .eq('id', race.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Update race error:', error);
+          throw error;
+        }
         raceId = race.id;
 
         // Delete existing results
-        await supabase
+        const { error: deleteError } = await supabase
           .from('race_results')
           .delete()
           .eq('race_id', race.id);
+
+        if (deleteError) {
+          console.error('❌ Delete race results error:', deleteError);
+          throw deleteError;
+        }
+
+        console.log('✅ Race updated successfully');
       } else {
         // Create new race
         const { data, error } = await supabase
@@ -341,17 +362,23 @@ export const useSupabaseData = () => {
           .select()
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Insert race error:', error);
+          throw error;
+        }
         raceId = data.id;
+        console.log('✅ Race created successfully:', data);
       }
 
       // Insert race results if they exist
       if ('results' in race && race.results.length > 0) {
+        console.log('💾 Saving race results:', race.results.length, 'results');
+        
         // Validate all driver IDs before inserting
         for (const result of race.results) {
           if (!isValidUUID(result.driverId)) {
-            console.error('Invalid driver UUID in race results:', result.driverId);
-            throw new Error('ID du pilote invalide dans les résultats');
+            console.error('❌ Invalid driver UUID in race results:', result.driverId);
+            throw new Error(`ID du pilote invalide dans les résultats: ${result.driverId}`);
           }
         }
 
@@ -368,7 +395,12 @@ export const useSupabaseData = () => {
             }))
           );
 
-        if (resultsError) throw resultsError;
+        if (resultsError) {
+          console.error('❌ Insert race results error:', resultsError);
+          throw resultsError;
+        }
+
+        console.log('✅ Race results saved successfully');
       }
 
       await loadData();
@@ -377,21 +409,24 @@ export const useSupabaseData = () => {
         description: "La course a été sauvegardée avec succès.",
       });
     } catch (error) {
-      console.error('Error saving race:', error);
+      console.error('❌ Error saving race:', error);
       toast({
         title: "Erreur de sauvegarde",
         description: error instanceof Error ? error.message : "Impossible de sauvegarder la course.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 
   // Delete race from Supabase
   const deleteRace = async (raceId: string) => {
     try {
+      console.log('🗑️ Deleting race with ID:', raceId);
+
       // Validate UUID
       if (!isValidUUID(raceId)) {
-        console.error('Invalid UUID for race deletion:', raceId);
+        console.error('❌ Invalid UUID for race deletion:', raceId);
         throw new Error('ID de la course invalide');
       }
 
@@ -400,26 +435,33 @@ export const useSupabaseData = () => {
         .delete()
         .eq('id', raceId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Delete race error:', error);
+        throw error;
+      }
 
+      console.log('✅ Race deleted successfully');
       await loadData();
       toast({
         title: "Course supprimée",
         description: "La course a été supprimée avec succès.",
       });
     } catch (error) {
-      console.error('Error deleting race:', error);
+      console.error('❌ Error deleting race:', error);
       toast({
         title: "Erreur de suppression",
         description: error instanceof Error ? error.message : "Impossible de supprimer la course.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 
   // Update championship config
   const updateChampionshipConfig = async (title: string, year: string) => {
     try {
+      console.log('⚙️ Updating championship config:', { title, year });
+
       const { data: existingConfig } = await supabase
         .from('championship_config')
         .select('id')
@@ -435,53 +477,100 @@ export const useSupabaseData = () => {
           })
           .eq('id', existingConfig[0].id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Update config error:', error);
+          throw error;
+        }
       } else {
         const { error } = await supabase
           .from('championship_config')
           .insert({ title, year });
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ Insert config error:', error);
+          throw error;
+        }
       }
 
       setChampionshipTitle(title);
       setChampionshipYear(year);
 
+      console.log('✅ Championship config updated successfully');
       toast({
         title: "Configuration mise à jour",
         description: "La configuration du championnat a été mise à jour.",
       });
     } catch (error) {
-      console.error('Error updating championship config:', error);
+      console.error('❌ Error updating championship config:', error);
       toast({
         title: "Erreur de mise à jour",
         description: "Impossible de mettre à jour la configuration.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 
   // Reset all data
   const resetAllData = async () => {
     try {
-      // Delete all data in correct order
-      await supabase.from('race_results').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('previous_standings').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('races').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('drivers').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      console.log('🔄 Resetting all data...');
 
+      // Delete all data in correct order to avoid foreign key constraints
+      const { error: resultsError } = await supabase
+        .from('race_results')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (resultsError) {
+        console.error('❌ Error deleting race results:', resultsError);
+        throw resultsError;
+      }
+
+      const { error: standingsError } = await supabase
+        .from('previous_standings')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (standingsError) {
+        console.error('❌ Error deleting standings:', standingsError);
+        throw standingsError;
+      }
+
+      const { error: racesError } = await supabase
+        .from('races')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (racesError) {
+        console.error('❌ Error deleting races:', racesError);
+        throw racesError;
+      }
+
+      const { error: driversError } = await supabase
+        .from('drivers')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      if (driversError) {
+        console.error('❌ Error deleting drivers:', driversError);
+        throw driversError;
+      }
+
+      console.log('✅ All data reset successfully');
       await loadData();
       toast({
         title: "Données effacées",
         description: "Toutes les données ont été supprimées.",
       });
     } catch (error) {
-      console.error('Error resetting data:', error);
+      console.error('❌ Error resetting data:', error);
       toast({
         title: "Erreur de réinitialisation",
         description: "Impossible de réinitialiser les données.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 

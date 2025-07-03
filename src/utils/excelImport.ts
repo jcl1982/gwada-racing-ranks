@@ -1,3 +1,4 @@
+
 import * as XLSX from 'xlsx';
 import { Driver, Race, RaceResult } from '@/types/championship';
 
@@ -11,6 +12,11 @@ export interface ExcelRaceData {
     points: number;
   }>;
 }
+
+// Helper function to generate a valid UUID
+const generateValidUUID = (): string => {
+  return crypto.randomUUID();
+};
 
 export const parseExcelFile = (file: File, selectedRaceType: 'montagne' | 'rallye'): Promise<ExcelRaceData[]> => {
   return new Promise((resolve, reject) => {
@@ -86,10 +92,17 @@ export const convertExcelDataToRaces = (
 ): { races: Race[], newDrivers: Driver[] } => {
   const races: Race[] = [];
   const newDrivers: Driver[] = [...existingDrivers];
-  let nextDriverId = Math.max(...existingDrivers.map(d => parseInt(d.id)), 0) + 1;
+  
+  // Find the highest existing driver number to avoid conflicts
+  const maxDriverNumber = Math.max(
+    ...existingDrivers.map(d => d.number || 0),
+    0
+  );
+  let nextDriverNumber = maxDriverNumber + 1;
   
   excelData.forEach((excelRace, raceIndex) => {
-    const raceId = `imported_${Date.now()}_${raceIndex}`;
+    // Generate a valid UUID for the race
+    const raceId = generateValidUUID();
     const results: RaceResult[] = [];
     
     excelRace.results.forEach(result => {
@@ -103,13 +116,15 @@ export const convertExcelDataToRaces = (
       );
       
       if (!driver) {
+        // Create new driver with valid UUID and number
         driver = {
-          id: nextDriverId.toString(),
+          id: generateValidUUID(),
           name: driverName,
-          number: nextDriverId
+          number: nextDriverNumber
         };
         newDrivers.push(driver);
-        nextDriverId++;
+        nextDriverNumber++;
+        console.log('Created new driver:', driver);
       }
       
       results.push({
@@ -125,6 +140,12 @@ export const convertExcelDataToRaces = (
       date: excelRace.raceDate,
       type: excelRace.raceType,
       results: results.sort((a, b) => a.position - b.position)
+    });
+    
+    console.log('Created race:', {
+      id: raceId,
+      name: excelRace.raceName,
+      resultsCount: results.length
     });
   });
   
