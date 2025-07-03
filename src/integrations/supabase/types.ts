@@ -9,7 +9,173 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      championship_config: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          year: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          year?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          year?: string
+        }
+        Relationships: []
+      }
+      drivers: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          number: number | null
+          team: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          number?: number | null
+          team?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          number?: number | null
+          team?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      previous_standings: {
+        Row: {
+          created_at: string
+          driver_id: string
+          id: string
+          montagne_points: number
+          position: number
+          rallye_points: number
+          total_points: number
+        }
+        Insert: {
+          created_at?: string
+          driver_id: string
+          id?: string
+          montagne_points?: number
+          position: number
+          rallye_points?: number
+          total_points?: number
+        }
+        Update: {
+          created_at?: string
+          driver_id?: string
+          id?: string
+          montagne_points?: number
+          position?: number
+          rallye_points?: number
+          total_points?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "previous_standings_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: true
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      race_results: {
+        Row: {
+          created_at: string
+          dnf: boolean | null
+          driver_id: string
+          id: string
+          points: number
+          position: number
+          race_id: string
+          time: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dnf?: boolean | null
+          driver_id: string
+          id?: string
+          points?: number
+          position: number
+          race_id: string
+          time?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dnf?: boolean | null
+          driver_id?: string
+          id?: string
+          points?: number
+          position?: number
+          race_id?: string
+          time?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "race_results_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "race_results_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      races: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          name: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

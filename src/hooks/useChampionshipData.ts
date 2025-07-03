@@ -1,165 +1,87 @@
 
 import { useState, useEffect } from 'react';
-import { drivers as initialDrivers, montagneRaces as initialMontagneRaces, rallyeRaces as initialRallyeRaces } from '@/data/mockData';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useToast } from '@/hooks/use-toast';
 
 export const useChampionshipData = () => {
-  const [drivers, setDrivers] = useState<Driver[]>(initialDrivers);
-  const [montagneRaces, setMontagneRaces] = useState<Race[]>(initialMontagneRaces);
-  const [rallyeRaces, setRallyeRaces] = useState<Race[]>(initialRallyeRaces);
-  const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
-  const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
-  const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2024');
-  
-  const { data: savedData, saveData, clearData } = useLocalStorage();
-  const { toast } = useToast();
+  const {
+    drivers,
+    montagneRaces,
+    rallyeRaces,
+    previousStandings,
+    championshipTitle,
+    championshipYear,
+    loading,
+    saveDriver,
+    deleteDriver,
+    saveRace,
+    deleteRace,
+    updateChampionshipConfig,
+    resetAllData,
+    refreshData
+  } = useSupabaseData();
 
-  // Load saved data on startup
-  useEffect(() => {
-    if (savedData) {
-      console.log('Loading saved data:', savedData);
-      setDrivers(savedData.drivers);
-      setMontagneRaces(savedData.montagneRaces);
-      setRallyeRaces(savedData.rallyeRaces);
-      setPreviousStandings(savedData.previousStandings);
-      setChampionshipTitle(savedData.championshipTitle);
-      setChampionshipYear(savedData.championshipYear);
-      
-      toast({
-        title: "Données chargées",
-        description: "Vos données précédentes ont été restaurées.",
-      });
-    }
-  }, [savedData, toast]);
+  const { toast } = useToast();
 
   const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
 
-  // Function to automatically save data
-  const saveCurrentData = (
-    newDrivers: Driver[],
-    newMontagneRaces: Race[],
-    newRallyeRaces: Race[],
-    newPreviousStandings: ChampionshipStanding[],
-    newTitle: string,
-    newYear: string
-  ) => {
-    const dataToSave = {
-      drivers: newDrivers,
-      montagneRaces: newMontagneRaces,
-      rallyeRaces: newRallyeRaces,
-      previousStandings: newPreviousStandings,
-      championshipTitle: newTitle,
-      championshipYear: newYear
-    };
-    console.log('Saving data to localStorage:', dataToSave);
-    saveData(dataToSave);
-  };
-
-  const handleImport = (newRaces: Race[], newDrivers: Driver[]) => {
+  const handleImport = async (newRaces: Race[], newDrivers: Driver[]) => {
     console.log('Importing races:', newRaces);
     console.log('New drivers:', newDrivers);
     
-    // Save current standings as previous
-    setPreviousStandings(standings);
-    
-    // Update drivers
-    setDrivers(newDrivers);
-    
-    // Separate races by type and add to existing races
-    const newMontagneRaces = newRaces.filter(race => race.type === 'montagne');
-    const newRallyeRaces = newRaces.filter(race => race.type === 'rallye');
-    
-    const updatedMontagneRaces = [...montagneRaces, ...newMontagneRaces];
-    const updatedRallyeRaces = [...rallyeRaces, ...newRallyeRaces];
-    
-    setMontagneRaces(updatedMontagneRaces);
-    setRallyeRaces(updatedRallyeRaces);
+    try {
+      // Save all new drivers first
+      for (const driver of newDrivers) {
+        await saveDriver(driver);
+      }
+      
+      // Save all new races
+      for (const race of newRaces) {
+        await saveRace(race);
+      }
 
-    // Auto-save after import
-    saveCurrentData(
-      newDrivers,
-      updatedMontagneRaces,
-      updatedRallyeRaces,
-      standings,
-      championshipTitle,
-      championshipYear
-    );
+      await refreshData();
 
-    toast({
-      title: "Import sauvegardé",
-      description: "Les données ont été importées et sauvegardées automatiquement.",
-    });
+      toast({
+        title: "Import réussi",
+        description: "Les données ont été importées avec succès.",
+      });
+    } catch (error) {
+      console.error('Error during import:', error);
+      toast({
+        title: "Erreur d'import",
+        description: "Une erreur s'est produite lors de l'import.",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleReset = () => {
-    setDrivers([]);
-    setMontagneRaces([]);
-    setRallyeRaces([]);
-    setPreviousStandings([]);
-    
-    // Clear saved data
-    clearData();
-    
-    toast({
-      title: "Données effacées",
-      description: "Toutes les données ont été supprimées.",
-    });
+  const handleReset = async () => {
+    await resetAllData();
   };
 
-  const handleRacesChange = (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
+  const handleRacesChange = async (newMontagneRaces: Race[], newRallyeRaces: Race[]) => {
     console.log('handleRacesChange called with:', { newMontagneRaces, newRallyeRaces });
-    console.log('Current state before update:', { montagneRaces, rallyeRaces });
     
-    setMontagneRaces(newMontagneRaces);
-    setRallyeRaces(newRallyeRaces);
-    
-    // Auto-save after races modification
-    saveCurrentData(
-      drivers,
-      newMontagneRaces,
-      newRallyeRaces,
-      previousStandings,
-      championshipTitle,
-      championshipYear
-    );
-
-    toast({
-      title: "Courses mises à jour",
-      description: "Les modifications ont été sauvegardées automatiquement.",
-    });
+    // This function is called when races are modified
+    // The individual race operations are handled by the RacesManagement component
+    // We just need to refresh the data to get the latest state
+    await refreshData();
   };
 
-  const handleDriversChange = (newDrivers: Driver[]) => {
+  const handleDriversChange = async (newDrivers: Driver[]) => {
     console.log('Updating drivers:', newDrivers);
-    setDrivers(newDrivers);
     
-    // Auto-save after drivers modification
-    saveCurrentData(
-      newDrivers,
-      montagneRaces,
-      rallyeRaces,
-      previousStandings,
-      championshipTitle,
-      championshipYear
-    );
+    // This function is called when drivers are modified
+    // The individual driver operations are handled by the DriversManagement component
+    // We just need to refresh the data to get the latest state
+    await refreshData();
   };
 
-  const handleTitleChange = (title: string, year: string) => {
-    setChampionshipTitle(title);
-    setChampionshipYear(year);
-    
-    // Auto-save after title modification
-    saveCurrentData(
-      drivers,
-      montagneRaces,
-      rallyeRaces,
-      previousStandings,
-      title,
-      year
-    );
+  const handleTitleChange = async (title: string, year: string) => {
+    await updateChampionshipConfig(title, year);
   };
 
   return {
@@ -169,10 +91,16 @@ export const useChampionshipData = () => {
     standings,
     championshipTitle,
     championshipYear,
+    loading,
     handleImport,
     handleReset,
     handleRacesChange,
     handleDriversChange,
-    handleTitleChange
+    handleTitleChange,
+    // Expose Supabase operations for direct use
+    saveDriver,
+    deleteDriver,
+    saveRace,
+    deleteRace
   };
 };

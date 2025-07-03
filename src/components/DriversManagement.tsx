@@ -12,23 +12,24 @@ import { Driver } from '@/types/championship';
 interface DriversManagementProps {
   drivers: Driver[];
   onDriversChange: (drivers: Driver[]) => void;
+  saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
+  deleteDriver: (driverId: string) => Promise<void>;
 }
 
-const DriversManagement = ({ drivers, onDriversChange }: DriversManagementProps) => {
+const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver }: DriversManagementProps) => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const [formData, setFormData] = useState({ name: '', number: '' });
 
-  const handleAddDriver = () => {
+  const handleAddDriver = async () => {
     if (!formData.name.trim() || !formData.number.trim()) return;
     
-    const newDriver: Driver = {
-      id: Date.now().toString(),
+    const newDriver = {
       name: formData.name.trim(),
       number: parseInt(formData.number)
     };
     
-    onDriversChange([...drivers, newDriver]);
+    await saveDriver(newDriver);
     setFormData({ name: '', number: '' });
     setIsAddDialogOpen(false);
   };
@@ -38,23 +39,22 @@ const DriversManagement = ({ drivers, onDriversChange }: DriversManagementProps)
     setFormData({ name: driver.name, number: driver.number.toString() });
   };
 
-  const handleUpdateDriver = () => {
+  const handleUpdateDriver = async () => {
     if (!editingDriver || !formData.name.trim() || !formData.number.trim()) return;
     
-    const updatedDrivers = drivers.map(driver =>
-      driver.id === editingDriver.id
-        ? { ...driver, name: formData.name.trim(), number: parseInt(formData.number) }
-        : driver
-    );
+    const updatedDriver = {
+      ...editingDriver,
+      name: formData.name.trim(),
+      number: parseInt(formData.number)
+    };
     
-    onDriversChange(updatedDrivers);
+    await saveDriver(updatedDriver);
     setEditingDriver(null);
     setFormData({ name: '', number: '' });
   };
 
-  const handleDeleteDriver = (driverId: string) => {
-    const updatedDrivers = drivers.filter(driver => driver.id !== driverId);
-    onDriversChange(updatedDrivers);
+  const handleDeleteDriver = async (driverId: string) => {
+    await deleteDriver(driverId);
   };
 
   return (

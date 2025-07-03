@@ -12,14 +12,30 @@ const ChampionshipApp = () => {
     standings,
     championshipTitle,
     championshipYear,
+    loading,
     handleImport,
     handleReset,
     handleRacesChange,
     handleDriversChange,
-    handleTitleChange
+    handleTitleChange,
+    saveDriver,
+    deleteDriver,
+    saveRace,
+    deleteRace
   } = useChampionshipData();
 
   const { currentView, setCurrentView } = useViewNavigation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-lg">Chargement des données...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-4 md:p-8">
@@ -38,6 +54,10 @@ const ChampionshipApp = () => {
           handleRacesChange={handleRacesChange}
           handleDriversChange={handleDriversChange}
           handleTitleChange={handleTitleChange}
+          saveDriver={saveDriver}
+          deleteDriver={deleteDriver}
+          saveRace={saveRace}
+          deleteRace={deleteRace}
         />
       </div>
     </div>

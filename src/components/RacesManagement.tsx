@@ -10,29 +10,31 @@ interface RacesManagementProps {
   montagneRaces: Race[];
   rallyeRaces: Race[];
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
+  saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
+  deleteRace: (raceId: string) => Promise<void>;
 }
 
-const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }: RacesManagementProps) => {
+const RacesManagement = ({ 
+  drivers, 
+  montagneRaces, 
+  rallyeRaces, 
+  onRacesChange, 
+  saveRace, 
+  deleteRace 
+}: RacesManagementProps) => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingRace, setEditingRace] = useState<Race | null>(null);
 
   const allRaces = [...montagneRaces, ...rallyeRaces];
 
-  const handleAddRace = (raceData: Omit<Race, 'id' | 'results'>) => {
-    const newRace: Race = {
-      id: Date.now().toString(),
+  const handleAddRace = async (raceData: Omit<Race, 'id' | 'results'>) => {
+    console.log('Adding new race:', raceData);
+    
+    await saveRace({
       ...raceData,
       results: []
-    };
-    
-    console.log('Adding new race:', newRace);
-    
-    if (raceData.type === 'montagne') {
-      onRacesChange([...montagneRaces, newRace], rallyeRaces);
-    } else {
-      onRacesChange(montagneRaces, [...rallyeRaces, newRace]);
-    }
+    });
   };
 
   const handleEditRace = (race: Race) => {
@@ -41,55 +43,19 @@ const RacesManagement = ({ drivers, montagneRaces, rallyeRaces, onRacesChange }:
     setIsEditDialogOpen(true);
   };
 
-  const handleUpdateRace = (updatedRace: Race) => {
+  const handleUpdateRace = async (updatedRace: Race) => {
     if (!editingRace) return;
 
     console.log('Updating race from:', editingRace);
     console.log('Updating race to:', updatedRace);
 
-    // Copier les listes existantes
-    let updatedMontagneRaces = [...montagneRaces];
-    let updatedRallyeRaces = [...rallyeRaces];
-
-    // Si le type de la course a changé, on doit la déplacer
-    if (editingRace.type !== updatedRace.type) {
-      console.log('Race type changed, moving between lists');
-      // Supprimer de l'ancienne liste
-      if (editingRace.type === 'montagne') {
-        updatedMontagneRaces = montagneRaces.filter(race => race.id !== editingRace.id);
-        updatedRallyeRaces.push(updatedRace);
-      } else {
-        updatedRallyeRaces = rallyeRaces.filter(race => race.id !== editingRace.id);
-        updatedMontagneRaces.push(updatedRace);
-      }
-    } else {
-      console.log('Race type unchanged, updating in same list');
-      // Le type n'a pas changé, on met juste à jour dans la liste appropriée
-      if (updatedRace.type === 'montagne') {
-        const raceIndex = updatedMontagneRaces.findIndex(race => race.id === editingRace.id);
-        if (raceIndex !== -1) {
-          updatedMontagneRaces[raceIndex] = updatedRace;
-        }
-      } else {
-        const raceIndex = updatedRallyeRaces.findIndex(race => race.id === editingRace.id);
-        if (raceIndex !== -1) {
-          updatedRallyeRaces[raceIndex] = updatedRace;
-        }
-      }
-    }
-
-    console.log('Final montagne races:', updatedMontagneRaces);
-    console.log('Final rallye races:', updatedRallyeRaces);
-
-    onRacesChange(updatedMontagneRaces, updatedRallyeRaces);
+    await saveRace(updatedRace);
     setEditingRace(null);
   };
 
-  const handleDeleteRace = (raceId: string) => {
+  const handleDeleteRace = async (raceId: string) => {
     console.log('Deleting race with id:', raceId);
-    const updatedMontagneRaces = montagneRaces.filter(race => race.id !== raceId);
-    const updatedRallyeRaces = rallyeRaces.filter(race => race.id !== raceId);
-    onRacesChange(updatedMontagneRaces, updatedRallyeRaces);
+    await deleteRace(raceId);
   };
 
   return (
