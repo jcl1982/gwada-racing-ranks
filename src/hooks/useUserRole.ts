@@ -1,46 +1,29 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
+import { useAuth } from '@/hooks/useAuth';
 
 export type UserRole = 'admin' | 'user' | null;
 
 export const useUserRole = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        await fetchUserRole(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    };
+    if (authLoading) {
+      setLoading(true);
+      return;
+    }
 
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          await fetchUserRole(session.user.id);
-        } else {
-          setUserRole(null);
-          setLoading(false);
-        }
-      }
-    );
+    if (!user) {
+      setUserRole(null);
+      setLoading(false);
+      return;
+    }
 
-    getInitialSession();
-
-    return () => subscription.unsubscribe();
-  }, []);
+    fetchUserRole(user.id);
+  }, [user, authLoading]);
 
   const fetchUserRole = async (userId: string) => {
     try {
@@ -66,13 +49,12 @@ export const useUserRole = () => {
   };
 
   const isAdmin = userRole === 'admin';
-  const isAuthenticated = !!user;
 
   return {
     user,
     userRole,
     isAdmin,
     isAuthenticated,
-    loading
+    loading: loading || authLoading
   };
 };
