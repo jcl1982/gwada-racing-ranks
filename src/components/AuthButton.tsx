@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User } from 'lucide-react';
+import { LogIn, LogOut, User, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthPage from './AuthPage';
 import { useToast } from '@/hooks/use-toast';
 
 const AuthButton = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, isAdmin } = useAuth();
   const [showAuthPage, setShowAuthPage] = useState(false);
   const { toast } = useToast();
 
@@ -39,10 +39,11 @@ const AuthButton = () => {
     return (
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-2 px-3 py-1 bg-white/70 rounded-lg">
-          <User size={16} />
+          {isAdmin ? <Shield size={16} className="text-green-600" /> : <User size={16} />}
           <span className="text-sm text-gray-700 hidden sm:inline">
             {user.email}
           </span>
+          {isAdmin && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Admin</span>}
         </div>
         <Button
           variant="outline"
