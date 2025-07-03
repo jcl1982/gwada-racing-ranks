@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     try {
-      console.log('💾 Saving race:', race);
+      console.log('💾 Saving race:', race.name);
       let raceId: string;
       
       if ('id' in race) {
@@ -47,6 +47,12 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         console.log('✅ Race updated successfully');
       } else {
         // Create new race
+        console.log('Creating new race:', {
+          name: race.name,
+          date: race.date,
+          type: race.type
+        });
+
         const { data, error } = await supabase
           .from('races')
           .insert({
@@ -62,7 +68,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           throw error;
         }
         raceId = data.id;
-        console.log('✅ Race created successfully:', data);
+        console.log('✅ Race created successfully with ID:', raceId);
       }
 
       // Insert race results if they exist
@@ -77,22 +83,43 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           }
         }
 
-        const { error: resultsError } = await supabase
-          .from('race_results')
-          .insert(
-            race.results.map(result => ({
+        // Verify that all drivers exist in the database
+        const driverIds = race.results.map(r => r.driverId);
+        const { data: existingDrivers, error: driverCheckError } = await supabase
+          .from('drivers')
+          .select('id')
+          .in('id', driverIds);
+
+        if (driverCheckError) {
+          console.error('❌ Error checking drivers existence:', driverCheckError);
+          throw driverCheckError;
+        }
+
+        const existingDriverIds = existingDrivers?.map(d => d.id) || [];
+        const missingDrivers = driverIds.filter(id => !existingDriverIds.includes(id));
+        
+        if (missingDrivers.length > 0) {
+          console.error('❌ Missing drivers:', missingDrivers);
+          throw new Error(`Pilotes manquants dans la base de données: ${missingDrivers.join(', ')}`);
+        }
+
+        // Insert results one by one to better handle errors
+        for (const result of race.results) {
+          const { error: resultError } = await supabase
+            .from('race_results')
+            .insert({
               race_id: raceId,
               driver_id: result.driverId,
               position: result.position,
               points: result.points,
               time: result.time,
               dnf: result.dnf || false
-            }))
-          );
+            });
 
-        if (resultsError) {
-          console.error('❌ Insert race results error:', resultsError);
-          throw resultsError;
+          if (resultError) {
+            console.error('❌ Insert race result error:', resultError, 'for result:', result);
+            throw resultError;
+          }
         }
 
         console.log('✅ Race results saved successfully');

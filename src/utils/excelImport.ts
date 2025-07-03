@@ -100,15 +100,24 @@ export const convertExcelDataToRaces = (
   );
   let nextDriverNumber = maxDriverNumber + 1;
   
+  console.log('Converting Excel data to races...');
+  console.log('Starting with', existingDrivers.length, 'existing drivers');
+  console.log('Max driver number:', maxDriverNumber);
+  
   excelData.forEach((excelRace, raceIndex) => {
     // Generate a valid UUID for the race
     const raceId = generateValidUUID();
     const results: RaceResult[] = [];
     
-    excelRace.results.forEach(result => {
+    console.log(`Processing race ${raceIndex + 1}: ${excelRace.raceName}`);
+    
+    excelRace.results.forEach((result, resultIndex) => {
       // Ensure driverName is a string and not empty
       const driverName = String(result.driverName || '').trim();
-      if (!driverName) return;
+      if (!driverName) {
+        console.log(`Skipping empty driver name in result ${resultIndex + 1}`);
+        return;
+      }
       
       // Find or create driver
       let driver = newDrivers.find(d => 
@@ -124,7 +133,9 @@ export const convertExcelDataToRaces = (
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log('Created new driver:', driver);
+        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number})`);
+      } else {
+        console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }
       
       results.push({
@@ -142,12 +153,13 @@ export const convertExcelDataToRaces = (
       results: results.sort((a, b) => a.position - b.position)
     });
     
-    console.log('Created race:', {
-      id: raceId,
-      name: excelRace.raceName,
-      resultsCount: results.length
-    });
+    console.log(`Created race: ${excelRace.raceName} (ID: ${raceId}) with ${results.length} results`);
   });
+  
+  console.log('Conversion completed:');
+  console.log('- Races created:', races.length);
+  console.log('- Total drivers:', newDrivers.length);
+  console.log('- New drivers added:', newDrivers.length - existingDrivers.length);
   
   return { races, newDrivers };
 };

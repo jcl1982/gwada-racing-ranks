@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
@@ -28,33 +27,61 @@ export const useChampionshipData = () => {
   const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
 
   const handleImport = async (newRaces: Race[], newDrivers: Driver[]) => {
-    console.log('Importing races:', newRaces);
-    console.log('New drivers:', newDrivers);
+    console.log('Starting import process...');
+    console.log('New races to import:', newRaces.length);
+    console.log('New drivers to import:', newDrivers.length);
     
     try {
-      // Save all new drivers first
+      // First, save all new drivers
+      console.log('Step 1: Saving drivers...');
       for (const driver of newDrivers) {
-        await saveDriver(driver);
+        // Check if this is a new driver (doesn't exist in current drivers)
+        const existingDriver = drivers.find(d => d.id === driver.id);
+        if (!existingDriver) {
+          console.log('Saving new driver:', driver.name);
+          await saveDriver(driver);
+        } else {
+          console.log('Driver already exists:', driver.name);
+        }
       }
       
-      // Save all new races
+      // Wait a bit to ensure drivers are saved
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Refresh data to get the latest drivers
+      console.log('Step 2: Refreshing data after driver save...');
+      await refreshData();
+      
+      // Wait a bit more
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Then save all races with their results
+      console.log('Step 3: Saving races...');
       for (const race of newRaces) {
+        console.log('Saving race:', race.name, 'with', race.results.length, 'results');
         await saveRace(race);
+        
+        // Small delay between races to avoid conflicts
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
 
+      // Final refresh
+      console.log('Step 4: Final data refresh...');
       await refreshData();
 
+      console.log('Import completed successfully!');
       toast({
         title: "Import réussi",
-        description: "Les données ont été importées avec succès.",
+        description: `${newRaces.length} course(s) et ${newDrivers.length - drivers.length} nouveau(x) pilote(s) importé(s).`,
       });
     } catch (error) {
-      console.error('Error during import:', error);
+      console.error('❌ Error during import:', error);
       toast({
         title: "Erreur d'import",
-        description: "Une erreur s'est produite lors de l'import.",
+        description: error instanceof Error ? error.message : "Une erreur s'est produite lors de l'import.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 
