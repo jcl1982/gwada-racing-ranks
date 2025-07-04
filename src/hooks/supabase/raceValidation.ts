@@ -3,10 +3,40 @@ import { supabase } from '@/integrations/supabase/client';
 import { isValidUUID } from './utils';
 import { Race } from '@/types/championship';
 
+const isValidDate = (dateString: string): boolean => {
+  // Vérifier le format YYYY-MM-DD
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(dateString)) {
+    return false;
+  }
+  
+  // Vérifier que la date est valide
+  const date = new Date(dateString);
+  return date instanceof Date && !isNaN(date.getTime()) && date.toISOString().split('T')[0] === dateString;
+};
+
 export const validateRaceData = (race: Omit<Race, 'id' | 'results'> | Race): void => {
   if ('id' in race && !isValidUUID(race.id)) {
     console.error('❌ UUID invalide pour la course:', race.id);
     throw new Error('ID de la course invalide');
+  }
+  
+  // Valider la date
+  if (!race.date || !isValidDate(race.date)) {
+    console.error('❌ Date invalide pour la course:', race.date);
+    throw new Error(`Date de course invalide: "${race.date}". Le format attendu est YYYY-MM-DD.`);
+  }
+  
+  // Valider le nom
+  if (!race.name || race.name.trim().length === 0) {
+    console.error('❌ Nom de course invalide:', race.name);
+    throw new Error('Le nom de la course ne peut pas être vide');
+  }
+  
+  // Valider le type
+  if (!race.type || (race.type !== 'montagne' && race.type !== 'rallye')) {
+    console.error('❌ Type de course invalide:', race.type);
+    throw new Error('Le type de course doit être "montagne" ou "rallye"');
   }
 };
 
