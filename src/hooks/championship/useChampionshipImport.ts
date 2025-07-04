@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 export const useChampionshipImport = (
   drivers: Driver[],
   saveDriver: (driver: Driver) => Promise<void>,
-  saveRace: (race: Race) => Promise<void>,
+  saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
   refreshData: () => Promise<void>
 ) => {
   const { toast } = useToast();
@@ -59,24 +59,25 @@ export const useChampionshipImport = (
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
-      // Étape 2: Sauvegarder les courses une par une avec validation renforcée
-      console.log('🏁 Sauvegarde des courses...');
+      // Étape 2: Créer/Sauvegarder les courses une par une
+      console.log('🏁 Création/Sauvegarde des courses...');
       
       for (let i = 0; i < newRaces.length; i++) {
         const race = newRaces[i];
         console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
         
         try {
-          console.log(`💾 Sauvegarde de la course: ${race.name} avec ${race.results.length} résultats`);
+          // Créer la course (nouveau ou existant) - saveRace gère automatiquement la création
+          console.log(`💾 Création de la course: ${race.name} avec ${race.results.length} résultats`);
           await saveRace(race);
-          console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
+          console.log(`✅ Course créée/sauvegardée avec succès: ${race.name}`);
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (raceError) {
-          console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
+          console.error(`❌ Erreur lors de la création de la course ${race.name}:`, raceError);
           
           // Si c'est une erreur de pilotes manquants, on fait un dernier essai après refresh
           if (raceError instanceof Error && raceError.message.includes('Pilotes manquants')) {
@@ -86,13 +87,13 @@ export const useChampionshipImport = (
             
             try {
               await saveRace(race);
-              console.log(`✅ Course sauvegardée avec succès après retry: ${race.name}`);
+              console.log(`✅ Course créée avec succès après retry: ${race.name}`);
             } catch (retryError) {
               console.error(`❌ Échec définitif pour la course ${race.name}:`, retryError);
-              throw new Error(`Impossible de sauvegarder la course ${race.name} même après retry: ${retryError instanceof Error ? retryError.message : 'Erreur inconnue'}`);
+              throw new Error(`Impossible de créer la course ${race.name} même après retry: ${retryError instanceof Error ? retryError.message : 'Erreur inconnue'}`);
             }
           } else {
-            throw new Error(`Impossible de sauvegarder la course ${race.name}: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
+            throw new Error(`Impossible de créer la course ${race.name}: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
           }
         }
       }
@@ -104,7 +105,7 @@ export const useChampionshipImport = (
       console.log('🎉 Import terminé avec succès !');
       toast({
         title: "Import réussi",
-        description: `${newRaces.length} course(s) et ${newDriversToSave.length} nouveau(x) pilote(s) importé(s).`,
+        description: `${newRaces.length} course(s) créée(s) et ${newDriversToSave.length} nouveau(x) pilote(s) importé(s).`,
       });
       
     } catch (error) {

@@ -16,14 +16,15 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       let raceId: string;
       
       if ('id' in race) {
-        // Update existing race
-        await updateRaceInDatabase(race);
-        raceId = race.id;
-
-        // Delete existing results
-        await deleteExistingResults(race.id);
+        // Pour les courses avec ID, on considère qu'il s'agit toujours de nouvelles courses à créer
+        console.log('🆕 Création d\'une nouvelle course avec ID prédéfini:', race.id);
+        raceId = await createRaceInDatabase({
+          name: race.name,
+          date: race.date,
+          type: race.type
+        });
       } else {
-        // Create new race
+        // Create new race without ID
         raceId = await createRaceInDatabase(race);
       }
 
@@ -34,14 +35,14 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
 
       await loadData();
       toast({
-        title: "Course sauvegardée",
-        description: "La course a été sauvegardée avec succès.",
+        title: "Course créée",
+        description: "La course a été créée avec succès.",
       });
     } catch (error) {
-      console.error('❌ Erreur lors de la sauvegarde de la course:', error);
+      console.error('❌ Erreur lors de la création de la course:', error);
       toast({
-        title: "Erreur de sauvegarde",
-        description: error instanceof Error ? error.message : "Impossible de sauvegarder la course.",
+        title: "Erreur de création",
+        description: error instanceof Error ? error.message : "Impossible de créer la course.",
         variant: "destructive"
       });
       throw error;
