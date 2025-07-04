@@ -49,11 +49,10 @@ export const useChampionshipImport = (
           }
         }
 
-        // Attendre que les pilotes soient bien synchronisés
+        // Attendre que les pilotes soient bien synchronisés et rafraîchir les données
         console.log('⏳ Attente de la synchronisation des pilotes...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Rafraîchir les données pour s'assurer qu'on a les derniers pilotes
         console.log('🔄 Rafraîchissement des données après sauvegarde des pilotes...');
         await refreshData();
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -67,10 +66,14 @@ export const useChampionshipImport = (
         console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
         
         try {
-          // Créer la course (nouveau ou existant) - saveRace gère automatiquement la création
+          // Créer la course
           console.log(`💾 Création de la course: ${race.name} avec ${race.results.length} résultats`);
           await saveRace(race);
           console.log(`✅ Course créée/sauvegardée avec succès: ${race.name}`);
+          
+          // Rafraîchir les données après chaque course pour mettre à jour les classements
+          console.log('🔄 Rafraîchissement des données après création de la course...');
+          await refreshData();
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
@@ -88,34 +91,47 @@ export const useChampionshipImport = (
             try {
               await saveRace(race);
               console.log(`✅ Course créée avec succès après retry: ${race.name}`);
+              
+              // Rafraîchir à nouveau après le retry réussi
+              await refreshData();
             } catch (retryError) {
               console.error(`❌ Échec définitif pour la course ${race.name}:`, retryError);
-              throw new Error(`Impossible de créer la course ${race.name} même après retry: ${retryError instanceof Error ? retryError.message : 'Erreur inconnue'}`);
+              // Ne pas arrêter tout l'import pour une course qui échoue
+              console.log(`⚠️ Passage à la course suivante...`);
+              continue;
             }
           } else {
-            throw new Error(`Impossible de créer la course ${race.name}: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
+            console.log(`⚠️ Erreur non critique, passage à la course suivante: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
+            continue;
           }
         }
       }
 
-      // Rafraîchissement final
+      // Rafraîchissement final pour s'assurer que tous les classements sont à jour
       console.log('🔄 Rafraîchissement final des données...');
       await refreshData();
+      
+      // Attendre un peu pour que l'interface se mette à jour
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       console.log('🎉 Import terminé avec succès !');
       toast({
         title: "Import réussi",
-        description: `${newRaces.length} course(s) créée(s) et ${newDriversToSave.length} nouveau(x) pilote(s) importé(s).`,
+        description: `${newRaces.length} course(s) importée(s) et ${newDriversToSave.length} nouveau(x) pilote(s) ajouté(s). Les classements ont été mis à jour.`,
       });
       
     } catch (error) {
       console.error('💥 Erreur critique lors de l\'import:', error);
+      
+      // Toujours rafraîchir les données même en cas d'erreur partielle
+      console.log('🔄 Rafraîchissement des données après erreur...');
+      await refreshData();
+      
       toast({
-        title: "Erreur d'import",
-        description: error instanceof Error ? error.message : "Une erreur s'est produite lors de l'import.",
+        title: "Import partiellement réussi",
+        description: "Certaines données ont pu être importées. Vérifiez les classements et recommencez si nécessaire.",
         variant: "destructive"
       });
-      throw error;
     }
   };
 

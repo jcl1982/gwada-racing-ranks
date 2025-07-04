@@ -15,25 +15,25 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       
       let raceId: string;
       
-      if ('id' in race) {
-        // Pour les courses avec ID, on considère qu'il s'agit toujours de nouvelles courses à créer
-        console.log('🆕 Création d\'une nouvelle course avec ID prédéfini:', race.id);
-        raceId = await createRaceInDatabase({
-          name: race.name,
-          date: race.date,
-          type: race.type
-        });
-      } else {
-        // Create new race without ID
-        raceId = await createRaceInDatabase(race);
-      }
+      // Toujours créer une nouvelle course (pas de mise à jour)
+      console.log('🆕 Création d\'une nouvelle course:', race.name);
+      raceId = await createRaceInDatabase({
+        name: race.name,
+        date: race.date,
+        type: race.type
+      });
 
       // Insert race results if they exist
       if ('results' in race && race.results.length > 0) {
+        console.log('📊 Ajout des résultats à la course...');
         await saveRaceResults(raceId, race.results);
       }
 
+      console.log('✅ Course et résultats sauvegardés avec succès');
+      
+      // Toujours recharger les données après une sauvegarde réussie
       await loadData();
+      
       toast({
         title: "Course créée",
         description: "La course a été créée avec succès.",
