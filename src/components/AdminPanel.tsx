@@ -4,12 +4,13 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Users, Trophy, BarChart3, Trash2, Settings } from 'lucide-react';
-import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+import { Users, Trophy, BarChart3, Trash2, Settings, Edit } from 'lucide-react';
+import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import DriversManagement from './DriversManagement';
 import RacesManagement from './RacesManagement';
 import AdminStats from './AdminStats';
 import ChampionshipSettings from './ChampionshipSettings';
+import PointsEditor from './PointsEditor';
 
 interface AdminPanelProps {
   drivers: Driver[];
@@ -46,6 +47,25 @@ const AdminPanel = ({
 }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('drivers');
 
+  const handleRaceUpdate = async (raceId: string, results: RaceResult[]) => {
+    // Trouver la course à mettre à jour
+    const allRaces = [...montagneRaces, ...rallyeRaces];
+    const raceToUpdate = allRaces.find(race => race.id === raceId);
+    
+    if (!raceToUpdate) {
+      throw new Error('Course introuvable');
+    }
+
+    // Créer une nouvelle course avec les résultats mis à jour
+    const updatedRace: Race = {
+      ...raceToUpdate,
+      results
+    };
+
+    // Sauvegarder la course mise à jour
+    await saveRace(updatedRace);
+  };
+
   return (
     <div className="space-y-6">
       <Card className="card-glass p-6">
@@ -76,7 +96,7 @@ const AdminPanel = ({
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="drivers" className="flex items-center gap-2">
               <Users size={16} />
               Pilotes
@@ -84,6 +104,10 @@ const AdminPanel = ({
             <TabsTrigger value="races" className="flex items-center gap-2">
               <Trophy size={16} />
               Courses
+            </TabsTrigger>
+            <TabsTrigger value="points" className="flex items-center gap-2">
+              <Edit size={16} />
+              Points
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <BarChart3 size={16} />
@@ -112,6 +136,15 @@ const AdminPanel = ({
               onRacesChange={onRacesChange}
               saveRace={saveRace}
               deleteRace={deleteRace}
+            />
+          </TabsContent>
+
+          <TabsContent value="points" className="mt-6">
+            <PointsEditor
+              drivers={drivers}
+              montagneRaces={montagneRaces}
+              rallyeRaces={rallyeRaces}
+              onRaceUpdate={handleRaceUpdate}
             />
           </TabsContent>
 
