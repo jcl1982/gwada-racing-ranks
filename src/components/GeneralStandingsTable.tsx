@@ -1,5 +1,3 @@
-
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
@@ -8,7 +6,6 @@ import { getPositionBadgeColor } from '@/utils/championship';
 import PositionChange from '@/components/PositionChange';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
-
 interface GeneralStandingsTableProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
@@ -18,51 +15,33 @@ interface GeneralStandingsTableProps {
   onPrintWeb: () => void;
   onPrintUnicode: () => void;
 }
-
-const GeneralStandingsTable = ({ 
-  standings, 
-  championshipTitle, 
+const GeneralStandingsTable = ({
+  standings,
+  championshipTitle,
   championshipYear,
   onPrintPdf,
   onPrintImage,
   onPrintWeb,
   onPrintUnicode
 }: GeneralStandingsTableProps) => {
-  return (
-    <Card className="card-glass overflow-hidden" id="general-standings-table">
+  return <Card className="card-glass overflow-hidden" id="general-standings-table">
       <div className="gradient-ocean p-6 text-white relative">
         {/* Logo de la ligue (haut gauche) */}
-        <Logo 
-          src="/lovable-uploads/a51e24a3-77b9-4a08-a1b1-c446ea39eb10.png" 
-          alt="Logo Ligue Sport Automobile Guadeloupe" 
-          className="absolute top-4 left-4 w-12 h-12 object-contain"
-          removeBackground={false}
-        />
+        <Logo src="/lovable-uploads/a51e24a3-77b9-4a08-a1b1-c446ea39eb10.png" alt="Logo Ligue Sport Automobile Guadeloupe" className="absolute top-4 left-4 w-12 h-12 object-contain" removeBackground={false} />
         
         {/* Logo de la fédération (haut droite) */}
-        <Logo 
-          src="/lovable-uploads/b4f87f86-04ce-4966-aca2-cd5ab7745508.png" 
-          alt="Logo FFSA" 
-          className="absolute top-4 right-4 w-12 h-12 object-contain"
-          removeBackground={false}
-        />
+        <Logo src="/lovable-uploads/b4f87f86-04ce-4966-aca2-cd5ab7745508.png" alt="Logo FFSA" className="absolute top-4 right-4 w-12 h-12 object-contain" removeBackground={false} />
 
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Trophy size={32} />
-            <h2 className="text-2xl font-bold">Classement Général Provisoire de la LSAG Pilote</h2>
+            <h2 className="text-2xl font-bold mx-0 text-center px-0">Classement Général Provisoire de la LSAG 
+Pilote</h2>
           </div>
         </div>
         
         <div className="absolute top-6 right-20">
-          <PrintButton 
-            onPrintPdf={onPrintPdf} 
-            onPrintImage={onPrintImage}
-            onPrintWeb={onPrintWeb}
-            onPrintUnicode={onPrintUnicode}
-            variant="outline" 
-            className="bg-white/20 hover:bg-white/30 border-white/30 no-print" 
-          />
+          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={onPrintImage} onPrintWeb={onPrintWeb} onPrintUnicode={onPrintUnicode} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" />
         </div>
       </div>
 
@@ -89,13 +68,7 @@ const GeneralStandingsTable = ({
             </tr>
           </thead>
           <tbody>
-            {standings.map((standing, index) => (
-              <tr
-                key={standing.driver.id}
-                className={`border-b transition-colors hover:bg-blue-50/50 ${
-                  index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'
-                } ${standing.position === 1 ? 'champion-row' : ''}`}
-              >
+            {standings.map((standing, index) => <tr key={standing.driver.id} className={`border-b transition-colors hover:bg-blue-50/50 ${index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'} ${standing.position === 1 ? 'champion-row' : ''}`}>
                 <td className="py-1 px-1">
                   <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
                     {standing.position}
@@ -124,8 +97,7 @@ const GeneralStandingsTable = ({
                     {standing.totalPoints} pts
                   </Badge>
                 </td>
-              </tr>
-            ))}
+              </tr>)}
           </tbody>
         </table>
       </div>
@@ -138,9 +110,6 @@ const GeneralStandingsTable = ({
           <div>Agréée par le Ministère de la Ville, de la Jeunesse et des Sports sous Je N° RNA: W9G2003313</div>
         </div>
       </div>
-    </Card>
-  );
+    </Card>;
 };
-
 export default GeneralStandingsTable;
-
