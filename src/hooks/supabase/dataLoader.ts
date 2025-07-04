@@ -40,7 +40,10 @@ export const loadSupabaseData = async () => {
       throw racesError;
     }
 
-    const races: Race[] = racesData?.map(convertSupabaseRace) || [];
+    const races: Race[] = racesData?.map(race => convertSupabaseRace({
+      ...race,
+      type: race.type as 'montagne' | 'rallye' // Type assertion to handle the database string type
+    })) || [];
     console.log('✅ Courses chargées:', races.length);
 
     // Load previous standings

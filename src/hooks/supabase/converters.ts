@@ -23,13 +23,16 @@ export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?
 });
 
 export const convertSupabaseStanding = (supabaseStanding: any): ChampionshipStanding => ({
-  driverId: supabaseStanding.driver_id,
-  driverName: supabaseStanding.drivers?.name || 'Unknown Driver',
+  driver: {
+    id: supabaseStanding.driver_id,
+    name: supabaseStanding.drivers?.name || 'Unknown Driver',
+    number: supabaseStanding.drivers?.number || 0
+  },
   position: supabaseStanding.position,
   totalPoints: supabaseStanding.total_points,
   montagnePoints: supabaseStanding.montagne_points,
   rallyePoints: supabaseStanding.rallye_points,
-  positionChange: 0 // Default value, will be calculated elsewhere
+  positionChange: 0
 });
 
 // Keep the original function names for backward compatibility
