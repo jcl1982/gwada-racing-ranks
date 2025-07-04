@@ -72,10 +72,11 @@ export const useChampionshipImport = (
           console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
           successCount++;
           
-          // Délai entre chaque course
-          if (i < newRaces.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
+          // Rafraîchissement après chaque course pour mettre à jour les classements
+          console.log('🔄 Mise à jour des classements...');
+          await refreshData();
+          await new Promise(resolve => setTimeout(resolve, 800));
+          
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
           errorCount++;
@@ -84,12 +85,12 @@ export const useChampionshipImport = (
         }
       }
 
-      // Rafraîchissement final complet
-      console.log('🔄 Rafraîchissement final complet des données...');
+      // Rafraîchissement final complet pour s'assurer que tous les classements sont à jour
+      console.log('🏆 Rafraîchissement final des classements...');
       await refreshData();
       
-      // Attendre que toute l'interface soit mise à jour
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Attendre que toute l'interface et les classements soient mis à jour
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       console.log('🎉 Import terminé !', { successCount, errorCount, driversCreated: missingDrivers.length });
       
@@ -98,12 +99,12 @@ export const useChampionshipImport = (
       if (errorCount === 0) {
         toast({
           title: "Import réussi",
-          description: `${successCount} course(s) importée(s) avec succès${totalDriversMessage}. L'interface va se mettre à jour.`,
+          description: `${successCount} course(s) importée(s) avec succès${totalDriversMessage}. Les classements ont été mis à jour.`,
         });
       } else {
         toast({
           title: "Import partiellement réussi", 
-          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s)${totalDriversMessage}. L'interface va se mettre à jour.`,
+          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s)${totalDriversMessage}. Les classements ont été mis à jour.`,
           variant: "destructive"
         });
       }
@@ -111,13 +112,13 @@ export const useChampionshipImport = (
     } catch (error) {
       console.error('💥 Erreur critique lors de l\'import:', error);
       
-      // Toujours rafraîchir les données même en cas d'erreur
-      console.log('🔄 Rafraîchissement des données après erreur...');
+      // Toujours rafraîchir les données même en cas d'erreur pour mettre à jour les classements
+      console.log('🔄 Rafraîchissement des classements après erreur...');
       await refreshData();
       
       toast({
         title: "Erreur d'import",
-        description: error instanceof Error ? error.message : "Une erreur est survenue lors de l'import.",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de l'import. Les classements ont été partiellement mis à jour.",
         variant: "destructive"
       });
     }

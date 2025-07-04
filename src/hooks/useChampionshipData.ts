@@ -1,4 +1,5 @@
 
+import { useMemo } from 'react';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useChampionshipImport } from '@/hooks/championship/useChampionshipImport';
@@ -22,7 +23,25 @@ export const useChampionshipData = () => {
     refreshData
   } = useSupabaseData();
 
-  const standings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
+  // Utiliser useMemo pour s'assurer que les classements se recalculent à chaque changement de données
+  const standings = useMemo(() => {
+    console.log('🏆 Recalcul des classements avec:', {
+      drivers: drivers.length,
+      montagneRaces: montagneRaces.length,
+      rallyeRaces: rallyeRaces.length,
+      previousStandings: previousStandings.length
+    });
+    
+    const calculatedStandings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
+    
+    console.log('✅ Classements recalculés:', calculatedStandings.slice(0, 3).map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      totalPoints: s.totalPoints
+    })));
+    
+    return calculatedStandings;
+  }, [drivers, montagneRaces, rallyeRaces, previousStandings]);
 
   const { handleImport } = useChampionshipImport(
     drivers,
