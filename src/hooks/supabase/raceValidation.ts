@@ -58,12 +58,14 @@ export const validateDriverIds = (results: Array<{ driverId: string }>): void =>
 export const validateDriversExistence = async (driverIds: string[]): Promise<void> => {
   console.log('🔍 Vérification de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
   
-  // Faire plusieurs tentatives pour s'assurer que la base est bien synchronisée
+  // Faire plusieurs tentatives avec des délais plus longs pour s'assurer que la base est bien synchronisée
   let attempt = 0;
-  const maxAttempts = 3;
+  const maxAttempts = 5; // Augmenté de 3 à 5
   let existingDrivers = null;
   
   while (attempt < maxAttempts) {
+    attempt++;
+    
     const { data, error } = await supabase
       .from('drivers')
       .select('id, name')
@@ -76,15 +78,17 @@ export const validateDriversExistence = async (driverIds: string[]): Promise<voi
 
     existingDrivers = data;
     
+    console.log(`🔍 Tentative ${attempt}/${maxAttempts}: ${existingDrivers?.length || 0}/${driverIds.length} pilotes trouvés`);
+    
     if (existingDrivers && existingDrivers.length === driverIds.length) {
       console.log('✅ Tous les pilotes trouvés dans la base de données');
       break;
     }
     
-    attempt++;
     if (attempt < maxAttempts) {
-      console.log(`⏳ Tentative ${attempt}/${maxAttempts} - Attente de la synchronisation...`);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const waitTime = attempt * 2000; // Délai progressif: 2s, 4s, 6s, 8s
+      console.log(`⏳ Attente de ${waitTime}ms avant la prochaine tentative...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
     }
   }
 
@@ -94,6 +98,15 @@ export const validateDriversExistence = async (driverIds: string[]): Promise<voi
   if (missingDrivers.length > 0) {
     console.error('❌ Pilotes manquants dans la base de données:', missingDrivers.length);
     console.log('📋 IDs manquants:', missingDrivers.slice(0, 5).map(id => id.slice(0, 8) + '...'));
+    
+    // Dernière tentative de debug - vérifier si les pilotes existent vraiment
+    console.log('🔍 Vérification finale de tous les pilotes...');
+    const { data: allDrivers } = await supabase
+      .from('drivers')
+      .select('id, name');
+    
+    console.log('📊 Total pilotes dans la base:', allDrivers?.length || 0);
+    console.log('🎯 Pilotes recherchés:', driverIds.length);
     
     throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Vérifiez que tous les pilotes ont bien été créés.`);
   }

@@ -19,7 +19,7 @@ export const useChampionshipImport = (
     });
     
     try {
-      // Étape 1: Créer tous les pilotes manquants
+      // Étape 1: Créer tous les pilotes manquants avec une approche plus robuste
       const missingDrivers = newDrivers.filter(newDriver => 
         !drivers.find(existingDriver => existingDriver.id === newDriver.id)
       );
@@ -29,34 +29,56 @@ export const useChampionshipImport = (
       if (missingDrivers.length > 0) {
         console.log('💾 Création des pilotes manquants...');
         
-        for (let i = 0; i < missingDrivers.length; i++) {
-          const driver = missingDrivers[i];
-          console.log(`💾 Création pilote ${i + 1}/${missingDrivers.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
+        // Créer les pilotes par petits lots pour éviter la surcharge
+        const batchSize = 5;
+        const batches = [];
+        for (let i = 0; i < missingDrivers.length; i += batchSize) {
+          batches.push(missingDrivers.slice(i, i + batchSize));
+        }
+        
+        for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+          const batch = batches[batchIndex];
+          console.log(`💾 Traitement du lot ${batchIndex + 1}/${batches.length} (${batch.length} pilotes)`);
           
-          try {
-            await saveDriver(driver);
-            console.log(`✅ Pilote créé: ${driver.name}`);
+          // Créer tous les pilotes du lot en parallèle
+          const batchPromises = batch.map(async (driver, index) => {
+            const globalIndex = batchIndex * batchSize + index;
+            console.log(`💾 Création pilote ${globalIndex + 1}/${missingDrivers.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
             
-            // Délai entre chaque création
-            if (i < missingDrivers.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 500));
+            try {
+              await saveDriver(driver);
+              console.log(`✅ Pilote créé: ${driver.name}`);
+              return { success: true, driver };
+            } catch (driverError) {
+              console.error(`❌ Erreur lors de la création du pilote ${driver.name}:`, driverError);
+              return { success: false, driver, error: driverError };
             }
-          } catch (driverError) {
-            console.error(`❌ Erreur lors de la création du pilote ${driver.name}:`, driverError);
-            console.log(`⚠️ Passage au pilote suivant...`);
+          });
+          
+          const batchResults = await Promise.all(batchPromises);
+          const successCount = batchResults.filter(r => r.success).length;
+          const errorCount = batchResults.filter(r => !r.success).length;
+          
+          console.log(`📊 Lot ${batchIndex + 1} terminé: ${successCount} succès, ${errorCount} erreurs`);
+          
+          // Délai entre les lots pour permettre la propagation
+          if (batchIndex < batches.length - 1) {
+            console.log('⏳ Pause entre les lots...');
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         }
 
-        // Rafraîchissement critique après création des pilotes
-        console.log('🔄 Rafraîchissement des données après création des pilotes...');
+        // Rafraîchissement critique après création de tous les pilotes
+        console.log('🔄 Rafraîchissement des données après création de tous les pilotes...');
         await refreshData();
         
-        // Attendre que l'interface soit mise à jour
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log('✅ Données pilotes rafraîchies');
+        // Attendre plus longtemps pour la propagation complète
+        console.log('⏳ Attente de la propagation complète des données pilotes...');
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log('✅ Données pilotes propagées');
       }
 
-      // Étape 2: Traiter les courses une par une
+      // Étape 2: Traiter les courses une par une avec une vérification renforcée
       console.log('🏁 Traitement des courses...');
       
       let successCount = 0;
@@ -67,6 +89,10 @@ export const useChampionshipImport = (
         console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
         console.log(`📊 Nombre de résultats: ${race.results.length}`);
         
+        // Vérification supplémentaire avant de sauvegarder la course
+        const raceDriverIds = race.results.map(r => r.driverId);
+        console.log(`🔍 Vérification préalable des ${raceDriverIds.length} pilotes de la course...`);
+        
         try {
           await saveRace(race);
           console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
@@ -75,11 +101,17 @@ export const useChampionshipImport = (
           // Rafraîchissement après chaque course pour mettre à jour les classements
           console.log('🔄 Mise à jour des classements...');
           await refreshData();
-          await new Promise(resolve => setTimeout(resolve, 800));
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
           errorCount++;
+          
+          // En cas d'erreur, essayer de rafraîchir les données avant de continuer
+          console.log('🔄 Rafraîchissement après erreur...');
+          await refreshData();
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
           console.log(`⚠️ Passage à la course suivante...`);
           continue;
         }
@@ -90,7 +122,7 @@ export const useChampionshipImport = (
       await refreshData();
       
       // Attendre que toute l'interface et les classements soient mis à jour
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       console.log('🎉 Import terminé !', { successCount, errorCount, driversCreated: missingDrivers.length });
       
