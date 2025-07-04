@@ -19,6 +19,7 @@ export const useSupabaseData = () => {
   // Load all data from Supabase
   const loadData = async () => {
     try {
+      console.log('🔄 Début du chargement des données...');
       setLoading(true);
 
       const {
@@ -29,17 +30,20 @@ export const useSupabaseData = () => {
         championshipYear: year
       } = await loadSupabaseData();
 
-      setDrivers(appDrivers);
-      setRaces(appRaces);
-      setPreviousStandings(appPreviousStandings);
-      setChampionshipTitle(title);
-      setChampionshipYear(year);
-
-      console.log('✅ Data loaded successfully:', {
+      console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
         races: appRaces.length,
         standings: appPreviousStandings.length
       });
+
+      // Forcer la mise à jour des états
+      setDrivers([...appDrivers]);
+      setRaces([...appRaces]);
+      setPreviousStandings([...appPreviousStandings]);
+      setChampionshipTitle(title);
+      setChampionshipYear(year);
+
+      console.log('✅ États mis à jour avec succès');
 
     } catch (error) {
       console.error('❌ Error loading data from Supabase:', error);
@@ -53,7 +57,7 @@ export const useSupabaseData = () => {
     }
   };
 
-  // Create operation handlers
+  // Create operation handlers with improved refresh
   const { saveDriver, deleteDriver } = createDriverOperations(toast, loadData);
   const { saveRace, deleteRace } = createRaceOperations(toast, loadData);
   const { updateChampionshipConfig, resetAllData } = createConfigOperations(toast);
@@ -69,6 +73,15 @@ export const useSupabaseData = () => {
     await updateChampionshipConfig(title, year);
     setChampionshipTitle(title);
     setChampionshipYear(year);
+  };
+
+  // Enhanced refresh function that forces complete reload
+  const forceRefreshData = async () => {
+    console.log('🔄 Rafraîchissement forcé des données...');
+    await loadData();
+    // Attendre un délai pour s'assurer que tous les composants se remettent à jour
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('✅ Rafraîchissement forcé terminé');
   };
 
   // Load data on component mount
@@ -91,6 +104,6 @@ export const useSupabaseData = () => {
     deleteRace,
     updateChampionshipConfig: handleUpdateChampionshipConfig,
     resetAllData: handleResetAllData,
-    refreshData: loadData
+    refreshData: forceRefreshData
   };
 };

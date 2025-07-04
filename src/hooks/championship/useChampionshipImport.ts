@@ -47,24 +47,13 @@ export const useChampionshipImport = (
           }
         }
 
-        // Attendre que les pilotes soient bien synchronisés avec plusieurs tentatives
-        console.log('⏳ Attente de la synchronisation des pilotes...');
-        let retryCount = 0;
-        const maxRetries = 5;
-        let currentDriversCount = drivers.length;
+        // Rafraîchissement critique après création des pilotes
+        console.log('🔄 Rafraîchissement des données après création des pilotes...');
+        await refreshData();
         
-        while (retryCount < maxRetries && currentDriversCount < drivers.length + missingDrivers.length) {
-          console.log(`🔄 Tentative de synchronisation ${retryCount + 1}/${maxRetries}`);
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          await refreshData();
-          
-          // Vérifier le nombre de pilotes après refresh
-          // Note: nous ne pouvons pas accéder directement au nouveau nombre ici
-          // mais le refreshData() va mettre à jour l'état parent
-          retryCount++;
-        }
-        
-        console.log('✅ Synchronisation des pilotes terminée');
+        // Attendre que l'interface soit mise à jour
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('✅ Données pilotes rafraîchies');
       }
 
       // Étape 2: Traiter les courses une par une
@@ -95,12 +84,12 @@ export const useChampionshipImport = (
         }
       }
 
-      // Rafraîchissement final
-      console.log('🔄 Rafraîchissement final des données...');
+      // Rafraîchissement final complet
+      console.log('🔄 Rafraîchissement final complet des données...');
       await refreshData();
       
-      // Attendre que l'interface se mette à jour
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Attendre que toute l'interface soit mise à jour
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       console.log('🎉 Import terminé !', { successCount, errorCount, driversCreated: missingDrivers.length });
       
@@ -109,12 +98,12 @@ export const useChampionshipImport = (
       if (errorCount === 0) {
         toast({
           title: "Import réussi",
-          description: `${successCount} course(s) importée(s) avec succès${totalDriversMessage}.`,
+          description: `${successCount} course(s) importée(s) avec succès${totalDriversMessage}. L'interface va se mettre à jour.`,
         });
       } else {
         toast({
-          title: "Import partiellement réussi",
-          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s)${totalDriversMessage}. Vérifiez les données.`,
+          title: "Import partiellement réussi", 
+          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s)${totalDriversMessage}. L'interface va se mettre à jour.`,
           variant: "destructive"
         });
       }
