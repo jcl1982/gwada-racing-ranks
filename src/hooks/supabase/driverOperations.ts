@@ -55,7 +55,13 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
         console.log('✅ Driver created successfully:', data);
       }
 
+      // Force reload of data to ensure UI updates
+      console.log('🔄 Reloading data after driver operation...');
       await loadData();
+      
+      // Add a small delay to ensure data propagation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       toast({
         title: "Pilote sauvegardé",
         description: "Le pilote a été sauvegardé avec succès.",
@@ -92,7 +98,14 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
       }
 
       console.log('✅ Driver deleted successfully');
+      
+      // Force reload of data to ensure UI updates
+      console.log('🔄 Reloading data after driver deletion...');
       await loadData();
+      
+      // Add a small delay to ensure data propagation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       toast({
         title: "Pilote supprimé",
         description: "Le pilote a été supprimé avec succès.",
