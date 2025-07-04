@@ -55,71 +55,27 @@ export const validateDriverIds = (results: Array<{ driverId: string }>): void =>
   }
 };
 
-// Fonction avec retry pour gérer les problèmes de timing
-const queryDriversWithRetry = async (driverIds: string[], maxRetries = 3): Promise<any[]> => {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    console.log(`🔍 Tentative ${attempt}/${maxRetries} - Recherche des pilotes dans la base...`);
-    
-    const { data: existingDrivers, error: driverCheckError } = await supabase
-      .from('drivers')
-      .select('id, name')
-      .in('id', driverIds);
-
-    if (driverCheckError) {
-      console.error('❌ Erreur lors de la vérification des pilotes:', driverCheckError);
-      if (attempt === maxRetries) {
-        throw driverCheckError;
-      }
-      console.log('⏳ Attente avant retry...');
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-      continue;
-    }
-
-    console.log(`📋 Tentative ${attempt}: ${existingDrivers?.length || 0} pilotes trouvés sur ${driverIds.length} demandés`);
-    
-    if (existingDrivers && existingDrivers.length > 0) {
-      return existingDrivers;
-    }
-
-    if (attempt < maxRetries) {
-      console.log(`⏳ Aucun pilote trouvé, attente de ${1000 * attempt}ms avant retry...`);
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
-    }
-  }
-
-  return [];
-};
-
 export const validateDriversExistence = async (driverIds: string[]): Promise<void> => {
   console.log('🔍 Vérification de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
-  console.log('📋 IDs à vérifier:', driverIds.slice(0, 5), driverIds.length > 5 ? `... et ${driverIds.length - 5} autres` : '');
-
-  const existingDrivers = await queryDriversWithRetry(driverIds);
   
-  if (existingDrivers && existingDrivers.length > 0) {
-    console.log('📋 Détail des pilotes existants:', existingDrivers.map(d => `${d.name} (${d.id.slice(0, 8)}...)`));
+  const { data: existingDrivers, error } = await supabase
+    .from('drivers')
+    .select('id, name')
+    .in('id', driverIds);
+
+  if (error) {
+    console.error('❌ Erreur lors de la vérification des pilotes:', error);
+    throw new Error('Erreur lors de la vérification des pilotes dans la base de données');
   }
 
   const existingDriverIds = existingDrivers?.map(d => d.id) || [];
   const missingDrivers = driverIds.filter(id => !existingDriverIds.includes(id));
   
   if (missingDrivers.length > 0) {
-    console.error('❌ Pilotes DÉFINITIVEMENT manquants dans la base de données:', missingDrivers.length);
-    console.log('📋 IDs manquants (premiers 5):', missingDrivers.slice(0, 5).map(id => id.slice(0, 8) + '...'));
-    console.log('📋 IDs trouvés:', existingDriverIds.length);
+    console.error('❌ Pilotes manquants dans la base de données:', missingDrivers.length);
+    console.log('📋 IDs manquants:', missingDrivers.slice(0, 5).map(id => id.slice(0, 8) + '...'));
     
-    // Essayer une dernière requête avec tous les IDs pour debug
-    console.log('🔍 Vérification finale - requête directe sur tous les pilotes...');
-    const { data: allDrivers, error } = await supabase
-      .from('drivers')
-      .select('id, name');
-    
-    if (!error && allDrivers) {
-      console.log(`📊 Total des pilotes dans la base: ${allDrivers.length}`);
-      console.log('📋 Premiers pilotes dans la base:', allDrivers.slice(0, 3).map(d => `${d.name} (${d.id.slice(0, 8)}...)`));
-    }
-    
-    throw new Error(`Pilotes manquants dans la base de données. ${missingDrivers.length} pilotes non trouvés sur ${driverIds.length} attendus.`);
+    throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Ces pilotes doivent être créés avant de pouvoir sauvegarder les résultats.`);
   }
 
   console.log('✅ Tous les pilotes existent dans la base, sauvegarde des résultats...');

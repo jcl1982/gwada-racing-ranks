@@ -15,50 +15,49 @@ export const useChampionshipImport = (
     console.log('📊 Données à importer:', {
       races: newRaces.length,
       totalDrivers: newDrivers.length,
-      existingDrivers: drivers.length,
-      newDriversToAdd: newDrivers.length - drivers.length
+      existingDrivers: drivers.length
     });
     
     try {
-      // Étape 1: Identifier les nouveaux pilotes uniquement
-      const newDriversToSave = newDrivers.filter(newDriver => 
+      // Étape 1: Créer tous les pilotes manquants
+      const missingDrivers = newDrivers.filter(newDriver => 
         !drivers.find(existingDriver => existingDriver.id === newDriver.id)
       );
 
-      console.log('👤 Nouveaux pilotes à sauvegarder:', newDriversToSave.length);
+      console.log('👤 Pilotes manquants à créer:', missingDrivers.length);
       
-      // Sauvegarder les nouveaux pilotes un par un avec plus de délais
-      if (newDriversToSave.length > 0) {
-        console.log('💾 Sauvegarde des nouveaux pilotes...');
+      if (missingDrivers.length > 0) {
+        console.log('💾 Création des pilotes manquants...');
         
-        for (let i = 0; i < newDriversToSave.length; i++) {
-          const driver = newDriversToSave[i];
-          console.log(`💾 Sauvegarde pilote ${i + 1}/${newDriversToSave.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
+        for (let i = 0; i < missingDrivers.length; i++) {
+          const driver = missingDrivers[i];
+          console.log(`💾 Création pilote ${i + 1}/${missingDrivers.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
           
           try {
             await saveDriver(driver);
-            console.log(`✅ Pilote sauvegardé: ${driver.name}`);
+            console.log(`✅ Pilote créé: ${driver.name}`);
             
-            // Délai plus long entre chaque sauvegarde
-            if (i < newDriversToSave.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 1500));
+            // Délai entre chaque création
+            if (i < missingDrivers.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
             }
           } catch (driverError) {
-            console.error(`❌ Erreur lors de la sauvegarde du pilote ${driver.name}:`, driverError);
-            throw new Error(`Impossible de sauvegarder le pilote ${driver.name}: ${driverError instanceof Error ? driverError.message : 'Erreur inconnue'}`);
+            console.error(`❌ Erreur lors de la création du pilote ${driver.name}:`, driverError);
+            // Continuer avec les autres pilotes même en cas d'erreur
+            console.log(`⚠️ Passage au pilote suivant...`);
           }
         }
 
-        // Attendre plus longtemps que les pilotes soient bien synchronisés
-        console.log('⏳ Attente de la synchronisation des pilotes (5 secondes)...');
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        
-        console.log('🔄 Rafraîchissement des données après sauvegarde des pilotes...');
-        await refreshData();
+        // Attendre que les pilotes soient bien synchronisés
+        console.log('⏳ Attente de la synchronisation des pilotes (3 secondes)...');
         await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        console.log('🔄 Rafraîchissement des données après création des pilotes...');
+        await refreshData();
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
-      // Étape 2: Traiter les courses une par une avec plus de délais
+      // Étape 2: Traiter les courses une par une
       console.log('🏁 Traitement des courses...');
       
       let successCount = 0;
@@ -70,17 +69,13 @@ export const useChampionshipImport = (
         console.log(`📊 Nombre de résultats: ${race.results.length}`);
         
         try {
-          // Vérifier que les pilotes existent avant de sauvegarder la course
-          const raceDriverIds = race.results.map(r => r.driverId);
-          console.log(`🔍 Vérification de ${raceDriverIds.length} pilotes pour la course ${race.name}...`);
-          
           await saveRace(race);
           console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
           successCount++;
           
-          // Délai plus long entre chaque course
+          // Délai entre chaque course
           if (i < newRaces.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
           }
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
@@ -99,17 +94,19 @@ export const useChampionshipImport = (
       // Attendre que l'interface se mette à jour
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      console.log('🎉 Import terminé !', { successCount, errorCount });
+      console.log('🎉 Import terminé !', { successCount, errorCount, driversCreated: missingDrivers.length });
+      
+      const totalDriversMessage = missingDrivers.length > 0 ? ` et ${missingDrivers.length} nouveau(x) pilote(s) créé(s)` : '';
       
       if (errorCount === 0) {
         toast({
           title: "Import réussi",
-          description: `${successCount} course(s) importée(s) avec succès et ${newDriversToSave.length} nouveau(x) pilote(s) ajouté(s).`,
+          description: `${successCount} course(s) importée(s) avec succès${totalDriversMessage}.`,
         });
       } else {
         toast({
           title: "Import partiellement réussi",
-          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s). Vérifiez les données.`,
+          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s)${totalDriversMessage}. Vérifiez les données.`,
           variant: "destructive"
         });
       }
