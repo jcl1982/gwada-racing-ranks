@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { parseExcelFile, convertExcelDataToRaces, ExcelRaceData } from '@/utils/excelImport';
+import { parseExcelFile, convertExcelDataToRaces, type ExcelRaceData } from '@/utils/excel';
 import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 

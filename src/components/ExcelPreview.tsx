@@ -2,7 +2,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ExcelRaceData } from '@/utils/excelImport';
+import { type ExcelRaceData } from '@/utils/excel';
 
 interface ExcelPreviewProps {
   previewData: ExcelRaceData[];
