@@ -87,11 +87,11 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           throw new Error(`IDs de pilotes invalides dans les résultats: ${invalidDriverIds.join(', ')}`);
         }
 
-        // Verify that all drivers exist in the database avec requête directe
+        // Requête fraîche pour vérifier tous les pilotes existants
         const driverIds = race.results.map(r => r.driverId);
-        console.log('🔍 Vérification directe de l\'existence des pilotes:', driverIds);
+        console.log('🔍 Vérification FRAÎCHE de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
 
-        // Double vérification avec une requête fresh
+        // Triple vérification avec requête ultra-fraîche
         const { data: existingDrivers, error: driverCheckError } = await supabase
           .from('drivers')
           .select('id, name')
@@ -102,48 +102,49 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           throw driverCheckError;
         }
 
-        console.log('📋 Pilotes trouvés dans la base:', existingDrivers?.length || 0);
-        console.log('📋 Détail des pilotes trouvés:', existingDrivers?.map(d => `${d.name} (${d.id})`));
+        console.log('📋 Pilotes trouvés dans la base:', existingDrivers?.length || 0, 'sur', driverIds.length, 'demandés');
+        
+        if (existingDrivers) {
+          console.log('📋 Détail des pilotes existants:', existingDrivers.map(d => `${d.name} (${d.id})`));
+        }
 
         const existingDriverIds = existingDrivers?.map(d => d.id) || [];
         const missingDrivers = driverIds.filter(id => !existingDriverIds.includes(id));
         
         if (missingDrivers.length > 0) {
-          console.error('❌ Pilotes manquants dans la base de données:', missingDrivers);
-          console.log('📋 Pilotes demandés:', driverIds);
-          console.log('📋 Pilotes existants trouvés:', existingDriverIds);
+          console.error('❌ Pilotes DÉFINITIVEMENT manquants dans la base de données:', missingDrivers.length);
+          console.log('📋 IDs manquants:', missingDrivers);
+          console.log('📋 IDs demandés:', driverIds);
+          console.log('📋 IDs trouvés:', existingDriverIds);
           
-          // Essayer une dernière requête pour voir tous les pilotes
-          const { data: allDrivers } = await supabase
-            .from('drivers')
-            .select('id, name');
-          console.log('📋 TOUS les pilotes dans la base:', allDrivers?.map(d => `${d.name} (${d.id})`));
+          // Log détaillé pour debug
+          console.log('🔍 Analyse détaillée des pilotes manquants:');
+          missingDrivers.forEach((missingId, index) => {
+            console.log(`  ${index + 1}. ID manquant: ${missingId}`);
+          });
           
           throw new Error(`Pilotes manquants dans la base de données. IDs manquants: ${missingDrivers.join(', ')}`);
         }
 
-        console.log('✅ Tous les pilotes existent, sauvegarde des résultats...');
+        console.log('✅ Tous les pilotes existent dans la base, sauvegarde des résultats...');
 
-        // Insert results one by one to better handle errors
-        for (let i = 0; i < race.results.length; i++) {
-          const result = race.results[i];
-          console.log(`📊 Sauvegarde résultat ${i + 1}/${race.results.length} - Pilote: ${result.driverId}, Position: ${result.position}, Points: ${result.points}`);
+        // Insert results en batch pour plus d'efficacité
+        const resultsToInsert = race.results.map(result => ({
+          race_id: raceId,
+          driver_id: result.driverId,
+          position: result.position,
+          points: result.points,
+          time: result.time,
+          dnf: result.dnf || false
+        }));
 
-          const { error: resultError } = await supabase
-            .from('race_results')
-            .insert({
-              race_id: raceId,
-              driver_id: result.driverId,
-              position: result.position,
-              points: result.points,
-              time: result.time,
-              dnf: result.dnf || false
-            });
+        const { error: resultError } = await supabase
+          .from('race_results')
+          .insert(resultsToInsert);
 
-          if (resultError) {
-            console.error('❌ Erreur lors de la sauvegarde du résultat:', resultError, 'pour le résultat:', result);
-            throw resultError;
-          }
+        if (resultError) {
+          console.error('❌ Erreur lors de la sauvegarde des résultats:', resultError);
+          throw resultError;
         }
 
         console.log('✅ Tous les résultats ont été sauvegardés avec succès');

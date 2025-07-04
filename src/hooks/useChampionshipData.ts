@@ -43,8 +43,6 @@ export const useChampionshipData = () => {
 
       console.log('👤 Pilotes à sauvegarder:', newDriversToSave.length);
       
-      let currentDriversList = [...drivers]; // Copie des pilotes existants
-      
       // Sauvegarder les nouveaux pilotes un par un
       if (newDriversToSave.length > 0) {
         console.log('💾 Sauvegarde des nouveaux pilotes...');
@@ -55,13 +53,11 @@ export const useChampionshipData = () => {
           
           try {
             await saveDriver(driver);
-            // Ajouter immédiatement le pilote à notre liste locale
-            currentDriversList.push(driver);
-            console.log(`✅ Pilote sauvegardé et ajouté à la liste locale: ${driver.name}`);
+            console.log(`✅ Pilote sauvegardé: ${driver.name}`);
             
             // Délai entre chaque sauvegarde
             if (i < newDriversToSave.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await new Promise(resolve => setTimeout(resolve, 800));
             }
           } catch (driverError) {
             console.error(`❌ Erreur lors de la sauvegarde du pilote ${driver.name}:`, driverError);
@@ -70,43 +66,21 @@ export const useChampionshipData = () => {
         }
 
         // Attendre que les pilotes soient bien synchronisés
-        console.log('⏳ Attente de la synchronisation finale des pilotes...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('⏳ Attente de la synchronisation des pilotes...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
         
-        // Double vérification en rafraîchissant les données
+        // Rafraîchir les données pour s'assurer qu'on a les derniers pilotes
+        console.log('🔄 Rafraîchissement des données après sauvegarde des pilotes...');
         await refreshData();
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
-      // Étape 2: Sauvegarder les courses avec vérification renforcée
+      // Étape 2: Sauvegarder les courses une par une avec validation renforcée
       console.log('🏁 Sauvegarde des courses...');
-      console.log('📋 Pilotes disponibles pour vérification:', currentDriversList.length);
       
       for (let i = 0; i < newRaces.length; i++) {
         const race = newRaces[i];
         console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
-        
-        // Vérifier que tous les pilotes de cette course existent dans notre liste locale
-        const missingDrivers = race.results.filter(result => {
-          const driverExists = currentDriversList.find(driver => driver.id === result.driverId);
-          if (!driverExists) {
-            console.error(`❌ Pilote manquant dans la liste locale: ${result.driverId}`);
-          }
-          return !driverExists;
-        });
-        
-        if (missingDrivers.length > 0) {
-          const missingIds = missingDrivers.map(r => r.driverId);
-          console.error('❌ Pilotes manquants pour la course', race.name, ':', missingIds);
-          console.log('📋 Pilotes disponibles:', currentDriversList.map(d => `${d.name} (${d.id})`));
-          
-          // Essayer un rafraîchissement final avant d'abandonner
-          console.log('🔄 Tentative de rafraîchissement final...');
-          await refreshData();
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          throw new Error(`Pilotes manquants pour la course ${race.name}. IDs manquants: ${missingIds.join(', ')}`);
-        }
         
         try {
           console.log(`💾 Sauvegarde de la course: ${race.name} avec ${race.results.length} résultats`);
@@ -115,11 +89,27 @@ export const useChampionshipData = () => {
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 600));
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
-          throw new Error(`Impossible de sauvegarder la course ${race.name}: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
+          
+          // Si c'est une erreur de pilotes manquants, on fait un dernier essai après refresh
+          if (raceError instanceof Error && raceError.message.includes('Pilotes manquants')) {
+            console.log('🔄 Tentative de récupération - Rafraîchissement et nouvel essai...');
+            await refreshData();
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            try {
+              await saveRace(race);
+              console.log(`✅ Course sauvegardée avec succès après retry: ${race.name}`);
+            } catch (retryError) {
+              console.error(`❌ Échec définitif pour la course ${race.name}:`, retryError);
+              throw new Error(`Impossible de sauvegarder la course ${race.name} même après retry: ${retryError instanceof Error ? retryError.message : 'Erreur inconnue'}`);
+            }
+          } else {
+            throw new Error(`Impossible de sauvegarder la course ${race.name}: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
+          }
         }
       }
 
