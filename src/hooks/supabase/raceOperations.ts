@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { Race } from '@/types/championship';
 import { isValidUUID } from './utils';
@@ -88,10 +87,11 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           throw new Error(`IDs de pilotes invalides dans les résultats: ${invalidDriverIds.join(', ')}`);
         }
 
-        // Verify that all drivers exist in the database
+        // Verify that all drivers exist in the database avec requête directe
         const driverIds = race.results.map(r => r.driverId);
-        console.log('🔍 Vérification de l\'existence des pilotes:', driverIds);
+        console.log('🔍 Vérification directe de l\'existence des pilotes:', driverIds);
 
+        // Double vérification avec une requête fresh
         const { data: existingDrivers, error: driverCheckError } = await supabase
           .from('drivers')
           .select('id, name')
@@ -102,12 +102,23 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           throw driverCheckError;
         }
 
+        console.log('📋 Pilotes trouvés dans la base:', existingDrivers?.length || 0);
+        console.log('📋 Détail des pilotes trouvés:', existingDrivers?.map(d => `${d.name} (${d.id})`));
+
         const existingDriverIds = existingDrivers?.map(d => d.id) || [];
         const missingDrivers = driverIds.filter(id => !existingDriverIds.includes(id));
         
         if (missingDrivers.length > 0) {
           console.error('❌ Pilotes manquants dans la base de données:', missingDrivers);
-          console.log('📋 Pilotes existants trouvés:', existingDrivers);
+          console.log('📋 Pilotes demandés:', driverIds);
+          console.log('📋 Pilotes existants trouvés:', existingDriverIds);
+          
+          // Essayer une dernière requête pour voir tous les pilotes
+          const { data: allDrivers } = await supabase
+            .from('drivers')
+            .select('id, name');
+          console.log('📋 TOUS les pilotes dans la base:', allDrivers?.map(d => `${d.name} (${d.id})`));
+          
           throw new Error(`Pilotes manquants dans la base de données. IDs manquants: ${missingDrivers.join(', ')}`);
         }
 

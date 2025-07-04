@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
@@ -37,28 +36,32 @@ export const useChampionshipData = () => {
     });
     
     try {
-      // Étape 1: Identifier et sauvegarder UNIQUEMENT les nouveaux pilotes
+      // Étape 1: Identifier les nouveaux pilotes uniquement
       const newDriversToSave = newDrivers.filter(newDriver => 
         !drivers.find(existingDriver => existingDriver.id === newDriver.id)
       );
 
       console.log('👤 Pilotes à sauvegarder:', newDriversToSave.length);
       
+      let currentDriversList = [...drivers]; // Copie des pilotes existants
+      
+      // Sauvegarder les nouveaux pilotes un par un
       if (newDriversToSave.length > 0) {
         console.log('💾 Sauvegarde des nouveaux pilotes...');
         
-        // Sauvegarder les pilotes un par un avec vérification
         for (let i = 0; i < newDriversToSave.length; i++) {
           const driver = newDriversToSave[i];
           console.log(`💾 Sauvegarde pilote ${i + 1}/${newDriversToSave.length}: ${driver.name} (ID: ${driver.id})`);
           
           try {
             await saveDriver(driver);
-            console.log(`✅ Pilote sauvegardé avec succès: ${driver.name}`);
+            // Ajouter immédiatement le pilote à notre liste locale
+            currentDriversList.push(driver);
+            console.log(`✅ Pilote sauvegardé et ajouté à la liste locale: ${driver.name}`);
             
-            // Délai entre chaque sauvegarde pour éviter les conflits
+            // Délai entre chaque sauvegarde
             if (i < newDriversToSave.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 300));
+              await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (driverError) {
             console.error(`❌ Erreur lors de la sauvegarde du pilote ${driver.name}:`, driverError);
@@ -66,55 +69,53 @@ export const useChampionshipData = () => {
           }
         }
 
-        // Attendre que les pilotes soient bien en base
-        console.log('⏳ Attente de la synchronisation des pilotes...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Attendre que les pilotes soient bien synchronisés
+        console.log('⏳ Attente de la synchronisation finale des pilotes...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Rafraîchir les données pour récupérer les nouveaux pilotes
-        console.log('🔄 Rafraîchissement des données après sauvegarde des pilotes...');
+        // Double vérification en rafraîchissant les données
         await refreshData();
-        
-        // Attendre encore un peu pour s'assurer que les données sont à jour
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
 
-      // Étape 2: Vérifier que tous les pilotes nécessaires existent maintenant
-      console.log('🔍 Vérification de la présence de tous les pilotes...');
-      await refreshData(); // Double vérification
-      
-      // Récupérer les pilotes actuels après la sauvegarde
-      const currentDrivers = drivers.length > 0 ? drivers : newDrivers.filter(driver => 
-        drivers.find(d => d.id === driver.id) || newDriversToSave.find(d => d.id === driver.id)
-      );
-      
-      console.log('📋 Pilotes actuellement disponibles:', currentDrivers.length);
-
-      // Étape 3: Sauvegarder les courses avec vérification des pilotes
+      // Étape 2: Sauvegarder les courses avec vérification renforcée
       console.log('🏁 Sauvegarde des courses...');
+      console.log('📋 Pilotes disponibles pour vérification:', currentDriversList.length);
       
       for (let i = 0; i < newRaces.length; i++) {
         const race = newRaces[i];
-        console.log(`🏁 Sauvegarde course ${i + 1}/${newRaces.length}: ${race.name}`);
+        console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
         
-        // Vérifier que tous les pilotes de cette course existent
-        const missingDrivers = race.results.filter(result => 
-          !currentDrivers.find(driver => driver.id === result.driverId) &&
-          !newDrivers.find(driver => driver.id === result.driverId)
-        );
+        // Vérifier que tous les pilotes de cette course existent dans notre liste locale
+        const missingDrivers = race.results.filter(result => {
+          const driverExists = currentDriversList.find(driver => driver.id === result.driverId);
+          if (!driverExists) {
+            console.error(`❌ Pilote manquant dans la liste locale: ${result.driverId}`);
+          }
+          return !driverExists;
+        });
         
         if (missingDrivers.length > 0) {
           const missingIds = missingDrivers.map(r => r.driverId);
           console.error('❌ Pilotes manquants pour la course', race.name, ':', missingIds);
+          console.log('📋 Pilotes disponibles:', currentDriversList.map(d => `${d.name} (${d.id})`));
+          
+          // Essayer un rafraîchissement final avant d'abandonner
+          console.log('🔄 Tentative de rafraîchissement final...');
+          await refreshData();
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
           throw new Error(`Pilotes manquants pour la course ${race.name}. IDs manquants: ${missingIds.join(', ')}`);
         }
         
         try {
+          console.log(`💾 Sauvegarde de la course: ${race.name} avec ${race.results.length} résultats`);
           await saveRace(race);
           console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 400));
+            await new Promise(resolve => setTimeout(resolve, 600));
           }
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
@@ -122,7 +123,7 @@ export const useChampionshipData = () => {
         }
       }
 
-      // Étape 4: Rafraîchissement final
+      // Rafraîchissement final
       console.log('🔄 Rafraîchissement final des données...');
       await refreshData();
 
