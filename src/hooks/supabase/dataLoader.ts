@@ -1,94 +1,102 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { convertSupabaseDriverToApp, convertSupabaseRaceToApp } from './converters';
-import { SupabaseRace } from './types';
+import { convertSupabaseDriver, convertSupabaseRace, convertSupabaseStanding } from './converters';
 
 export const loadSupabaseData = async () => {
-  // Load drivers
-  const { data: driversData, error: driversError } = await supabase
-    .from('drivers')
-    .select('*')
-    .order('name');
+  console.log('🔄 Chargement des données depuis Supabase...');
 
-  if (driversError) {
-    console.error('Drivers error:', driversError);
-    throw driversError;
-  }
+  try {
+    // Load drivers
+    console.log('👤 Chargement des pilotes...');
+    const { data: driversData, error: driversError } = await supabase
+      .from('drivers')
+      .select('*')
+      .order('name');
 
-  // Load races
-  const { data: racesData, error: racesError } = await supabase
-    .from('races')
-    .select('*')
-    .order('date');
+    if (driversError) {
+      console.error('❌ Erreur lors du chargement des pilotes:', driversError);
+      throw driversError;
+    }
 
-  if (racesError) {
-    console.error('Races error:', racesError);
-    throw racesError;
-  }
+    const drivers: Driver[] = driversData?.map(convertSupabaseDriver) || [];
+    console.log('✅ Pilotes chargés:', drivers.length);
 
-  // Load race results
-  const { data: resultsData, error: resultsError } = await supabase
-    .from('race_results')
-    .select('*');
+    // Load races with results
+    console.log('🏁 Chargement des courses...');
+    const { data: racesData, error: racesError } = await supabase
+      .from('races')
+      .select(`
+        *,
+        race_results (
+          *,
+          drivers (*)
+        )
+      `)
+      .order('date');
 
-  if (resultsError) {
-    console.error('Results error:', resultsError);
-    throw resultsError;
-  }
+    if (racesError) {
+      console.error('❌ Erreur lors du chargement des courses:', racesError);
+      throw racesError;
+    }
 
-  // Load championship config
-  const { data: configData, error: configError } = await supabase
-    .from('championship_config')
-    .select('*')
-    .limit(1);
+    const races: Race[] = racesData?.map(convertSupabaseRace) || [];
+    console.log('✅ Courses chargées:', races.length);
 
-  if (configError) {
-    console.error('Config error:', configError);
-    throw configError;
-  }
+    // Load previous standings
+    console.log('📊 Chargement des classements précédents...');
+    const { data: standingsData, error: standingsError } = await supabase
+      .from('previous_standings')
+      .select(`
+        *,
+        drivers (*)
+      `)
+      .order('position');
 
-  // Load previous standings
-  const { data: standingsData, error: standingsError } = await supabase
-    .from('previous_standings')
-    .select('*');
+    if (standingsError) {
+      console.error('❌ Erreur lors du chargement des classements:', standingsError);
+      throw standingsError;
+    }
 
-  if (standingsError) {
-    console.error('Standings error:', standingsError);
-    throw standingsError;
-  }
+    const previousStandings: ChampionshipStanding[] = standingsData?.map(convertSupabaseStanding) || [];
+    console.log('✅ Classements précédents chargés:', previousStandings.length);
 
-  // Convert and return data
-  const appDrivers = driversData?.map(convertSupabaseDriverToApp) || [];
-  
-  const appRaces = racesData?.map(race => {
-    const raceResults = resultsData?.filter(result => result.race_id === race.id) || [];
-    const typedRace: SupabaseRace = {
-      ...race,
-      type: race.type as 'montagne' | 'rallye'
+    // Load championship config
+    console.log('⚙️ Chargement de la configuration...');
+    const { data: configData, error: configError } = await supabase
+      .from('championship_config')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (configError) {
+      console.error('❌ Erreur lors du chargement de la configuration:', configError);
+      throw configError;
+    }
+
+    const championshipTitle = configData?.title || 'Championnat Automobile';
+    const championshipYear = configData?.year || 'de Guadeloupe 2024';
+
+    console.log('✅ Configuration chargée:', { championshipTitle, championshipYear });
+
+    const result = {
+      drivers,
+      races,
+      previousStandings,
+      championshipTitle,
+      championshipYear
     };
-    return convertSupabaseRaceToApp(typedRace, raceResults);
-  }) || [];
 
-  // Convert previous standings
-  const appPreviousStandings: ChampionshipStanding[] = standingsData?.map(standing => {
-    const driver = appDrivers.find(d => d.id === standing.driver_id);
-    return {
-      driver: driver!,
-      position: standing.position,
-      montagnePoints: standing.montagne_points,
-      rallyePoints: standing.rallye_points,
-      totalPoints: standing.total_points,
-      previousPosition: standing.position,
-      positionChange: 0
-    };
-  }).filter(standing => standing.driver) || [];
+    console.log('🎉 Toutes les données chargées avec succès:', {
+      drivers: result.drivers.length,
+      races: result.races.length,
+      previousStandings: result.previousStandings.length
+    });
 
-  return {
-    drivers: appDrivers,
-    races: appRaces,
-    previousStandings: appPreviousStandings,
-    championshipTitle: configData?.[0]?.title || 'Championnat Automobile',
-    championshipYear: configData?.[0]?.year || 'de Guadeloupe 2024'
-  };
+    return result;
+
+  } catch (error) {
+    console.error('💥 Erreur fatale lors du chargement des données:', error);
+    throw error;
+  }
 };

@@ -58,14 +58,34 @@ export const validateDriverIds = (results: Array<{ driverId: string }>): void =>
 export const validateDriversExistence = async (driverIds: string[]): Promise<void> => {
   console.log('🔍 Vérification de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
   
-  const { data: existingDrivers, error } = await supabase
-    .from('drivers')
-    .select('id, name')
-    .in('id', driverIds);
+  // Faire plusieurs tentatives pour s'assurer que la base est bien synchronisée
+  let attempt = 0;
+  const maxAttempts = 3;
+  let existingDrivers = null;
+  
+  while (attempt < maxAttempts) {
+    const { data, error } = await supabase
+      .from('drivers')
+      .select('id, name')
+      .in('id', driverIds);
 
-  if (error) {
-    console.error('❌ Erreur lors de la vérification des pilotes:', error);
-    throw new Error('Erreur lors de la vérification des pilotes dans la base de données');
+    if (error) {
+      console.error('❌ Erreur lors de la vérification des pilotes:', error);
+      throw new Error('Erreur lors de la vérification des pilotes dans la base de données');
+    }
+
+    existingDrivers = data;
+    
+    if (existingDrivers && existingDrivers.length === driverIds.length) {
+      console.log('✅ Tous les pilotes trouvés dans la base de données');
+      break;
+    }
+    
+    attempt++;
+    if (attempt < maxAttempts) {
+      console.log(`⏳ Tentative ${attempt}/${maxAttempts} - Attente de la synchronisation...`);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
   }
 
   const existingDriverIds = existingDrivers?.map(d => d.id) || [];
@@ -75,7 +95,7 @@ export const validateDriversExistence = async (driverIds: string[]): Promise<voi
     console.error('❌ Pilotes manquants dans la base de données:', missingDrivers.length);
     console.log('📋 IDs manquants:', missingDrivers.slice(0, 5).map(id => id.slice(0, 8) + '...'));
     
-    throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Ces pilotes doivent être créés avant de pouvoir sauvegarder les résultats.`);
+    throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Vérifiez que tous les pilotes ont bien été créés.`);
   }
 
   console.log('✅ Tous les pilotes existent dans la base, sauvegarde des résultats...');

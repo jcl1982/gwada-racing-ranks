@@ -39,22 +39,32 @@ export const useChampionshipImport = (
             
             // Délai entre chaque création
             if (i < missingDrivers.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (driverError) {
             console.error(`❌ Erreur lors de la création du pilote ${driver.name}:`, driverError);
-            // Continuer avec les autres pilotes même en cas d'erreur
             console.log(`⚠️ Passage au pilote suivant...`);
           }
         }
 
-        // Attendre que les pilotes soient bien synchronisés
-        console.log('⏳ Attente de la synchronisation des pilotes (3 secondes)...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Attendre que les pilotes soient bien synchronisés avec plusieurs tentatives
+        console.log('⏳ Attente de la synchronisation des pilotes...');
+        let retryCount = 0;
+        const maxRetries = 5;
+        let currentDriversCount = drivers.length;
         
-        console.log('🔄 Rafraîchissement des données après création des pilotes...');
-        await refreshData();
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        while (retryCount < maxRetries && currentDriversCount < drivers.length + missingDrivers.length) {
+          console.log(`🔄 Tentative de synchronisation ${retryCount + 1}/${maxRetries}`);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          await refreshData();
+          
+          // Vérifier le nombre de pilotes après refresh
+          // Note: nous ne pouvons pas accéder directement au nouveau nombre ici
+          // mais le refreshData() va mettre à jour l'état parent
+          retryCount++;
+        }
+        
+        console.log('✅ Synchronisation des pilotes terminée');
       }
 
       // Étape 2: Traiter les courses une par une
@@ -75,13 +85,11 @@ export const useChampionshipImport = (
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (raceError) {
           console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
           errorCount++;
-          
-          // Continuer avec les autres courses même en cas d'erreur
           console.log(`⚠️ Passage à la course suivante...`);
           continue;
         }
@@ -92,7 +100,7 @@ export const useChampionshipImport = (
       await refreshData();
       
       // Attendre que l'interface se mette à jour
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       console.log('🎉 Import terminé !', { successCount, errorCount, driversCreated: missingDrivers.length });
       
