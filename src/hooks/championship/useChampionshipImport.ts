@@ -41,7 +41,7 @@ export const useChampionshipImport = (
             
             // Délai entre chaque sauvegarde
             if (i < newDriversToSave.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 800));
+              await new Promise(resolve => setTimeout(resolve, 500));
             }
           } catch (driverError) {
             console.error(`❌ Erreur lors de la sauvegarde du pilote ${driver.name}:`, driverError);
@@ -49,87 +49,77 @@ export const useChampionshipImport = (
           }
         }
 
-        // Attendre que les pilotes soient bien synchronisés et rafraîchir les données
+        // Attendre que les pilotes soient bien synchronisés
         console.log('⏳ Attente de la synchronisation des pilotes...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
         
         console.log('🔄 Rafraîchissement des données après sauvegarde des pilotes...');
         await refreshData();
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
 
-      // Étape 2: Créer/Sauvegarder les courses une par une
-      console.log('🏁 Création/Sauvegarde des courses...');
+      // Étape 2: Traiter les courses une par une
+      console.log('🏁 Traitement des courses...');
+      
+      let successCount = 0;
+      let errorCount = 0;
       
       for (let i = 0; i < newRaces.length; i++) {
         const race = newRaces[i];
         console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
         
         try {
-          // Créer la course
-          console.log(`💾 Création de la course: ${race.name} avec ${race.results.length} résultats`);
+          console.log(`💾 Sauvegarde de la course: ${race.name} avec ${race.results.length} résultats`);
           await saveRace(race);
-          console.log(`✅ Course créée/sauvegardée avec succès: ${race.name}`);
-          
-          // Rafraîchir les données après chaque course pour mettre à jour les classements
-          console.log('🔄 Rafraîchissement des données après création de la course...');
-          await refreshData();
+          console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
+          successCount++;
           
           // Délai entre chaque course
           if (i < newRaces.length - 1) {
             await new Promise(resolve => setTimeout(resolve, 1000));
           }
         } catch (raceError) {
-          console.error(`❌ Erreur lors de la création de la course ${race.name}:`, raceError);
+          console.error(`❌ Erreur lors de la sauvegarde de la course ${race.name}:`, raceError);
+          errorCount++;
           
-          // Si c'est une erreur de pilotes manquants, on fait un dernier essai après refresh
-          if (raceError instanceof Error && raceError.message.includes('Pilotes manquants')) {
-            console.log('🔄 Tentative de récupération - Rafraîchissement et nouvel essai...');
-            await refreshData();
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            try {
-              await saveRace(race);
-              console.log(`✅ Course créée avec succès après retry: ${race.name}`);
-              
-              // Rafraîchir à nouveau après le retry réussi
-              await refreshData();
-            } catch (retryError) {
-              console.error(`❌ Échec définitif pour la course ${race.name}:`, retryError);
-              // Ne pas arrêter tout l'import pour une course qui échoue
-              console.log(`⚠️ Passage à la course suivante...`);
-              continue;
-            }
-          } else {
-            console.log(`⚠️ Erreur non critique, passage à la course suivante: ${raceError instanceof Error ? raceError.message : 'Erreur inconnue'}`);
-            continue;
-          }
+          // Continuer avec les autres courses même en cas d'erreur
+          console.log(`⚠️ Passage à la course suivante...`);
+          continue;
         }
       }
 
-      // Rafraîchissement final pour s'assurer que tous les classements sont à jour
+      // Rafraîchissement final
       console.log('🔄 Rafraîchissement final des données...');
       await refreshData();
       
-      // Attendre un peu pour que l'interface se mette à jour
+      // Attendre que l'interface se mette à jour
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      console.log('🎉 Import terminé avec succès !');
-      toast({
-        title: "Import réussi",
-        description: `${newRaces.length} course(s) importée(s) et ${newDriversToSave.length} nouveau(x) pilote(s) ajouté(s). Les classements ont été mis à jour.`,
-      });
+      console.log('🎉 Import terminé !', { successCount, errorCount });
+      
+      if (errorCount === 0) {
+        toast({
+          title: "Import réussi",
+          description: `${successCount} course(s) importée(s) avec succès et ${newDriversToSave.length} nouveau(x) pilote(s) ajouté(s).`,
+        });
+      } else {
+        toast({
+          title: "Import partiellement réussi",
+          description: `${successCount} course(s) importée(s) avec succès, ${errorCount} erreur(s). Vérifiez les données.`,
+          variant: "destructive"
+        });
+      }
       
     } catch (error) {
       console.error('💥 Erreur critique lors de l\'import:', error);
       
-      // Toujours rafraîchir les données même en cas d'erreur partielle
+      // Toujours rafraîchir les données même en cas d'erreur
       console.log('🔄 Rafraîchissement des données après erreur...');
       await refreshData();
       
       toast({
-        title: "Import partiellement réussi",
-        description: "Certaines données ont pu être importées. Vérifiez les classements et recommencez si nécessaire.",
+        title: "Erreur d'import",
+        description: error instanceof Error ? error.message : "Une erreur est survenue lors de l'import.",
         variant: "destructive"
       });
     }

@@ -3,7 +3,7 @@ import { Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { validateRaceData } from './raceValidation';
 import { deleteExistingResults, saveRaceResults } from './raceResultsOperations';
-import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase } from './raceDatabaseOperations';
+import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, findExistingRace } from './raceDatabaseOperations';
 
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
@@ -15,13 +15,26 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       
       let raceId: string;
       
-      // Toujours créer une nouvelle course (pas de mise à jour)
-      console.log('🆕 Création d\'une nouvelle course:', race.name);
-      raceId = await createRaceInDatabase({
-        name: race.name,
-        date: race.date,
-        type: race.type
-      });
+      // Vérifier si une course avec le même nom et date existe déjà
+      const existingRace = await findExistingRace(race.name, race.date);
+      
+      if (existingRace) {
+        console.log('🔄 Course existante trouvée, mise à jour:', existingRace.id);
+        raceId = existingRace.id;
+        
+        // Supprimer les anciens résultats avant d'ajouter les nouveaux
+        if ('results' in race && race.results.length > 0) {
+          console.log('🗑️ Suppression des anciens résultats...');
+          await deleteExistingResults(raceId);
+        }
+      } else {
+        console.log('🆕 Création d\'une nouvelle course:', race.name);
+        raceId = await createRaceInDatabase({
+          name: race.name,
+          date: race.date,
+          type: race.type
+        });
+      }
 
       // Insert race results if they exist
       if ('results' in race && race.results.length > 0) {
@@ -35,14 +48,14 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       await loadData();
       
       toast({
-        title: "Course créée",
-        description: "La course a été créée avec succès.",
+        title: existingRace ? "Course mise à jour" : "Course créée",
+        description: existingRace ? "La course a été mise à jour avec succès." : "La course a été créée avec succès.",
       });
     } catch (error) {
-      console.error('❌ Erreur lors de la création de la course:', error);
+      console.error('❌ Erreur lors de la sauvegarde de la course:', error);
       toast({
-        title: "Erreur de création",
-        description: error instanceof Error ? error.message : "Impossible de créer la course.",
+        title: "Erreur de sauvegarde",
+        description: error instanceof Error ? error.message : "Impossible de sauvegarder la course.",
         variant: "destructive"
       });
       throw error;

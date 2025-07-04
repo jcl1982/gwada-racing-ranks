@@ -3,6 +3,30 @@ import { supabase } from '@/integrations/supabase/client';
 import { Race } from '@/types/championship';
 import { isValidUUID } from './utils';
 
+export const findExistingRace = async (name: string, date: string): Promise<{ id: string } | null> => {
+  console.log('🔍 Recherche d\'une course existante:', { name, date });
+  
+  const { data, error } = await supabase
+    .from('races')
+    .select('id')
+    .eq('name', name)
+    .eq('date', date)
+    .maybeSingle();
+
+  if (error) {
+    console.error('❌ Erreur lors de la recherche de course:', error);
+    return null;
+  }
+
+  if (data) {
+    console.log('✅ Course existante trouvée:', data.id);
+  } else {
+    console.log('ℹ️ Aucune course existante trouvée');
+  }
+
+  return data;
+};
+
 export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): Promise<string> => {
   console.log('➕ Création d\'une nouvelle course:', {
     name: race.name,
