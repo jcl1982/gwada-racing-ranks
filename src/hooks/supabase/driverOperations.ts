@@ -79,7 +79,7 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
 
   const deleteDriver = async (driverId: string) => {
     try {
-      console.log('🗑️ Deleting driver with ID:', driverId);
+      console.log('🗑️ Starting driver deletion process for ID:', driverId);
 
       // Validate UUID
       if (!isValidUUID(driverId)) {
@@ -87,14 +87,92 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
         throw new Error('ID du pilote invalide');
       }
 
-      const { error } = await supabase
+      // First, check if driver exists
+      console.log('🔍 Checking if driver exists...');
+      const { data: existingDriver, error: checkError } = await supabase
+        .from('drivers')
+        .select('id, name')
+        .eq('id', driverId)
+        .single();
+
+      if (checkError) {
+        console.error('❌ Error checking driver existence:', checkError);
+        if (checkError.code === 'PGRST116') {
+          throw new Error('Ce pilote n\'existe pas ou a déjà été supprimé');
+        }
+        throw checkError;
+      }
+
+      console.log('✅ Driver found:', existingDriver);
+
+      // Check for related race results
+      console.log('🔍 Checking for related race results...');
+      const { data: relatedResults, error: resultsError } = await supabase
+        .from('race_results')
+        .select('id, race_id')
+        .eq('driver_id', driverId);
+
+      if (resultsError) {
+        console.error('❌ Error checking race results:', resultsError);
+        throw resultsError;
+      }
+
+      if (relatedResults && relatedResults.length > 0) {
+        console.log(`⚠️ Found ${relatedResults.length} related race results. Deleting them first...`);
+        
+        // Delete race results first
+        const { error: deleteResultsError } = await supabase
+          .from('race_results')
+          .delete()
+          .eq('driver_id', driverId);
+
+        if (deleteResultsError) {
+          console.error('❌ Error deleting race results:', deleteResultsError);
+          throw new Error('Impossible de supprimer les résultats de course associés');
+        }
+
+        console.log('✅ Race results deleted successfully');
+      }
+
+      // Check for related previous standings
+      console.log('🔍 Checking for related previous standings...');
+      const { data: relatedStandings, error: standingsError } = await supabase
+        .from('previous_standings')
+        .select('id')
+        .eq('driver_id', driverId);
+
+      if (standingsError) {
+        console.error('❌ Error checking previous standings:', standingsError);
+        throw standingsError;
+      }
+
+      if (relatedStandings && relatedStandings.length > 0) {
+        console.log(`⚠️ Found ${relatedStandings.length} related previous standings. Deleting them first...`);
+        
+        // Delete previous standings
+        const { error: deleteStandingsError } = await supabase
+          .from('previous_standings')
+          .delete()
+          .eq('driver_id', driverId);
+
+        if (deleteStandingsError) {
+          console.error('❌ Error deleting previous standings:', deleteStandingsError);
+          throw new Error('Impossible de supprimer les classements précédents associés');
+        }
+
+        console.log('✅ Previous standings deleted successfully');
+      }
+
+      // Finally, delete the driver
+      console.log('🗑️ Deleting driver...');
+      const { error: deleteDriverError } = await supabase
         .from('drivers')
         .delete()
         .eq('id', driverId);
 
-      if (error) {
-        console.error('❌ Delete driver error:', error);
-        throw error;
+      if (deleteDriverError) {
+        console.error('❌ Delete driver error:', deleteDriverError);
+        throw deleteDriverError;
       }
 
       console.log('✅ Driver deleted successfully');
@@ -108,7 +186,7 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
       
       toast({
         title: "Pilote supprimé",
-        description: "Le pilote a été supprimé avec succès.",
+        description: `Le pilote "${existingDriver.name}" a été supprimé avec succès.`,
       });
     } catch (error) {
       console.error('❌ Error deleting driver:', error);

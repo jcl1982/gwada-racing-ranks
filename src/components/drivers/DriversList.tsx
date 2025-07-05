@@ -8,9 +8,10 @@ interface DriversListProps {
   onEdit: (driver: Driver) => void;
   onDelete: (driverId: string) => void;
   isLoading: boolean;
+  deletingDriverId?: string | null;
 }
 
-const DriversList = ({ drivers, onEdit, onDelete, isLoading }: DriversListProps) => {
+const DriversList = ({ drivers, onEdit, onDelete, isLoading, deletingDriverId }: DriversListProps) => {
   if (drivers.length === 0) {
     return (
       <Card className="p-8 text-center">
@@ -28,6 +29,7 @@ const DriversList = ({ drivers, onEdit, onDelete, isLoading }: DriversListProps)
           onEdit={onEdit}
           onDelete={onDelete}
           isLoading={isLoading}
+          isDeleting={deletingDriverId === driver.id}
         />
       ))}
     </div>
