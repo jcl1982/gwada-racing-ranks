@@ -202,6 +202,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_missing_drivers: {
+        Args: { race_id_param?: string }
+        Returns: {
+          driver_id: string
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
