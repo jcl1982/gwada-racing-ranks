@@ -58,37 +58,60 @@ export const validateDriverIds = (results: Array<{ driverId: string }>): void =>
 export const validateDriversExistence = async (driverIds: string[]): Promise<void> => {
   console.log('🔍 Vérification de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
   
-  // Faire plusieurs tentatives avec des délais plus longs pour s'assurer que la base est bien synchronisée
+  // Stratégie renforcée avec plus de tentatives et délais plus longs
   let attempt = 0;
-  const maxAttempts = 5; // Augmenté de 3 à 5
+  const maxAttempts = 8; // Augmenté de 5 à 8
   let existingDrivers = null;
   
   while (attempt < maxAttempts) {
     attempt++;
     
-    const { data, error } = await supabase
-      .from('drivers')
-      .select('id, name')
-      .in('id', driverIds);
+    try {
+      const { data, error } = await supabase
+        .from('drivers')
+        .select('id, name')
+        .in('id', driverIds);
 
-    if (error) {
-      console.error('❌ Erreur lors de la vérification des pilotes:', error);
-      throw new Error('Erreur lors de la vérification des pilotes dans la base de données');
-    }
+      if (error) {
+        console.error('❌ Erreur lors de la vérification des pilotes:', error);
+        
+        // Si c'est une erreur de connexion temporaire, continuer les tentatives
+        if (attempt < maxAttempts) {
+          const waitTime = Math.min(attempt * 3000, 15000); // Max 15s
+          console.log(`⚠️ Erreur de connexion, nouvelle tentative dans ${waitTime}ms...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          continue;
+        }
+        
+        throw new Error('Erreur lors de la vérification des pilotes dans la base de données');
+      }
 
-    existingDrivers = data;
-    
-    console.log(`🔍 Tentative ${attempt}/${maxAttempts}: ${existingDrivers?.length || 0}/${driverIds.length} pilotes trouvés`);
-    
-    if (existingDrivers && existingDrivers.length === driverIds.length) {
-      console.log('✅ Tous les pilotes trouvés dans la base de données');
-      break;
-    }
-    
-    if (attempt < maxAttempts) {
-      const waitTime = attempt * 2000; // Délai progressif: 2s, 4s, 6s, 8s
-      console.log(`⏳ Attente de ${waitTime}ms avant la prochaine tentative...`);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
+      existingDrivers = data;
+      
+      console.log(`🔍 Tentative ${attempt}/${maxAttempts}: ${existingDrivers?.length || 0}/${driverIds.length} pilotes trouvés`);
+      
+      if (existingDrivers && existingDrivers.length === driverIds.length) {
+        console.log('✅ Tous les pilotes trouvés dans la base de données');
+        break;
+      }
+      
+      if (attempt < maxAttempts) {
+        // Délai progressif plus long : 3s, 6s, 9s, 12s, 15s, 15s, 15s
+        const waitTime = Math.min(attempt * 3000, 15000);
+        console.log(`⏳ Attente de ${waitTime}ms avant la prochaine tentative...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
+    } catch (dbError) {
+      console.error(`❌ Erreur de base de données lors de la tentative ${attempt}:`, dbError);
+      
+      if (attempt < maxAttempts) {
+        const waitTime = Math.min(attempt * 3000, 15000);
+        console.log(`⏳ Nouvelle tentative dans ${waitTime}ms...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        continue;
+      }
+      
+      throw new Error('Impossible de se connecter à la base de données pour vérifier les pilotes');
     }
   }
 
@@ -97,18 +120,42 @@ export const validateDriversExistence = async (driverIds: string[]): Promise<voi
   
   if (missingDrivers.length > 0) {
     console.error('❌ Pilotes manquants dans la base de données:', missingDrivers.length);
-    console.log('📋 IDs manquants:', missingDrivers.slice(0, 5).map(id => id.slice(0, 8) + '...'));
+    console.log('📋 IDs manquants:', missingDrivers.slice(0, 10).map(id => id.slice(0, 8) + '...'));
     
-    // Dernière tentative de debug - vérifier si les pilotes existent vraiment
-    console.log('🔍 Vérification finale de tous les pilotes...');
-    const { data: allDrivers } = await supabase
-      .from('drivers')
-      .select('id, name');
+    // Diagnostic final approfondi
+    console.log('🔍 Diagnostic final - vérification complète...');
+    try {
+      const { data: allDrivers, error: debugError } = await supabase
+        .from('drivers')
+        .select('id, name, created_at')
+        .order('created_at', { ascending: false });
+      
+      if (debugError) {
+        console.error('❌ Erreur lors du diagnostic:', debugError);
+      } else {
+        console.log('📊 Total pilotes dans la base:', allDrivers?.length || 0);
+        console.log('🎯 Pilotes recherchés:', driverIds.length);
+        console.log('🔍 Derniers pilotes créés:', allDrivers?.slice(0, 5).map(d => ({
+          name: d.name,
+          id: d.id.slice(0, 8) + '...',
+          created: d.created_at
+        })));
+        
+        // Vérifier si certains des IDs manquants sont dans la liste complète
+        const actuallyExisting = missingDrivers.filter(id => 
+          allDrivers?.some(d => d.id === id)
+        );
+        
+        if (actuallyExisting.length > 0) {
+          console.log('⚠️ ATTENTION: Certains pilotes "manquants" existent en réalité:', actuallyExisting.length);
+          console.log('🔧 Ceci indique un problème de requête ou de filtrage');
+        }
+      }
+    } catch (diagnosticError) {
+      console.error('❌ Erreur lors du diagnostic final:', diagnosticError);
+    }
     
-    console.log('📊 Total pilotes dans la base:', allDrivers?.length || 0);
-    console.log('🎯 Pilotes recherchés:', driverIds.length);
-    
-    throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Vérifiez que tous les pilotes ont bien été créés.`);
+    throw new Error(`${missingDrivers.length} pilote(s) manquant(s) dans la base de données. Essayez de relancer l'import après quelques secondes, ou vérifiez que tous les pilotes ont bien été créés.`);
   }
 
   console.log('✅ Tous les pilotes existent dans la base, sauvegarde des résultats...');
