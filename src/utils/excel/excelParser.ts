@@ -1,13 +1,14 @@
 
 import * as XLSX from 'xlsx';
-import { generateConsistentUUID } from './uuidUtils';
+import { generateValidUUID } from './uuidUtils';
 
 export interface ExcelRaceData {
   raceName: string;
   raceDate: string;
+  raceType: 'montagne' | 'rallye';
   results: Array<{
     position: number;
-    pilote: string;
+    driverName: string;
     points: number;
     time?: string;
     dnf?: boolean;
@@ -139,7 +140,7 @@ export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'
             
             results.push({
               position,
-              pilote: pilote.trim(),
+              driverName: pilote.trim(),
               points,
               time,
               dnf
@@ -163,6 +164,7 @@ export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'
           races.push({
             raceName,
             raceDate,
+            raceType,
             results
           });
         });
