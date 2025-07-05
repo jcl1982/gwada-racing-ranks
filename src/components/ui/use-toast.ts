@@ -1,3 +1,3 @@
 
-// Réexport correct du hook useToast
+// Réexport correct du hook useToast depuis son emplacement original
 export { useToast } from "@/hooks/use-toast";
