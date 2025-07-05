@@ -20,6 +20,7 @@ interface AdminPanelProps {
   onTitleChange: (title: string, year: string) => void;
   saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
   deleteDriver: (driverId: string) => Promise<void>;
+  deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
 }
@@ -37,6 +38,7 @@ const AdminPanel = ({
   onTitleChange,
   saveDriver,
   deleteDriver,
+  deleteAllDrivers,
   saveRace,
   deleteRace
 }: AdminPanelProps) => {
@@ -81,6 +83,7 @@ const AdminPanel = ({
             onTitleChange={onTitleChange}
             saveDriver={saveDriver}
             deleteDriver={deleteDriver}
+            deleteAllDrivers={deleteAllDrivers}
             saveRace={saveRace}
             deleteRace={deleteRace}
             onRaceUpdate={handleRaceUpdate}

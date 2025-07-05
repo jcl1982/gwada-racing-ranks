@@ -19,6 +19,7 @@ interface AdminTabsContentProps {
   onTitleChange: (title: string, year: string) => void;
   saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
   deleteDriver: (driverId: string) => Promise<void>;
+  deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
@@ -36,6 +37,7 @@ const AdminTabsContent = ({
   onTitleChange,
   saveDriver,
   deleteDriver,
+  deleteAllDrivers,
   saveRace,
   deleteRace,
   onRaceUpdate
@@ -48,6 +50,7 @@ const AdminTabsContent = ({
           onDriversChange={onDriversChange}
           saveDriver={saveDriver}
           deleteDriver={deleteDriver}
+          deleteAllDrivers={deleteAllDrivers}
         />
       </TabsContent>
 
