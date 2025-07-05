@@ -202,6 +202,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_all_drivers: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_missing_drivers: {
         Args: { race_id_param?: string }
         Returns: {

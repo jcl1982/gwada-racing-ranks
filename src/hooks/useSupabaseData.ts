@@ -58,7 +58,7 @@ export const useSupabaseData = () => {
   };
 
   // Create operation handlers with improved refresh
-  const { saveDriver, deleteDriver } = createDriverOperations(toast, loadData);
+  const { saveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData);
   const { saveRace, deleteRace } = createRaceOperations(toast, loadData);
   const { updateChampionshipConfig, resetAllData } = createConfigOperations(toast);
 
@@ -100,6 +100,7 @@ export const useSupabaseData = () => {
     loading,
     saveDriver,
     deleteDriver,
+    deleteAllDrivers,
     saveRace,
     deleteRace,
     updateChampionshipConfig: handleUpdateChampionshipConfig,

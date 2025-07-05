@@ -20,6 +20,7 @@ const ChampionshipApp = () => {
     handleTitleChange,
     saveDriver,
     deleteDriver,
+    deleteAllDrivers,
     saveRace,
     deleteRace
   } = useChampionshipData();
@@ -56,6 +57,7 @@ const ChampionshipApp = () => {
           handleTitleChange={handleTitleChange}
           saveDriver={saveDriver}
           deleteDriver={deleteDriver}
+          deleteAllDrivers={deleteAllDrivers}
           saveRace={saveRace}
           deleteRace={deleteRace}
         />

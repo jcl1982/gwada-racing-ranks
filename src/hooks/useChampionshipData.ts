@@ -16,6 +16,7 @@ export const useChampionshipData = () => {
     loading,
     saveDriver,
     deleteDriver,
+    deleteAllDrivers,
     saveRace,
     deleteRace,
     updateChampionshipConfig,
@@ -77,6 +78,7 @@ export const useChampionshipData = () => {
     // Expose Supabase operations for direct use
     saveDriver,
     deleteDriver,
+    deleteAllDrivers,
     saveRace,
     deleteRace
   };
