@@ -203,7 +203,8 @@ export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast
     try {
       console.log('🗑️ Starting bulk deletion of all drivers...');
       
-      // Call the SQL function to delete all drivers and related data
+      // Appeler directement la fonction SQL sans validation UUID
+      // car nous supprimons tous les pilotes en une seule opération
       const { error } = await supabase.rpc('delete_all_drivers');
 
       if (error) {
