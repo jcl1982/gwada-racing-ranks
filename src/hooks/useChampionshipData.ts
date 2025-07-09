@@ -21,6 +21,7 @@ export const useChampionshipData = () => {
     deleteRace,
     updateChampionshipConfig,
     saveCurrentStandingsAsPrevious,
+    resetDriversEvolution,
     resetAllData,
     refreshData
   } = useSupabaseData();
@@ -84,6 +85,7 @@ export const useChampionshipData = () => {
     deleteAllDrivers,
     saveRace,
     deleteRace,
-    saveCurrentStandingsAsPrevious
+    saveCurrentStandingsAsPrevious,
+    resetDriversEvolution
   };
 };

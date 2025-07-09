@@ -29,6 +29,7 @@ interface ViewRendererProps {
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
   saveCurrentStandingsAsPrevious: () => Promise<void>;
+  resetDriversEvolution: () => Promise<void>;
 }
 
 const ViewRenderer = ({
@@ -50,7 +51,8 @@ const ViewRenderer = ({
   deleteAllDrivers,
   saveRace,
   deleteRace,
-  saveCurrentStandingsAsPrevious
+  saveCurrentStandingsAsPrevious,
+  resetDriversEvolution
 }: ViewRendererProps) => {
   switch (currentView) {
     case 'home':
@@ -128,6 +130,7 @@ const ViewRenderer = ({
             saveRace={saveRace}
             deleteRace={deleteRace}
             saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
+            resetDriversEvolution={resetDriversEvolution}
           />
         </RoleProtectedComponent>
       );

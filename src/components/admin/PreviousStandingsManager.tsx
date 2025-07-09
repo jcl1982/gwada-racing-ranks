@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Save, Info } from 'lucide-react';
+import { Save, Info, RotateCcw } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface PreviousStandingsManagerProps {
   onSaveCurrentStandings: () => Promise<void>;
+  onResetDriversEvolution: () => Promise<void>;
 }
 
-const PreviousStandingsManager = ({ onSaveCurrentStandings }: PreviousStandingsManagerProps) => {
+const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolution }: PreviousStandingsManagerProps) => {
   const handleSaveStandings = async () => {
     try {
       console.log('🎯 BOUTON CLIQUÉ: Début de handleSaveStandings');
@@ -18,6 +19,18 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings }: PreviousStandingsM
       console.log('✅ BOUTON: Sauvegarde terminée avec succès');
     } catch (error) {
       console.error('❌ BOUTON: Erreur dans handleSaveStandings:', error);
+    }
+  };
+
+  const handleResetEvolution = async () => {
+    try {
+      console.log('🔄 BOUTON CLIQUÉ: Début de handleResetEvolution');
+      
+      await onResetDriversEvolution();
+      
+      console.log('✅ BOUTON: Réinitialisation terminée avec succès');
+    } catch (error) {
+      console.error('❌ BOUTON: Erreur dans handleResetEvolution:', error);
     }
   };
 
@@ -38,23 +51,41 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings }: PreviousStandingsM
           </AlertDescription>
         </Alert>
 
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Sauvegardez le classement actuel pour permettre le calcul de l'évolution des positions 
-            lors des prochaines mises à jour.
-          </p>
-          
-          <Button
-            onClick={() => {
-              console.log('🚨 BOUTON CLIQUÉ IMMÉDIATEMENT !');
-              handleSaveStandings();
-            }}
-            className="w-full"
-            variant="outline"
-          >
-            <Save className="mr-2 h-4 w-4" />
-            Sauvegarder le Classement Actuel
-          </Button>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Sauvegardez le classement actuel pour permettre le calcul de l'évolution des positions 
+              lors des prochaines mises à jour.
+            </p>
+            
+            <Button
+              onClick={() => {
+                console.log('🚨 BOUTON CLIQUÉ IMMÉDIATEMENT !');
+                handleSaveStandings();
+              }}
+              className="w-full"
+              variant="outline"
+            >
+              <Save className="mr-2 h-4 w-4" />
+              Sauvegarder le Classement Actuel
+            </Button>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Réinitialisez l'évolution des pilotes pour remettre à zéro les flèches d'évolution. 
+              Tous les pilotes afficheront un tiret dans la colonne évolution.
+            </p>
+            
+            <Button
+              onClick={handleResetEvolution}
+              className="w-full"
+              variant="destructive"
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Réinitialiser l'Évolution
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

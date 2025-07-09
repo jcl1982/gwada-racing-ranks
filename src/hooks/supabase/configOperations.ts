@@ -103,6 +103,37 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
+  const resetDriversEvolution = async () => {
+    try {
+      console.log('🔄 Resetting drivers evolution...');
+
+      const result = await supabase.rpc('reset_drivers_evolution');
+
+      if (result.error) {
+        console.error('❌ Error resetting drivers evolution:', result.error);
+        toast({
+          title: "Erreur RPC",
+          description: `Erreur base de données: ${result.error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('✅ Drivers evolution reset successfully');
+      toast({
+        title: "Évolution réinitialisée",
+        description: "L'évolution des pilotes a été réinitialisée.",
+      });
+    } catch (error) {
+      console.error('❌ Error resetting drivers evolution:', error);
+      toast({
+        title: "Erreur",
+        description: `Erreur: ${error?.message || 'Erreur inconnue'}`,
+        variant: "destructive"
+      });
+    }
+  };
+
   const resetAllData = async () => {
     try {
       console.log('🔄 Resetting all data...');
@@ -164,5 +195,5 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetAllData };
+  return { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, resetAllData };
 };

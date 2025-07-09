@@ -227,6 +227,10 @@ export type Database = {
           | { role_name: string }
         Returns: boolean
       }
+      reset_drivers_evolution: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       save_current_standings_as_previous: {
         Args: Record<PropertyKey, never>
         Returns: undefined
