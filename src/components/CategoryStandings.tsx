@@ -26,33 +26,15 @@ interface CategoryStandingsProps {
 const CategoryStandings = ({ title, races, drivers, type, championshipYear, previousStandings }: CategoryStandingsProps) => {
   const { exportCategoryStandings } = usePdfExport();
 
+  console.log(`🔍 [${type}] Données pour le calcul d'évolution:`, {
+    drivers: drivers.length,
+    previousStandings: previousStandings?.length || 0,
+    previousStandingsData: previousStandings?.slice(0, 3)
+  });
+
   const standings = drivers
     .map(driver => {
       const points = calculateDriverPoints(driver.id, races);
-      
-      // Trouver la position précédente du pilote dans cette catégorie
-      let previousPosition: number | undefined;
-      if (previousStandings) {
-        const previousStanding = previousStandings.find(s => s.driver.id === driver.id);
-        if (previousStanding) {
-          // Pour les catégories, utiliser les points de la catégorie correspondante
-          const previousCategoryPoints = type === 'montagne' 
-            ? previousStanding.montagnePoints 
-            : previousStanding.rallyePoints;
-          
-          // Calculer la position précédente basée sur les points de la catégorie
-          const previousCategoryStandings = previousStandings
-            .map(s => ({
-              driver: s.driver,
-              points: type === 'montagne' ? s.montagnePoints : s.rallyePoints
-            }))
-            .sort((a, b) => b.points - a.points);
-          
-          const prevIndex = previousCategoryStandings.findIndex(s => s.driver.id === driver.id);
-          previousPosition = prevIndex !== -1 ? prevIndex + 1 : undefined;
-        }
-      }
-      
       return {
         driver,
         points
@@ -64,23 +46,34 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear, prev
       
       // Calculer le changement de position
       let positionChange = 0;
-      if (previousStandings) {
-        const previousStanding = previousStandings.find(s => s.driver.id === standing.driver.id);
-        if (previousStanding) {
-          // Calculer la position précédente dans cette catégorie
-          const previousCategoryStandings = previousStandings
-            .map(s => ({
-              driver: s.driver,
-              points: type === 'montagne' ? s.montagnePoints : s.rallyePoints
-            }))
-            .sort((a, b) => b.points - a.points);
+      let previousPosition: number | undefined;
+      
+      if (previousStandings && previousStandings.length > 0) {
+        // Calculer les positions précédentes dans cette catégorie
+        const previousCategoryStandings = previousStandings
+          .map(s => ({
+            driver: s.driver,
+            points: type === 'montagne' ? s.montagnePoints : s.rallyePoints
+          }))
+          .filter(s => s.points > 0) // Exclure les pilotes sans points dans cette catégorie
+          .sort((a, b) => b.points - a.points);
+        
+        console.log(`🔍 [${type}] Classements précédents calculés:`, previousCategoryStandings.slice(0, 5));
+        
+        const prevIndex = previousCategoryStandings.findIndex(s => s.driver.id === standing.driver.id);
+        if (prevIndex !== -1) {
+          previousPosition = prevIndex + 1;
+          positionChange = previousPosition - currentPosition;
           
-          const prevIndex = previousCategoryStandings.findIndex(s => s.driver.id === standing.driver.id);
-          const previousPosition = prevIndex !== -1 ? prevIndex + 1 : undefined;
-          
-          if (previousPosition) {
-            positionChange = previousPosition - currentPosition;
-          }
+          console.log(`🔍 [${type}] ${standing.driver.name}:`, {
+            currentPosition,
+            previousPosition,
+            positionChange,
+            currentPoints: standing.points,
+            previousPoints: previousCategoryStandings[prevIndex]?.points
+          });
+        } else {
+          console.log(`🔍 [${type}] ${standing.driver.name}: Nouveau pilote (pas de position précédente)`);
         }
       }
       
@@ -88,7 +81,7 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear, prev
         ...standing,
         position: currentPosition,
         positionChange,
-        previousPosition: undefined // On garde undefined car on calcule directement le change
+        previousPosition
       };
     });
 
