@@ -16,13 +16,13 @@ interface HomePageProps {
 const HomePage = ({ standings, championshipTitle, championshipYear, montagneRaces, rallyeRaces, c2r2Races }: HomePageProps) => {
   const leader = standings[0];
   const totalDrivers = standings.length;
-  const totalRaces = montagneRaces.length + rallyeRaces.length + c2r2Races.length;
+  const totalRaces = montagneRaces.length + rallyeRaces.length;
   const totalMontagneRaces = montagneRaces.length;
   const totalRallyeRaces = rallyeRaces.length;
   const totalC2R2Races = c2r2Races.length;
 
-  // Obtenir les courses les plus récentes pour les actualités
-  const allRaces = [...montagneRaces, ...rallyeRaces, ...c2r2Races].sort((a, b) => 
+  // Obtenir les courses les plus récentes pour les actualités (seulement montagne et rallye pour le général)
+  const allRaces = [...montagneRaces, ...rallyeRaces].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   const recentRaces = allRaces.slice(0, 3);
@@ -44,7 +44,7 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
       </div>
 
       {/* Stats Cards */}
-      <div className="grid md:grid-cols-5 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
         <Card className="card-glass p-6 text-center">
           <div className="gradient-caribbean w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Users className="text-white" size={32} />
@@ -75,14 +75,6 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
           </div>
           <h3 className="text-2xl font-bold text-gray-800">{totalRallyeRaces}</h3>
           <p className="text-gray-600">Rallyes</p>
-        </Card>
-
-        <Card className="card-glass p-6 text-center">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Car className="text-white" size={32} />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-800">{totalC2R2Races}</h3>
-          <p className="text-gray-600">C2 R2</p>
         </Card>
       </div>
 
