@@ -45,7 +45,10 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings }: PreviousStandingsM
           </p>
           
           <Button
-            onClick={handleSaveStandings}
+            onClick={() => {
+              console.log('🚨 BOUTON CLIQUÉ IMMÉDIATEMENT !');
+              handleSaveStandings();
+            }}
             className="w-full"
             variant="outline"
           >
