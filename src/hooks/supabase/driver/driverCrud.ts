@@ -9,31 +9,62 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
     try {
       console.log('💾 Saving driver:', driver);
 
-      if ('id' in driver) {
-        // Update existing driver - validate UUID first
-        if (!isValidUUID(driver.id)) {
-          console.error('❌ Invalid UUID for driver update:', driver.id);
-          throw new Error('ID du pilote invalide');
-        }
-
-        const { error } = await supabase
+      if ('id' in driver && driver.id) {
+        // Check if driver exists in database
+        const { data: existingDriver, error: checkError } = await supabase
           .from('drivers')
-          .update({
-            name: driver.name,
-            number: driver.number,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', driver.id);
+          .select('id')
+          .eq('id', driver.id)
+          .maybeSingle();
 
-        if (error) {
-          console.error('❌ Update driver error:', error);
-          throw error;
+        if (checkError) {
+          console.error('❌ Error checking existing driver:', checkError);
+          throw checkError;
         }
 
-        console.log('✅ Driver updated successfully');
+        if (existingDriver) {
+          // Update existing driver
+          console.log('🔄 Updating existing driver:', driver.id);
+          
+          const { error } = await supabase
+            .from('drivers')
+            .update({
+              name: driver.name,
+              number: driver.number,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', driver.id);
+
+          if (error) {
+            console.error('❌ Update driver error:', error);
+            throw error;
+          }
+
+          console.log('✅ Driver updated successfully');
+        } else {
+          // Driver has ID but doesn't exist in DB - create with specific ID
+          console.log('➕ Creating new driver with specific ID:', driver.id);
+          
+          const { data, error } = await supabase
+            .from('drivers')
+            .insert({
+              id: driver.id,
+              name: driver.name,
+              number: driver.number
+            })
+            .select()
+            .single();
+
+          if (error) {
+            console.error('❌ Insert driver with ID error:', error);
+            throw error;
+          }
+
+          console.log('✅ Driver created with ID successfully:', data);
+        }
       } else {
-        // Create new driver
-        console.log('➕ Creating new driver with data:', {
+        // Create new driver without specific ID
+        console.log('➕ Creating new driver with auto-generated ID:', {
           name: driver.name,
           number: driver.number
         });
