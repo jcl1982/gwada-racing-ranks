@@ -14,13 +14,32 @@ export const calculateChampionshipStandings = (
   rallyeRaces: Race[],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
+  console.log('🏆 Calcul des standings généraux:', {
+    drivers: drivers.length,
+    montagneRaces: montagneRaces.length,
+    rallyeRaces: rallyeRaces.length,
+    previousStandings: previousStandings?.length || 0,
+    previousStandingsData: previousStandings?.slice(0, 3).map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      totalPoints: s.totalPoints
+    }))
+  });
+
   const standings = drivers.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
     const totalPoints = montagnePoints + rallyePoints;
 
     // Trouver la position précédente du pilote
-    const previousPosition = previousStandings?.find(s => s.driver.id === driver.id)?.position;
+    const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
+    const previousPosition = previousStanding?.position;
+
+    console.log(`🔍 Pilote ${driver.name}:`, {
+      totalPoints,
+      previousPosition,
+      previousStanding: previousStanding ? 'trouvé' : 'non trouvé'
+    });
 
     return {
       driver,
@@ -41,10 +60,19 @@ export const calculateChampionshipStandings = (
     // Calculer le changement de position
     if (standing.previousPosition) {
       standing.positionChange = standing.previousPosition - standing.position;
+      console.log(`📈 ${standing.driver.name}: ${standing.previousPosition} → ${standing.position} = ${standing.positionChange}`);
     } else {
       standing.positionChange = 0; // Nouveau pilote ou première course
+      console.log(`🆕 ${standing.driver.name}: Nouveau pilote (pas de changement)`);
     }
   });
+
+  console.log('✅ Standings calculés avec évolution:', standings.slice(0, 3).map(s => ({
+    name: s.driver.name,
+    position: s.position,
+    previousPosition: s.previousPosition,
+    positionChange: s.positionChange
+  })));
 
   return standings;
 };

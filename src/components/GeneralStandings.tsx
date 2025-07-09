@@ -18,6 +18,17 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
 
+  console.log('🔍 [GeneralStandings] Données reçues:', {
+    standings: standings.length,
+    standingsData: standings.slice(0, 3).map(s => ({
+      position: s.position,
+      name: s.driver.name,
+      totalPoints: s.totalPoints,
+      positionChange: s.positionChange,
+      previousPosition: s.previousPosition
+    }))
+  });
+
   // S'assurer que les standings sont triés par position pour l'affichage
   const sortedStandings = [...standings].sort((a, b) => a.position - b.position);
 
