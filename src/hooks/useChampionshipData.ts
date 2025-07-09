@@ -49,7 +49,8 @@ export const useChampionshipData = () => {
     drivers,
     saveDriver,
     saveRace,
-    refreshData
+    refreshData,
+    saveCurrentStandingsAsPrevious
   );
 
   const {

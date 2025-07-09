@@ -10,7 +10,8 @@ export const useChampionshipImport = (
   drivers: Driver[],
   saveDriver: (driver: Driver) => Promise<void>,
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
-  refreshData: () => Promise<void>
+  refreshData: () => Promise<void>,
+  saveCurrentStandingsAsPrevious: () => Promise<void>
 ) => {
   const { toast } = useToast();
 
@@ -38,6 +39,11 @@ export const useChampionshipImport = (
 
       // Rafraîchissement final complet
       await performFinalRefresh(refreshData);
+
+      // Sauvegarde automatique du classement après import réussi
+      console.log('💾 Sauvegarde automatique du classement après import...');
+      await saveCurrentStandingsAsPrevious();
+      console.log('✅ Classement sauvegardé automatiquement');
 
       // Log du résumé
       logImportSummary(successCount, errorCount, totalCreated);
