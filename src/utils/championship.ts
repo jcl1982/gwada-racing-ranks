@@ -12,14 +12,12 @@ export const calculateChampionshipStandings = (
   drivers: Driver[],
   montagneRaces: Race[],
   rallyeRaces: Race[],
-  c2r2Races: Race[] = [],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
   console.log('🏆 Calcul des standings généraux:', {
     drivers: drivers.length,
     montagneRaces: montagneRaces.length,
     rallyeRaces: rallyeRaces.length,
-    c2r2Races: c2r2Races.length,
     previousStandings: previousStandings?.length || 0,
     previousStandingsData: previousStandings?.slice(0, 3).map(s => ({
       position: s.position,
@@ -31,7 +29,6 @@ export const calculateChampionshipStandings = (
   const standings = drivers.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-    // Les points C2R2 ne sont PAS inclus dans le classement général
     const totalPoints = montagnePoints + rallyePoints;
 
     // Trouver la position précédente du pilote
@@ -77,6 +74,73 @@ export const calculateChampionshipStandings = (
     position: s.position,
     previousPosition: s.previousPosition,
     positionChange: s.positionChange
+  })));
+
+  return standings;
+};
+
+// Calculer le classement C2 R2 pour les pilotes avec une Citroën C2 R2
+export const calculateC2R2Standings = (
+  drivers: Driver[],
+  montagneRaces: Race[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  // Filtrer seulement les pilotes avec une C2 R2
+  const c2r2Drivers = drivers.filter(driver => 
+    driver.carModel?.toLowerCase().includes('c2') && 
+    driver.carModel?.toLowerCase().includes('r2')
+  );
+
+  console.log('🏁 Calcul du classement C2 R2:', {
+    totalDrivers: drivers.length,
+    c2r2Drivers: c2r2Drivers.length,
+    c2r2DriversList: c2r2Drivers.map(d => `${d.name} (${d.carModel})`)
+  });
+
+  if (c2r2Drivers.length === 0) {
+    console.log('⚠️ Aucun pilote C2 R2 trouvé');
+    return [];
+  }
+
+  // Calculer les standings pour les pilotes C2 R2 uniquement
+  const standings = c2r2Drivers.map(driver => {
+    const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
+    const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+    const totalPoints = montagnePoints + rallyePoints;
+
+    // Trouver la position précédente du pilote dans le classement C2 R2
+    const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
+    const previousPosition = previousStanding?.position;
+
+    return {
+      driver,
+      montagnePoints,
+      rallyePoints,
+      totalPoints,
+      position: 0, // Will be calculated after sorting
+      previousPosition,
+      positionChange: 0 // Will be calculated after sorting
+    };
+  });
+
+  // Trier par points totaux et assigner les positions
+  standings.sort((a, b) => b.totalPoints - a.totalPoints);
+  standings.forEach((standing, index) => {
+    standing.position = index + 1;
+    
+    if (standing.previousPosition) {
+      standing.positionChange = standing.previousPosition - standing.position;
+    } else {
+      standing.positionChange = 0;
+    }
+  });
+
+  console.log('✅ Classement C2 R2 calculé:', standings.slice(0, 3).map(s => ({
+    name: s.driver.name,
+    carModel: s.driver.carModel,
+    position: s.position,
+    totalPoints: s.totalPoints
   })));
 
   return standings;

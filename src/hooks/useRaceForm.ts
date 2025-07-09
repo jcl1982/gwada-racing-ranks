@@ -5,7 +5,7 @@ import { Race } from '@/types/championship';
 interface RaceFormData {
   name: string;
   date: string;
-  type: 'montagne' | 'rallye' | 'c2r2';
+  type: 'montagne' | 'rallye';
 }
 
 export const useRaceForm = () => {

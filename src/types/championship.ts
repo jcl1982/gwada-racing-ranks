@@ -4,6 +4,7 @@ export interface Driver {
   name: string;
   team?: string;
   number?: number;
+  carModel?: string;
 }
 
 export interface RaceResult {
@@ -18,7 +19,7 @@ export interface Race {
   id: string;
   name: string;
   date: string;
-  type: 'montagne' | 'rallye' | 'c2r2';
+  type: 'montagne' | 'rallye';
   results: RaceResult[];
 }
 

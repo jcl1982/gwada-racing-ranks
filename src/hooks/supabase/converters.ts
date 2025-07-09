@@ -5,7 +5,9 @@ import { SupabaseDriver, SupabaseRace, SupabaseRaceResult } from './types';
 export const convertSupabaseDriver = (supabaseDriver: SupabaseDriver): Driver => ({
   id: supabaseDriver.id,
   name: supabaseDriver.name,
-  number: supabaseDriver.number || 0
+  team: supabaseDriver.team,
+  number: supabaseDriver.number || 0,
+  carModel: supabaseDriver.car_model
 });
 
 export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?: Array<SupabaseRaceResult & { drivers: SupabaseDriver }> }): Race => ({
@@ -26,7 +28,9 @@ export const convertSupabaseStanding = (supabaseStanding: any): ChampionshipStan
   driver: {
     id: supabaseStanding.driver_id,
     name: supabaseStanding.drivers?.name || 'Unknown Driver',
-    number: supabaseStanding.drivers?.number || 0
+    team: supabaseStanding.drivers?.team,
+    number: supabaseStanding.drivers?.number || 0,
+    carModel: supabaseStanding.drivers?.car_model
   },
   position: supabaseStanding.position,
   totalPoints: supabaseStanding.total_points,

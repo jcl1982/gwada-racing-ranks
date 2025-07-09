@@ -10,16 +10,15 @@ interface HomePageProps {
   championshipYear: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
-  c2r2Races: Race[];
 }
 
-const HomePage = ({ standings, championshipTitle, championshipYear, montagneRaces, rallyeRaces, c2r2Races }: HomePageProps) => {
+const HomePage = ({ standings, championshipTitle, championshipYear, montagneRaces, rallyeRaces }: HomePageProps) => {
   const leader = standings[0];
   const totalDrivers = standings.length;
   const totalRaces = montagneRaces.length + rallyeRaces.length;
   const totalMontagneRaces = montagneRaces.length;
   const totalRallyeRaces = rallyeRaces.length;
-  const totalC2R2Races = c2r2Races.length;
+  
 
   // Obtenir les courses les plus récentes pour les actualités (seulement montagne et rallye pour le général)
   const allRaces = [...montagneRaces, ...rallyeRaces].sort((a, b) => 

@@ -105,7 +105,7 @@ export const useSupabaseData = () => {
     races: races.filter(race => race.type === 'montagne' || race.type === 'rallye'),
     montagneRaces: races.filter(race => race.type === 'montagne'),
     rallyeRaces: races.filter(race => race.type === 'rallye'),
-    c2r2Races: races.filter(race => race.type === 'c2r2'),
+    
     previousStandings,
     championshipTitle,
     championshipYear,
