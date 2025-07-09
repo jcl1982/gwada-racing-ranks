@@ -227,6 +227,10 @@ export type Database = {
           | { role_name: string }
         Returns: boolean
       }
+      save_current_standings_as_previous: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"

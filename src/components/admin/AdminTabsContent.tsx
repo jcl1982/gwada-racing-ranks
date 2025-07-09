@@ -6,6 +6,7 @@ import RacesManagement from '../RacesManagement';
 import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
 import ChampionshipSettings from '../ChampionshipSettings';
+import PreviousStandingsManager from './PreviousStandingsManager';
 
 interface AdminTabsContentProps {
   drivers: Driver[];
@@ -22,6 +23,7 @@ interface AdminTabsContentProps {
   deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
+  saveCurrentStandingsAsPrevious: () => Promise<void>;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
@@ -40,6 +42,7 @@ const AdminTabsContent = ({
   deleteAllDrivers,
   saveRace,
   deleteRace,
+  saveCurrentStandingsAsPrevious,
   onRaceUpdate
 }: AdminTabsContentProps) => {
   return (
@@ -84,11 +87,16 @@ const AdminTabsContent = ({
       </TabsContent>
 
       <TabsContent value="settings" className="mt-6">
-        <ChampionshipSettings
-          championshipTitle={championshipTitle}
-          championshipYear={championshipYear}
-          onTitleChange={onTitleChange}
-        />
+        <div className="grid gap-6 md:grid-cols-2">
+          <ChampionshipSettings
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+            onTitleChange={onTitleChange}
+          />
+          <PreviousStandingsManager
+            onSaveCurrentStandings={saveCurrentStandingsAsPrevious}
+          />
+        </div>
       </TabsContent>
     </>
   );

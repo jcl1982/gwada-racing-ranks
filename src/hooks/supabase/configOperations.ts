@@ -53,6 +53,34 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
+  const saveCurrentStandingsAsPrevious = async () => {
+    try {
+      console.log('💾 Sauvegarde du classement actuel comme classement précédent...');
+      
+      const { error } = await supabase.rpc('save_current_standings_as_previous');
+
+      if (error) {
+        console.error('❌ Erreur lors de la sauvegarde:', error);
+        throw error;
+      }
+
+      console.log('✅ Classement précédent sauvegardé avec succès');
+      
+      toast({
+        title: "Classement sauvegardé",
+        description: "Le classement actuel a été sauvegardé comme référence pour l'évolution.",
+      });
+    } catch (error) {
+      console.error('Error saving current standings:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de sauvegarder le classement actuel.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
   const resetAllData = async () => {
     try {
       console.log('🔄 Resetting all data...');
@@ -114,5 +142,5 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, resetAllData };
+  return { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetAllData };
 };
