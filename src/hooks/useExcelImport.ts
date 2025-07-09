@@ -19,7 +19,9 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     setPreviewData(null);
 
     try {
-      const excelData = await parseExcelFile(file, selectedRaceType);
+      // Mapper C2 R2 vers montagne pour l'import (le classement spécialisé se fait après)
+      const importType = selectedRaceType === 'c2r2' ? 'montagne' : selectedRaceType;
+      const excelData = await parseExcelFile(file, importType);
       setPreviewData(excelData);
       toast({
         title: "Fichier analysé",
