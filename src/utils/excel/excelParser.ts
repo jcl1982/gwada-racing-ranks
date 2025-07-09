@@ -281,9 +281,9 @@ const parsePilote = (value: any): string => {
   
   const str = String(value).trim();
   
-  // Nettoyer le nom du pilote
+  // Nettoyer le nom du pilote en préservant les caractères accentués
   return str
-    .replace(/[^\w\s\-\.]/g, ' ') // Remplacer les caractères spéciaux par des espaces
+    .replace(/[^\p{L}\p{N}\s\-\.]/gu, ' ') // Préserver les lettres Unicode (avec accents), chiffres, espaces, tirets et points
     .replace(/\s+/g, ' ') // Normaliser les espaces multiples
     .trim();
 };
