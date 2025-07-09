@@ -55,12 +55,21 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
 
   const saveCurrentStandingsAsPrevious = async () => {
     try {
-      console.log('💾 Sauvegarde du classement actuel comme classement précédent...');
+      console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...');
+      console.log('🔧 CLIENT SUPABASE:', supabase ? 'OK' : 'ERREUR');
       
-      const { error } = await supabase.rpc('save_current_standings_as_previous');
+      console.log('📞 Appel de la fonction RPC save_current_standings_as_previous...');
+      const { data, error } = await supabase.rpc('save_current_standings_as_previous');
+
+      console.log('📋 RÉPONSE RPC:', { data, error });
 
       if (error) {
-        console.error('❌ Erreur lors de la sauvegarde:', error);
+        console.error('❌ ERREUR RPC DÉTAILLÉE:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
         throw error;
       }
 
@@ -71,7 +80,11 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
         description: "Le classement actuel a été sauvegardé comme référence pour l'évolution.",
       });
     } catch (error) {
-      console.error('Error saving current standings:', error);
+      console.error('💥 ERREUR COMPLÈTE dans saveCurrentStandingsAsPrevious:', {
+        error: error,
+        message: error?.message,
+        stack: error?.stack
+      });
       toast({
         title: "Erreur",
         description: "Impossible de sauvegarder le classement actuel.",
