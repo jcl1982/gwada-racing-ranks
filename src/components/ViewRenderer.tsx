@@ -17,6 +17,7 @@ interface ViewRendererProps {
   montagneRaces: Race[];
   rallyeRaces: Race[];
   drivers: Driver[];
+  previousStandings: ChampionshipStanding[];
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => void;
   handleReset: () => void;
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
@@ -37,6 +38,7 @@ const ViewRenderer = ({
   montagneRaces,
   rallyeRaces,
   drivers,
+  previousStandings,
   handleImport,
   handleReset,
   handleRacesChange,
@@ -75,6 +77,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="montagne"
           championshipYear={championshipYear}
+          previousStandings={previousStandings}
         />
       );
     case 'rallye':
@@ -85,6 +88,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="rallye"
           championshipYear={championshipYear}
+          previousStandings={previousStandings}
         />
       );
     case 'import':

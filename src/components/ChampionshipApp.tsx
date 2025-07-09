@@ -10,6 +10,7 @@ const ChampionshipApp = () => {
     montagneRaces,
     rallyeRaces,
     standings,
+    previousStandings,
     championshipTitle,
     championshipYear,
     loading,
@@ -50,6 +51,7 @@ const ChampionshipApp = () => {
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           drivers={drivers}
+          previousStandings={previousStandings}
           handleImport={handleImport}
           handleReset={handleReset}
           handleRacesChange={handleRacesChange}

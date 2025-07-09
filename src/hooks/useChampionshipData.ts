@@ -67,6 +67,7 @@ export const useChampionshipData = () => {
     montagneRaces,
     rallyeRaces,
     standings,
+    previousStandings,
     championshipTitle,
     championshipYear,
     loading,
