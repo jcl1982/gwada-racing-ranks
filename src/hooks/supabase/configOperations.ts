@@ -54,23 +54,30 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
   };
 
   const saveCurrentStandingsAsPrevious = async () => {
+    console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...');
+    
     try {
-      console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...');
       console.log('🔧 CLIENT SUPABASE:', supabase ? 'OK' : 'ERREUR');
       
       console.log('📞 Appel de la fonction RPC save_current_standings_as_previous...');
-      const { data, error } = await supabase.rpc('save_current_standings_as_previous');
+      const result = await supabase.rpc('save_current_standings_as_previous');
+      
+      console.log('📋 RÉPONSE RPC COMPLÈTE:', result);
 
-      console.log('📋 RÉPONSE RPC:', { data, error });
-
-      if (error) {
+      if (result.error) {
         console.error('❌ ERREUR RPC DÉTAILLÉE:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
+          message: result.error.message,
+          details: result.error.details,
+          hint: result.error.hint,
+          code: result.error.code
         });
-        throw error;
+        
+        toast({
+          title: "Erreur RPC",
+          description: `Erreur base de données: ${result.error.message}`,
+          variant: "destructive"
+        });
+        return;
       }
 
       console.log('✅ Classement précédent sauvegardé avec succès');
@@ -79,18 +86,20 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
         title: "Classement sauvegardé",
         description: "Le classement actuel a été sauvegardé comme référence pour l'évolution.",
       });
+      
     } catch (error) {
-      console.error('💥 ERREUR COMPLÈTE dans saveCurrentStandingsAsPrevious:', {
+      console.error('💥 ERREUR JAVASCRIPT COMPLÈTE:', {
         error: error,
         message: error?.message,
-        stack: error?.stack
+        stack: error?.stack,
+        name: error?.name
       });
+      
       toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder le classement actuel.",
+        title: "Erreur JavaScript",
+        description: `Erreur: ${error?.message || 'Erreur inconnue'}`,
         variant: "destructive"
       });
-      throw error;
     }
   };
 
