@@ -12,7 +12,7 @@ import { useWebPrint } from '@/hooks/useWebPrint';
 interface StandingsTableProps {
   displayTitle: string;
   races: Race[];
-  type: 'montagne' | 'rallye';
+  type: 'montagne' | 'rallye' | 'c2r2';
   standings: Array<{
     driver: Driver;
     points: number;
@@ -27,7 +27,9 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
   const Icon = type === 'montagne' ? Mountain : Car;
-  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 'from-blue-600 to-cyan-600';
+  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
+                       type === 'c2r2' ? 'from-orange-600 to-red-600' : 
+                       'from-blue-600 to-cyan-600';
 
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
   const getDriverPointsForRace = (driverId: string, race: Race): number => {

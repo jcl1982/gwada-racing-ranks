@@ -18,6 +18,7 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
     { id: 'general' as const, label: 'Classement Général', icon: Trophy, requiresAuth: false },
     { id: 'montagne' as const, label: 'Trophée de la montagne', icon: Mountain, requiresAuth: false },
     { id: 'rallye' as const, label: 'Trophée des rallyes', icon: Car, requiresAuth: false },
+    { id: 'c2r2' as const, label: 'Trophée C2 R2', icon: Car, requiresAuth: false },
     { id: 'import' as const, label: 'Import Excel', icon: Upload, requiresAuth: true, adminOnly: true },
     { id: 'admin' as const, label: 'Administration', icon: Settings, requiresAuth: true, adminOnly: true },
   ];

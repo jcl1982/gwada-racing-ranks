@@ -95,6 +95,17 @@ const ViewRenderer = ({
           previousStandings={previousStandings}
         />
       );
+    case 'c2r2':
+      return (
+        <CategoryStandings
+          title="Trophée C2 R2"
+          races={[]}
+          drivers={drivers.filter(driver => driver.team?.toLowerCase().includes('c2') || driver.team?.toLowerCase().includes('r2'))}
+          type="c2r2"
+          championshipYear={championshipYear}
+          previousStandings={previousStandings}
+        />
+      );
     case 'import':
       return (
         <RoleProtectedComponent 
