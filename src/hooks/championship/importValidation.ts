@@ -19,7 +19,9 @@ export const validateImportData = (newRaces: Race[], newDrivers: Driver[]) => {
 
 export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver[]): Driver[] => {
   return newDrivers.filter(newDriver => 
-    !existingDrivers.find(existingDriver => existingDriver.id === newDriver.id)
+    !existingDrivers.find(existingDriver => 
+      existingDriver.name.toLowerCase() === newDriver.name.toLowerCase()
+    )
   );
 };
 
