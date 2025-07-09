@@ -10,9 +10,14 @@ interface PreviousStandingsManagerProps {
 const PreviousStandingsManager = ({ onSaveCurrentStandings }: PreviousStandingsManagerProps) => {
   const handleSaveStandings = async () => {
     try {
+      console.log('🎯 BOUTON CLIQUÉ: Début de handleSaveStandings');
+      console.log('🔧 FONCTION REÇUE:', typeof onSaveCurrentStandings);
+      
       await onSaveCurrentStandings();
+      
+      console.log('✅ BOUTON: Sauvegarde terminée avec succès');
     } catch (error) {
-      console.error('Error saving standings:', error);
+      console.error('❌ BOUTON: Erreur dans handleSaveStandings:', error);
     }
   };
 
