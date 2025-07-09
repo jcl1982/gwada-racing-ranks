@@ -18,7 +18,7 @@ export interface Race {
   id: string;
   name: string;
   date: string;
-  type: 'montagne' | 'rallye';
+  type: 'montagne' | 'rallye' | 'c2r2';
   results: RaceResult[];
 }
 
