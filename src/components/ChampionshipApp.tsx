@@ -9,6 +9,7 @@ const ChampionshipApp = () => {
     drivers,
     montagneRaces,
     rallyeRaces,
+    c2r2Races,
     standings,
     previousStandings,
     championshipTitle,
@@ -52,6 +53,7 @@ const ChampionshipApp = () => {
           championshipYear={championshipYear}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          c2r2Races={c2r2Races}
           drivers={drivers}
           previousStandings={previousStandings}
           handleImport={handleImport}

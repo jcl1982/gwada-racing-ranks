@@ -16,6 +16,7 @@ interface ViewRendererProps {
   championshipYear: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  c2r2Races: Race[];
   drivers: Driver[];
   previousStandings: ChampionshipStanding[];
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => void;
@@ -39,6 +40,7 @@ const ViewRenderer = ({
   championshipYear,
   montagneRaces,
   rallyeRaces,
+  c2r2Races,
   drivers,
   previousStandings,
   handleImport,
@@ -63,6 +65,7 @@ const ViewRenderer = ({
           championshipYear={championshipYear}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          c2r2Races={c2r2Races}
         />
       );
     case 'general':
@@ -99,7 +102,7 @@ const ViewRenderer = ({
       return (
         <CategoryStandings
           title="Trophée C2 R2"
-          races={[]}
+          races={c2r2Races}
           drivers={drivers.filter(driver => driver.team?.toLowerCase().includes('c2') || driver.team?.toLowerCase().includes('r2'))}
           type="c2r2"
           championshipYear={championshipYear}
@@ -153,6 +156,7 @@ const ViewRenderer = ({
           championshipYear={championshipYear}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          c2r2Races={c2r2Races}
         />
       );
   }

@@ -12,12 +12,14 @@ export const calculateChampionshipStandings = (
   drivers: Driver[],
   montagneRaces: Race[],
   rallyeRaces: Race[],
+  c2r2Races: Race[] = [],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
   console.log('🏆 Calcul des standings généraux:', {
     drivers: drivers.length,
     montagneRaces: montagneRaces.length,
     rallyeRaces: rallyeRaces.length,
+    c2r2Races: c2r2Races.length,
     previousStandings: previousStandings?.length || 0,
     previousStandingsData: previousStandings?.slice(0, 3).map(s => ({
       position: s.position,
@@ -29,13 +31,17 @@ export const calculateChampionshipStandings = (
   const standings = drivers.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-    const totalPoints = montagnePoints + rallyePoints;
+    const c2r2Points = calculateDriverPoints(driver.id, c2r2Races);
+    const totalPoints = montagnePoints + rallyePoints + c2r2Points;
 
     // Trouver la position précédente du pilote
     const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
     const previousPosition = previousStanding?.position;
 
     console.log(`🔍 Pilote ${driver.name}:`, {
+      montagnePoints,
+      rallyePoints,
+      c2r2Points,
       totalPoints,
       previousPosition,
       previousStanding: previousStanding ? 'trouvé' : 'non trouvé'

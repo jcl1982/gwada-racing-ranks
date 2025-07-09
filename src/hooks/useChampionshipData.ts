@@ -10,6 +10,7 @@ export const useChampionshipData = () => {
     drivers,
     montagneRaces,
     rallyeRaces,
+    c2r2Races,
     previousStandings,
     championshipTitle,
     championshipYear,
@@ -32,10 +33,11 @@ export const useChampionshipData = () => {
       drivers: drivers.length,
       montagneRaces: montagneRaces.length,
       rallyeRaces: rallyeRaces.length,
+      c2r2Races: c2r2Races.length,
       previousStandings: previousStandings.length
     });
     
-    const calculatedStandings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
+    const calculatedStandings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, c2r2Races, previousStandings);
     
     console.log('✅ Classements recalculés:', calculatedStandings.slice(0, 3).map(s => ({
       position: s.position,
@@ -44,7 +46,7 @@ export const useChampionshipData = () => {
     })));
     
     return calculatedStandings;
-  }, [drivers, montagneRaces, rallyeRaces, previousStandings]);
+  }, [drivers, montagneRaces, rallyeRaces, c2r2Races, previousStandings]);
 
   const { handleImport } = useChampionshipImport(
     drivers,
@@ -69,6 +71,7 @@ export const useChampionshipData = () => {
     drivers,
     montagneRaces,
     rallyeRaces,
+    c2r2Races,
     standings,
     previousStandings,
     championshipTitle,
