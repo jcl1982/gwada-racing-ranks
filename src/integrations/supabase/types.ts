@@ -108,6 +108,7 @@ export type Database = {
       }
       race_results: {
         Row: {
+          car_model: string | null
           created_at: string
           dnf: boolean | null
           driver_id: string
@@ -119,6 +120,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          car_model?: string | null
           created_at?: string
           dnf?: boolean | null
           driver_id: string
@@ -130,6 +132,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          car_model?: string | null
           created_at?: string
           dnf?: boolean | null
           driver_id?: string

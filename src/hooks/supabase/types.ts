@@ -26,6 +26,7 @@ export interface SupabaseRaceResult {
   points: number;
   time?: string;
   dnf?: boolean;
+  car_model?: string;
   created_at: string;
   updated_at: string;
 }

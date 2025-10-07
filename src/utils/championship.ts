@@ -8,6 +8,18 @@ export const calculateDriverPoints = (driverId: string, races: Race[]): number =
   }, 0);
 };
 
+// Calculer les points d'un pilote uniquement pour les courses où il a utilisé une C2 R2
+export const calculateC2R2DriverPoints = (driverId: string, races: Race[]): number => {
+  return races.reduce((total, race) => {
+    const result = race.results.find(r => r.driverId === driverId);
+    // Ne compter que si le car_model contient "C2" et "R2"
+    if (result && result.carModel?.toLowerCase().includes('c2') && result.carModel?.toLowerCase().includes('r2')) {
+      return total + result.points;
+    }
+    return total;
+  }, 0);
+};
+
 export const calculateChampionshipStandings = (
   drivers: Driver[],
   montagneRaces: Race[],
@@ -105,8 +117,9 @@ export const calculateC2R2Standings = (
 
   // Calculer les standings pour les pilotes C2 R2 uniquement
   const standings = c2r2Drivers.map(driver => {
-    const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
-    const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+    // Utiliser la fonction spécifique qui vérifie le car_model dans les résultats
+    const montagnePoints = calculateC2R2DriverPoints(driver.id, montagneRaces);
+    const rallyePoints = calculateC2R2DriverPoints(driver.id, rallyeRaces);
     const totalPoints = montagnePoints + rallyePoints;
 
     // Trouver la position précédente du pilote dans le classement C2 R2

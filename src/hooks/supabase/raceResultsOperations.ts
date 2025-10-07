@@ -30,6 +30,20 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
   const driverIds = results.map(r => r.driverId);
   await validateDriversExistence(driverIds);
 
+  // Récupérer les modèles de voiture des pilotes
+  const { data: driversData, error: driversError } = await supabase
+    .from('drivers')
+    .select('id, car_model')
+    .in('id', driverIds);
+
+  if (driversError) {
+    console.error('❌ Erreur lors de la récupération des modèles de voiture:', driversError);
+    throw driversError;
+  }
+
+  // Créer une map pour accéder facilement aux car_model
+  const carModelMap = new Map(driversData?.map(d => [d.id, d.car_model]) || []);
+
   // Insert results in batch for efficiency
   const resultsToInsert = results.map(result => ({
     race_id: raceId,
@@ -37,7 +51,8 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     position: result.position,
     points: result.points,
     time: result.time,
-    dnf: result.dnf || false
+    dnf: result.dnf || false,
+    car_model: carModelMap.get(result.driverId) || null
   }));
 
   const { error: resultError } = await supabase

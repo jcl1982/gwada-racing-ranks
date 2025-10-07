@@ -13,6 +13,7 @@ export interface RaceResult {
   points: number;
   time?: string;
   dnf?: boolean;
+  carModel?: string;
 }
 
 export interface Race {
