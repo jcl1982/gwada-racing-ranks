@@ -94,7 +94,11 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-3">
             <Icon size={32} />
-            <h2 className="text-2xl font-bold">Classement provisoire {displayTitle}</h2>
+            <h2 className="text-2xl font-bold">
+              {type === 'montagne' ? 'Classement Trophée de la Montagne' : 
+               type === 'rallye' ? `Classement provisoire ${displayTitle}` :
+               `Classement ${displayTitle}`}
+            </h2>
           </div>
         </div>
         
