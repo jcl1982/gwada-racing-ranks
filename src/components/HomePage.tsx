@@ -1,8 +1,10 @@
-
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car, Calendar, Users, Award } from 'lucide-react';
 import { ChampionshipStanding, Race } from '@/types/championship';
+import { useImageExport } from '@/hooks/useImageExport';
+import { useWebPrint } from '@/hooks/useWebPrint';
+import PrintButton from '@/components/PrintButton';
 
 interface HomePageProps {
   standings: ChampionshipStanding[];
@@ -13,21 +15,46 @@ interface HomePageProps {
 }
 
 const HomePage = ({ standings, championshipTitle, championshipYear, montagneRaces, rallyeRaces }: HomePageProps) => {
+  const { exportToImage } = useImageExport();
+  const { printWebPage, printWithUnicodeSupport } = useWebPrint();
+
   const leader = standings[0];
   const totalDrivers = standings.length;
   const totalRaces = montagneRaces.length + rallyeRaces.length;
   const totalMontagneRaces = montagneRaces.length;
   const totalRallyeRaces = rallyeRaces.length;
   
-
   // Obtenir les courses les plus récentes pour les actualités (seulement montagne et rallye pour le général)
   const allRaces = [...montagneRaces, ...rallyeRaces].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   const recentRaces = allRaces.slice(0, 3);
 
+  const handlePrintImage = () => {
+    exportToImage('homepage-content', `Accueil_${championshipYear}`, championshipTitle);
+  };
+
+  const handlePrintWeb = () => {
+    printWebPage('homepage-content', `${championshipTitle} - ${championshipYear}`);
+  };
+
+  const handlePrintUnicode = () => {
+    printWithUnicodeSupport('homepage-content', `${championshipTitle} - ${championshipYear}`);
+  };
+
   return (
-    <div className="space-y-8">
+    <div id="homepage-content" className="space-y-8">
+      {/* Export Button */}
+      <div className="flex justify-end">
+        <PrintButton
+          onPrintPdf={() => {}}
+          onPrintImage={handlePrintImage}
+          onPrintWeb={handlePrintWeb}
+          onPrintUnicode={handlePrintUnicode}
+          variant="outline"
+        />
+      </div>
+
       {/* Hero Section */}
       <div className="text-center py-12">
         <h1 className="text-5xl md:text-6xl font-bold gradient-caribbean bg-clip-text text-transparent mb-4">
