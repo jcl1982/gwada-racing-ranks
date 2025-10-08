@@ -37,6 +37,14 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
     return result?.points || 0;
   };
 
+  // Fonction pour vérifier si les points sont comptabilisés dans le classement C2 R2
+  const isC2R2Valid = (result: any): boolean => {
+    if (type !== 'c2r2') return true;
+    if (!result?.carModel) return false;
+    const carModel = result.carModel.toLowerCase();
+    return carModel.includes('c2') && carModel.includes('r2');
+  };
+
   const handlePrintImage = () => {
     console.log('📸 Export image demandé - Classement catégorie:', displayTitle);
     const filename = displayTitle.toLowerCase().replace(/\s+/g, '-');
@@ -156,11 +164,17 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     </div>
                   </td>
                   {races.map(race => {
-                    const points = getDriverPointsForRace(standing.driver.id, race);
+                    const result = race.results.find(r => r.driverId === standing.driver.id);
+                    const points = result?.points || 0;
+                    const isValid = isC2R2Valid(result);
+                    
                     return (
                       <td key={race.id} className="py-1 px-1 text-center">
                         {points > 0 ? (
-                          <Badge variant="outline" className="text-xs">
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs ${!isValid ? 'bg-destructive/10 text-destructive border-destructive/30' : ''}`}
+                          >
                             {points} pts
                           </Badge>
                         ) : (
