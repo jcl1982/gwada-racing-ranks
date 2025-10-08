@@ -1,13 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
-import { LogIn, UserPlus, Mail, Lock, Shield } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthPageProps {
   onClose?: () => void;
@@ -18,15 +16,8 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, isAuthenticated, isAdmin } = useAuth();
+  const { signIn, signUp } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated && isAdmin) {
-      navigate('/');
-    }
-  }, [isAuthenticated, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,19 +38,11 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
         : await signUp(email, password);
 
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast({
-            title: "Accès refusé",
-            description: "Email ou mot de passe incorrect. Seuls les administrateurs peuvent accéder à cette application.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Erreur",
-            description: error.message,
-            variant: "destructive"
-          });
-        }
+        toast({
+          title: "Erreur",
+          description: error.message,
+          variant: "destructive"
+        });
       } else {
         toast({
           title: "Succès",
@@ -85,22 +68,22 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
       <Card className="card-glass p-8 w-full max-w-md">
         <div className="text-center mb-6">
           <div className="flex items-center justify-center mb-4">
-            <Shield className="h-12 w-12 text-primary" />
+            {isLogin ? (
+              <LogIn className="h-12 w-12 text-primary" />
+            ) : (
+              <UserPlus className="h-12 w-12 text-primary" />
+            )}
           </div>
           <h2 className="text-2xl font-bold text-gray-800">
-            Accès Administrateur
+            {isLogin ? 'Connexion' : 'Inscription'}
           </h2>
           <p className="text-gray-600 mt-2">
-            Cette application est réservée aux administrateurs
+            {isLogin 
+              ? 'Connectez-vous à votre compte' 
+              : 'Créez votre compte'
+            }
           </p>
         </div>
-
-        <Alert className="mb-6 bg-orange-50 border-orange-200">
-          <Shield className="h-4 w-4 text-orange-600" />
-          <AlertDescription className="text-orange-800">
-            Seuls les comptes avec le rôle administrateur peuvent accéder à cette application.
-          </AlertDescription>
-        </Alert>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
@@ -132,9 +115,22 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
             className="w-full"
             disabled={loading}
           >
-            {loading ? 'Chargement...' : 'Se connecter'}
+            {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'S\'inscrire')}
           </Button>
         </form>
+
+        <div className="mt-6 text-center">
+          <button
+            type="button"
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-primary hover:underline"
+          >
+            {isLogin 
+              ? 'Pas de compte ? Inscrivez-vous' 
+              : 'Déjà un compte ? Connectez-vous'
+            }
+          </button>
+        </div>
       </Card>
     </div>
   );
