@@ -117,7 +117,8 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
             onPrintWeb={handlePrintWeb}
             onPrintUnicode={handlePrintUnicode}
             variant="outline" 
-            className="bg-white/20 hover:bg-white/30 border-white/30 no-print" 
+            className="bg-white/20 hover:bg-white/30 border-white/30 no-print"
+            adminOnly={true}
           />
         </div>
       </div>
