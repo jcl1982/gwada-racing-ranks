@@ -78,9 +78,9 @@ const C2R2Standings = ({
     <div className="space-y-6">
       <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
       <RaceCalendar races={allRaces} />
-      <Alert className="bg-muted/50 border-primary/20">
-        <Info className="h-4 w-4" />
-        <AlertDescription>
+      <Alert className="bg-primary/10 border-primary/30 text-primary">
+        <Info className="h-4 w-4 text-primary" />
+        <AlertDescription className="text-foreground">
           <strong>Règlement du Trophée C2 R2 :</strong> Seules les courses disputées avec une Citroën C2 R2 sont prises en compte pour ce classement. 
           Les points marqués avec d'autres véhicules n'entrent pas dans le calcul du trophée.
         </AlertDescription>
