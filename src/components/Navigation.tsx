@@ -11,7 +11,9 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
-  const { isAdmin, isAuthenticated } = useUserRole();
+  const { isAdmin, isAuthenticated, loading } = useUserRole();
+  
+  console.log('🔐 Navigation - Auth state:', { isAuthenticated, isAdmin, loading });
 
   const navItems = [
     { id: 'home' as const, label: 'Accueil', icon: Home, requiresAuth: false },
@@ -25,11 +27,21 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
 
   // Filter nav items based on authentication and role
   const visibleNavItems = navItems.filter(item => {
+    console.log(`🔍 Navigation - Item: ${item.id}`, {
+      requiresAuth: item.requiresAuth,
+      adminOnly: item.adminOnly,
+      isAuthenticated,
+      isAdmin,
+      willShow: !item.requiresAuth || (isAuthenticated && (!item.adminOnly || isAdmin))
+    });
+    
     if (!item.requiresAuth) return true;
     if (!isAuthenticated) return false;
     if (item.adminOnly && !isAdmin) return false;
     return true;
   });
+
+  console.log('📋 Navigation - Visible items:', visibleNavItems.map(item => item.id));
 
   return (
     <Card className="card-glass p-4 mb-8">
