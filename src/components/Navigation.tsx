@@ -11,7 +11,9 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
-  const { isAdmin, isAuthenticated } = useUserRole();
+  const { isAdmin, isAuthenticated, loading } = useUserRole();
+  
+  console.log('🔐 Navigation - Auth state:', { isAuthenticated, isAdmin, loading });
 
   const navItems = [
     { id: 'home' as const, label: 'Accueil', icon: Home, requiresAuth: false },
