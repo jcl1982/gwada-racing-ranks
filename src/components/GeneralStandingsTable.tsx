@@ -40,7 +40,7 @@ const GeneralStandingsTable = ({
         </div>
         
         <div className="absolute top-6 right-20">
-          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={onPrintImage} onPrintWeb={onPrintWeb} onPrintUnicode={onPrintUnicode} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" adminOnly={true} />
+          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={onPrintImage} onPrintWeb={onPrintWeb} onPrintUnicode={onPrintUnicode} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" />
         </div>
       </div>
 

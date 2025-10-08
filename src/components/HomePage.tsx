@@ -52,7 +52,6 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
           onPrintWeb={handlePrintWeb}
           onPrintUnicode={handlePrintUnicode}
           variant="outline"
-          adminOnly={true}
         />
       </div>
 

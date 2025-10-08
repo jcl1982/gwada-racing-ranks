@@ -104,7 +104,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
             <Icon size={32} />
             <h2 className="text-2xl font-bold">
               {type === 'montagne' ? 'Classement Trophée de la Montagne' : 
-               type === 'rallye' ? `Classement ${displayTitle}` :
+               type === 'rallye' ? `Classement provisoire ${displayTitle}` :
                `Classement ${displayTitle}`}
             </h2>
           </div>
@@ -117,8 +117,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
             onPrintWeb={handlePrintWeb}
             onPrintUnicode={handlePrintUnicode}
             variant="outline" 
-            className="bg-white/20 hover:bg-white/30 border-white/30 no-print"
-            adminOnly={true}
+            className="bg-white/20 hover:bg-white/30 border-white/30 no-print" 
           />
         </div>
       </div>
