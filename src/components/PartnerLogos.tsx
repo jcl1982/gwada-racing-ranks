@@ -5,7 +5,7 @@ import kartingLogo from '@/assets/karting.png';
 
 const PartnerLogos = () => {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 mb-8 px-4">
+    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 px-4 md:px-8 max-w-6xl mx-auto">
       <img 
         src={asaArchipelLogo} 
         alt="ASA Archipel" 
