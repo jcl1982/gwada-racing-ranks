@@ -5,6 +5,7 @@ import { ChampionshipStanding, Race } from '@/types/championship';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
+import PartnerLogos from '@/components/PartnerLogos';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -64,6 +65,7 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
 
       {/* Hero Section */}
       <div className="text-center py-12">
+        <PartnerLogos />
         <h1 className="text-5xl md:text-6xl font-bold gradient-caribbean bg-clip-text text-transparent mb-4">
           {championshipTitle}
         </h1>
