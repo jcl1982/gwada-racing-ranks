@@ -35,6 +35,10 @@ export const useSupabaseData = () => {
         standings: appPreviousStandings.length
       });
 
+      // Log détaillé avant mise à jour
+      const cafeiereBefore = races.find(r => r.name.includes('Caféière'));
+      console.log('📅 AVANT mise à jour état - Course de Côte de Caféière:', cafeiereBefore?.date);
+      
       // Forcer la mise à jour des états
       setDrivers([...appDrivers]);
       setRaces([...appRaces]);
@@ -42,6 +46,9 @@ export const useSupabaseData = () => {
       setChampionshipTitle(title);
       setChampionshipYear(year);
 
+      // Log détaillé après mise à jour
+      const cafeiereAfter = appRaces.find(r => r.name.includes('Caféière'));
+      console.log('📅 APRÈS mise à jour état - Course de Côte de Caféière:', cafeiereAfter?.date);
       console.log('✅ États mis à jour avec succès');
 
     } catch (error) {

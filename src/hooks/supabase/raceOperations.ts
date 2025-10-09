@@ -59,7 +59,9 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       console.log('✅ Course et résultats sauvegardés avec succès');
       
       // Toujours recharger les données après une sauvegarde réussie
+      console.log('🔄 Appel de loadData() pour rafraîchir les données...');
       await loadData();
+      console.log('✅ loadData() terminé, données rafraîchies');
       
       toast({
         title: 'id' in race && race.id ? "Course mise à jour" : "Course créée",

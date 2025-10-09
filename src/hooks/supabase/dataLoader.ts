@@ -45,6 +45,17 @@ export const loadSupabaseData = async () => {
       type: race.type as 'montagne' | 'rallye' // Type assertion to handle the database string type
     })) || [];
     console.log('✅ Courses chargées:', races.length);
+    
+    // Log détaillé de la Course de Côte de Caféière
+    const cafeiere = races.find(r => r.name.includes('Caféière'));
+    if (cafeiere) {
+      console.log('📅 Course de Côte de Caféière chargée:', {
+        id: cafeiere.id,
+        name: cafeiere.name,
+        date: cafeiere.date,
+        type: cafeiere.type
+      });
+    }
 
     // Load previous standings
     console.log('📊 Chargement des classements précédents...');
