@@ -203,12 +203,13 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
                 <h4 className="font-semibold">
                   {race.name} - {race.type === 'rallye' ? 'Rallye' : 'Course de Côte'}
                 </h4>
-                <p className="text-gray-600 text-sm">
-                  {race.results.length > 0 && standings.find(s => s.driver.id === race.results[0]?.driverId) ? 
-                    `Victoire de ${standings.find(s => s.driver.id === race.results[0]?.driverId)?.driver.name}` :
-                    'Course terminée'
-                  }
-                </p>
+          <p className="text-gray-600 text-sm">
+            {(() => {
+              const winner = race.results.find(r => r.position === 1);
+              const winnerDriver = winner ? standings.find(s => s.driver.id === winner.driverId) : null;
+              return winnerDriver ? `Victoire de ${winnerDriver.driver.name}` : 'Course terminée';
+            })()}
+          </p>
               </div>
             ))
           ) : (
