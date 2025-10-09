@@ -7,6 +7,12 @@ import { Race } from '@/types/championship';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 interface RaceCardProps {
   race: Race;
   onEdit: (race: Race) => void;
@@ -15,9 +21,9 @@ interface RaceCardProps {
 
 const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
   const formatDateRange = (startDate: string, endDate?: string) => {
-    const start = format(new Date(startDate), 'dd/MM/yyyy', { locale: fr });
+    const start = format(parseLocalDate(startDate), 'dd/MM/yyyy', { locale: fr });
     if (!endDate) return start;
-    const end = format(new Date(endDate), 'dd/MM/yyyy', { locale: fr });
+    const end = format(parseLocalDate(endDate), 'dd/MM/yyyy', { locale: fr });
     return `${start} - ${end}`;
   };
 
