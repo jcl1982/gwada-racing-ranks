@@ -1,15 +1,15 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn, LogOut, User, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import AuthPage from './AuthPage';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const AuthButton = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
-  const [showAuthPage, setShowAuthPage] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     const { error } = await signOut();
@@ -58,31 +58,13 @@ const AuthButton = () => {
   }
 
   return (
-    <>
-      <Button
-        onClick={() => setShowAuthPage(true)}
-        className="flex items-center gap-2"
-      >
-        <LogIn size={16} />
-        <span className="hidden sm:inline">Connexion</span>
-      </Button>
-      
-      {showAuthPage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="relative">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute -top-2 -right-2 z-10 bg-white rounded-full"
-              onClick={() => setShowAuthPage(false)}
-            >
-              ×
-            </Button>
-            <AuthPage onClose={() => setShowAuthPage(false)} />
-          </div>
-        </div>
-      )}
-    </>
+    <Button
+      onClick={() => navigate('/admin/auth')}
+      className="flex items-center gap-2"
+    >
+      <LogIn size={16} />
+      <span className="hidden sm:inline">Connexion</span>
+    </Button>
   );
 };
 
