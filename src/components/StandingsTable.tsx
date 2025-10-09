@@ -8,6 +8,8 @@ import Logo from '@/components/Logo';
 import PositionChange from '@/components/PositionChange';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface StandingsTableProps {
   displayTitle: string;
@@ -134,6 +136,9 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                 <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
+                  </div>
+                  <div className="text-[10px] text-gray-500 font-normal">
+                    {format(new Date(race.date), 'dd/MM/yy', { locale: fr })}
                   </div>
                 </th>
               ))}

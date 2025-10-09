@@ -2,8 +2,10 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Mountain, Car, Edit, Trash2 } from 'lucide-react';
+import { Mountain, Car, Edit, Trash2, Calendar } from 'lucide-react';
 import { Race } from '@/types/championship';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface RaceCardProps {
   race: Race;
@@ -23,8 +25,9 @@ const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
           )}
           <div>
             <h3 className="font-medium">{race.name}</h3>
-            <p className="text-sm text-gray-600">
-              {race.results.length} participants
+            <p className="text-sm text-gray-600 flex items-center gap-1">
+              <Calendar size={12} />
+              {format(new Date(race.date), 'dd/MM/yyyy', { locale: fr })} • {race.results.length} participants
             </p>
           </div>
         </div>

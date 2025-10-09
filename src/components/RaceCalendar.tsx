@@ -2,6 +2,8 @@
 import { Card } from '@/components/ui/card';
 import { Calendar, MapPin } from 'lucide-react';
 import { Race } from '@/types/championship';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 interface RaceCalendarProps {
   races: Race[];
@@ -21,6 +23,9 @@ const RaceCalendar = ({ races }: RaceCalendarProps) => {
               <MapPin size={16} />
               {race.name}
             </h4>
+            <p className="text-sm text-gray-600 mt-1">
+              {format(new Date(race.date), 'dd MMMM yyyy', { locale: fr })}
+            </p>
           </div>
         ))}
       </div>
