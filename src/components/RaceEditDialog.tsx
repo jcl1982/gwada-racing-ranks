@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DatePicker } from '@/components/ui/date-picker';
 import { Race } from '@/types/championship';
 import { useState, useEffect } from 'react';
 
@@ -90,26 +91,24 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
           </div>
           <div>
             <Label htmlFor="edit-race-date">Date de début</Label>
-            <Input
-              id="edit-race-date"
-              type="date"
+            <DatePicker
               value={date}
-              onChange={(e) => {
-                console.log('📅 Changement date:', e.target.value);
-                setDate(e.target.value);
+              onChange={(newDate) => {
+                console.log('📅 Changement date:', newDate);
+                setDate(newDate || '');
               }}
+              placeholder="Choisir la date de début"
             />
           </div>
           <div>
             <Label htmlFor="edit-race-end-date">Date de fin (optionnelle)</Label>
-            <Input
-              id="edit-race-end-date"
-              type="date"
+            <DatePicker
               value={endDate}
-              onChange={(e) => {
-                console.log('📅 Changement date fin:', e.target.value);
-                setEndDate(e.target.value);
+              onChange={(newDate) => {
+                console.log('📅 Changement date fin:', newDate);
+                setEndDate(newDate || '');
               }}
+              placeholder="Choisir la date de fin (optionnelle)"
             />
           </div>
           <div>
