@@ -25,11 +25,23 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
   }, [editingRace, loadRaceData]);
 
   const handleSubmit = () => {
-    if (!editingRace || !isFormValid()) return;
+    console.log('🎯 handleSubmit appelé');
+    console.log('editingRace:', editingRace);
+    console.log('isFormValid:', isFormValid());
+    console.log('formData:', formData);
+    
+    if (!editingRace) {
+      console.error('❌ Pas de course en édition');
+      return;
+    }
+    
+    if (!isFormValid()) {
+      console.error('❌ Formulaire invalide');
+      return;
+    }
 
     console.log('📝 Soumission du formulaire d\'édition');
     console.log('Course originale:', editingRace);
-    console.log('Données du formulaire:', formData);
 
     const updatedRace: Race = {
       ...editingRace,
