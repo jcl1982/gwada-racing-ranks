@@ -113,6 +113,16 @@ export const useAuth = () => {
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
+    
+    // Si la session n'existe plus, considérer la déconnexion comme réussie
+    if (error && error.message.includes('session_not_found')) {
+      // Nettoyer l'état local
+      setSession(null);
+      setUser(null);
+      setUserRole(null);
+      return { error: null };
+    }
+    
     return { error };
   };
 
