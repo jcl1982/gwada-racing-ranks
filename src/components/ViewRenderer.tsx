@@ -3,8 +3,6 @@ import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import C2R2Standings from '@/components/C2R2Standings';
-import KartingStandings from '@/components/KartingStandings';
-import AccelerationStandings from '@/components/AccelerationStandings';
 import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
@@ -19,8 +17,6 @@ interface ViewRendererProps {
   championshipYear: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
-  kartingRaces: Race[];
-  accelerationRaces: Race[];
   
   drivers: Driver[];
   previousStandings: ChampionshipStanding[];
@@ -45,8 +41,6 @@ const ViewRenderer = ({
   championshipYear,
   montagneRaces,
   rallyeRaces,
-  kartingRaces,
-  accelerationRaces,
   
   drivers,
   previousStandings,
@@ -110,24 +104,6 @@ const ViewRenderer = ({
           drivers={drivers}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
-          championshipYear={championshipYear}
-          previousStandings={previousStandings}
-        />
-      );
-    case 'karting':
-      return (
-        <KartingStandings
-          drivers={drivers}
-          kartingRaces={kartingRaces}
-          championshipYear={championshipYear}
-          previousStandings={previousStandings}
-        />
-      );
-    case 'acceleration':
-      return (
-        <AccelerationStandings
-          drivers={drivers}
-          accelerationRaces={accelerationRaces}
           championshipYear={championshipYear}
           previousStandings={previousStandings}
         />

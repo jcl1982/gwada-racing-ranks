@@ -21,7 +21,7 @@ export interface Race {
   name: string;
   date: string;
   endDate?: string;
-  type: 'montagne' | 'rallye' | 'karting' | 'acceleration';
+  type: 'montagne' | 'rallye';
   organizer?: string;
   results: RaceResult[];
 }

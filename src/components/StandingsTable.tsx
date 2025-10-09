@@ -19,7 +19,7 @@ function parseLocalDate(dateString: string): Date {
 interface StandingsTableProps {
   displayTitle: string;
   races: Race[];
-  type: 'montagne' | 'rallye' | 'c2r2' | 'karting' | 'acceleration';
+  type: 'montagne' | 'rallye' | 'c2r2';
   standings: Array<{
     driver: Driver;
     points: number;

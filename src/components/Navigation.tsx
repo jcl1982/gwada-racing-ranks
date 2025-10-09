@@ -1,6 +1,6 @@
 
 import { Card } from '@/components/ui/card';
-import { Trophy, Mountain, Car, Home, Upload, Settings, CircleDot, Zap } from 'lucide-react';
+import { Trophy, Mountain, Car, Home, Upload, Settings } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -21,8 +21,6 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
     { id: 'montagne' as const, label: 'Trophée de la montagne', icon: Mountain, requiresAuth: false },
     { id: 'rallye' as const, label: 'Trophée des rallyes', icon: Car, requiresAuth: false },
     { id: 'c2r2' as const, label: 'Trophée C2 R2', icon: Car, requiresAuth: false },
-    { id: 'karting' as const, label: 'Championnat Karting', icon: CircleDot, requiresAuth: false },
-    { id: 'acceleration' as const, label: "Championnat d'accélération", icon: Zap, requiresAuth: false },
     { id: 'import' as const, label: 'Import Excel', icon: Upload, requiresAuth: true, adminOnly: true },
     { id: 'admin' as const, label: 'Administration', icon: Settings, requiresAuth: true, adminOnly: true },
   ];

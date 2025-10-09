@@ -9,7 +9,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [error, setError] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ExcelRaceData[] | null>(null);
   const [success, setSuccess] = useState(false);
-  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye' | 'karting' | 'acceleration'>('montagne');
+  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye'>('montagne');
   const { toast } = useToast();
 
   const handleFileUpload = async (file: File) => {
