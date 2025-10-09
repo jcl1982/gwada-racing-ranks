@@ -197,18 +197,6 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
           Actualités du Championnat
         </h3>
         <div className="space-y-4">
-          {/* Featured News */}
-          <div className="border-l-4 border-green-500 pl-4 bg-green-50 p-4 rounded-r">
-            <div className="flex items-center gap-2 mb-2">
-              <Trophy size={20} className="text-green-600" />
-              <h4 className="font-semibold text-green-800">Dernière victoire</h4>
-            </div>
-            <p className="text-gray-700">
-              <span className="font-bold">Stéphane NEGRE</span> remporte la course de côte des Mamelles
-            </p>
-          </div>
-          
-          {/* Recent Races */}
           {recentRaces.length > 0 ? (
             recentRaces.map((race, index) => (
               <div key={race.id} className={`border-l-4 ${race.type === 'rallye' ? 'border-blue-500' : 'border-green-500'} pl-4`}>
@@ -223,7 +211,12 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
                 </p>
               </div>
             ))
-          ) : null}
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              <p>Aucune course programmée pour le moment.</p>
+              <p className="text-sm mt-2">Les actualités apparaîtront ici dès qu'il y aura des courses.</p>
+            </div>
+          )}
         </div>
       </Card>
     </div>
