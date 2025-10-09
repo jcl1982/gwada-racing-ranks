@@ -6,14 +6,16 @@ import RaceCard from './RaceCard';
 interface RaceTypeTabProps {
   races: Race[];
   drivers: Driver[];
-  raceType: 'montagne' | 'rallye';
+  raceType: 'montagne' | 'rallye' | 'c2r2';
   onRaceUpdate: (raceId: string, results: any[]) => Promise<void>;
 }
 
 const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate }: RaceTypeTabProps) => {
   const emptyMessage = raceType === 'montagne' 
     ? "Aucune course de montagne disponible"
-    : "Aucune course de rallye disponible";
+    : raceType === 'rallye'
+    ? "Aucune course de rallye disponible"
+    : "Aucune course C2 R2 disponible";
 
   if (races.length === 0) {
     return (
