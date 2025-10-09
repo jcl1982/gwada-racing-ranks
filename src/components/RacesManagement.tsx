@@ -46,8 +46,15 @@ const RacesManagement = ({
   const handleUpdateRace = async (updatedRace: Race) => {
     if (!editingRace) return;
 
-    console.log('Updating race from:', editingRace);
-    console.log('Updating race to:', updatedRace);
+    console.log('🔄 handleUpdateRace appelé');
+    console.log('Course originale:', editingRace);
+    console.log('Course mise à jour:', updatedRace);
+    console.log('Différences:', {
+      name: editingRace.name !== updatedRace.name,
+      date: editingRace.date !== updatedRace.date,
+      endDate: editingRace.endDate !== updatedRace.endDate,
+      type: editingRace.type !== updatedRace.type
+    });
 
     await saveRace(updatedRace);
     setEditingRace(null);

@@ -27,6 +27,10 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
   const handleSubmit = () => {
     if (!editingRace || !isFormValid()) return;
 
+    console.log('📝 Soumission du formulaire d\'édition');
+    console.log('Course originale:', editingRace);
+    console.log('Données du formulaire:', formData);
+
     const updatedRace: Race = {
       ...editingRace,
       name: formData.name.trim(),
@@ -34,6 +38,8 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       endDate: formData.endDate || undefined,
       type: formData.type
     };
+
+    console.log('Course mise à jour:', updatedRace);
 
     onUpdateRace(updatedRace);
     onOpenChange(false);
