@@ -18,6 +18,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [organizer, setOrganizer] = useState('');
   const [type, setType] = useState<'montagne' | 'rallye'>('montagne');
 
   // Charger les données de la course quand le dialog s'ouvre
@@ -27,6 +28,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       setName(editingRace.name);
       setDate(editingRace.date);
       setEndDate(editingRace.endDate || '');
+      setOrganizer(editingRace.organizer || '');
       setType(editingRace.type);
     }
   }, [editingRace, isOpen]);
@@ -53,6 +55,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       name: name.trim(),
       date: date,
       endDate: endDate || undefined,
+      organizer: organizer.trim() || undefined,
       type: type
     };
 
@@ -66,6 +69,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
     setName('');
     setDate('');
     setEndDate('');
+    setOrganizer('');
     setType('montagne');
     onOpenChange(false);
   };
@@ -109,6 +113,18 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
                 setEndDate(newDate || '');
               }}
               placeholder="Choisir la date de fin (optionnelle)"
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-race-organizer">Organisateur</Label>
+            <Input
+              id="edit-race-organizer"
+              value={organizer}
+              onChange={(e) => {
+                console.log('👥 Changement organisateur:', e.target.value);
+                setOrganizer(e.target.value);
+              }}
+              placeholder="Nom de l'organisateur"
             />
           </div>
           <div>

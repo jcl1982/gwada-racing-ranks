@@ -41,6 +41,7 @@ const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
             <p className="text-sm text-gray-600 flex items-center gap-1">
               <Calendar size={12} />
               {formatDateRange(race.date, race.endDate)} • {race.results.length} participants
+              {race.organizer && ` • ${race.organizer}`}
             </p>
           </div>
         </div>

@@ -45,6 +45,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
             name: race.name,
             date: race.date,
             endDate: race.endDate,
+            organizer: race.organizer,
             type: race.type
           });
         }

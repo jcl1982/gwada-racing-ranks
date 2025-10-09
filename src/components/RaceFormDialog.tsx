@@ -24,6 +24,7 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
       name: formData.name.trim(),
       date: formData.date,
       endDate: formData.endDate || undefined,
+      organizer: formData.organizer?.trim() || undefined,
       type: formData.type
     });
     
@@ -74,6 +75,15 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
               type="date"
               value={formData.endDate}
               onChange={(e) => updateFormData({ endDate: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="race-organizer">Organisateur</Label>
+            <Input
+              id="race-organizer"
+              value={formData.organizer || ''}
+              onChange={(e) => updateFormData({ organizer: e.target.value })}
+              placeholder="Nom de l'organisateur"
             />
           </div>
           <div>

@@ -14,6 +14,7 @@ export interface SupabaseRace {
   name: string;
   date: string;
   end_date?: string;
+  organizer?: string;
   type: 'montagne' | 'rallye';
   created_at: string;
   updated_at: string;

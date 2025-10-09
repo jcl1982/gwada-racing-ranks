@@ -6,6 +6,7 @@ interface RaceFormData {
   name: string;
   date: string;
   endDate: string;
+  organizer?: string;
   type: 'montagne' | 'rallye';
 }
 
@@ -14,6 +15,7 @@ export const useRaceForm = () => {
     name: '',
     date: '',
     endDate: '',
+    organizer: '',
     type: 'montagne'
   });
 
@@ -22,7 +24,7 @@ export const useRaceForm = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', date: '', endDate: '', type: 'montagne' });
+    setFormData({ name: '', date: '', endDate: '', organizer: '', type: 'montagne' });
   };
 
   const loadRaceData = (race: Race) => {
@@ -30,6 +32,7 @@ export const useRaceForm = () => {
       name: race.name,
       date: race.date,
       endDate: race.endDate || '',
+      organizer: race.organizer || '',
       type: race.type
     });
   };

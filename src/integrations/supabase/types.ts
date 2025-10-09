@@ -167,6 +167,7 @@ export type Database = {
           end_date: string | null
           id: string
           name: string
+          organizer: string | null
           type: string
           updated_at: string
         }
@@ -176,6 +177,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name: string
+          organizer?: string | null
           type: string
           updated_at?: string
         }
@@ -185,6 +187,7 @@ export type Database = {
           end_date?: string | null
           id?: string
           name?: string
+          organizer?: string | null
           type?: string
           updated_at?: string
         }
