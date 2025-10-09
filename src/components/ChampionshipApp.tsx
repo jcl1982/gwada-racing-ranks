@@ -9,6 +9,8 @@ const ChampionshipApp = () => {
     drivers,
     montagneRaces,
     rallyeRaces,
+    kartingRaces,
+    accelerationRaces,
     
     standings,
     previousStandings,
@@ -53,6 +55,8 @@ const ChampionshipApp = () => {
           championshipYear={championshipYear}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          kartingRaces={kartingRaces}
+          accelerationRaces={accelerationRaces}
           
           drivers={drivers}
           previousStandings={previousStandings}

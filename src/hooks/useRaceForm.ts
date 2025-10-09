@@ -7,7 +7,7 @@ interface RaceFormData {
   date: string;
   endDate: string;
   organizer?: string;
-  type: 'montagne' | 'rallye';
+  type: 'montagne' | 'rallye' | 'karting' | 'acceleration';
 }
 
 export const useRaceForm = () => {

@@ -19,7 +19,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
   const [date, setDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [organizer, setOrganizer] = useState('');
-  const [type, setType] = useState<'montagne' | 'rallye'>('montagne');
+  const [type, setType] = useState<'montagne' | 'rallye' | 'karting' | 'acceleration'>('montagne');
 
   // Charger les données de la course quand le dialog s'ouvre
   useEffect(() => {
@@ -131,7 +131,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
             <Label htmlFor="edit-race-type">Type de course</Label>
             <Select 
               value={type} 
-              onValueChange={(value: 'montagne' | 'rallye') => {
+              onValueChange={(value: 'montagne' | 'rallye' | 'karting' | 'acceleration') => {
                 console.log('🏁 Changement type:', value);
                 setType(value);
               }}
@@ -142,6 +142,8 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
               <SelectContent>
                 <SelectItem value="montagne">Course de Côte</SelectItem>
                 <SelectItem value="rallye">Rallye</SelectItem>
+                <SelectItem value="karting">Karting</SelectItem>
+                <SelectItem value="acceleration">Accélération</SelectItem>
               </SelectContent>
             </Select>
           </div>
