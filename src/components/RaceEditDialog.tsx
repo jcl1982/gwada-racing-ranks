@@ -1,12 +1,10 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Race } from '@/types/championship';
-import { useRaceForm } from '@/hooks/useRaceForm';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface RaceEditDialogProps {
   isOpen: boolean;
@@ -16,44 +14,64 @@ interface RaceEditDialogProps {
 }
 
 const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: RaceEditDialogProps) => {
-  const { formData, updateFormData, resetForm, loadRaceData, isFormValid } = useRaceForm();
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [type, setType] = useState<'montagne' | 'rallye'>('montagne');
 
+  // Charger les données de la course quand le dialog s'ouvre
   useEffect(() => {
-    if (editingRace) {
-      loadRaceData(editingRace);
+    if (editingRace && isOpen) {
+      console.log('📝 Chargement de la course dans le formulaire:', editingRace);
+      setName(editingRace.name);
+      setDate(editingRace.date);
+      setEndDate(editingRace.endDate || '');
+      setType(editingRace.type);
     }
-  }, [editingRace, loadRaceData]);
+  }, [editingRace, isOpen]);
 
   const handleSubmit = () => {
-    if (!editingRace || !isFormValid()) return;
+    if (!editingRace) {
+      console.error('❌ Pas de course en édition');
+      return;
+    }
 
-    console.log('🚀 Soumission du formulaire avec date:', formData.date);
-    console.log('📅 editingRace.date:', editingRace.date);
+    if (!name.trim() || !date) {
+      console.error('❌ Champs requis manquants');
+      return;
+    }
+
+    console.log('🚀 Soumission avec les valeurs:');
+    console.log('  - name:', name);
+    console.log('  - date:', date);
+    console.log('  - endDate:', endDate);
+    console.log('  - type:', type);
 
     const updatedRace: Race = {
       ...editingRace,
-      name: formData.name.trim(),
-      date: formData.date,
-      endDate: formData.endDate || undefined,
-      type: formData.type
+      name: name.trim(),
+      date: date,
+      endDate: endDate || undefined,
+      type: type
     };
 
-    console.log('📦 updatedRace créé:', updatedRace);
-    console.log('📅 updatedRace.date:', updatedRace.date);
+    console.log('📦 Race mise à jour:', updatedRace);
 
     onUpdateRace(updatedRace);
-    onOpenChange(false);
-    resetForm();
+    handleClose();
   };
 
-  const handleOpenChange = (open: boolean) => {
-    onOpenChange(open);
-    if (!open) resetForm();
+  const handleClose = () => {
+    setName('');
+    setDate('');
+    setEndDate('');
+    setType('montagne');
+    onOpenChange(false);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent key={editingRace?.id}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Modifier la course</DialogTitle>
         </DialogHeader>
@@ -62,8 +80,11 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
             <Label htmlFor="edit-race-name">Nom de la course</Label>
             <Input
               id="edit-race-name"
-              value={formData.name}
-              onChange={(e) => updateFormData({ name: e.target.value })}
+              value={name}
+              onChange={(e) => {
+                console.log('📝 Changement nom:', e.target.value);
+                setName(e.target.value);
+              }}
               placeholder="Nom de la course"
             />
           </div>
@@ -72,8 +93,11 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
             <Input
               id="edit-race-date"
               type="date"
-              value={formData.date}
-              onChange={(e) => updateFormData({ date: e.target.value })}
+              value={date}
+              onChange={(e) => {
+                console.log('📅 Changement date:', e.target.value);
+                setDate(e.target.value);
+              }}
             />
           </div>
           <div>
@@ -81,15 +105,21 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
             <Input
               id="edit-race-end-date"
               type="date"
-              value={formData.endDate}
-              onChange={(e) => updateFormData({ endDate: e.target.value })}
+              value={endDate}
+              onChange={(e) => {
+                console.log('📅 Changement date fin:', e.target.value);
+                setEndDate(e.target.value);
+              }}
             />
           </div>
           <div>
             <Label htmlFor="edit-race-type">Type de course</Label>
             <Select 
-              value={formData.type} 
-              onValueChange={(value: 'montagne' | 'rallye') => updateFormData({ type: value })}
+              value={type} 
+              onValueChange={(value: 'montagne' | 'rallye') => {
+                console.log('🏁 Changement type:', value);
+                setType(value);
+              }}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -106,7 +136,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => handleOpenChange(false)} 
+              onClick={handleClose} 
               className="flex-1"
             >
               Annuler
