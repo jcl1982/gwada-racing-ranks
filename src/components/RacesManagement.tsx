@@ -38,9 +38,10 @@ const RacesManagement = ({
   };
 
   const handleEditRace = (race: Race) => {
-    console.log('Editing race:', race);
+    console.log('✏️ Bouton Modifier cliqué pour la course:', race);
     setEditingRace(race);
     setIsEditDialogOpen(true);
+    console.log('📂 État après clic:', { isEditDialogOpen: true, editingRaceId: race.id });
   };
 
   const handleUpdateRace = async (updatedRace: Race) => {

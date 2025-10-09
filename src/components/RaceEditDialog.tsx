@@ -20,6 +20,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
 
   useEffect(() => {
     if (editingRace) {
+      console.log('🔧 Chargement des données de la course dans le formulaire:', editingRace);
       loadRaceData(editingRace);
     }
   }, [editingRace, loadRaceData]);
