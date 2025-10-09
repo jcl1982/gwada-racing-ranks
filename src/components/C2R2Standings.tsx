@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { calculateC2R2Standings } from '@/utils/championship';
+
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 import { usePdfExport } from '@/hooks/usePdfExport';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
@@ -34,7 +40,7 @@ const C2R2Standings = ({
   // Combiner toutes les courses pour l'affichage du calendrier
   const allRaces = useMemo(() => {
     return [...montagneRaces, ...rallyeRaces].sort((a, b) => 
-      new Date(a.date).getTime() - new Date(b.date).getTime()
+      parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime()
     );
   }, [montagneRaces, rallyeRaces]);
 

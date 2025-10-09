@@ -11,6 +11,12 @@ import { useWebPrint } from '@/hooks/useWebPrint';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 interface StandingsTableProps {
   displayTitle: string;
   races: Race[];
@@ -34,9 +40,9 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                        'from-blue-600 to-cyan-600';
 
   const formatDateRange = (startDate: string, endDate?: string) => {
-    const start = format(new Date(startDate), 'dd/MM/yy', { locale: fr });
+    const start = format(parseLocalDate(startDate), 'dd/MM/yy', { locale: fr });
     if (!endDate) return start;
-    const end = format(new Date(endDate), 'dd/MM/yy', { locale: fr });
+    const end = format(parseLocalDate(endDate), 'dd/MM/yy', { locale: fr });
     return `${start}-${end}`;
   };
 

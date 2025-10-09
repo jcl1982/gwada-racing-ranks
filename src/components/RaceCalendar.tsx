@@ -1,9 +1,14 @@
-
 import { Card } from '@/components/ui/card';
 import { Calendar, MapPin } from 'lucide-react';
 import { Race } from '@/types/championship';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 interface RaceCalendarProps {
   races: Race[];
@@ -11,9 +16,9 @@ interface RaceCalendarProps {
 
 const RaceCalendar = ({ races }: RaceCalendarProps) => {
   const formatDateRange = (startDate: string, endDate?: string) => {
-    const start = format(new Date(startDate), 'dd MMMM yyyy', { locale: fr });
+    const start = format(parseLocalDate(startDate), 'dd MMMM yyyy', { locale: fr });
     if (!endDate) return start;
-    const end = format(new Date(endDate), 'dd MMMM yyyy', { locale: fr });
+    const end = format(parseLocalDate(endDate), 'dd MMMM yyyy', { locale: fr });
     return `${start} - ${end}`;
   };
 

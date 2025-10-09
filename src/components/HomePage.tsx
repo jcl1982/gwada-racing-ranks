@@ -6,6 +6,12 @@ import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
 
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 interface HomePageProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
@@ -26,7 +32,7 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
   
   // Obtenir les courses les plus récentes pour les actualités (seulement montagne et rallye pour le général)
   const allRaces = [...montagneRaces, ...rallyeRaces].sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
+    parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime()
   );
   const recentRaces = allRaces.slice(0, 3);
 

@@ -1,7 +1,12 @@
-
 import { Card } from '@/components/ui/card';
 import { Users, Trophy, Mountain, Car, Star } from 'lucide-react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 interface AdminStatsProps {
   drivers: Driver[];
@@ -77,7 +82,7 @@ const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminSta
         <h3 className="text-lg font-semibold mb-4">Dernières Courses</h3>
         <div className="space-y-3">
           {[...montagneRaces, ...rallyeRaces]
-            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
             .slice(0, 5)
             .map((race) => (
               <div key={race.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -90,7 +95,7 @@ const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminSta
                   <div>
                     <p className="font-medium">{race.name}</p>
                     <p className="text-sm text-gray-600">
-                      {new Date(race.date).toLocaleDateString('fr-FR')}
+                      {parseLocalDate(race.date).toLocaleDateString('fr-FR')}
                     </p>
                   </div>
                 </div>

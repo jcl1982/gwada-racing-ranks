@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +7,12 @@ import { Edit2, Save, X, Mountain, Car } from 'lucide-react';
 import { Driver, Race, RaceResult } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import DriverResultRow from './DriverResultRow';
+
+// Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
 
 interface RaceCardProps {
   race: Race;
@@ -108,7 +113,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
         <div className="flex items-center gap-2">
           <Icon className={`w-5 h-5 ${colorClass}`} />
           <h3 className="text-lg font-semibold">{race.name}</h3>
-          <Badge variant="outline">{new Date(race.date).toLocaleDateString('fr-FR')}</Badge>
+          <Badge variant="outline">{parseLocalDate(race.date).toLocaleDateString('fr-FR')}</Badge>
         </div>
         {!isEditing ? (
           <Button
