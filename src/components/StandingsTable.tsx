@@ -126,6 +126,11 @@ const StandingsTable = ({
                   <div className="text-[10px] text-gray-500 font-normal">
                     {formatDateRange(race.date, race.endDate)}
                   </div>
+                  {race.organizer && (
+                    <div className="text-[10px] text-gray-500 font-normal italic">
+                      {race.organizer}
+                    </div>
+                  )}
                 </th>)}
               <th className="text-center py-1 px-1 font-semibold">Total</th>
               <th className="text-center py-1 px-1 font-semibold">Écart</th>

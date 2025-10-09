@@ -38,6 +38,11 @@ const RaceCalendar = ({ races }: RaceCalendarProps) => {
             <p className="text-sm text-gray-600 mt-1">
               {formatDateRange(race.date, race.endDate)}
             </p>
+            {race.organizer && (
+              <p className="text-sm text-gray-500 mt-1 italic">
+                Organisateur : {race.organizer}
+              </p>
+            )}
           </div>
         ))}
       </div>
