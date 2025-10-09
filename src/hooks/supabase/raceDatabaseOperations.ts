@@ -56,21 +56,30 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): 
 };
 
 export const updateRaceInDatabase = async (race: Race): Promise<void> => {
+  console.log('🔄 updateRaceInDatabase - Début');
+  console.log('📦 Race reçue:', race);
+  console.log('📅 Date à enregistrer:', race.date);
+  
   if (!isValidUUID(race.id)) {
     console.error('❌ UUID invalide pour la mise à jour de la course:', race.id);
     throw new Error('ID de la course invalide');
   }
 
-  const { error } = await supabase
+  const updateData = {
+    name: race.name,
+    date: race.date,
+    end_date: race.endDate || null,
+    type: race.type,
+    updated_at: new Date().toISOString()
+  };
+  
+  console.log('📤 Données envoyées à Supabase:', updateData);
+
+  const { data, error } = await supabase
     .from('races')
-    .update({
-      name: race.name,
-      date: race.date,
-      end_date: race.endDate || null,
-      type: race.type,
-      updated_at: new Date().toISOString()
-    })
-    .eq('id', race.id);
+    .update(updateData)
+    .eq('id', race.id)
+    .select();
 
   if (error) {
     console.error('❌ Erreur lors de la mise à jour de la course:', error);
@@ -78,6 +87,7 @@ export const updateRaceInDatabase = async (race: Race): Promise<void> => {
   }
 
   console.log('✅ Course mise à jour avec succès');
+  console.log('📥 Données retournées par Supabase:', data);
 };
 
 export const deleteRaceFromDatabase = async (raceId: string): Promise<void> => {

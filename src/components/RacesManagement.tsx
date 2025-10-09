@@ -46,7 +46,14 @@ const RacesManagement = ({
   const handleUpdateRace = async (updatedRace: Race) => {
     if (!editingRace) return;
 
+    console.log('🔄 RacesManagement - handleUpdateRace appelé');
+    console.log('Course originale:', editingRace);
+    console.log('Course mise à jour:', updatedRace);
+    console.log('Date changée:', editingRace.date, '->', updatedRace.date);
+
     await saveRace(updatedRace);
+    
+    console.log('✅ saveRace terminé');
     setEditingRace(null);
   };
 
