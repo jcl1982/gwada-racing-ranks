@@ -38,6 +38,7 @@ const RacesManagement = ({
   };
 
   const handleEditRace = (race: Race) => {
+    alert(`Modification de la course: ${race.name}\nDate actuelle: ${race.date}`);
     console.log('✏️ Bouton Modifier cliqué pour la course:', race);
     setEditingRace(race);
     setIsEditDialogOpen(true);
