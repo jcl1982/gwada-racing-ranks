@@ -3,7 +3,6 @@ import { Card } from '@/components/ui/card';
 import { Trophy, Mountain, Car, Home, Upload, Settings } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
-import AuthButton from './AuthButton';
 
 interface NavigationProps {
   currentView: ViewType;
@@ -62,8 +61,6 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
             </button>
           ))}
         </nav>
-        
-        <AuthButton />
       </div>
     </Card>
   );
