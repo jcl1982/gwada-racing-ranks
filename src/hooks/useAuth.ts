@@ -112,18 +112,27 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    
-    // Si la session n'existe plus, considérer la déconnexion comme réussie
-    if (error && error.message.includes('session_not_found')) {
-      // Nettoyer l'état local
+    try {
+      // Nettoyer l'état local immédiatement
       setSession(null);
       setUser(null);
       setUserRole(null);
+      
+      // Tenter la déconnexion Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      // Ignorer les erreurs de session manquante (déjà déconnecté)
+      if (error && !error.message.includes('session_not_found')) {
+        console.error('Sign out error:', error);
+        return { error };
+      }
+      
+      return { error: null };
+    } catch (error) {
+      console.error('Sign out exception:', error);
+      // Même en cas d'erreur, l'état local est nettoyé
       return { error: null };
     }
-    
-    return { error };
   };
 
   return {
