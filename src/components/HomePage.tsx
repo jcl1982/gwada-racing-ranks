@@ -197,18 +197,6 @@ const HomePage = ({ standings, championshipTitle, championshipYear, montagneRace
           Actualités du Championnat
         </h3>
         <div className="space-y-4">
-          {/* Featured News */}
-          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white mb-6">
-            <div className="flex items-start gap-4">
-              <Trophy size={32} className="flex-shrink-0 mt-1" />
-              <div>
-                <h4 className="font-bold text-xl mb-2">Dernière Victoire</h4>
-                <p className="text-lg font-semibold mb-1">Course de Côte des Mamelles</p>
-                <p className="text-white/90">🏆 Victoire de Stéphane NEGRE</p>
-              </div>
-            </div>
-          </div>
-
           {recentRaces.length > 0 ? (
             recentRaces.map((race, index) => (
               <div key={race.id} className={`border-l-4 ${race.type === 'rallye' ? 'border-blue-500' : 'border-green-500'} pl-4`}>
