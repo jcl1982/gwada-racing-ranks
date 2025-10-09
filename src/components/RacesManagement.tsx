@@ -55,6 +55,12 @@ const RacesManagement = ({
     
     console.log('✅ saveRace terminé');
     setEditingRace(null);
+    
+    // Forcer un re-render en recréant les tableaux de courses
+    const allRaces = [...montagneRaces, ...rallyeRaces];
+    const updatedMontagne = allRaces.filter(r => r.type === 'montagne');
+    const updatedRallye = allRaces.filter(r => r.type === 'rallye');
+    onRacesChange(updatedMontagne, updatedRallye);
   };
 
   const handleDeleteRace = async (raceId: string) => {
