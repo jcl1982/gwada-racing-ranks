@@ -8,6 +8,11 @@ const PartnerLogos = () => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 mb-8 px-4 md:px-8 max-w-6xl mx-auto">
       <Logo 
+        src={asagLogo} 
+        alt="ASAG - Association Sportive Automobile Guadeloupe" 
+        className="h-16 md:h-20 w-auto object-contain"
+      />
+      <Logo 
         src={asaArchipelLogo} 
         alt="ASA Archipel" 
         className="h-16 md:h-20 w-auto object-contain"
@@ -15,11 +20,6 @@ const PartnerLogos = () => {
       <Logo 
         src={asaCaraibLogo} 
         alt="ASA Caraïb" 
-        className="h-16 md:h-20 w-auto object-contain"
-      />
-      <Logo 
-        src={asagLogo} 
-        alt="ASAG - Association Sportive Automobile Guadeloupe" 
         className="h-16 md:h-20 w-auto object-contain"
       />
       <Logo 
