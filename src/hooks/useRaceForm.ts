@@ -5,6 +5,7 @@ import { Race } from '@/types/championship';
 interface RaceFormData {
   name: string;
   date: string;
+  endDate: string;
   type: 'montagne' | 'rallye';
 }
 
@@ -12,6 +13,7 @@ export const useRaceForm = () => {
   const [formData, setFormData] = useState<RaceFormData>({
     name: '',
     date: '',
+    endDate: '',
     type: 'montagne'
   });
 
@@ -20,13 +22,14 @@ export const useRaceForm = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', date: '', type: 'montagne' });
+    setFormData({ name: '', date: '', endDate: '', type: 'montagne' });
   };
 
   const loadRaceData = (race: Race) => {
     setFormData({
       name: race.name,
       date: race.date,
+      endDate: race.endDate || '',
       type: race.type
     });
   };

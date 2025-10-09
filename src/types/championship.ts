@@ -20,6 +20,7 @@ export interface Race {
   id: string;
   name: string;
   date: string;
+  endDate?: string;
   type: 'montagne' | 'rallye';
   results: RaceResult[];
 }

@@ -31,6 +31,7 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): 
   console.log('➕ Création d\'une nouvelle course:', {
     name: race.name,
     date: race.date,
+    endDate: race.endDate,
     type: race.type
   });
 
@@ -39,6 +40,7 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): 
     .insert({
       name: race.name,
       date: race.date,
+      end_date: race.endDate || null,
       type: race.type
     })
     .select()
@@ -64,6 +66,7 @@ export const updateRaceInDatabase = async (race: Race): Promise<void> => {
     .update({
       name: race.name,
       date: race.date,
+      end_date: race.endDate || null,
       type: race.type,
       updated_at: new Date().toISOString()
     })

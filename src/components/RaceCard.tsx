@@ -14,6 +14,13 @@ interface RaceCardProps {
 }
 
 const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
+  const formatDateRange = (startDate: string, endDate?: string) => {
+    const start = format(new Date(startDate), 'dd/MM/yyyy', { locale: fr });
+    if (!endDate) return start;
+    const end = format(new Date(endDate), 'dd/MM/yyyy', { locale: fr });
+    return `${start} - ${end}`;
+  };
+
   return (
     <Card className="p-4">
       <div className="flex justify-between items-center">
@@ -27,7 +34,7 @@ const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
             <h3 className="font-medium">{race.name}</h3>
             <p className="text-sm text-gray-600 flex items-center gap-1">
               <Calendar size={12} />
-              {format(new Date(race.date), 'dd/MM/yyyy', { locale: fr })} • {race.results.length} participants
+              {formatDateRange(race.date, race.endDate)} • {race.results.length} participants
             </p>
           </div>
         </div>

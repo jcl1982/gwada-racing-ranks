@@ -33,6 +33,13 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                        type === 'c2r2' ? 'from-orange-600 to-red-600' : 
                        'from-blue-600 to-cyan-600';
 
+  const formatDateRange = (startDate: string, endDate?: string) => {
+    const start = format(new Date(startDate), 'dd/MM/yy', { locale: fr });
+    if (!endDate) return start;
+    const end = format(new Date(endDate), 'dd/MM/yy', { locale: fr });
+    return `${start}-${end}`;
+  };
+
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
   const getDriverPointsForRace = (driverId: string, race: Race): number => {
     const result = race.results.find(r => r.driverId === driverId);
@@ -138,7 +145,7 @@ const StandingsTable = ({ displayTitle, races, type, standings, onPrintPdf }: St
                     {race.name}
                   </div>
                   <div className="text-[10px] text-gray-500 font-normal">
-                    {format(new Date(race.date), 'dd/MM/yy', { locale: fr })}
+                    {formatDateRange(race.date, race.endDate)}
                   </div>
                 </th>
               ))}

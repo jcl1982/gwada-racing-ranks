@@ -32,6 +32,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         raceId = await createRaceInDatabase({
           name: race.name,
           date: race.date,
+          endDate: race.endDate,
           type: race.type
         });
       }

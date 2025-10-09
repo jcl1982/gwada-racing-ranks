@@ -10,6 +10,13 @@ interface RaceCalendarProps {
 }
 
 const RaceCalendar = ({ races }: RaceCalendarProps) => {
+  const formatDateRange = (startDate: string, endDate?: string) => {
+    const start = format(new Date(startDate), 'dd MMMM yyyy', { locale: fr });
+    if (!endDate) return start;
+    const end = format(new Date(endDate), 'dd MMMM yyyy', { locale: fr });
+    return `${start} - ${end}`;
+  };
+
   return (
     <Card className="card-glass p-6">
       <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -24,7 +31,7 @@ const RaceCalendar = ({ races }: RaceCalendarProps) => {
               {race.name}
             </h4>
             <p className="text-sm text-gray-600 mt-1">
-              {format(new Date(race.date), 'dd MMMM yyyy', { locale: fr })}
+              {formatDateRange(race.date, race.endDate)}
             </p>
           </div>
         ))}
