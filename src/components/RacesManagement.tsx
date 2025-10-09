@@ -38,25 +38,13 @@ const RacesManagement = ({
   };
 
   const handleEditRace = (race: Race) => {
-    alert(`Modification de la course: ${race.name}\nDate actuelle: ${race.date}`);
     console.log('✏️ Bouton Modifier cliqué pour la course:', race);
     setEditingRace(race);
     setIsEditDialogOpen(true);
-    console.log('📂 État après clic:', { isEditDialogOpen: true, editingRaceId: race.id });
   };
 
   const handleUpdateRace = async (updatedRace: Race) => {
     if (!editingRace) return;
-
-    console.log('🔄 handleUpdateRace appelé');
-    console.log('Course originale:', editingRace);
-    console.log('Course mise à jour:', updatedRace);
-    console.log('Différences:', {
-      name: editingRace.name !== updatedRace.name,
-      date: editingRace.date !== updatedRace.date,
-      endDate: editingRace.endDate !== updatedRace.endDate,
-      type: editingRace.type !== updatedRace.type
-    });
 
     await saveRace(updatedRace);
     setEditingRace(null);

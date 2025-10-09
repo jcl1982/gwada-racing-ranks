@@ -20,32 +20,12 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
 
   useEffect(() => {
     if (editingRace) {
-      console.log('🔧 Chargement des données de la course dans le formulaire:', editingRace);
       loadRaceData(editingRace);
     }
   }, [editingRace, loadRaceData]);
 
   const handleSubmit = () => {
-    alert(`Tentative de soumission\nCourse: ${editingRace?.name}\nNouvelle date: ${formData.date}\nValide: ${isFormValid()}`);
-    console.log('🎯 handleSubmit appelé');
-    console.log('editingRace:', editingRace);
-    console.log('isFormValid:', isFormValid());
-    console.log('formData:', formData);
-    
-    if (!editingRace) {
-      alert('Erreur: Pas de course en édition');
-      console.error('❌ Pas de course en édition');
-      return;
-    }
-    
-    if (!isFormValid()) {
-      alert('Erreur: Formulaire invalide');
-      console.error('❌ Formulaire invalide');
-      return;
-    }
-
-    console.log('📝 Soumission du formulaire d\'édition');
-    console.log('Course originale:', editingRace);
+    if (!editingRace || !isFormValid()) return;
 
     const updatedRace: Race = {
       ...editingRace,
@@ -54,8 +34,6 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       endDate: formData.endDate || undefined,
       type: formData.type
     };
-
-    console.log('Course mise à jour:', updatedRace);
 
     onUpdateRace(updatedRace);
     onOpenChange(false);
