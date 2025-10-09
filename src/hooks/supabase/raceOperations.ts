@@ -15,12 +15,11 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       
       let raceId: string;
       
-      // Vérifier si une course avec le même nom et date existe déjà
-      const existingRace = await findExistingRace(race.name, race.date);
-      
-      if (existingRace) {
-        console.log('🔄 Course existante trouvée, mise à jour:', existingRace.id);
-        raceId = existingRace.id;
+      // Si la course a un ID, c'est une mise à jour
+      if ('id' in race && race.id) {
+        console.log('🔄 Mise à jour de la course existante:', race.id);
+        await updateRaceInDatabase(race);
+        raceId = race.id;
         
         // Supprimer les anciens résultats avant d'ajouter les nouveaux
         if ('results' in race && race.results.length > 0) {
@@ -28,13 +27,27 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           await deleteExistingResults(raceId);
         }
       } else {
-        console.log('🆕 Création d\'une nouvelle course:', race.name);
-        raceId = await createRaceInDatabase({
-          name: race.name,
-          date: race.date,
-          endDate: race.endDate,
-          type: race.type
-        });
+        // Sinon, vérifier si une course avec le même nom et date existe déjà
+        const existingRace = await findExistingRace(race.name, race.date);
+        
+        if (existingRace) {
+          console.log('🔄 Course existante trouvée, mise à jour:', existingRace.id);
+          raceId = existingRace.id;
+          
+          // Supprimer les anciens résultats avant d'ajouter les nouveaux
+          if ('results' in race && race.results.length > 0) {
+            console.log('🗑️ Suppression des anciens résultats...');
+            await deleteExistingResults(raceId);
+          }
+        } else {
+          console.log('🆕 Création d\'une nouvelle course:', race.name);
+          raceId = await createRaceInDatabase({
+            name: race.name,
+            date: race.date,
+            endDate: race.endDate,
+            type: race.type
+          });
+        }
       }
 
       // Insert race results if they exist
@@ -49,8 +62,8 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       await loadData();
       
       toast({
-        title: existingRace ? "Course mise à jour" : "Course créée",
-        description: existingRace ? "La course a été mise à jour avec succès." : "La course a été créée avec succès.",
+        title: 'id' in race && race.id ? "Course mise à jour" : "Course créée",
+        description: 'id' in race && race.id ? "La course a été mise à jour avec succès." : "La course a été créée avec succès.",
       });
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde de la course:', error);
