@@ -78,6 +78,26 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
     );
   };
 
+  const handleCarModelChange = (driverId: string, newCarModel: string) => {
+    setEditingResults(prev => {
+      const existing = prev.find(r => r.driverId === driverId);
+      if (existing) {
+        return prev.map(r => 
+          r.driverId === driverId 
+            ? { ...r, carModel: newCarModel }
+            : r
+        );
+      } else {
+        return [...prev, {
+          driverId,
+          position: prev.length + 1,
+          points: 0,
+          carModel: newCarModel
+        }];
+      }
+    });
+  };
+
   const resultsToShow = isEditing ? editingResults : race.results;
   const Icon = race.type === 'montagne' ? Mountain : Car;
   const colorClass = race.type === 'montagne' ? 'text-green-600' : 'text-blue-600';
@@ -129,6 +149,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
             <TableHead>Pilote</TableHead>
             <TableHead className="text-center">Position</TableHead>
             <TableHead className="text-center">Points</TableHead>
+            <TableHead className="text-center">Modèle de voiture</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -140,6 +161,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
               isEditing={isEditing}
               onPointsChange={handlePointsChange}
               onPositionChange={handlePositionChange}
+              onCarModelChange={handleCarModelChange}
             />
           ))}
         </TableBody>

@@ -2,6 +2,7 @@
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { TableCell, TableRow } from '@/components/ui/table';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Driver, RaceResult } from '@/types/championship';
 
 interface DriverResultRowProps {
@@ -10,6 +11,7 @@ interface DriverResultRowProps {
   isEditing: boolean;
   onPointsChange: (driverId: string, newPoints: number) => void;
   onPositionChange: (driverId: string, newPosition: number) => void;
+  onCarModelChange: (driverId: string, newCarModel: string) => void;
 }
 
 const DriverResultRow = ({
@@ -17,7 +19,8 @@ const DriverResultRow = ({
   result,
   isEditing,
   onPointsChange,
-  onPositionChange
+  onPositionChange,
+  onCarModelChange
 }: DriverResultRowProps) => {
   return (
     <TableRow>
@@ -48,6 +51,24 @@ const DriverResultRow = ({
           <Badge variant={result?.points ? "default" : "secondary"}>
             {result?.points || 0} pts
           </Badge>
+        )}
+      </TableCell>
+      <TableCell className="text-center">
+        {isEditing ? (
+          <Select
+            value={result?.carModel || driver.carModel || ''}
+            onValueChange={(value) => onCarModelChange(driver.id, value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Modèle de voiture" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Citroën C2 R2">Citroën C2 R2</SelectItem>
+              <SelectItem value="Autre">Autre</SelectItem>
+            </SelectContent>
+          </Select>
+        ) : (
+          result?.carModel || driver.carModel || '-'
         )}
       </TableCell>
     </TableRow>

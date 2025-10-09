@@ -52,7 +52,8 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     points: result.points,
     time: result.time,
     dnf: result.dnf || false,
-    car_model: carModelMap.get(result.driverId) || null
+    // Utiliser le car_model du résultat s'il existe, sinon celui du pilote
+    car_model: result.carModel || carModelMap.get(result.driverId) || null
   }));
 
   const { error: resultError } = await supabase
