@@ -98,16 +98,30 @@ export const calculateC2R2Standings = (
   rallyeRaces: Race[],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
-  // Filtrer seulement les pilotes avec une C2 R2
-  const c2r2Drivers = drivers.filter(driver => 
-    driver.carModel?.toLowerCase().includes('c2') && 
-    driver.carModel?.toLowerCase().includes('r2')
-  );
+  const allRaces = [...montagneRaces, ...rallyeRaces];
+  
+  // Filtrer les pilotes qui ont au moins un résultat avec une C2 R2
+  const c2r2Drivers = drivers.filter(driver => {
+    // Vérifier si le pilote a une C2 R2 dans sa fiche
+    const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
+                           driver.carModel?.toLowerCase().includes('r2');
+    
+    // Vérifier si le pilote a au moins une course avec une C2 R2
+    const hasC2R2Results = allRaces.some(race => 
+      race.results.some(result => 
+        result.driverId === driver.id && 
+        result.carModel?.toLowerCase().includes('c2') && 
+        result.carModel?.toLowerCase().includes('r2')
+      )
+    );
+    
+    return hasC2R2Profile || hasC2R2Results;
+  });
 
   console.log('🏁 Calcul du classement C2 R2:', {
     totalDrivers: drivers.length,
     c2r2Drivers: c2r2Drivers.length,
-    c2r2DriversList: c2r2Drivers.map(d => `${d.name} (${d.carModel})`)
+    c2r2DriversList: c2r2Drivers.map(d => `${d.name} (${d.carModel || 'Variable'})`)
   });
 
   if (c2r2Drivers.length === 0) {

@@ -27,11 +27,19 @@ const PointsEditorTabs = ({
 
   // Filtrer les pilotes C2 R2
   const c2r2Drivers = useMemo(() => {
-    return drivers.filter(d => 
-      d.carModel?.toLowerCase().includes('c2') && 
-      d.carModel?.toLowerCase().includes('r2')
-    );
-  }, [drivers]);
+    return drivers.filter(driver => {
+      const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
+                             driver.carModel?.toLowerCase().includes('r2');
+      const hasC2R2Results = allRaces.some(race => 
+        race.results.some(result => 
+          result.driverId === driver.id && 
+          result.carModel?.toLowerCase().includes('c2') && 
+          result.carModel?.toLowerCase().includes('r2')
+        )
+      );
+      return hasC2R2Profile || hasC2R2Results;
+    });
+  }, [drivers, allRaces]);
 
   return (
     <Tabs defaultValue="montagne" className="w-full">

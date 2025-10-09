@@ -56,13 +56,24 @@ const C2R2Standings = ({
   }, [c2r2Standings]);
 
   const handlePrintPdf = () => {
+    // Filtrer les pilotes qui ont au moins couru avec une C2 R2
+    const c2r2Drivers = drivers.filter(driver => {
+      const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
+                             driver.carModel?.toLowerCase().includes('r2');
+      const hasC2R2Results = allRaces.some(race => 
+        race.results.some(result => 
+          result.driverId === driver.id && 
+          result.carModel?.toLowerCase().includes('c2') && 
+          result.carModel?.toLowerCase().includes('r2')
+        )
+      );
+      return hasC2R2Profile || hasC2R2Results;
+    });
+    
     exportCategoryStandings(
       'Trophée C2 R2',
       allRaces,
-      drivers.filter(d => 
-        d.carModel?.toLowerCase().includes('c2') && 
-        d.carModel?.toLowerCase().includes('r2')
-      ),
+      c2r2Drivers,
       championshipYear,
       formattedStandings
     );
