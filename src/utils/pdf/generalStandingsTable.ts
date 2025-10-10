@@ -16,6 +16,7 @@ export const createGeneralStandingsTable = (
         standing.position.toString(),
         evolutionIndicator,
         standing.driver.name,
+        standing.driver.carModel || '-',
         `${standing.montagnePoints}`,
         `${standing.rallyePoints}`,
         `${standing.totalPoints}`
@@ -25,7 +26,7 @@ export const createGeneralStandingsTable = (
   console.log('📄 Données du tableau PDF:', tableData);
   
   autoTable(doc, {
-    head: [['Pos', 'Évol.', 'Pilote', 'Montagne', 'Rallye', 'Total']],
+    head: [['Pos', 'Évol.', 'Pilote', 'Véhicule', 'Montagne', 'Rallye', 'Total']],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {

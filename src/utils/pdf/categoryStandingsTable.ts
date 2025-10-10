@@ -48,7 +48,7 @@ export const createCategoryStandingsTable = (
       ? (standing.evolutionBetweenRaces > 0 ? `+${standing.evolutionBetweenRaces}` : `${standing.evolutionBetweenRaces}`)
       : '-';
     
-    const row = [standing.position.toString(), evolutionIndicator, standing.driver.name];
+    const row = [standing.position.toString(), evolutionIndicator, standing.driver.name, standing.driver.carModel || '-'];
     
     let previousTotal = 0;
     races.forEach(race => {
