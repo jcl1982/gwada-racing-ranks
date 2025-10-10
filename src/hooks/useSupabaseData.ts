@@ -12,6 +12,7 @@ export const useSupabaseData = () => {
   const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2024');
+  const [championshipId, setChampionshipId] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -26,7 +27,8 @@ export const useSupabaseData = () => {
         races: appRaces,
         previousStandings: appPreviousStandings,
         championshipTitle: title,
-        championshipYear: year
+        championshipYear: year,
+        championshipId: id
       } = await loadSupabaseData();
 
       console.log('📊 Données chargées depuis Supabase:', {
@@ -45,6 +47,7 @@ export const useSupabaseData = () => {
       setPreviousStandings([...appPreviousStandings]);
       setChampionshipTitle(title);
       setChampionshipYear(year);
+      setChampionshipId(id);
 
       // Log détaillé après mise à jour
       const cafeiereAfter = appRaces.find(r => r.name.includes('Caféière'));
@@ -64,7 +67,7 @@ export const useSupabaseData = () => {
   };
 
   // Create operation handlers with improved refresh
-  const { saveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData);
+  const { saveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData, championshipId);
   const { saveRace, deleteRace } = createRaceOperations(toast, loadData);
   const { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, restorePreviousStandings, resetAllData } = createConfigOperations(toast);
 
@@ -122,6 +125,7 @@ export const useSupabaseData = () => {
     previousStandings,
     championshipTitle,
     championshipYear,
+    championshipId,
     loading,
     saveDriver,
     deleteDriver,

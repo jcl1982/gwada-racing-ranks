@@ -7,7 +7,8 @@ export const convertSupabaseDriver = (supabaseDriver: SupabaseDriver): Driver =>
   name: supabaseDriver.name,
   team: supabaseDriver.team,
   number: supabaseDriver.number || 0,
-  carModel: supabaseDriver.car_model
+  carModel: supabaseDriver.car_model,
+  championshipId: supabaseDriver.championship_id
 });
 
 export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?: Array<SupabaseRaceResult & { drivers: SupabaseDriver }> }): Race => ({

@@ -14,6 +14,7 @@ const ChampionshipApp = () => {
     previousStandings,
     championshipTitle,
     championshipYear,
+    championshipId,
     loading,
     handleImport,
     handleReset,
@@ -52,6 +53,7 @@ const ChampionshipApp = () => {
           standings={standings}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
+          championshipId={championshipId}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           

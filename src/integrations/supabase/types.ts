@@ -41,6 +41,7 @@ export type Database = {
       drivers: {
         Row: {
           car_model: string | null
+          championship_id: string
           created_at: string
           id: string
           name: string
@@ -50,6 +51,7 @@ export type Database = {
         }
         Insert: {
           car_model?: string | null
+          championship_id: string
           created_at?: string
           id?: string
           name: string
@@ -59,6 +61,7 @@ export type Database = {
         }
         Update: {
           car_model?: string | null
+          championship_id?: string
           created_at?: string
           id?: string
           name?: string
@@ -66,7 +69,15 @@ export type Database = {
           team?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "drivers_championship_id_fkey"
+            columns: ["championship_id"]
+            isOneToOne: false
+            referencedRelation: "championship_config"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       previous_standings: {
         Row: {

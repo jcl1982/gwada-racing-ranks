@@ -41,7 +41,8 @@ const formatDate = (dateValue: any): string => {
 
 export const convertExcelDataToRaces = (
   excelData: ExcelRaceData[],
-  existingDrivers: Driver[]
+  existingDrivers: Driver[],
+  championshipId?: string
 ): { races: Race[], newDrivers: Driver[] } => {
   const races: Race[] = [];
   const newDrivers: Driver[] = [...existingDrivers];
@@ -56,6 +57,7 @@ export const convertExcelDataToRaces = (
   console.log('Converting Excel data to races...');
   console.log('Starting with', existingDrivers.length, 'existing drivers');
   console.log('Max driver number:', maxDriverNumber);
+  console.log('Championship ID:', championshipId);
   
   excelData.forEach((excelRace, raceIndex) => {
     // Ne pas générer d'ID ici - laisser saveRace() créer la course dans la DB
@@ -83,11 +85,12 @@ export const convertExcelDataToRaces = (
         driver = {
           id: generateValidUUID(),
           name: driverName,
-          number: nextDriverNumber
+          number: nextDriverNumber,
+          championshipId
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number})`);
+        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Championship: ${championshipId})`);
       } else {
         console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }

@@ -7,12 +7,38 @@ export const loadSupabaseData = async () => {
   console.log('🔄 Chargement des données depuis Supabase...');
 
   try {
-    // Load drivers
+    // Load championship config first to get the championship ID
+    console.log('⚙️ Chargement de la configuration...');
+    const { data: configData, error: configError } = await supabase
+      .from('championship_config')
+      .select('*')
+      .limit(1)
+      .maybeSingle();
+
+    if (configError) {
+      console.error('❌ Erreur lors du chargement de la configuration:', configError);
+      throw configError;
+    }
+
+    const championshipId = configData?.id;
+    const championshipTitle = configData?.title || 'Championnat Automobile';
+    const championshipYear = configData?.year || 'de Guadeloupe 2024';
+
+    console.log('✅ Configuration chargée:', { championshipId, championshipTitle, championshipYear });
+
+    // Load drivers filtered by championship
     console.log('👤 Chargement des pilotes...');
-    const { data: driversData, error: driversError } = await supabase
+    const driversQuery = supabase
       .from('drivers')
       .select('*')
       .order('name');
+    
+    // Filter by championship if we have one
+    if (championshipId) {
+      driversQuery.eq('championship_id', championshipId);
+    }
+
+    const { data: driversData, error: driversError } = await driversQuery;
 
     if (driversError) {
       console.error('❌ Erreur lors du chargement des pilotes:', driversError);
@@ -75,30 +101,13 @@ export const loadSupabaseData = async () => {
     const previousStandings: ChampionshipStanding[] = standingsData?.map(convertSupabaseStanding) || [];
     console.log('✅ Classements précédents chargés:', previousStandings.length);
 
-    // Load championship config
-    console.log('⚙️ Chargement de la configuration...');
-    const { data: configData, error: configError } = await supabase
-      .from('championship_config')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
-
-    if (configError) {
-      console.error('❌ Erreur lors du chargement de la configuration:', configError);
-      throw configError;
-    }
-
-    const championshipTitle = configData?.title || 'Championnat Automobile';
-    const championshipYear = configData?.year || 'de Guadeloupe 2024';
-
-    console.log('✅ Configuration chargée:', { championshipTitle, championshipYear });
-
     const result = {
       drivers,
       races,
       previousStandings,
       championshipTitle,
-      championshipYear
+      championshipYear,
+      championshipId
     };
 
     console.log('🎉 Toutes les données chargées avec succès:', {

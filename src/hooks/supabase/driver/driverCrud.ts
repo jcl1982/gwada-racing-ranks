@@ -4,7 +4,7 @@ import { Driver } from '@/types/championship';
 import { isValidUUID } from '../utils';
 import { useToast } from '@/hooks/use-toast';
 
-export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
+export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
   const saveDriver = async (driver: Omit<Driver, 'id'> | Driver) => {
     try {
       console.log('💾 Saving driver:', driver);
@@ -31,6 +31,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
             .update({
               name: driver.name,
               number: driver.number,
+              car_model: driver.carModel,
               updated_at: new Date().toISOString()
             })
             .eq('id', driver.id);
@@ -45,12 +46,18 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           // Driver has ID but doesn't exist in DB - create with specific ID
           console.log('➕ Creating new driver with specific ID:', driver.id);
           
+          if (!championshipId) {
+            throw new Error('Championship ID is required to create a driver');
+          }
+          
           const { data, error } = await supabase
             .from('drivers')
             .insert({
               id: driver.id,
               name: driver.name,
-              number: driver.number
+              number: driver.number,
+              car_model: driver.carModel,
+              championship_id: championshipId
             })
             .select()
             .single();
@@ -69,11 +76,17 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           number: driver.number
         });
 
+        if (!championshipId) {
+          throw new Error('Championship ID is required to create a driver');
+        }
+
         const { data, error } = await supabase
           .from('drivers')
           .insert({
             name: driver.name,
-            number: driver.number
+            number: driver.number,
+            car_model: driver.carModel,
+            championship_id: championshipId
           })
           .select()
           .single();

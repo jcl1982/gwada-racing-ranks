@@ -5,6 +5,7 @@ export interface SupabaseDriver {
   team?: string;
   number?: number;
   car_model?: string;
+  championship_id?: string;
   created_at: string;
   updated_at: string;
 }

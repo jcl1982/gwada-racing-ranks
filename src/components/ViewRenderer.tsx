@@ -15,6 +15,7 @@ interface ViewRendererProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
+  championshipId?: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
   
@@ -40,6 +41,7 @@ const ViewRenderer = ({
   standings,
   championshipTitle,
   championshipYear,
+  championshipId,
   montagneRaces,
   rallyeRaces,
   
@@ -141,6 +143,7 @@ const ViewRenderer = ({
           <ExcelImport
             drivers={drivers}
             onImport={handleImport}
+            championshipId={championshipId}
           />
         </RoleProtectedComponent>
       );

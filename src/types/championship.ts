@@ -5,6 +5,7 @@ export interface Driver {
   team?: string;
   number?: number;
   carModel?: string;
+  championshipId?: string;
 }
 
 export interface RaceResult {

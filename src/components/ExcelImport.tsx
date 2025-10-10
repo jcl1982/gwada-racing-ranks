@@ -11,9 +11,10 @@ import RaceTypeSelector from '@/components/RaceTypeSelector';
 interface ExcelImportProps {
   drivers: Driver[];
   onImport: (races: Race[], newDrivers: Driver[]) => void;
+  championshipId?: string;
 }
 
-const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
+const ExcelImport = ({ drivers, onImport, championshipId }: ExcelImportProps) => {
   const {
     isLoading,
     error,
@@ -24,7 +25,7 @@ const ExcelImport = ({ drivers, onImport }: ExcelImportProps) => {
     handleFileUpload,
     handleImport,
     resetForm,
-  } = useExcelImport(drivers, onImport);
+  } = useExcelImport(drivers, onImport, championshipId);
 
   const handleFileUploadWrapper = (file: File) => {
     // Reset file input after processing
