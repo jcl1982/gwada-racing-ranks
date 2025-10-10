@@ -100,8 +100,8 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   };
 
   // Enhanced save standings function that reloads data after save
-  const handleSaveCurrentStandingsAsPrevious = async () => {
-    await saveCurrentStandingsAsPrevious();
+  const handleSaveCurrentStandingsAsPrevious = async (saveName?: string) => {
+    await saveCurrentStandingsAsPrevious(saveName);
     await loadData(); // Recharger pour voir les nouveaux previous_standings
   };
 
