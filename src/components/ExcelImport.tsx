@@ -11,12 +11,13 @@ import SaveStandingsPromptDialog from '@/components/SaveStandingsPromptDialog';
 
 interface ExcelImportProps {
   drivers: Driver[];
+  races?: Race[];
   onImport: (races: Race[], newDrivers: Driver[]) => void;
   championshipId?: string;
   onSaveStandings?: (saveName?: string) => Promise<void>;
 }
 
-const ExcelImport = ({ drivers, onImport, championshipId, onSaveStandings }: ExcelImportProps) => {
+const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings }: ExcelImportProps) => {
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [lastImportedRaceName, setLastImportedRaceName] = useState<string>();
   
@@ -53,8 +54,9 @@ const ExcelImport = ({ drivers, onImport, championshipId, onSaveStandings }: Exc
       fileInput.value = '';
     }
     
-    // Afficher la demande de sauvegarde après l'import si la fonction est disponible
-    if (onSaveStandings) {
+    // Afficher la demande de sauvegarde seulement si ce n'est pas la première course
+    // et si la fonction est disponible
+    if (onSaveStandings && races && races.length > 0) {
       setLastImportedRaceName(raceName);
       setShowSavePrompt(true);
     }

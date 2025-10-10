@@ -257,6 +257,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      clear_previous_standings: {
+        Args: { p_championship_id: string }
+        Returns: undefined
+      }
       delete_all_drivers: {
         Args: Record<PropertyKey, never>
         Returns: undefined

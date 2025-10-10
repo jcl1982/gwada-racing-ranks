@@ -18,6 +18,7 @@ interface ViewRendererProps {
   championshipId?: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  races: Race[];
   
   drivers: Driver[];
   previousStandings: ChampionshipStanding[];
@@ -44,6 +45,7 @@ const ViewRenderer = ({
   championshipId,
   montagneRaces,
   rallyeRaces,
+  races,
   
   drivers,
   previousStandings,
@@ -139,6 +141,7 @@ const ViewRenderer = ({
         >
           <ExcelImport
             drivers={drivers}
+            races={races}
             onImport={handleImport}
             championshipId={championshipId}
             onSaveStandings={saveCurrentStandingsAsPrevious}
