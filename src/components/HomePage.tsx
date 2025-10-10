@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle } from 'lucide-react';
+import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock } from 'lucide-react';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
@@ -197,60 +197,108 @@ const HomePage = ({ championshipTitle, championshipYear }: HomePageProps) => {
         })}
       </div>
 
-      {/* Global Stats for Rallye-Montagne */}
-      {rallyeMontagne && rallyeMontagne.standings.length > 0 && (
-        <Card className="card-glass p-6 mt-8">
-          <h3 className="text-2xl font-bold mb-6 text-center">
-            Championnat Rallye-Montagne - Vue détaillée
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Courses de Côte */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Mountain className="text-green-600" size={24} />
-                <h4 className="text-lg font-semibold">Courses de Côte</h4>
-              </div>
-              <div className="space-y-2">
-                {rallyeMontagne.races
-                  .filter(r => r.type === 'montagne')
-                  .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
-                  .slice(0, 5)
-                  .map(race => (
-                    <div key={race.id} className="bg-green-50 rounded-lg p-3">
-                      <p className="font-medium">{race.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {parseLocalDate(race.date).toLocaleDateString('fr-FR')} - {race.results.length} participants
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            </div>
+      {/* News Section - Latest and Upcoming Races */}
+      <Card className="card-glass p-6 mt-8">
+        <h3 className="text-2xl font-bold mb-6 text-center flex items-center justify-center gap-2">
+          <Clock className="text-primary" />
+          Actualités des Championnats
+        </h3>
+        
+        <div className="grid lg:grid-cols-3 gap-6">
+          {championships.map((championship) => {
+            const ChampIcon = getChampionshipIcon(championship.title);
+            const colorClass = getChampionshipColor(championship.title);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-            {/* Rallyes */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Car className="text-blue-600" size={24} />
-                <h4 className="text-lg font-semibold">Rallyes</h4>
-              </div>
-              <div className="space-y-2">
-                {rallyeMontagne.races
-                  .filter(r => r.type === 'rallye')
-                  .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
-                  .slice(0, 5)
-                  .map(race => (
-                    <div key={race.id} className="bg-blue-50 rounded-lg p-3">
-                      <p className="font-medium">{race.name}</p>
-                      <p className="text-sm text-gray-600">
-                        {parseLocalDate(race.date).toLocaleDateString('fr-FR')} - {race.results.length} participants
-                      </p>
+            // Séparer les courses passées et à venir
+            const upcomingRaces = championship.races
+              .filter(r => parseLocalDate(r.date) >= today)
+              .sort((a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime())
+              .slice(0, 2);
+
+            const pastRaces = championship.races
+              .filter(r => parseLocalDate(r.date) < today)
+              .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
+              .slice(0, 2);
+
+            return (
+              <div key={championship.id}>
+                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-white flex items-center gap-2`}>
+                  <ChampIcon size={24} />
+                  <h4 className="font-semibold">{championship.title}</h4>
+                </div>
+                
+                <div className="border border-t-0 rounded-b-lg p-4 space-y-4">
+                  {/* Prochaines courses */}
+                  {upcomingRaces.length > 0 && (
+                    <div>
+                      <h5 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-1">
+                        <Calendar size={16} className="text-green-600" />
+                        À venir
+                      </h5>
+                      <div className="space-y-2">
+                        {upcomingRaces.map(race => (
+                          <div key={race.id} className="bg-green-50 rounded-lg p-2 border-l-4 border-green-500">
+                            <p className="font-medium text-sm">{race.name}</p>
+                            <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
+                              <Calendar size={12} />
+                              {parseLocalDate(race.date).toLocaleDateString('fr-FR', { 
+                                day: 'numeric', 
+                                month: 'long' 
+                              })}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )}
+
+                  {/* Dernières courses */}
+                  {pastRaces.length > 0 && (
+                    <div>
+                      <h5 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-1">
+                        <Trophy size={16} className="text-blue-600" />
+                        Résultats récents
+                      </h5>
+                      <div className="space-y-2">
+                        {pastRaces.map(race => {
+                          const winner = race.results.sort((a, b) => a.position - b.position)[0];
+                          const winnerDriver = winner ? championship.drivers.find(d => d.id === winner.driverId) : null;
+                          return (
+                            <div key={race.id} className="bg-blue-50 rounded-lg p-2 border-l-4 border-blue-500">
+                              <p className="font-medium text-sm">{race.name}</p>
+                              <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
+                                <Calendar size={12} />
+                                {parseLocalDate(race.date).toLocaleDateString('fr-FR', { 
+                                  day: 'numeric', 
+                                  month: 'long' 
+                                })}
+                              </p>
+                              {winnerDriver && (
+                                <p className="text-xs text-gray-700 mt-1 flex items-center gap-1">
+                                  <Trophy size={12} className="text-yellow-500" />
+                                  <span className="font-semibold">{winnerDriver.name}</span>
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {upcomingRaces.length === 0 && pastRaces.length === 0 && (
+                    <p className="text-center text-gray-500 text-sm py-4">
+                      Aucune actualité pour le moment
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-        </Card>
-      )}
+            );
+          })}
+        </div>
+      </Card>
     </div>
   );
 };
