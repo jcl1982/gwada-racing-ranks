@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 interface DriverFormProps {
-  formData: { name: string; number: string };
-  onFormDataChange: (data: { name: string; number: string }) => void;
+  formData: { name: string; number: string; carModel: string };
+  onFormDataChange: (data: { name: string; number: string; carModel: string }) => void;
   onSubmit: () => void;
   onCancel: () => void;
   isLoading: boolean;
@@ -43,6 +43,16 @@ const DriverForm = ({
           value={formData.number}
           onChange={(e) => onFormDataChange({ ...formData, number: e.target.value })}
           placeholder="Numéro du pilote"
+          disabled={isLoading}
+        />
+      </div>
+      <div>
+        <Label htmlFor="carModel">Marque et Modèle du véhicule</Label>
+        <Input
+          id="carModel"
+          value={formData.carModel}
+          onChange={(e) => onFormDataChange({ ...formData, carModel: e.target.value })}
+          placeholder="Ex: Peugeot 208 R2, Citroën C2 R2"
           disabled={isLoading}
         />
       </div>

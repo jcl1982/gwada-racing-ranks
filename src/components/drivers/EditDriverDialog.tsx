@@ -20,7 +20,7 @@ const EditDriverDialog = ({
   drivers, 
   onClose 
 }: EditDriverDialogProps) => {
-  const [formData, setFormData] = useState({ name: '', number: '' });
+  const [formData, setFormData] = useState({ name: '', number: '', carModel: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -28,7 +28,8 @@ const EditDriverDialog = ({
     if (editingDriver) {
       setFormData({ 
         name: editingDriver.name, 
-        number: editingDriver.number.toString() 
+        number: editingDriver.number?.toString() || '',
+        carModel: editingDriver.carModel || ''
       });
     }
   }, [editingDriver]);
@@ -48,14 +49,15 @@ const EditDriverDialog = ({
       const updatedDriver = {
         ...editingDriver,
         name: formData.name.trim(),
-        number: parseInt(formData.number)
+        number: parseInt(formData.number),
+        carModel: formData.carModel.trim() || undefined
       };
       
       console.log('Updating driver:', updatedDriver);
       await onDriverUpdate(updatedDriver);
       
       onClose();
-      setFormData({ name: '', number: '' });
+      setFormData({ name: '', number: '', carModel: '' });
       
       // Trigger refresh of drivers list
       onDriversChange([...drivers]);
@@ -77,7 +79,7 @@ const EditDriverDialog = ({
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', number: '' });
+    setFormData({ name: '', number: '', carModel: '' });
     onClose();
   };
 

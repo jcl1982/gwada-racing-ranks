@@ -16,7 +16,7 @@ interface AddDriverDialogProps {
 
 const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading }: AddDriverDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', number: '' });
+  const [formData, setFormData] = useState({ name: '', number: '', carModel: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -34,13 +34,14 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading }: A
     try {
       const newDriver = {
         name: formData.name.trim(),
-        number: parseInt(formData.number)
+        number: parseInt(formData.number),
+        carModel: formData.carModel.trim() || undefined
       };
       
       console.log('Adding driver:', newDriver);
       await onDriverAdd(newDriver);
       
-      setFormData({ name: '', number: '' });
+      setFormData({ name: '', number: '', carModel: '' });
       setIsOpen(false);
       
       // Trigger refresh of drivers list
@@ -63,7 +64,7 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading }: A
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', number: '' });
+    setFormData({ name: '', number: '', carModel: '' });
     setIsOpen(false);
   };
 
