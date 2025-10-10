@@ -39,6 +39,8 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     if (fileInput) {
       fileInput.value = '';
     }
+    // Reset save prompt state
+    setShowSavePrompt(false);
     handleFileUpload(file);
   };
 
