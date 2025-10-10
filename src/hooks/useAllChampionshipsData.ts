@@ -87,7 +87,13 @@ export const useAllChampionshipsData = () => {
           })
         );
 
-        setChampionships(championshipsData);
+        // Sort championships in menu order: Rallye-Montagne, Accélération, Karting
+        const orderedChampionships = championshipsData.sort((a, b) => {
+          const order = ['Championnat Rallye-Montagne', 'Championnat Accélération', 'Championnat Karting'];
+          return order.indexOf(a.title) - order.indexOf(b.title);
+        });
+
+        setChampionships(orderedChampionships);
       } catch (error) {
         console.error('❌ Erreur lors du chargement des championnats:', error);
       } finally {
