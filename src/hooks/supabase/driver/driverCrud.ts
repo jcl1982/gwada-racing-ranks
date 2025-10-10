@@ -4,10 +4,10 @@ import { Driver } from '@/types/championship';
 import { isValidUUID } from '../utils';
 import { useToast } from '@/hooks/use-toast';
 
-export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
-  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver) => {
+export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
+  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver, championshipId?: string) => {
     try {
-      console.log('💾 Saving driver:', driver);
+      console.log('💾 Saving driver:', { driver, championshipId });
 
       if ('id' in driver && driver.id) {
         // Check if driver exists in database
@@ -44,9 +44,16 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           console.log('✅ Driver updated successfully');
         } else {
           // Driver has ID but doesn't exist in DB - create with specific ID
-          console.log('➕ Creating new driver with specific ID:', driver.id);
+          const driverChampionshipId = driver.championshipId || championshipId;
           
-          if (!championshipId) {
+          console.log('➕ Creating new driver with specific ID:', {
+            id: driver.id,
+            championshipId: driverChampionshipId,
+            fromDriver: driver.championshipId,
+            fromParam: championshipId
+          });
+          
+          if (!driverChampionshipId) {
             throw new Error('Championship ID is required to create a driver');
           }
           
@@ -57,7 +64,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
               name: driver.name,
               number: driver.number,
               car_model: driver.carModel,
-              championship_id: championshipId
+              championship_id: driverChampionshipId
             })
             .select()
             .single();
@@ -71,12 +78,17 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
         }
       } else {
         // Create new driver without specific ID
+        const driverChampionshipId = driver.championshipId || championshipId;
+        
         console.log('➕ Creating new driver with auto-generated ID:', {
           name: driver.name,
-          number: driver.number
+          number: driver.number,
+          championshipId: driverChampionshipId,
+          fromDriver: driver.championshipId,
+          fromParam: championshipId
         });
 
-        if (!championshipId) {
+        if (!driverChampionshipId) {
           throw new Error('Championship ID is required to create a driver');
         }
 
@@ -86,7 +98,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
             name: driver.name,
             number: driver.number,
             car_model: driver.carModel,
-            championship_id: championshipId
+            championship_id: driverChampionshipId
           })
           .select()
           .single();
