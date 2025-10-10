@@ -160,6 +160,7 @@ const ViewRenderer = ({
             standings={standings}
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
+            championshipId={championshipId}
             onDriversChange={handleDriversChange}
             onRacesChange={handleRacesChange}
             onReset={handleReset}

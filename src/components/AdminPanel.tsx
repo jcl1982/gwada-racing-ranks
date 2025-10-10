@@ -14,6 +14,7 @@ interface AdminPanelProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
+  championshipId?: string;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onReset: () => void;
@@ -35,6 +36,7 @@ const AdminPanel = ({
   standings,
   championshipTitle,
   championshipYear,
+  championshipId,
   onDriversChange,
   onRacesChange,
   onReset,
@@ -84,6 +86,7 @@ const AdminPanel = ({
             standings={standings}
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
+            championshipId={championshipId}
             onDriversChange={onDriversChange}
             onRacesChange={onRacesChange}
             onTitleChange={onTitleChange}

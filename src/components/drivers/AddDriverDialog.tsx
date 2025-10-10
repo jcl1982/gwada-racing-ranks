@@ -12,9 +12,10 @@ interface AddDriverDialogProps {
   onDriversChange: (drivers: Driver[]) => void;
   drivers: Driver[];
   isLoading: boolean;
+  championshipId?: string;
 }
 
-const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading }: AddDriverDialogProps) => {
+const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading, championshipId }: AddDriverDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', number: '', carModel: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +36,8 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading }: A
       const newDriver = {
         name: formData.name.trim(),
         number: parseInt(formData.number),
-        carModel: formData.carModel.trim() || undefined
+        carModel: formData.carModel.trim() || undefined,
+        championshipId: championshipId
       };
       
       console.log('Adding driver:', newDriver);

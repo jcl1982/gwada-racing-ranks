@@ -15,6 +15,7 @@ interface AdminTabsContentProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
+  championshipId?: string;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onTitleChange: (title: string, year: string) => void;
@@ -36,6 +37,7 @@ const AdminTabsContent = ({
   standings,
   championshipTitle,
   championshipYear,
+  championshipId,
   onDriversChange,
   onRacesChange,
   onTitleChange,
@@ -58,6 +60,7 @@ const AdminTabsContent = ({
           saveDriver={saveDriver}
           deleteDriver={deleteDriver}
           deleteAllDrivers={deleteAllDrivers}
+          championshipId={championshipId}
         />
       </TabsContent>
 

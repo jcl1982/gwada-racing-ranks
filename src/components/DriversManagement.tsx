@@ -15,9 +15,10 @@ interface DriversManagementProps {
   saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
   deleteDriver: (driverId: string) => Promise<void>;
   deleteAllDrivers: () => Promise<void>;
+  championshipId?: string;
 }
 
-const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver, deleteAllDrivers }: DriversManagementProps) => {
+const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver, deleteAllDrivers, championshipId }: DriversManagementProps) => {
   const [editingDriver, setEditingDriver] = useState<Driver | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [deletingDriverId, setDeletingDriverId] = useState<string | null>(null);
@@ -100,6 +101,7 @@ const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver,
             onDriversChange={onDriversChange}
             drivers={drivers}
             isLoading={isLoading}
+            championshipId={championshipId}
           />
           
           {drivers.length > 0 && (
