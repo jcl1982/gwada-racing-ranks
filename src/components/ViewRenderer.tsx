@@ -65,11 +65,8 @@ const ViewRenderer = ({
     case 'home':
       return (
         <HomePage 
-          standings={standings} 
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
-          montagneRaces={montagneRaces}
-          rallyeRaces={rallyeRaces}
         />
       );
     case 'general':
@@ -235,12 +232,8 @@ const ViewRenderer = ({
     default:
       return (
         <HomePage 
-          standings={standings} 
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
-          montagneRaces={montagneRaces}
-          rallyeRaces={rallyeRaces}
-          
         />
       );
   }
