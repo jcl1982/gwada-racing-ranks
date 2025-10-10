@@ -108,6 +108,28 @@ const ViewRenderer = ({
           previousStandings={previousStandings}
         />
       );
+    case 'acceleration':
+      return (
+        <CategoryStandings
+          title="Championnat Accélération"
+          races={[]} // À implémenter avec les courses d'accélération
+          drivers={drivers}
+          type="acceleration"
+          championshipYear={championshipYear}
+          previousStandings={previousStandings}
+        />
+      );
+    case 'karting':
+      return (
+        <CategoryStandings
+          title="Championnat Karting"
+          races={[]} // À implémenter avec les courses de karting
+          drivers={drivers}
+          type="karting"
+          championshipYear={championshipYear}
+          previousStandings={previousStandings}
+        />
+      );
     case 'import':
       return (
         <RoleProtectedComponent 

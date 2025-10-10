@@ -12,7 +12,7 @@ interface CategoryStandingsProps {
   title: string;
   races: Race[];
   drivers: Driver[];
-  type: 'montagne' | 'rallye' | 'c2r2';
+  type: 'montagne' | 'rallye' | 'c2r2' | 'acceleration' | 'karting';
   championshipYear: string;
   previousStandings?: Array<{
     driver: Driver;

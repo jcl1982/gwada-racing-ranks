@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Mountain, Car, Home, Upload, Settings, ChevronDown } from 'lucide-react';
+import { Trophy, Mountain, Car, Home, Upload, Settings, Zap, Circle } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -22,7 +22,7 @@ const Navigation = ({
     isAdmin,
     loading
   });
-  const championshipItems = [{
+  const rallyeMontagnChampionshipItems = [{
     id: 'general' as const,
     label: 'Classement Général',
     icon: Trophy
@@ -38,6 +38,18 @@ const Navigation = ({
     id: 'c2r2' as const,
     label: 'Trophée C2 R2',
     icon: Car
+  }];
+
+  const accelerationChampionshipItems = [{
+    id: 'acceleration' as const,
+    label: 'Classement Accélération',
+    icon: Zap
+  }];
+
+  const kartingChampionshipItems = [{
+    id: 'karting' as const,
+    label: 'Classement Karting',
+    icon: Circle
   }];
   const otherNavItems = [{
     id: 'home' as const,
@@ -73,7 +85,9 @@ const Navigation = ({
     return true;
   });
   console.log('📋 Navigation - Visible items:', visibleOtherItems.map(item => item.id));
-  const isChampionshipView = ['general', 'montagne', 'rallye', 'c2r2'].includes(currentView);
+  const isRallyeMontagnView = ['general', 'montagne', 'rallye', 'c2r2'].includes(currentView);
+  const isAccelerationView = currentView === 'acceleration';
+  const isKartingView = currentView === 'karting';
   return <Card className="card-glass p-4 mb-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <nav className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
@@ -86,18 +100,68 @@ const Navigation = ({
               <span className="hidden sm:inline">{label}</span>
             </button>)}
 
-          {/* Championship dropdown menu */}
+          {/* Rallye-Montagne Championship dropdown menu */}
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isChampionshipView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}>
+                <NavigationMenuTrigger className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isRallyeMontagnView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}>
                   <Trophy size={18} />
                   <span className="hidden sm:inline">CHAMPIONNAT RALLYE - MONTAGNE</span>
-                  <span className="sm:hidden">Championnat</span>
+                  <span className="sm:hidden">Rallye-Montagne</span>
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
                   <div className="flex flex-col gap-1">
-                    {championshipItems.map(({
+                    {rallyeMontagnChampionshipItems.map(({
+                    id,
+                    label,
+                    icon: Icon
+                  }) => <button key={id} onClick={() => onViewChange(id)} className={`flex items-center gap-3 px-4 py-3 rounded-md font-medium transition-all duration-200 text-left ${currentView === id ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                        <Icon size={18} />
+                        <span>{label}</span>
+                      </button>)}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Acceleration Championship dropdown menu */}
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isAccelerationView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}>
+                  <Zap size={18} />
+                  <span className="hidden sm:inline">CHAMPIONNAT ACCELERATION</span>
+                  <span className="sm:hidden">Accélération</span>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
+                  <div className="flex flex-col gap-1">
+                    {accelerationChampionshipItems.map(({
+                    id,
+                    label,
+                    icon: Icon
+                  }) => <button key={id} onClick={() => onViewChange(id)} className={`flex items-center gap-3 px-4 py-3 rounded-md font-medium transition-all duration-200 text-left ${currentView === id ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                        <Icon size={18} />
+                        <span>{label}</span>
+                      </button>)}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Karting Championship dropdown menu */}
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isKartingView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}>
+                  <Circle size={18} />
+                  <span className="hidden sm:inline">CHAMPIONNAT KARTING</span>
+                  <span className="sm:hidden">Karting</span>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
+                  <div className="flex flex-col gap-1">
+                    {kartingChampionshipItems.map(({
                     id,
                     label,
                     icon: Icon
