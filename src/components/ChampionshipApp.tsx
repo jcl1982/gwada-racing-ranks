@@ -5,6 +5,8 @@ import { useChampionshipData } from '@/hooks/useChampionshipData';
 import { useViewNavigation } from '@/hooks/useViewNavigation';
 
 const ChampionshipApp = () => {
+  const { currentView, setCurrentView } = useViewNavigation();
+  
   const {
     drivers,
     montagneRaces,
@@ -29,9 +31,7 @@ const ChampionshipApp = () => {
     saveCurrentStandingsAsPrevious,
     resetDriversEvolution,
     restorePreviousStandings
-  } = useChampionshipData();
-
-  const { currentView, setCurrentView } = useViewNavigation();
+  } = useChampionshipData(currentView);
 
   if (loading) {
     return (

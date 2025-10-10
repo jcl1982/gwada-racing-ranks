@@ -3,26 +3,50 @@ import { supabase } from '@/integrations/supabase/client';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { convertSupabaseDriver, convertSupabaseRace, convertSupabaseStanding } from './converters';
 
-export const loadSupabaseData = async () => {
-  console.log('🔄 Chargement des données depuis Supabase...');
+export const loadSupabaseData = async (championshipId?: string) => {
+  console.log('🔄 Chargement des données depuis Supabase...', { championshipId });
 
   try {
-    // Load championship config first to get the championship ID
-    console.log('⚙️ Chargement de la configuration...');
-    const { data: configData, error: configError } = await supabase
-      .from('championship_config')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
+    let configData: any = null;
+    let championshipTitle = 'Championnat Automobile';
+    let championshipYear = 'de Guadeloupe 2025';
 
-    if (configError) {
-      console.error('❌ Erreur lors du chargement de la configuration:', configError);
-      throw configError;
+    // Si on a un championshipId, charger cette config spécifique
+    if (championshipId) {
+      console.log('⚙️ Chargement de la configuration pour championshipId:', championshipId);
+      const { data, error: configError } = await supabase
+        .from('championship_config')
+        .select('*')
+        .eq('id', championshipId)
+        .maybeSingle();
+
+      if (configError) {
+        console.error('❌ Erreur lors du chargement de la configuration:', configError);
+        throw configError;
+      }
+
+      configData = data;
+      championshipTitle = data?.title || championshipTitle;
+      championshipYear = data?.year || championshipYear;
+    } else {
+      // Sinon, charger le championnat Rallye-Montagne par défaut
+      console.log('⚙️ Chargement de la configuration par défaut (Rallye-Montagne)...');
+      const { data, error: configError } = await supabase
+        .from('championship_config')
+        .select('*')
+        .eq('title', 'Championnat Rallye-Montagne')
+        .maybeSingle();
+
+      if (configError) {
+        console.error('❌ Erreur lors du chargement de la configuration:', configError);
+        throw configError;
+      }
+
+      configData = data;
+      championshipId = data?.id;
+      championshipTitle = data?.title || championshipTitle;
+      championshipYear = data?.year || championshipYear;
     }
-
-    const championshipId = configData?.id;
-    const championshipTitle = configData?.title || 'Championnat Automobile';
-    const championshipYear = configData?.year || 'de Guadeloupe 2024';
 
     console.log('✅ Configuration chargée:', { championshipId, championshipTitle, championshipYear });
 

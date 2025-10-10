@@ -1,11 +1,15 @@
-
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { calculateChampionshipStandings } from '@/utils/championship';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useChampionshipImport } from '@/hooks/championship/useChampionshipImport';
 import { useChampionshipHandlers } from '@/hooks/championship/useChampionshipHandlers';
+import { useChampionshipConfig } from '@/hooks/useChampionshipConfig';
+import { ViewType } from '@/hooks/useViewNavigation';
 
-export const useChampionshipData = () => {
+export const useChampionshipData = (currentView: ViewType) => {
+  // Charger la configuration du championnat basée sur la vue actuelle
+  const { config: championshipConfig, loading: configLoading } = useChampionshipConfig(currentView);
+
   const {
     drivers,
     montagneRaces,
@@ -14,7 +18,7 @@ export const useChampionshipData = () => {
     championshipTitle,
     championshipYear,
     championshipId,
-    loading,
+    loading: dataLoading,
     saveDriver,
     deleteDriver,
     deleteAllDrivers,
@@ -25,8 +29,21 @@ export const useChampionshipData = () => {
     resetDriversEvolution,
     restorePreviousStandings,
     resetAllData,
-    refreshData
-  } = useSupabaseData();
+    refreshData,
+    setChampionshipId
+  } = useSupabaseData(championshipConfig?.id);
+
+  // Mettre à jour le championshipId quand la config change
+  useEffect(() => {
+    if (championshipConfig?.id && championshipConfig.id !== championshipId) {
+      console.log('🔄 Changement de championnat détecté:', {
+        from: championshipId,
+        to: championshipConfig.id,
+        title: championshipConfig.title
+      });
+      setChampionshipId(championshipConfig.id);
+    }
+  }, [championshipConfig?.id, championshipId, setChampionshipId]);
 
   // Utiliser useMemo pour s'assurer que les classements se recalculent à chaque changement de données
   const standings = useMemo(() => {
@@ -73,10 +90,10 @@ export const useChampionshipData = () => {
     rallyeRaces,
     standings,
     previousStandings,
-    championshipTitle,
-    championshipYear,
-    championshipId,
-    loading,
+    championshipTitle: championshipConfig?.title || championshipTitle,
+    championshipYear: championshipConfig?.year || championshipYear,
+    championshipId: championshipConfig?.id || championshipId,
+    loading: configLoading || dataLoading,
     handleImport,
     handleReset,
     handleRacesChange,

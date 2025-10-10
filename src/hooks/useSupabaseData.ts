@@ -6,21 +6,24 @@ import { createDriverOperations } from './supabase/driver';
 import { createRaceOperations } from './supabase/raceOperations';
 import { createConfigOperations } from './supabase/configOperations';
 
-export const useSupabaseData = () => {
+export const useSupabaseData = (initialChampionshipId?: string) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
   const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
-  const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2024');
-  const [championshipId, setChampionshipId] = useState<string | undefined>(undefined);
+  const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2025');
+  const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   // Load all data from Supabase
-  const loadData = async () => {
+  const loadData = async (specificChampionshipId?: string) => {
     try {
-      console.log('🔄 Début du chargement des données...');
+      console.log('🔄 Début du chargement des données...', { specificChampionshipId, currentChampionshipId: championshipId });
       setLoading(true);
+
+      // Utiliser le championshipId spécifique si fourni, sinon utiliser celui en état
+      const idToUse = specificChampionshipId || championshipId;
 
       const {
         drivers: appDrivers,
@@ -29,7 +32,7 @@ export const useSupabaseData = () => {
         championshipTitle: title,
         championshipYear: year,
         championshipId: id
-      } = await loadSupabaseData();
+      } = await loadSupabaseData(idToUse);
 
       console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
@@ -118,10 +121,10 @@ export const useSupabaseData = () => {
     console.log('✅ Rafraîchissement forcé terminé');
   };
 
-  // Load data on component mount
+  // Load data on component mount or when championshipId changes
   useEffect(() => {
-    loadData();
-  }, []);
+    loadData(championshipId);
+  }, [championshipId]);
 
   return {
     drivers,
@@ -144,6 +147,7 @@ export const useSupabaseData = () => {
     resetDriversEvolution: handleResetDriversEvolution,
     restorePreviousStandings: handleRestorePreviousStandings,
     resetAllData: handleResetAllData,
-    refreshData: forceRefreshData
+    refreshData: forceRefreshData,
+    setChampionshipId
   };
 };
