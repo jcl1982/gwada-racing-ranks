@@ -6,9 +6,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 interface PreviousStandingsManagerProps {
   onSaveCurrentStandings: () => Promise<void>;
   onResetDriversEvolution: () => Promise<void>;
+  onRestorePreviousStandings: () => Promise<void>;
 }
 
-const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolution }: PreviousStandingsManagerProps) => {
+const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolution, onRestorePreviousStandings }: PreviousStandingsManagerProps) => {
   const handleSaveStandings = async () => {
     try {
       console.log('🎯 BOUTON CLIQUÉ: Début de handleSaveStandings');
@@ -31,6 +32,18 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
       console.log('✅ BOUTON: Réinitialisation terminée avec succès');
     } catch (error) {
       console.error('❌ BOUTON: Erreur dans handleResetEvolution:', error);
+    }
+  };
+
+  const handleRestoreStandings = async () => {
+    try {
+      console.log('⏮️ BOUTON CLIQUÉ: Début de handleRestoreStandings');
+      
+      await onRestorePreviousStandings();
+      
+      console.log('✅ BOUTON: Restauration terminée avec succès');
+    } catch (error) {
+      console.error('❌ BOUTON: Erreur dans handleRestoreStandings:', error);
     }
   };
 
@@ -68,6 +81,22 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
             >
               <Save className="mr-2 h-4 w-4" />
               Sauvegarder le Classement Actuel
+            </Button>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">
+              Restaurez le classement précédemment sauvegardé. 
+              <strong className="text-destructive"> Attention : Cette action supprimera tous les résultats de course actuels.</strong>
+            </p>
+            
+            <Button
+              onClick={handleRestoreStandings}
+              className="w-full"
+              variant="outline"
+            >
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Restaurer le Classement Sauvegardé
             </Button>
           </div>
 

@@ -66,7 +66,7 @@ export const useSupabaseData = () => {
   // Create operation handlers with improved refresh
   const { saveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData);
   const { saveRace, deleteRace } = createRaceOperations(toast, loadData);
-  const { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, resetAllData } = createConfigOperations(toast);
+  const { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, restorePreviousStandings, resetAllData } = createConfigOperations(toast);
 
   // Enhanced reset function that reloads data after reset
   const handleResetAllData = async () => {
@@ -84,6 +84,12 @@ export const useSupabaseData = () => {
   const handleResetDriversEvolution = async () => {
     await resetDriversEvolution();
     await loadData(); // Recharger pour voir la réinitialisation
+  };
+
+  // Enhanced restore previous standings function that reloads data after restore
+  const handleRestorePreviousStandings = async () => {
+    await restorePreviousStandings();
+    await loadData(); // Recharger pour voir la restauration
   };
 
   // Enhanced config update that updates local state
@@ -125,6 +131,7 @@ export const useSupabaseData = () => {
     updateChampionshipConfig: handleUpdateChampionshipConfig,
     saveCurrentStandingsAsPrevious: handleSaveCurrentStandingsAsPrevious,
     resetDriversEvolution: handleResetDriversEvolution,
+    restorePreviousStandings: handleRestorePreviousStandings,
     resetAllData: handleResetAllData,
     refreshData: forceRefreshData
   };

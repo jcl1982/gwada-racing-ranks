@@ -243,6 +243,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      restore_previous_standings: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       save_current_standings_as_previous: {
         Args: Record<PropertyKey, never>
         Returns: undefined

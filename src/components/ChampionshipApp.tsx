@@ -26,7 +26,8 @@ const ChampionshipApp = () => {
     saveRace,
     deleteRace,
     saveCurrentStandingsAsPrevious,
-    resetDriversEvolution
+    resetDriversEvolution,
+    restorePreviousStandings
   } = useChampionshipData();
 
   const { currentView, setCurrentView } = useViewNavigation();
@@ -68,6 +69,7 @@ const ChampionshipApp = () => {
           deleteRace={deleteRace}
           saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
           resetDriversEvolution={resetDriversEvolution}
+          restorePreviousStandings={restorePreviousStandings}
         />
       </div>
     </div>

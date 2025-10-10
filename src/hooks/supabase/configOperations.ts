@@ -134,6 +134,37 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
+  const restorePreviousStandings = async () => {
+    try {
+      console.log('⏮️ Restoring previous standings...');
+
+      const result = await supabase.rpc('restore_previous_standings');
+
+      if (result.error) {
+        console.error('❌ Error restoring previous standings:', result.error);
+        toast({
+          title: "Erreur de restauration",
+          description: `${result.error.message}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('✅ Previous standings restored successfully');
+      toast({
+        title: "Classement restauré",
+        description: "Le classement précédent a été restauré avec succès.",
+      });
+    } catch (error) {
+      console.error('❌ Error restoring previous standings:', error);
+      toast({
+        title: "Erreur",
+        description: `Erreur: ${error?.message || 'Erreur inconnue'}`,
+        variant: "destructive"
+      });
+    }
+  };
+
   const resetAllData = async () => {
     try {
       console.log('🔄 Resetting all data...');
@@ -195,5 +226,5 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, resetAllData };
+  return { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, restorePreviousStandings, resetAllData };
 };
