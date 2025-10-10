@@ -79,12 +79,20 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
           </div>
           <div>
             <Label htmlFor="race-organizer">Organisateur</Label>
-            <Input
-              id="race-organizer"
-              value={formData.organizer || ''}
-              onChange={(e) => updateFormData({ organizer: e.target.value })}
-              placeholder="Nom de l'organisateur"
-            />
+            <Select 
+              value={formData.organizer || ''} 
+              onValueChange={(value) => updateFormData({ organizer: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner un organisateur" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="ASA GUADELOUPE">ASA GUADELOUPE</SelectItem>
+                <SelectItem value="ASA CARAIB">ASA CARAIB</SelectItem>
+                <SelectItem value="ASA ARCHIPEL">ASA ARCHIPEL</SelectItem>
+                <SelectItem value="ASK GUADELOUP'KART">ASK GUADELOUP'KART</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="race-type">Type de course</Label>
@@ -95,7 +103,7 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background z-50">
                 <SelectItem value="montagne">Course de Côte</SelectItem>
                 <SelectItem value="rallye">Rallye</SelectItem>
               </SelectContent>

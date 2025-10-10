@@ -117,15 +117,23 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
           </div>
           <div>
             <Label htmlFor="edit-race-organizer">Organisateur</Label>
-            <Input
-              id="edit-race-organizer"
-              value={organizer}
-              onChange={(e) => {
-                console.log('👥 Changement organisateur:', e.target.value);
-                setOrganizer(e.target.value);
+            <Select 
+              value={organizer} 
+              onValueChange={(value) => {
+                console.log('👥 Changement organisateur:', value);
+                setOrganizer(value);
               }}
-              placeholder="Nom de l'organisateur"
-            />
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionner un organisateur" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="ASA GUADELOUPE">ASA GUADELOUPE</SelectItem>
+                <SelectItem value="ASA CARAIB">ASA CARAIB</SelectItem>
+                <SelectItem value="ASA ARCHIPEL">ASA ARCHIPEL</SelectItem>
+                <SelectItem value="ASK GUADELOUP'KART">ASK GUADELOUP'KART</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label htmlFor="edit-race-type">Type de course</Label>
@@ -139,7 +147,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background z-50">
                 <SelectItem value="montagne">Course de Côte</SelectItem>
                 <SelectItem value="rallye">Rallye</SelectItem>
               </SelectContent>
