@@ -44,11 +44,11 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     handleFileUpload(file);
   };
 
-  const handleImportWrapper = () => {
+  const handleImportWrapper = async () => {
     // Capturer le nom de la course avant l'import
     const raceName = previewData?.[0]?.raceName;
     
-    handleImport();
+    await handleImport();
     
     // Reset file input after import
     const fileInput = document.getElementById('excel-file') as HTMLInputElement;
@@ -56,9 +56,8 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
       fileInput.value = '';
     }
     
-    // Afficher la demande de sauvegarde seulement si ce n'est pas la première course
-    // et si la fonction est disponible
-    if (onSaveStandings && races && races.length > 0) {
+    // Afficher la demande de sauvegarde après chaque import si la fonction est disponible
+    if (onSaveStandings) {
       setLastImportedRaceName(raceName);
       setShowSavePrompt(true);
     }
