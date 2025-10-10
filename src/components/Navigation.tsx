@@ -43,13 +43,27 @@ const Navigation = ({
   const accelerationChampionshipItems = [{
     id: 'acceleration' as const,
     label: 'Classement Accélération',
-    icon: Zap
+    icon: Zap,
+    requiresAuth: false
+  }, {
+    id: 'admin-acceleration' as const,
+    label: 'Administration',
+    icon: Settings,
+    requiresAuth: true,
+    adminOnly: true
   }];
 
   const kartingChampionshipItems = [{
     id: 'karting' as const,
     label: 'Classement Karting',
-    icon: Circle
+    icon: Circle,
+    requiresAuth: false
+  }, {
+    id: 'admin-karting' as const,
+    label: 'Administration',
+    icon: Settings,
+    requiresAuth: true,
+    adminOnly: true
   }];
   const otherNavItems = [{
     id: 'home' as const,
@@ -86,8 +100,23 @@ const Navigation = ({
   });
   console.log('📋 Navigation - Visible items:', visibleOtherItems.map(item => item.id));
   const isRallyeMontagnView = ['general', 'montagne', 'rallye', 'c2r2'].includes(currentView);
-  const isAccelerationView = currentView === 'acceleration';
-  const isKartingView = currentView === 'karting';
+  const isAccelerationView = ['acceleration', 'admin-acceleration'].includes(currentView);
+  const isKartingView = ['karting', 'admin-karting'].includes(currentView);
+
+  // Filter championship items based on authentication and role
+  const visibleAccelerationItems = accelerationChampionshipItems.filter(item => {
+    if (!item.requiresAuth) return true;
+    if (!isAuthenticated) return false;
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  });
+
+  const visibleKartingItems = kartingChampionshipItems.filter(item => {
+    if (!item.requiresAuth) return true;
+    if (!isAuthenticated) return false;
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  });
   return <Card className="card-glass p-4 mb-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <nav className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
@@ -136,7 +165,7 @@ const Navigation = ({
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
                   <div className="flex flex-col gap-1">
-                    {accelerationChampionshipItems.map(({
+                    {visibleAccelerationItems.map(({
                     id,
                     label,
                     icon: Icon
@@ -161,7 +190,7 @@ const Navigation = ({
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
                   <div className="flex flex-col gap-1">
-                    {kartingChampionshipItems.map(({
+                    {visibleKartingItems.map(({
                     id,
                     label,
                     icon: Icon

@@ -169,6 +169,60 @@ const ViewRenderer = ({
           />
         </RoleProtectedComponent>
       );
+    case 'admin-acceleration':
+      return (
+        <RoleProtectedComponent 
+          requiredRole="admin" 
+          fallback={<AdminAccessDenied />}
+        >
+          <AdminPanel
+            drivers={drivers}
+            montagneRaces={[]}
+            rallyeRaces={[]}
+            standings={standings}
+            championshipTitle="Championnat Accélération"
+            championshipYear={championshipYear}
+            onDriversChange={handleDriversChange}
+            onRacesChange={handleRacesChange}
+            onReset={handleReset}
+            onTitleChange={handleTitleChange}
+            saveDriver={saveDriver}
+            deleteDriver={deleteDriver}
+            deleteAllDrivers={deleteAllDrivers}
+            saveRace={saveRace}
+            deleteRace={deleteRace}
+            saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
+            resetDriversEvolution={resetDriversEvolution}
+          />
+        </RoleProtectedComponent>
+      );
+    case 'admin-karting':
+      return (
+        <RoleProtectedComponent 
+          requiredRole="admin" 
+          fallback={<AdminAccessDenied />}
+        >
+          <AdminPanel
+            drivers={drivers}
+            montagneRaces={[]}
+            rallyeRaces={[]}
+            standings={standings}
+            championshipTitle="Championnat Karting"
+            championshipYear={championshipYear}
+            onDriversChange={handleDriversChange}
+            onRacesChange={handleRacesChange}
+            onReset={handleReset}
+            onTitleChange={handleTitleChange}
+            saveDriver={saveDriver}
+            deleteDriver={deleteDriver}
+            deleteAllDrivers={deleteAllDrivers}
+            saveRace={saveRace}
+            deleteRace={deleteRace}
+            saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
+            resetDriversEvolution={resetDriversEvolution}
+          />
+        </RoleProtectedComponent>
+      );
     default:
       return (
         <HomePage 
