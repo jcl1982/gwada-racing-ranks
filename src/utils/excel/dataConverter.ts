@@ -81,17 +81,23 @@ export const convertExcelDataToRaces = (
       );
       
       if (!driver) {
-        // Create new driver with valid UUID and number
+        // Create new driver with valid UUID, number, and car model from Excel
         driver = {
           id: generateValidUUID(),
           name: driverName,
           number: nextDriverNumber,
+          carModel: result.carModel || undefined,
           championshipId
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Championship: ${championshipId})`);
+        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Car: ${driver.carModel || 'N/A'}, Championship: ${championshipId})`);
       } else {
+        // Update car model if provided in Excel and not already set
+        if (result.carModel && !driver.carModel) {
+          driver.carModel = result.carModel;
+          console.log(`Updated car model for existing driver: ${driver.name} -> ${driver.carModel}`);
+        }
         console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }
       

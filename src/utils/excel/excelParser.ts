@@ -9,6 +9,7 @@ export interface ExcelRaceData {
   results: Array<{
     position: number;
     driverName: string;
+    carModel?: string;
     points: number;
     time?: string;
     dnf?: boolean;
@@ -111,11 +112,15 @@ export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'
             
             const position = parsePosition(row[columnIndices.position]);
             const pilote = parsePilote(row[columnIndices.pilote]);
+            const carModel = columnIndices.carModel !== -1 ? 
+              String(row[columnIndices.carModel] || '').trim() : 
+              undefined;
             
             console.log(`🏁 Ligne ${i}:`, {
               raw: row,
               position,
               pilote,
+              carModel,
               positionRaw: row[columnIndices.position],
               piloteRaw: row[columnIndices.pilote]
             });
@@ -141,6 +146,7 @@ export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'
             results.push({
               position,
               driverName: pilote.trim(),
+              carModel,
               points,
               time,
               dnf
@@ -194,6 +200,7 @@ const findColumnIndices = (headers: string[]) => {
   const indices = {
     position: -1,
     pilote: -1,
+    carModel: -1,
     points: -1,
     time: -1,
     dnf: -1
@@ -227,6 +234,19 @@ const findColumnIndices = (headers: string[]) => {
       headerLower === 'conducteur'
     )) {
       indices.pilote = index;
+    }
+    
+    // Marque et Modèle
+    if (indices.carModel === -1 && (
+      headerLower.includes('marque') ||
+      headerLower.includes('modèle') ||
+      headerLower.includes('model') ||
+      headerLower.includes('vehicule') ||
+      headerLower.includes('véhicule') ||
+      headerLower.includes('voiture') ||
+      headerLower.includes('car')
+    )) {
+      indices.carModel = index;
     }
     
     // Points
