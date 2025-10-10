@@ -58,13 +58,12 @@ export const convertExcelDataToRaces = (
   console.log('Max driver number:', maxDriverNumber);
   
   excelData.forEach((excelRace, raceIndex) => {
-    // Générer un nouvel UUID pour chaque course (création systématique)
-    const raceId = generateValidUUID();
+    // Ne pas générer d'ID ici - laisser saveRace() créer la course dans la DB
     const results: RaceResult[] = [];
     
     // Formater la date correctement
     const formattedDate = formatDate(excelRace.raceDate);
-    console.log(`Processing race ${raceIndex + 1}: ${excelRace.raceName} (creating new race with ID: ${raceId}, date: ${formattedDate})`);
+    console.log(`Processing race ${raceIndex + 1}: ${excelRace.raceName} (date: ${formattedDate})`);
     
     excelRace.results.forEach((result, resultIndex) => {
       // Ensure driverName is a string and not empty
@@ -100,16 +99,15 @@ export const convertExcelDataToRaces = (
       });
     });
     
-    // Créer une nouvelle course avec un nouvel ID et une date formatée
+    // Créer une nouvelle course sans ID - il sera généré lors de l'insertion dans la DB
     races.push({
-      id: raceId,
       name: excelRace.raceName,
       date: formattedDate,
       type: excelRace.raceType,
       results: results.sort((a, b) => a.position - b.position)
-    });
+    } as Race);
     
-    console.log(`Created new race: ${excelRace.raceName} (ID: ${raceId}, date: ${formattedDate}) with ${results.length} results`);
+    console.log(`Prepared new race: ${excelRace.raceName} (date: ${formattedDate}) with ${results.length} results`);
   });
   
   console.log('Conversion completed:');
