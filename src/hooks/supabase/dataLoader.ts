@@ -115,7 +115,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
       });
     }
 
-    // Load previous standings, filtered by championship
+    // Load previous standings (only the most recent save for evolution tracking)
     console.log('📊 Chargement des classements précédents...');
     const standingsQuery = supabase
       .from('previous_standings')
@@ -123,7 +123,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
         *,
         drivers (*)
       `)
-      .order('position');
+      .order('saved_at', { ascending: false });
 
     // Filter by championship if we have one
     if (championshipId) {
@@ -137,8 +137,19 @@ export const loadSupabaseData = async (championshipId?: string) => {
       throw standingsError;
     }
 
-    const previousStandings: ChampionshipStanding[] = standingsData?.map(convertSupabaseStanding) || [];
-    console.log('✅ Classements précédents chargés:', previousStandings.length);
+    // Get only the most recent save for evolution tracking
+    const latestSaveTimestamp = standingsData?.[0]?.saved_at;
+    const previousStandings: ChampionshipStanding[] = latestSaveTimestamp
+      ? standingsData
+          ?.filter(s => s.saved_at === latestSaveTimestamp)
+          .map(convertSupabaseStanding) || []
+      : [];
+    
+    console.log('✅ Classements précédents chargés:', {
+      total: standingsData?.length || 0,
+      latestSave: latestSaveTimestamp,
+      forEvolution: previousStandings.length
+    });
 
     const result = {
       drivers,

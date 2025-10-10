@@ -24,7 +24,7 @@ interface AdminPanelProps {
   deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
-  saveCurrentStandingsAsPrevious: () => Promise<void>;
+  saveCurrentStandingsAsPrevious: (saveName?: string) => Promise<void>;
   resetDriversEvolution: () => Promise<void>;
   restorePreviousStandings: () => Promise<void>;
 }

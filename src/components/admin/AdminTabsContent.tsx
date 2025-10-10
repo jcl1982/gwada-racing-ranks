@@ -24,7 +24,7 @@ interface AdminTabsContentProps {
   deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
-  saveCurrentStandingsAsPrevious: () => Promise<void>;
+  saveCurrentStandingsAsPrevious: (saveName?: string) => Promise<void>;
   resetDriversEvolution: () => Promise<void>;
   restorePreviousStandings: () => Promise<void>;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
@@ -105,6 +105,7 @@ const AdminTabsContent = ({
             onSaveCurrentStandings={saveCurrentStandingsAsPrevious}
             onResetDriversEvolution={resetDriversEvolution}
             onRestorePreviousStandings={restorePreviousStandings}
+            championshipId={championshipId}
           />
         </div>
       </TabsContent>

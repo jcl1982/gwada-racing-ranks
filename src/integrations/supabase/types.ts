@@ -88,6 +88,8 @@ export type Database = {
           montagne_points: number
           position: number
           rallye_points: number
+          save_name: string | null
+          saved_at: string | null
           total_points: number
         }
         Insert: {
@@ -98,6 +100,8 @@ export type Database = {
           montagne_points?: number
           position: number
           rallye_points?: number
+          save_name?: string | null
+          saved_at?: string | null
           total_points?: number
         }
         Update: {
@@ -108,6 +112,8 @@ export type Database = {
           montagne_points?: number
           position?: number
           rallye_points?: number
+          save_name?: string | null
+          saved_at?: string | null
           total_points?: number
         }
         Relationships: [
@@ -255,10 +261,22 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      delete_standings_save: {
+        Args: { p_championship_id: string; p_saved_at: string }
+        Returns: undefined
+      }
       get_missing_drivers: {
         Args: { race_id_param?: string }
         Returns: {
           driver_id: string
+        }[]
+      }
+      get_standings_saves: {
+        Args: { p_championship_id: string }
+        Returns: {
+          drivers_count: number
+          save_name: string
+          saved_at: string
         }[]
       }
       get_user_role: {
@@ -279,8 +297,15 @@ export type Database = {
         Args: Record<PropertyKey, never> | { p_championship_id?: string }
         Returns: undefined
       }
+      restore_standings_by_timestamp: {
+        Args: { p_championship_id: string; p_saved_at: string }
+        Returns: undefined
+      }
       save_current_standings_as_previous: {
-        Args: Record<PropertyKey, never> | { p_championship_id?: string }
+        Args:
+          | Record<PropertyKey, never>
+          | { p_championship_id?: string }
+          | { p_championship_id?: string; p_save_name?: string }
         Returns: undefined
       }
     }

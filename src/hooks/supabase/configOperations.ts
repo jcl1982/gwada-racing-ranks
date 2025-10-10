@@ -41,52 +41,39 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  const saveCurrentStandingsAsPrevious = async () => {
-    console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...', { championshipId });
+  const saveCurrentStandingsAsPrevious = async (saveName?: string) => {
+    console.log('💾 DÉBUT: Sauvegarde du classement actuel...', { championshipId, saveName });
     
     try {
-      console.log('🔧 CLIENT SUPABASE:', supabase ? 'OK' : 'ERREUR');
-      
       console.log('📞 Appel de la fonction RPC save_current_standings_as_previous...');
       const result = await supabase.rpc('save_current_standings_as_previous', { 
-        p_championship_id: championshipId 
+        p_championship_id: championshipId,
+        p_save_name: saveName || null
       });
-      
-      console.log('📋 RÉPONSE RPC COMPLÈTE:', result);
 
       if (result.error) {
-        console.error('❌ ERREUR RPC DÉTAILLÉE:', {
-          message: result.error.message,
-          details: result.error.details,
-          hint: result.error.hint,
-          code: result.error.code
-        });
+        console.error('❌ ERREUR RPC:', result.error);
         
         toast({
-          title: "Erreur RPC",
+          title: "Erreur",
           description: `Erreur base de données: ${result.error.message}`,
           variant: "destructive"
         });
         return;
       }
 
-      console.log('✅ Classement précédent sauvegardé avec succès');
+      console.log('✅ Classement sauvegardé avec succès');
       
       toast({
-        title: "Classement sauvegardé",
-        description: "Le classement actuel a été sauvegardé comme référence pour l'évolution.",
+        title: "Sauvegarde créée",
+        description: saveName || "Le classement actuel a été sauvegardé.",
       });
       
-    } catch (error) {
-      console.error('💥 ERREUR JAVASCRIPT COMPLÈTE:', {
-        error: error,
-        message: error?.message,
-        stack: error?.stack,
-        name: error?.name
-      });
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la sauvegarde:', error);
       
       toast({
-        title: "Erreur JavaScript",
+        title: "Erreur",
         description: `Erreur: ${error?.message || 'Erreur inconnue'}`,
         variant: "destructive"
       });
