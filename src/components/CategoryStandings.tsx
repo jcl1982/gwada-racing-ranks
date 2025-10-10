@@ -1,6 +1,6 @@
 
 import { Mountain, Car } from 'lucide-react';
-import { Driver, Race } from '@/types/championship';
+import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { calculateDriverPoints } from '@/utils/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
 import CategoryHeader from '@/components/CategoryHeader';
@@ -14,13 +14,7 @@ interface CategoryStandingsProps {
   drivers: Driver[];
   type: 'montagne' | 'rallye' | 'c2r2' | 'acceleration' | 'karting';
   championshipYear: string;
-  previousStandings?: Array<{
-    driver: Driver;
-    position: number;
-    montagnePoints: number;
-    rallyePoints: number;
-    totalPoints: number;
-  }>;
+  previousStandings?: ChampionshipStanding[];
 }
 
 const CategoryStandings = ({ title, races, drivers, type, championshipYear, previousStandings }: CategoryStandingsProps) => {
@@ -35,53 +29,43 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear, prev
   const standings = drivers
     .map(driver => {
       const points = calculateDriverPoints(driver.id, races);
+      
+      // Trouver la position précédente selon le type de classement
+      const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
+      const previousPosition = type === 'montagne' 
+        ? previousStanding?.previousMontagnePosition 
+        : previousStanding?.previousRallyePosition;
+      
       return {
         driver,
-        points
+        points,
+        previousPosition
       };
     })
-    .sort((a, b) => b.points - a.points)
+    .sort((a, b) => {
+      // Tri stable: par points (décroissant), puis par nom (alphabétique)
+      if (b.points !== a.points) {
+        return b.points - a.points;
+      }
+      return a.driver.name.localeCompare(b.driver.name);
+    })
     .map((standing, index) => {
       const currentPosition = index + 1;
+      const positionChange = standing.previousPosition 
+        ? standing.previousPosition - currentPosition 
+        : 0;
       
-      // Calculer le changement de position
-      let positionChange = 0;
-      let previousPosition: number | undefined;
-      
-      if (previousStandings && previousStandings.length > 0) {
-        // Calculer les positions précédentes dans cette catégorie
-        const previousCategoryStandings = previousStandings
-          .map(s => ({
-            driver: s.driver,
-            points: type === 'montagne' ? s.montagnePoints : s.rallyePoints
-          }))
-          .filter(s => s.points > 0) // Exclure les pilotes sans points dans cette catégorie
-          .sort((a, b) => b.points - a.points);
-        
-        console.log(`🔍 [${type}] Classements précédents calculés:`, previousCategoryStandings.slice(0, 5));
-        
-        const prevIndex = previousCategoryStandings.findIndex(s => s.driver.id === standing.driver.id);
-        if (prevIndex !== -1) {
-          previousPosition = prevIndex + 1;
-          positionChange = previousPosition - currentPosition;
-          
-          console.log(`🔍 [${type}] ${standing.driver.name}:`, {
-            currentPosition,
-            previousPosition,
-            positionChange,
-            currentPoints: standing.points,
-            previousPoints: previousCategoryStandings[prevIndex]?.points
-          });
-        } else {
-          console.log(`🔍 [${type}] ${standing.driver.name}: Nouveau pilote (pas de position précédente)`);
-        }
-      }
+      console.log(`🔍 [${type}] ${standing.driver.name}:`, {
+        currentPosition,
+        previousPosition: standing.previousPosition,
+        positionChange,
+        currentPoints: standing.points
+      });
       
       return {
         ...standing,
         position: currentPosition,
-        positionChange,
-        previousPosition
+        positionChange
       };
     });
 

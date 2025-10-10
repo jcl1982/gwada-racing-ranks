@@ -36,4 +36,9 @@ export interface ChampionshipStanding {
   position: number;
   previousPosition?: number;
   positionChange: number;
+  // Positions spécifiques pour chaque type de classement
+  previousGeneralPosition?: number;
+  previousMontagnePosition?: number;
+  previousRallyePosition?: number;
+  previousC2R2Position?: number;
 }

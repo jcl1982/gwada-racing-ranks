@@ -81,37 +81,49 @@ export type Database = {
       }
       previous_standings: {
         Row: {
+          c2r2_position: number | null
           championship_id: string
           created_at: string
           driver_id: string
+          general_position: number | null
           id: string
           montagne_points: number
+          montagne_position: number | null
           position: number
           rallye_points: number
+          rallye_position: number | null
           save_name: string | null
           saved_at: string | null
           total_points: number
         }
         Insert: {
+          c2r2_position?: number | null
           championship_id: string
           created_at?: string
           driver_id: string
+          general_position?: number | null
           id?: string
           montagne_points?: number
+          montagne_position?: number | null
           position: number
           rallye_points?: number
+          rallye_position?: number | null
           save_name?: string | null
           saved_at?: string | null
           total_points?: number
         }
         Update: {
+          c2r2_position?: number | null
           championship_id?: string
           created_at?: string
           driver_id?: string
+          general_position?: number | null
           id?: string
           montagne_points?: number
+          montagne_position?: number | null
           position?: number
           rallye_points?: number
+          rallye_position?: number | null
           save_name?: string | null
           saved_at?: string | null
           total_points?: number

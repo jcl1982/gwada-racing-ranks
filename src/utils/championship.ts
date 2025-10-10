@@ -43,15 +43,15 @@ export const calculateChampionshipStandings = (
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
     const totalPoints = montagnePoints + rallyePoints;
 
-    // Trouver la position précédente du pilote
+    // Trouver la position précédente du pilote pour le classement général
     const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
-    const previousPosition = previousStanding?.position;
+    const previousPosition = previousStanding?.previousGeneralPosition;
 
     console.log(`🔍 Pilote ${driver.name}:`, {
       montagnePoints,
       rallyePoints,
       totalPoints: totalPoints,
-      previousPosition,
+      previousGeneralPosition: previousPosition,
       previousStanding: previousStanding ? 'trouvé' : 'non trouvé'
     });
 
@@ -143,7 +143,7 @@ export const calculateC2R2Standings = (
 
     // Trouver la position précédente du pilote dans le classement C2 R2
     const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
-    const previousPosition = previousStanding?.position;
+    const previousPosition = previousStanding?.previousC2R2Position;
 
     return {
       driver,

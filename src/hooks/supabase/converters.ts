@@ -41,7 +41,12 @@ export const convertSupabaseStanding = (supabaseStanding: any): ChampionshipStan
   totalPoints: supabaseStanding.total_points,
   montagnePoints: supabaseStanding.montagne_points,
   rallyePoints: supabaseStanding.rallye_points,
-  positionChange: 0
+  positionChange: 0,
+  // Charger toutes les positions spécifiques
+  previousGeneralPosition: supabaseStanding.general_position,
+  previousMontagnePosition: supabaseStanding.montagne_position,
+  previousRallyePosition: supabaseStanding.rallye_position,
+  previousC2R2Position: supabaseStanding.c2r2_position
 });
 
 // Keep the original function names for backward compatibility
