@@ -1,4 +1,4 @@
-
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FileSpreadsheet } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
@@ -7,14 +7,19 @@ import ExcelFileUpload from '@/components/ExcelFileUpload';
 import ExcelPreview from '@/components/ExcelPreview';
 import ExcelImportInstructions from '@/components/ExcelImportInstructions';
 import RaceTypeSelector from '@/components/RaceTypeSelector';
+import SaveStandingsPromptDialog from '@/components/SaveStandingsPromptDialog';
 
 interface ExcelImportProps {
   drivers: Driver[];
   onImport: (races: Race[], newDrivers: Driver[]) => void;
   championshipId?: string;
+  onSaveStandings?: (saveName?: string) => Promise<void>;
 }
 
-const ExcelImport = ({ drivers, onImport, championshipId }: ExcelImportProps) => {
+const ExcelImport = ({ drivers, onImport, championshipId, onSaveStandings }: ExcelImportProps) => {
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
+  const [lastImportedRaceName, setLastImportedRaceName] = useState<string>();
+  
   const {
     isLoading,
     error,
@@ -37,11 +42,21 @@ const ExcelImport = ({ drivers, onImport, championshipId }: ExcelImportProps) =>
   };
 
   const handleImportWrapper = () => {
+    // Capturer le nom de la course avant l'import
+    const raceName = previewData?.[0]?.raceName;
+    
     handleImport();
+    
     // Reset file input after import
     const fileInput = document.getElementById('excel-file') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
+    }
+    
+    // Afficher la demande de sauvegarde après l'import si la fonction est disponible
+    if (onSaveStandings) {
+      setLastImportedRaceName(raceName);
+      setShowSavePrompt(true);
     }
   };
 
@@ -55,37 +70,48 @@ const ExcelImport = ({ drivers, onImport, championshipId }: ExcelImportProps) =>
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="card-glass">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileSpreadsheet className="w-6 h-6" />
-            Import depuis Excel
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <RaceTypeSelector
-            selectedType={selectedRaceType}
-            onTypeChange={setSelectedRaceType}
-          />
-          <ExcelFileUpload
-            onFileUpload={handleFileUploadWrapper}
-            isLoading={isLoading}
-            error={error}
-            success={success}
-          />
-          <ExcelImportInstructions />
-        </CardContent>
-      </Card>
+    <>
+      <div className="space-y-6">
+        <Card className="card-glass">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileSpreadsheet className="w-6 h-6" />
+              Import depuis Excel
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <RaceTypeSelector
+              selectedType={selectedRaceType}
+              onTypeChange={setSelectedRaceType}
+            />
+            <ExcelFileUpload
+              onFileUpload={handleFileUploadWrapper}
+              isLoading={isLoading}
+              error={error}
+              success={success}
+            />
+            <ExcelImportInstructions />
+          </CardContent>
+        </Card>
 
-      {previewData && previewData.length > 0 && (
-        <ExcelPreview
-          previewData={previewData}
-          onImport={handleImportWrapper}
-          onCancel={handleResetForm}
+        {previewData && previewData.length > 0 && (
+          <ExcelPreview
+            previewData={previewData}
+            onImport={handleImportWrapper}
+            onCancel={handleResetForm}
+          />
+        )}
+      </div>
+
+      {onSaveStandings && (
+        <SaveStandingsPromptDialog
+          open={showSavePrompt}
+          onOpenChange={setShowSavePrompt}
+          onSave={onSaveStandings}
+          raceName={lastImportedRaceName}
         />
       )}
-    </div>
+    </>
   );
 };
 
