@@ -66,8 +66,13 @@ export const calculateChampionshipStandings = (
     };
   });
 
-  // Sort by total points (descending) and assign positions
-  standings.sort((a, b) => b.totalPoints - a.totalPoints);
+  // Sort by total points (descending), then by name (ascending) for stable order
+  standings.sort((a, b) => {
+    if (b.totalPoints !== a.totalPoints) {
+      return b.totalPoints - a.totalPoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
   standings.forEach((standing, index) => {
     standing.position = index + 1;
     
@@ -151,8 +156,13 @@ export const calculateC2R2Standings = (
     };
   });
 
-  // Trier par points totaux et assigner les positions
-  standings.sort((a, b) => b.totalPoints - a.totalPoints);
+  // Trier par points totaux (décroissant), puis par nom (alphabétique) pour un ordre stable
+  standings.sort((a, b) => {
+    if (b.totalPoints !== a.totalPoints) {
+      return b.totalPoints - a.totalPoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
   standings.forEach((standing, index) => {
     standing.position = index + 1;
     
