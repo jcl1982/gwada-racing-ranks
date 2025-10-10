@@ -59,16 +59,17 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            Pour voir l'évolution des positions dans les classements, vous devez d'abord sauvegarder 
-            le classement actuel comme référence. Cette action remplacera les classements précédents existants.
+            <strong>Évolution des positions :</strong> Pour voir l'évolution des positions dans les classements (↑↓), 
+            sauvegardez d'abord le classement actuel. Cette action enregistre une référence pour ce championnat uniquement 
+            et remplace toute sauvegarde précédente de ce même championnat.
           </AlertDescription>
         </Alert>
 
         <div className="space-y-4">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              Sauvegardez le classement actuel pour permettre le calcul de l'évolution des positions 
-              lors des prochaines mises à jour.
+              <strong>Étape 1 :</strong> Sauvegardez le classement actuel de <strong>ce championnat</strong> pour 
+              afficher les flèches d'évolution (↑↓) lors des prochaines courses.
             </p>
             
             <Button
@@ -80,14 +81,14 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
               variant="outline"
             >
               <Save className="mr-2 h-4 w-4" />
-              Sauvegarder le Classement Actuel
+              Sauvegarder le Classement Actuel (Ce Championnat)
             </Button>
           </div>
 
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              Restaurez le classement précédemment sauvegardé. 
-              <strong className="text-destructive"> Attention : Cette action supprimera tous les résultats de course actuels.</strong>
+              <strong>Étape 2 :</strong> Restaurez le classement précédemment sauvegardé pour <strong>ce championnat</strong>. 
+              <strong className="text-destructive"> ⚠️ Attention : Ceci supprimera TOUS les résultats de course actuels de ce championnat.</strong>
             </p>
             
             <Button
@@ -96,14 +97,14 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
               variant="outline"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
-              Restaurer le Classement Sauvegardé
+              Restaurer le Classement Sauvegardé (Ce Championnat)
             </Button>
           </div>
 
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">
-              Réinitialisez l'évolution des pilotes pour remettre à zéro les flèches d'évolution. 
-              Tous les pilotes afficheront un tiret dans la colonne évolution.
+              <strong>Étape 3 :</strong> Réinitialisez l'évolution pour remettre à zéro les flèches d'évolution 
+              de <strong>ce championnat</strong>. Tous les pilotes afficheront un tiret (—).
             </p>
             
             <Button
@@ -112,7 +113,7 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
               variant="destructive"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
-              Réinitialiser l'Évolution
+              Réinitialiser l'Évolution (Ce Championnat)
             </Button>
           </div>
         </div>
