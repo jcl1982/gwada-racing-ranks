@@ -69,6 +69,7 @@ const AdminTabsContent = ({
           drivers={drivers}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          championshipId={championshipId}
           onRacesChange={onRacesChange}
           saveRace={saveRace}
           deleteRace={deleteRace}

@@ -9,6 +9,7 @@ interface RacesManagementProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  championshipId?: string;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
@@ -17,7 +18,8 @@ interface RacesManagementProps {
 const RacesManagement = ({ 
   drivers, 
   montagneRaces, 
-  rallyeRaces, 
+  rallyeRaces,
+  championshipId,
   onRacesChange, 
   saveRace, 
   deleteRace 
@@ -29,10 +31,11 @@ const RacesManagement = ({
   const allRaces = [...montagneRaces, ...rallyeRaces];
 
   const handleAddRace = async (raceData: Omit<Race, 'id' | 'results'>) => {
-    console.log('Adding new race:', raceData);
+    console.log('Adding new race:', raceData, 'for championship:', championshipId);
     
     await saveRace({
       ...raceData,
+      championshipId,
       results: []
     });
   };
@@ -49,9 +52,14 @@ const RacesManagement = ({
     console.log('🔄 RacesManagement - handleUpdateRace appelé');
     console.log('Course originale:', editingRace);
     console.log('Course mise à jour:', updatedRace);
+    console.log('Championship ID:', championshipId);
     console.log('Date changée:', editingRace.date, '->', updatedRace.date);
 
-    await saveRace(updatedRace);
+    // S'assurer que le championshipId est préservé
+    await saveRace({
+      ...updatedRace,
+      championshipId: updatedRace.championshipId || championshipId
+    });
     
     console.log('✅ saveRace terminé');
     setEditingRace(null);
