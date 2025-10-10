@@ -27,14 +27,21 @@ export const findExistingRace = async (name: string, date: string): Promise<{ id
   return data;
 };
 
-export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): Promise<string> => {
+export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>, championshipId?: string): Promise<string> => {
   console.log('➕ Création d\'une nouvelle course:', {
     name: race.name,
     date: race.date,
     endDate: race.endDate,
     organizer: race.organizer,
-    type: race.type
+    type: race.type,
+    championshipId: championshipId || race.championshipId
   });
+
+  const finalChampionshipId = championshipId || race.championshipId;
+  
+  if (!finalChampionshipId) {
+    throw new Error('Championship ID is required to create a race');
+  }
 
   const { data, error } = await supabase
     .from('races')
@@ -43,7 +50,8 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): 
       date: race.date,
       end_date: race.endDate || null,
       organizer: race.organizer || null,
-      type: race.type
+      type: race.type,
+      championship_id: finalChampionshipId
     })
     .select()
     .single();
@@ -57,7 +65,7 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>): 
   return data.id;
 };
 
-export const updateRaceInDatabase = async (race: Race): Promise<void> => {
+export const updateRaceInDatabase = async (race: Race, championshipId?: string): Promise<void> => {
   console.log('🔄 updateRaceInDatabase - Début');
   console.log('📦 Race reçue:', race);
   console.log('📅 Date à enregistrer:', race.date);
@@ -67,7 +75,9 @@ export const updateRaceInDatabase = async (race: Race): Promise<void> => {
     throw new Error('ID de la course invalide');
   }
 
-  const updateData = {
+  const finalChampionshipId = championshipId || race.championshipId;
+
+  const updateData: any = {
     name: race.name,
     date: race.date,
     end_date: race.endDate || null,
@@ -75,6 +85,10 @@ export const updateRaceInDatabase = async (race: Race): Promise<void> => {
     type: race.type,
     updated_at: new Date().toISOString()
   };
+  
+  if (finalChampionshipId) {
+    updateData.championship_id = finalChampionshipId;
+  }
   
   console.log('📤 Données envoyées à Supabase:', updateData);
 

@@ -78,8 +78,20 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     return baseSaveDriver(driver, championshipId);
   };
   
-  const { saveRace, deleteRace } = createRaceOperations(toast, loadData);
-  const { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, restorePreviousStandings, resetAllData } = createConfigOperations(toast);
+  const { saveRace: baseSaveRace, deleteRace } = createRaceOperations(toast, loadData, championshipId);
+  
+  // Wrapper pour saveRace qui passe automatiquement le championshipId
+  const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
+    console.log('🔧 saveRace wrapper called with:', { race, championshipId });
+    // S'assurer que le championshipId est ajouté à la course
+    const raceWithChampionship = {
+      ...race,
+      championshipId: championshipId || race.championshipId
+    };
+    return baseSaveRace(raceWithChampionship);
+  };
+  
+  const { updateChampionshipConfig, saveCurrentStandingsAsPrevious, resetDriversEvolution, restorePreviousStandings, resetAllData } = createConfigOperations(toast, championshipId);
 
   // Enhanced reset function that reloads data after reset
   const handleResetAllData = async () => {

@@ -5,10 +5,10 @@ import { validateRaceData } from './raceValidation';
 import { deleteExistingResults, saveRaceResults } from './raceResultsOperations';
 import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, findExistingRace } from './raceDatabaseOperations';
 
-export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
+export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     try {
-      console.log('💾 Sauvegarde de la course:', race.name);
+      console.log('💾 Sauvegarde de la course:', race.name, { championshipId });
       
       // Validate race data
       validateRaceData(race);
@@ -18,7 +18,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       // Si la course a un ID, c'est une mise à jour
       if ('id' in race && race.id) {
         console.log('🔄 Mise à jour de la course existante:', race.id);
-        await updateRaceInDatabase(race);
+        await updateRaceInDatabase(race, championshipId);
         raceId = race.id;
         
         // Supprimer les anciens résultats avant d'ajouter les nouveaux
@@ -46,8 +46,9 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
             date: race.date,
             endDate: race.endDate,
             organizer: race.organizer,
-            type: race.type
-          });
+            type: race.type,
+            championshipId: championshipId || race.championshipId
+          }, championshipId);
         }
       }
 

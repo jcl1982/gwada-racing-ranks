@@ -25,6 +25,7 @@ export interface Race {
   type: 'montagne' | 'rallye';
   organizer?: string;
   results: RaceResult[];
+  championshipId?: string;
 }
 
 export interface ChampionshipStanding {

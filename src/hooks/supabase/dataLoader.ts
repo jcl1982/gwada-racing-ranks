@@ -72,9 +72,9 @@ export const loadSupabaseData = async (championshipId?: string) => {
     const drivers: Driver[] = driversData?.map(convertSupabaseDriver) || [];
     console.log('✅ Pilotes chargés:', drivers.length);
 
-    // Load races with results
+    // Load races with results, filtered by championship
     console.log('🏁 Chargement des courses...');
-    const { data: racesData, error: racesError } = await supabase
+    const racesQuery = supabase
       .from('races')
       .select(`
         *,
@@ -84,6 +84,13 @@ export const loadSupabaseData = async (championshipId?: string) => {
         )
       `)
       .order('date');
+
+    // Filter by championship if we have one
+    if (championshipId) {
+      racesQuery.eq('championship_id', championshipId);
+    }
+
+    const { data: racesData, error: racesError } = await racesQuery;
 
     if (racesError) {
       console.error('❌ Erreur lors du chargement des courses:', racesError);
@@ -103,19 +110,27 @@ export const loadSupabaseData = async (championshipId?: string) => {
         id: cafeiere.id,
         name: cafeiere.name,
         date: cafeiere.date,
-        type: cafeiere.type
+        type: cafeiere.type,
+        championshipId: cafeiere.championshipId
       });
     }
 
-    // Load previous standings
+    // Load previous standings, filtered by championship
     console.log('📊 Chargement des classements précédents...');
-    const { data: standingsData, error: standingsError } = await supabase
+    const standingsQuery = supabase
       .from('previous_standings')
       .select(`
         *,
         drivers (*)
       `)
       .order('position');
+
+    // Filter by championship if we have one
+    if (championshipId) {
+      standingsQuery.eq('championship_id', championshipId);
+    }
+
+    const { data: standingsData, error: standingsError } = await standingsQuery;
 
     if (standingsError) {
       console.error('❌ Erreur lors du chargement des classements:', standingsError);

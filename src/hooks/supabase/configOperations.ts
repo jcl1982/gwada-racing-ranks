@@ -2,39 +2,27 @@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast']) => {
+export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast'], championshipId?: string) => {
   const updateChampionshipConfig = async (title: string, year: string) => {
     try {
-      console.log('⚙️ Updating championship config:', { title, year });
+      console.log('⚙️ Updating championship config:', { title, year, championshipId });
 
-      const { data: existingConfig } = await supabase
+      if (!championshipId) {
+        throw new Error('Championship ID is required');
+      }
+
+      const { error } = await supabase
         .from('championship_config')
-        .select('id')
-        .limit(1);
+        .update({
+          title,
+          year,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', championshipId);
 
-      if (existingConfig && existingConfig.length > 0) {
-        const { error } = await supabase
-          .from('championship_config')
-          .update({
-            title,
-            year,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', existingConfig[0].id);
-
-        if (error) {
-          console.error('❌ Update config error:', error);
-          throw error;
-        }
-      } else {
-        const { error } = await supabase
-          .from('championship_config')
-          .insert({ title, year });
-
-        if (error) {
-          console.error('❌ Insert config error:', error);
-          throw error;
-        }
+      if (error) {
+        console.error('❌ Update config error:', error);
+        throw error;
       }
 
       console.log('✅ Championship config updated successfully');
@@ -54,13 +42,15 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
   };
 
   const saveCurrentStandingsAsPrevious = async () => {
-    console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...');
+    console.log('💾 DÉBUT: Sauvegarde du classement actuel comme classement précédent...', { championshipId });
     
     try {
       console.log('🔧 CLIENT SUPABASE:', supabase ? 'OK' : 'ERREUR');
       
       console.log('📞 Appel de la fonction RPC save_current_standings_as_previous...');
-      const result = await supabase.rpc('save_current_standings_as_previous');
+      const result = await supabase.rpc('save_current_standings_as_previous', { 
+        p_championship_id: championshipId 
+      });
       
       console.log('📋 RÉPONSE RPC COMPLÈTE:', result);
 
@@ -105,9 +95,11 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
 
   const resetDriversEvolution = async () => {
     try {
-      console.log('🔄 Resetting drivers evolution...');
+      console.log('🔄 Resetting drivers evolution...', { championshipId });
 
-      const result = await supabase.rpc('reset_drivers_evolution');
+      const result = await supabase.rpc('reset_drivers_evolution', { 
+        p_championship_id: championshipId 
+      });
 
       if (result.error) {
         console.error('❌ Error resetting drivers evolution:', result.error);
@@ -136,9 +128,11 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
 
   const restorePreviousStandings = async () => {
     try {
-      console.log('⏮️ Restoring previous standings...');
+      console.log('⏮️ Restoring previous standings...', { championshipId });
 
-      const result = await supabase.rpc('restore_previous_standings');
+      const result = await supabase.rpc('restore_previous_standings', { 
+        p_championship_id: championshipId 
+      });
 
       if (result.error) {
         console.error('❌ Error restoring previous standings:', result.error);
@@ -167,53 +161,75 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
 
   const resetAllData = async () => {
     try {
-      console.log('🔄 Resetting all data...');
+      console.log('🔄 Resetting all data...', { championshipId });
 
-      // Delete all data in correct order to avoid foreign key constraints
-      const { error: resultsError } = await supabase
-        .from('race_results')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
-
-      if (resultsError) {
-        console.error('❌ Error deleting race results:', resultsError);
-        throw resultsError;
+      if (!championshipId) {
+        throw new Error('Championship ID is required');
       }
 
+      // First, get all race IDs for this championship
+      const { data: races, error: racesQueryError } = await supabase
+        .from('races')
+        .select('id')
+        .eq('championship_id', championshipId);
+
+      if (racesQueryError) {
+        console.error('❌ Error querying races:', racesQueryError);
+        throw racesQueryError;
+      }
+
+      const raceIds = races?.map(r => r.id) || [];
+
+      // Delete race results for races in this championship
+      if (raceIds.length > 0) {
+        const { error: resultsError } = await supabase
+          .from('race_results')
+          .delete()
+          .in('race_id', raceIds);
+
+        if (resultsError) {
+          console.error('❌ Error deleting race results:', resultsError);
+          throw resultsError;
+        }
+      }
+
+      // Delete standings for this championship
       const { error: standingsError } = await supabase
         .from('previous_standings')
         .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+        .eq('championship_id', championshipId);
 
       if (standingsError) {
         console.error('❌ Error deleting standings:', standingsError);
         throw standingsError;
       }
 
+      // Delete races for this championship
       const { error: racesError } = await supabase
         .from('races')
         .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+        .eq('championship_id', championshipId);
 
       if (racesError) {
         console.error('❌ Error deleting races:', racesError);
         throw racesError;
       }
 
+      // Delete drivers for this championship
       const { error: driversError } = await supabase
         .from('drivers')
         .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+        .eq('championship_id', championshipId);
 
       if (driversError) {
         console.error('❌ Error deleting drivers:', driversError);
         throw driversError;
       }
 
-      console.log('✅ All data reset successfully');
+      console.log('✅ All data reset successfully for championship:', championshipId);
       toast({
         title: "Données effacées",
-        description: "Toutes les données ont été supprimées.",
+        description: "Toutes les données du championnat ont été supprimées.",
       });
     } catch (error) {
       console.error('❌ Error resetting data:', error);

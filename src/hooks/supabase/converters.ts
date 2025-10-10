@@ -18,6 +18,7 @@ export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?
   endDate: supabaseRace.end_date || undefined,
   organizer: supabaseRace.organizer || undefined,
   type: supabaseRace.type,
+  championshipId: supabaseRace.championship_id,
   results: (supabaseRace.race_results || []).map(result => ({
     driverId: result.driver_id,
     position: result.position,
@@ -52,6 +53,7 @@ export const convertSupabaseRaceToApp = (supabaseRace: SupabaseRace, results: Su
   endDate: supabaseRace.end_date || undefined,
   organizer: supabaseRace.organizer || undefined,
   type: supabaseRace.type,
+  championshipId: supabaseRace.championship_id,
   results: results.map(result => ({
     driverId: result.driver_id,
     position: result.position,

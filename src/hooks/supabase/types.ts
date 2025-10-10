@@ -17,6 +17,7 @@ export interface SupabaseRace {
   end_date?: string;
   organizer?: string;
   type: 'montagne' | 'rallye';
+  championship_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +42,7 @@ export interface SupabasePreviousStanding {
   montagne_points: number;
   rallye_points: number;
   total_points: number;
+  championship_id: string;
   created_at: string;
 }
 

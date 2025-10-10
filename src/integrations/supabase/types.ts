@@ -81,6 +81,7 @@ export type Database = {
       }
       previous_standings: {
         Row: {
+          championship_id: string
           created_at: string
           driver_id: string
           id: string
@@ -90,6 +91,7 @@ export type Database = {
           total_points: number
         }
         Insert: {
+          championship_id: string
           created_at?: string
           driver_id: string
           id?: string
@@ -99,6 +101,7 @@ export type Database = {
           total_points?: number
         }
         Update: {
+          championship_id?: string
           created_at?: string
           driver_id?: string
           id?: string
@@ -108,6 +111,13 @@ export type Database = {
           total_points?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "previous_standings_championship_id_fkey"
+            columns: ["championship_id"]
+            isOneToOne: false
+            referencedRelation: "championship_config"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "previous_standings_driver_id_fkey"
             columns: ["driver_id"]
@@ -173,6 +183,7 @@ export type Database = {
       }
       races: {
         Row: {
+          championship_id: string
           created_at: string
           date: string
           end_date: string | null
@@ -183,6 +194,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          championship_id: string
           created_at?: string
           date: string
           end_date?: string | null
@@ -193,6 +205,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          championship_id?: string
           created_at?: string
           date?: string
           end_date?: string | null
@@ -202,7 +215,15 @@ export type Database = {
           type?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "races_championship_id_fkey"
+            columns: ["championship_id"]
+            isOneToOne: false
+            referencedRelation: "championship_config"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -251,15 +272,15 @@ export type Database = {
         Returns: boolean
       }
       reset_drivers_evolution: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { p_championship_id?: string }
         Returns: undefined
       }
       restore_previous_standings: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { p_championship_id?: string }
         Returns: undefined
       }
       save_current_standings_as_previous: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { p_championship_id?: string }
         Returns: undefined
       }
     }
