@@ -40,11 +40,6 @@ export const useChampionshipImport = (
       // Rafraîchissement final complet
       await performFinalRefresh(refreshData);
 
-      // Sauvegarde automatique du classement après import réussi
-      console.log('💾 Sauvegarde automatique du classement après import...');
-      await saveCurrentStandingsAsPrevious();
-      console.log('✅ Classement sauvegardé automatiquement');
-
       // Log du résumé
       logImportSummary(successCount, errorCount, totalCreated);
       
