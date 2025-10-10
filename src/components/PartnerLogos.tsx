@@ -11,21 +11,25 @@ const PartnerLogos = () => {
         src={asagLogo} 
         alt="ASAG - Association Sportive Automobile Guadeloupe" 
         className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
       />
       <Logo 
         src={asaArchipelLogo} 
         alt="ASA Archipel" 
         className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
       />
       <Logo 
         src={asaCaraibLogo} 
         alt="ASA Caraïb" 
         className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
       />
       <Logo 
         src={kartingLogo} 
         alt="ASK - Guadeloup' Kart" 
         className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
       />
     </div>
   );
