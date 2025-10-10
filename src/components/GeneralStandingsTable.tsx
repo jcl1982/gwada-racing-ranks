@@ -51,7 +51,6 @@ const GeneralStandingsTable = ({
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Évolution</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              <th className="text-left py-1 px-1 font-semibold">Véhicule</th>
               <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
                   <Mountain size={16} />
@@ -80,11 +79,6 @@ const GeneralStandingsTable = ({
                 <td className="py-1 px-1">
                   <div className="font-semibold text-gray-900 unicode-enhanced">
                     {standing.driver.name}
-                  </div>
-                </td>
-                <td className="py-1 px-1">
-                  <div className="text-sm text-gray-600 unicode-enhanced">
-                    {standing.driver.carModel || '-'}
                   </div>
                 </td>
                 <td className="py-1 px-1 text-center">
