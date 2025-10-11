@@ -7,11 +7,11 @@ import StandingsSavesList from './StandingsSavesList';
 interface PreviousStandingsManagerProps {
   onSaveCurrentStandings: (saveName?: string) => Promise<void>;
   onResetDriversEvolution: () => Promise<void>;
-  onRestorePreviousStandings: () => Promise<void>;
+  onRefreshData: () => Promise<void>;
   championshipId?: string;
 }
 
-const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolution, onRestorePreviousStandings, championshipId }: PreviousStandingsManagerProps) => {
+const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolution, onRefreshData, championshipId }: PreviousStandingsManagerProps) => {
   const handleSaveStandings = async (saveName?: string) => {
     try {
       console.log('🎯 Début de la sauvegarde:', { saveName });
@@ -33,18 +33,6 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
       console.log('✅ BOUTON: Réinitialisation terminée avec succès');
     } catch (error) {
       console.error('❌ BOUTON: Erreur dans handleResetEvolution:', error);
-    }
-  };
-
-  const handleRestoreStandings = async () => {
-    try {
-      console.log('⏮️ BOUTON CLIQUÉ: Début de handleRestoreStandings');
-      
-      await onRestorePreviousStandings();
-      
-      console.log('✅ BOUTON: Restauration terminée avec succès');
-    } catch (error) {
-      console.error('❌ BOUTON: Erreur dans handleRestoreStandings:', error);
     }
   };
 
@@ -77,7 +65,7 @@ const PreviousStandingsManager = ({ onSaveCurrentStandings, onResetDriversEvolut
 
       <StandingsSavesList 
         championshipId={championshipId}
-        onRestore={onRestorePreviousStandings}
+        onRestoreComplete={onRefreshData}
       />
     </div>
   );

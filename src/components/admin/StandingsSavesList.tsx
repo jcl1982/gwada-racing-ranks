@@ -16,10 +16,10 @@ interface StandingsSave {
 
 interface StandingsSavesListProps {
   championshipId?: string;
-  onRestore: () => Promise<void>;
+  onRestoreComplete: () => Promise<void>;
 }
 
-const StandingsSavesList = ({ championshipId, onRestore }: StandingsSavesListProps) => {
+const StandingsSavesList = ({ championshipId, onRestoreComplete }: StandingsSavesListProps) => {
   const [saves, setSaves] = useState<StandingsSave[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -73,10 +73,11 @@ const StandingsSavesList = ({ championshipId, onRestore }: StandingsSavesListPro
 
       toast({
         title: "Sauvegarde restaurée",
-        description: "Le classement a été restauré avec succès.",
+        description: "Le classement et les résultats ont été restaurés avec succès.",
       });
 
-      await onRestore();
+      // Recharger les données après restauration
+      await onRestoreComplete();
     } catch (error: any) {
       console.error('❌ Erreur lors de la restauration:', error);
       toast({

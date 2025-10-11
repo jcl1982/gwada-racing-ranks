@@ -107,6 +107,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     deleteRace,
     saveCurrentStandingsAsPrevious,
     resetDriversEvolution,
-    restorePreviousStandings
+    refreshData
   };
 };
