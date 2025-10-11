@@ -137,17 +137,26 @@ export const loadSupabaseData = async (championshipId?: string) => {
       throw standingsError;
     }
 
-    // Get only the most recent save for evolution tracking
-    const latestSaveTimestamp = standingsData?.[0]?.saved_at;
-    const previousStandings: ChampionshipStanding[] = latestSaveTimestamp
+    // Get the second most recent save for evolution tracking (not the latest one)
+    // This ensures that after saving, evolutions are still calculated from the previous state
+    const uniqueSaveTimes = [...new Set(standingsData?.map(s => s.saved_at))].sort((a, b) => 
+      new Date(b).getTime() - new Date(a).getTime()
+    );
+    
+    // Use second most recent save if it exists, otherwise use the most recent
+    const referenceTimestamp = uniqueSaveTimes.length > 1 ? uniqueSaveTimes[1] : uniqueSaveTimes[0];
+    
+    const previousStandings: ChampionshipStanding[] = referenceTimestamp
       ? standingsData
-          ?.filter(s => s.saved_at === latestSaveTimestamp)
+          ?.filter(s => s.saved_at === referenceTimestamp)
           .map(convertSupabaseStanding) || []
       : [];
     
     console.log('✅ Classements précédents chargés:', {
       total: standingsData?.length || 0,
-      latestSave: latestSaveTimestamp,
+      uniqueSaves: uniqueSaveTimes.length,
+      latestSave: uniqueSaveTimes[0],
+      referenceForEvolution: referenceTimestamp,
       forEvolution: previousStandings.length
     });
 
