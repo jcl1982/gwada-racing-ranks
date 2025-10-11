@@ -1,11 +1,43 @@
 
 import { Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { validateRaceData } from './raceValidation';
 import { deleteExistingResults, saveRaceResults } from './raceResultsOperations';
 import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, findExistingRace } from './raceDatabaseOperations';
 
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
+  
+  // Fonction pour sauvegarder automatiquement le classement avant une modification de type de course
+  const autoSaveStandingsBeforeTypeChange = async (raceId: string, newType: string) => {
+    try {
+      // Vérifier si le type de course change
+      const { data: existingRace } = await supabase
+        .from('races')
+        .select('type')
+        .eq('id', raceId)
+        .single();
+      
+      if (existingRace && existingRace.type !== newType && championshipId) {
+        console.log('🔄 Changement de type de course détecté:', existingRace.type, '→', newType);
+        console.log('💾 AUTO-SAVE: Sauvegarde du classement avant modification...');
+        
+        // Sauvegarder le classement actuel avant la modification
+        const { error } = await supabase.rpc('save_current_standings_as_previous', {
+          p_championship_id: championshipId,
+          p_save_name: `Avant modification de type (${existingRace.type} → ${newType})`
+        });
+        
+        if (error) {
+          console.error('❌ Erreur lors de la sauvegarde automatique:', error);
+        } else {
+          console.log('✅ AUTO-SAVE: Classement sauvegardé avec succès');
+        }
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la vérification du type de course:', error);
+    }
+  };
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     try {
       console.log('💾 Sauvegarde de la course:', race.name, { championshipId });
@@ -18,6 +50,10 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       // Si la course a un ID, c'est une mise à jour
       if ('id' in race && race.id) {
         console.log('🔄 Mise à jour de la course existante:', race.id);
+        
+        // Auto-sauvegarder si le type de course change
+        await autoSaveStandingsBeforeTypeChange(race.id, race.type);
+        
         await updateRaceInDatabase(race, championshipId);
         raceId = race.id;
         
