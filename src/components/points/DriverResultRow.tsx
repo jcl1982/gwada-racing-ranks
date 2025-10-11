@@ -55,20 +55,41 @@ const DriverResultRow = ({
       </TableCell>
       <TableCell className="text-center">
         {isEditing ? (
-          <Select
-            value={result?.carModel || driver.carModel || ''}
-            onValueChange={(value) => onCarModelChange(driver.id, value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Modèle de voiture" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Citroën C2 R2">Citroën C2 R2</SelectItem>
-              <SelectItem value="Autre">Autre</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-col gap-1">
+            <Select
+              value={result?.carModel || driver.carModel || ''}
+              onValueChange={(value) => onCarModelChange(driver.id, value)}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Modèle de voiture" />
+              </SelectTrigger>
+              <SelectContent>
+                {driver.carModel && (
+                  <SelectItem value={driver.carModel}>
+                    {driver.carModel} (Habituel)
+                  </SelectItem>
+                )}
+                <SelectItem value="Citroën C2 R2">Citroën C2 R2</SelectItem>
+                <SelectItem value="Peugeot 106">Peugeot 106</SelectItem>
+                <SelectItem value="Renault Clio">Renault Clio</SelectItem>
+                <SelectItem value="Autre">Autre</SelectItem>
+              </SelectContent>
+            </Select>
+            {result?.carModel && result.carModel !== driver.carModel && (
+              <Badge variant="outline" className="text-xs w-fit">
+                ⚠️ Modèle différent
+              </Badge>
+            )}
+          </div>
         ) : (
-          result?.carModel || driver.carModel || '-'
+          <div className="flex flex-col gap-1 items-center">
+            <span>{result?.carModel || driver.carModel || '-'}</span>
+            {result?.carModel && result.carModel !== driver.carModel && (
+              <Badge variant="outline" className="text-xs">
+                ⚠️ Modèle différent
+              </Badge>
+            )}
+          </div>
         )}
       </TableCell>
     </TableRow>
