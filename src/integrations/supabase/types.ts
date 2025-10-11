@@ -199,6 +199,51 @@ export type Database = {
           },
         ]
       }
+      race_results_archive: {
+        Row: {
+          car_model: string | null
+          championship_id: string
+          created_at: string
+          dnf: boolean | null
+          driver_id: string
+          id: string
+          points: number
+          position: number
+          race_id: string
+          save_name: string | null
+          saved_at: string
+          time: string | null
+        }
+        Insert: {
+          car_model?: string | null
+          championship_id: string
+          created_at?: string
+          dnf?: boolean | null
+          driver_id: string
+          id?: string
+          points?: number
+          position: number
+          race_id: string
+          save_name?: string | null
+          saved_at: string
+          time?: string | null
+        }
+        Update: {
+          car_model?: string | null
+          championship_id?: string
+          created_at?: string
+          dnf?: boolean | null
+          driver_id?: string
+          id?: string
+          points?: number
+          position?: number
+          race_id?: string
+          save_name?: string | null
+          saved_at?: string
+          time?: string | null
+        }
+        Relationships: []
+      }
       races: {
         Row: {
           championship_id: string
