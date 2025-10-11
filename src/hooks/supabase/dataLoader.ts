@@ -137,14 +137,14 @@ export const loadSupabaseData = async (championshipId?: string) => {
       throw standingsError;
     }
 
-    // Get the second most recent save for evolution tracking (not the latest one)
-    // This ensures that after saving, evolutions are still calculated from the previous state
+    // Get the most recent save for evolution tracking
+    // This ensures that evolutions are calculated from the last saved state (before import)
     const uniqueSaveTimes = [...new Set(standingsData?.map(s => s.saved_at))].sort((a, b) => 
       new Date(b).getTime() - new Date(a).getTime()
     );
     
-    // Use second most recent save if it exists, otherwise use the most recent
-    const referenceTimestamp = uniqueSaveTimes.length > 1 ? uniqueSaveTimes[1] : uniqueSaveTimes[0];
+    // Use the most recent save for evolution calculation
+    const referenceTimestamp = uniqueSaveTimes[0];
     
     const previousStandings: ChampionshipStanding[] = referenceTimestamp
       ? standingsData
