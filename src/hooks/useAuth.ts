@@ -14,10 +14,14 @@ export const useAuth = () => {
   useEffect(() => {
     let mounted = true;
 
+    console.log('🔐 [useAuth] Initializing auth hook...');
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (!mounted) return;
+        
+        console.log('🔐 [useAuth] Auth state changed:', { event, hasSession: !!session });
         
         // Only synchronous state updates here
         setSession(session);
@@ -32,18 +36,20 @@ export const useAuth = () => {
           }, 0);
         } else {
           setUserRole(null);
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
     // THEN check for existing session
     const initSession = async () => {
       try {
+        console.log('🔐 [useAuth] Checking for existing session...');
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!mounted) return;
+        
+        console.log('🔐 [useAuth] Existing session:', { hasSession: !!session, userId: session?.user?.id });
         
         setSession(session);
         setUser(session?.user ?? null);
@@ -54,9 +60,10 @@ export const useAuth = () => {
           setUserRole(null);
         }
       } catch (error) {
-        console.error('Error initializing session:', error);
+        console.error('❌ [useAuth] Error initializing session:', error);
       } finally {
         if (mounted) {
+          console.log('🔐 [useAuth] Initialization complete, setting loading to false');
           setLoading(false);
         }
       }
@@ -72,6 +79,7 @@ export const useAuth = () => {
 
   const fetchUserRole = async (userId: string) => {
     try {
+      console.log('🔐 [useAuth] Fetching role for user:', userId);
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
@@ -79,14 +87,20 @@ export const useAuth = () => {
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
-        console.error('Error fetching user role:', error);
+        console.error('❌ [useAuth] Error fetching user role:', error);
         setUserRole('user'); // Default to user role on error
       } else {
-        setUserRole(data?.role || 'user');
+        const role = data?.role || 'user';
+        console.log('✅ [useAuth] User role fetched:', role);
+        setUserRole(role);
       }
     } catch (error) {
-      console.error('Error fetching user role:', error);
+      console.error('❌ [useAuth] Exception fetching user role:', error);
       setUserRole('user');
+    } finally {
+      // CRITICAL: Always set loading to false after fetching role
+      console.log('🔐 [useAuth] Role fetch complete, setting loading to false');
+      setLoading(false);
     }
   };
 

@@ -17,8 +17,12 @@ const RoleProtectedComponent = ({
 }: RoleProtectedComponentProps) => {
   const { userRole, isAuthenticated, loading } = useUserRole();
 
-  // Show loading state while checking authentication
+  console.log('🔒 [RoleProtected] State:', { loading, isAuthenticated, userRole, requiredRole });
+
+  // CRITICAL: Always show loading during initial auth check
+  // This prevents flashing "Access Denied" before auth completes
   if (loading) {
+    console.log('🔒 [RoleProtected] Still loading auth state...');
     if (showLoading) {
       return (
         <div className="flex items-center justify-center p-4">
@@ -26,20 +30,22 @@ const RoleProtectedComponent = ({
         </div>
       );
     }
-    // Don't show fallback during loading to avoid flashing "Access Denied"
     return null;
   }
 
-  // Only check authentication after loading is complete
+  // After loading completes, check authentication
   if (!isAuthenticated) {
+    console.log('🔒 [RoleProtected] User not authenticated, showing fallback');
     return fallback ? <>{fallback}</> : null;
   }
 
   // Check if user has required role
   if (requiredRole === 'admin' && userRole !== 'admin') {
+    console.log('🔒 [RoleProtected] User is not admin, showing fallback');
     return fallback ? <>{fallback}</> : null;
   }
 
+  console.log('🔒 [RoleProtected] Access granted, rendering children');
   return <>{children}</>;
 };
 
