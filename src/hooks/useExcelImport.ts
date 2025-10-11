@@ -38,7 +38,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     }
   };
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (!previewData) return;
 
     try {
@@ -47,7 +47,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       const newDriversCount = newDrivers.length - drivers.length;
       const racesCount = races.length;
       
-      onImport(races, newDrivers);
+      await onImport(races, newDrivers);
       setSuccess(true);
       setPreviewData(null);
       
