@@ -50,6 +50,9 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     
     await handleImport();
     
+    // Attendre un court délai pour s'assurer que tous les rafraîchissements sont terminés
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
     // Reset file input after import
     const fileInput = document.getElementById('excel-file') as HTMLInputElement;
     if (fileInput) {
