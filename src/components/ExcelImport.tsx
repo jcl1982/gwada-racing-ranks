@@ -55,14 +55,13 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     setIsImporting(true);
     try {
       await handleImport();
-      console.log('✅ Import Excel réussi');
+      console.log('✅ Import Excel réussi - données rafraîchies');
       
-      // Afficher le dialog de sauvegarde immédiatement après un import réussi
+      // Afficher le dialog de sauvegarde après que les données soient bien rafraîchies
       if (onSaveStandings) {
         console.log('📝 Affichage du dialog de sauvegarde');
-        setTimeout(() => {
-          setShowSavePrompt(true);
-        }, 1500); // Délai pour laisser le temps aux données de se rafraîchir
+        // Le handleImport inclut déjà le refresh, on peut afficher immédiatement
+        setShowSavePrompt(true);
       }
     } catch (error) {
       console.error('❌ Erreur import Excel:', error);

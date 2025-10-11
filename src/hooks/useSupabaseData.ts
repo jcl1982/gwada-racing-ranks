@@ -128,8 +128,8 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   const forceRefreshData = async () => {
     console.log('🔄 Rafraîchissement forcé des données...');
     await loadData();
-    // Attendre un délai pour s'assurer que tous les composants se remettent à jour
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Petit délai pour la propagation des états React
+    await new Promise(resolve => setTimeout(resolve, 100));
     console.log('✅ Rafraîchissement forcé terminé');
   };
 

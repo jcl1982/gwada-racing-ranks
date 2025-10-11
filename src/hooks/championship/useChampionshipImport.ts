@@ -37,7 +37,7 @@ export const useChampionshipImport = (
         toast
       );
 
-      // Rafraîchissement final complet
+      // Rafraîchissement final complet - ATTEND la fin avant de continuer
       await performFinalRefresh(refreshData);
 
       // Log du résumé
@@ -46,6 +46,8 @@ export const useChampionshipImport = (
       // Affichage du toast de résultat
       const message = generateSuccessMessage(successCount, errorCount, totalCreated);
       toast(message);
+      
+      console.log('✅ Import complètement terminé - toutes les données sont synchronisées');
       
     } catch (error) {
       console.error('💥 Erreur critique lors de l\'import:', error);
