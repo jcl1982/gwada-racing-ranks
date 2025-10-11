@@ -5,6 +5,7 @@ import { ChampionshipStanding } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
+import PositionChange from '@/components/PositionChange';
 interface GeneralStandingsTableProps {
   standings: ChampionshipStanding[];
   championshipTitle: string;
@@ -62,6 +63,7 @@ const GeneralStandingsTable = ({
                 </div>
               </th>
               <th className="text-center py-1 px-1 font-semibold">Total</th>
+              <th className="text-center py-1 px-1 font-semibold">Évolution</th>
             </tr>
           </thead>
           <tbody>
@@ -90,6 +92,9 @@ const GeneralStandingsTable = ({
                   <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
                     {standing.totalPoints} pts
                   </Badge>
+                </td>
+                <td className="py-1 px-1 text-center">
+                  <PositionChange change={standing.positionChange} />
                 </td>
               </tr>)}
           </tbody>
