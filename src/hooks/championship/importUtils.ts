@@ -33,5 +33,6 @@ export const generateErrorMessage = (error: unknown): { title: string; descripti
 export const performFinalRefresh = async (refreshData: () => Promise<void>) => {
   console.log('🏆 Rafraîchissement final des classements...');
   await refreshData();
-  await new Promise(resolve => setTimeout(resolve, 4000));
+  // Délai réduit pour améliorer la réactivité
+  await new Promise(resolve => setTimeout(resolve, 1000));
 };
