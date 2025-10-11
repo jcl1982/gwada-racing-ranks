@@ -40,17 +40,23 @@ export const useChampionshipImport = (
       // Rafraîchissement final complet - ATTEND la fin avant de continuer
       await performFinalRefresh(refreshData);
 
-      // Sauvegarde automatique des positions pour l'évolution
-      console.log('💾 Sauvegarde automatique des positions pour le tracking d\'évolution...');
-      await autoSaveStandings();
-      console.log('✅ Positions sauvegardées automatiquement');
-
       // Log du résumé
       logImportSummary(successCount, errorCount, totalCreated);
       
       // Affichage du toast de résultat
       const message = generateSuccessMessage(successCount, errorCount, totalCreated);
       toast(message);
+      
+      console.log('✅ Import Excel terminé - Début sauvegarde automatique...');
+      
+      // Sauvegarde automatique des positions pour l'évolution
+      console.log('💾 [IMPORT] Lancement de la sauvegarde automatique des positions...');
+      try {
+        await autoSaveStandings();
+        console.log('✅ [IMPORT] Positions sauvegardées automatiquement');
+      } catch (error) {
+        console.error('❌ [IMPORT] Erreur lors de la sauvegarde automatique:', error);
+      }
       
       console.log('✅ Import complètement terminé - toutes les données sont synchronisées');
       

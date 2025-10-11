@@ -115,26 +115,56 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
 
   const saveStandingsForEvolution = async () => {
     try {
-      console.log('💾 Sauvegarde automatique des positions pour l\'évolution...');
+      console.log('💾 [AUTO-SAVE] Début de la sauvegarde automatique...');
+      console.log('💾 [AUTO-SAVE] Championship ID:', championshipId);
 
       if (!championshipId) {
-        throw new Error('Championship ID is required');
+        const error = 'Championship ID is required for auto-save';
+        console.error('❌ [AUTO-SAVE] Error:', error);
+        toast({
+          title: "Erreur de sauvegarde automatique",
+          description: error,
+          variant: "destructive"
+        });
+        throw new Error(error);
       }
 
-      const { error } = await supabase.rpc('save_current_standings_as_previous', {
+      console.log('💾 [AUTO-SAVE] Appel RPC save_current_standings_as_previous...');
+      const { data, error } = await supabase.rpc('save_current_standings_as_previous', {
         p_championship_id: championshipId,
         p_save_name: 'Auto-save'
       });
 
       if (error) {
-        console.error('❌ Error saving standings:', error);
+        console.error('❌ [AUTO-SAVE] RPC Error:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        toast({
+          title: "Erreur de sauvegarde automatique",
+          description: `Impossible de sauvegarder les positions: ${error.message}`,
+          variant: "destructive"
+        });
         throw error;
       }
 
-      console.log('✅ Positions sauvegardées pour l\'évolution');
+      console.log('✅ [AUTO-SAVE] RPC data:', data);
+      console.log('✅ [AUTO-SAVE] Positions sauvegardées pour l\'évolution');
+      
+      toast({
+        title: "Positions sauvegardées",
+        description: "Les positions actuelles ont été enregistrées pour le calcul de l'évolution.",
+      });
     } catch (error) {
-      console.error('❌ Error in saveStandingsForEvolution:', error);
-      // Ne pas bloquer l'exécution si la sauvegarde échoue
+      console.error('❌ [AUTO-SAVE] Fatal error:', error);
+      // Afficher l'erreur mais ne pas bloquer l'exécution
+      toast({
+        title: "Attention",
+        description: "La sauvegarde automatique a échoué. Les évolutions ne seront pas calculées au prochain import.",
+        variant: "destructive"
+      });
     }
   };
 
