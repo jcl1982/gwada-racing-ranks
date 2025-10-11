@@ -101,11 +101,22 @@ export const convertExcelDataToRaces = (
         console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }
       
-      results.push({
+      // Inclure le carModel du résultat Excel ou celui du pilote
+      const raceResult: RaceResult = {
         driverId: driver.id,
         position: result.position,
-        points: result.points
-      });
+        points: result.points,
+        carModel: result.carModel || driver.carModel
+      };
+      
+      // Log pour vérification C2R2
+      if (result.carModel?.toLowerCase().includes('c2') && result.carModel?.toLowerCase().includes('r2')) {
+        console.log(`✅ C2 R2 détecté pour ${driver.name}: ${result.carModel}`);
+      } else if (result.carModel) {
+        console.log(`ℹ️ Véhicule pour ${driver.name}: ${result.carModel} (non C2 R2)`);
+      }
+      
+      results.push(raceResult);
     });
     
     // Créer une nouvelle course sans ID - il sera généré lors de l'insertion dans la DB
