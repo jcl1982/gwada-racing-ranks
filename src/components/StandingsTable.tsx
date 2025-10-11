@@ -5,7 +5,6 @@ import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
-import PositionChange from '@/components/PositionChange';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import { format } from 'date-fns';
@@ -117,7 +116,6 @@ const StandingsTable = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
-              <th className="text-left py-1 px-1 font-semibold">Évolution</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
               <th className="text-left py-1 px-1 font-semibold">Véhicule</th>
               {races.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
@@ -145,9 +143,6 @@ const StandingsTable = ({
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
                     </Badge>
-                  </td>
-                  <td className="py-1 px-1">
-                    <PositionChange change={standing.positionChange || 0} />
                   </td>
                   <td className="py-1 px-1">
                     <div className="font-semibold text-gray-900 unicode-enhanced">

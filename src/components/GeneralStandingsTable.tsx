@@ -3,7 +3,6 @@ import { Badge } from '@/components/ui/badge';
 import { Trophy, Mountain, Car } from 'lucide-react';
 import { ChampionshipStanding } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
-import PositionChange from '@/components/PositionChange';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
 interface GeneralStandingsTableProps {
@@ -49,7 +48,6 @@ const GeneralStandingsTable = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
-              <th className="text-left py-1 px-1 font-semibold">Évolution</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
               <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
@@ -72,9 +70,6 @@ const GeneralStandingsTable = ({
                   <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
                     {standing.position}
                   </Badge>
-                </td>
-                <td className="py-1 px-1">
-                  <PositionChange change={standing.positionChange} />
                 </td>
                 <td className="py-1 px-1">
                   <div className="font-semibold text-gray-900 unicode-enhanced">

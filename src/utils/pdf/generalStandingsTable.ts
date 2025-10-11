@@ -11,10 +11,8 @@ export const createGeneralStandingsTable = (
   const tableData = standings
     .sort((a, b) => a.position - b.position)
     .map(standing => {
-      const evolutionIndicator = getPositionEvolutionIndicator(standing.positionChange, standing.previousPosition);
       return [
         standing.position.toString(),
-        evolutionIndicator,
         standing.driver.name,
         `${standing.montagnePoints}`,
         `${standing.rallyePoints}`,
@@ -25,18 +23,10 @@ export const createGeneralStandingsTable = (
   console.log('📄 Données du tableau PDF:', tableData);
   
   autoTable(doc, {
-    head: [['Pos', 'Évol.', 'Pilote', 'Montagne', 'Rallye', 'Total']],
+    head: [['Pos', 'Pilote', 'Montagne', 'Rallye', 'Total']],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
-      // Colorer la colonne évolution (index 1)
-      if (data.column.index === 1 && data.section === 'body') {
-        const standing = standings[data.row.index];
-        const color = getEvolutionColor(standing.positionChange, standing.previousPosition);
-        data.cell.styles.textColor = color;
-        data.cell.styles.fontStyle = 'bold';
-      }
-      
       // Colorer les lignes selon la position
       if (data.section === 'body') {
         const standing = standings[data.row.index];
