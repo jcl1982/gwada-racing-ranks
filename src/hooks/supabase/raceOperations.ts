@@ -8,27 +8,6 @@ import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, fin
 
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
 
-  // Fonction pour sauvegarder automatiquement le classement après modification
-  const autoSaveStandings = async () => {
-    if (championshipId) {
-      try {
-        console.log('💾 Sauvegarde automatique du classement...');
-        const { error } = await supabase.rpc('save_current_standings_as_previous', {
-          p_championship_id: championshipId,
-          p_save_name: null // La fonction SQL générera un nom automatique
-        });
-        
-        if (error) {
-          console.error('❌ Erreur lors de la sauvegarde automatique:', error);
-        } else {
-          console.log('✅ Classement sauvegardé automatiquement');
-        }
-      } catch (error) {
-        console.error('❌ Erreur lors de la sauvegarde automatique:', error);
-      }
-    }
-  };
-
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     try {
       console.log('💾 Sauvegarde de la course:', race.name, { championshipId });
@@ -88,9 +67,6 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       console.log('🔄 Appel de loadData() pour rafraîchir les données...');
       await loadData();
       console.log('✅ loadData() terminé, données rafraîchies');
-      
-      // Sauvegarder automatiquement pour maintenir l'évolution à jour
-      await autoSaveStandings();
       
       toast({
         title: 'id' in race && race.id ? "Course mise à jour" : "Course créée",
