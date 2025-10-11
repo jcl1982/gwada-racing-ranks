@@ -129,29 +129,24 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
         throw new Error(error);
       }
 
-      console.log('💾 [AUTO-SAVE] Appel RPC save_current_standings_as_previous...');
-      const { data, error } = await supabase.rpc('save_current_standings_as_previous', {
-        p_championship_id: championshipId,
-        p_save_name: 'Auto-save'
-      });
+      // Sauvegarder tous les types de classements
+      const types: Array<'general' | 'montagne' | 'rallye' | 'c2r2'> = ['general', 'montagne', 'rallye', 'c2r2'];
+      
+      for (const type of types) {
+        console.log(`💾 [AUTO-SAVE] Sauvegarde du classement ${type}...`);
+        const { error } = await supabase.rpc('save_standings_by_type', {
+          p_championship_id: championshipId,
+          p_standing_type: type,
+          p_save_name: `Auto-save ${type}`
+        });
 
-      if (error) {
-        console.error('❌ [AUTO-SAVE] RPC Error:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
-        toast({
-          title: "Erreur de sauvegarde automatique",
-          description: `Impossible de sauvegarder les positions: ${error.message}`,
-          variant: "destructive"
-        });
-        throw error;
+        if (error) {
+          console.error(`❌ [AUTO-SAVE] Erreur pour ${type}:`, error);
+          // Continue avec les autres types même si un échoue
+        } else {
+          console.log(`✅ [AUTO-SAVE] ${type} sauvegardé`);
+        }
       }
-
-      console.log('✅ [AUTO-SAVE] RPC data:', data);
-      console.log('✅ [AUTO-SAVE] Positions sauvegardées pour l\'évolution');
       
       toast({
         title: "Positions sauvegardées",
@@ -159,7 +154,6 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
       });
     } catch (error) {
       console.error('❌ [AUTO-SAVE] Fatal error:', error);
-      // Afficher l'erreur mais ne pas bloquer l'exécution
       toast({
         title: "Attention",
         description: "La sauvegarde automatique a échoué. Les évolutions ne seront pas calculées au prochain import.",

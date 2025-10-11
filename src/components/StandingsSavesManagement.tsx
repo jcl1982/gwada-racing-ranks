@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { History, RotateCcw, Trash2 } from 'lucide-react';
@@ -10,15 +11,23 @@ import { useToast } from '@/hooks/use-toast';
 interface StandingsSave {
   saved_at: string;
   save_name: string;
+  standing_type: string;
   drivers_count: number;
 }
 
+type StandingType = 'general' | 'montagne' | 'rallye' | 'c2r2';
+
 interface StandingsSavesManagementProps {
   championshipId?: string;
+  standingType?: StandingType;
   onRestore: () => Promise<void>;
 }
 
-const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesManagementProps) => {
+const StandingsSavesManagement = ({ 
+  championshipId, 
+  standingType,
+  onRestore 
+}: StandingsSavesManagementProps) => {
   const [saves, setSaves] = useState<StandingsSave[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [restoreDialog, setRestoreDialog] = useState<{ open: boolean; save: StandingsSave | null }>({ open: false, save: null });
@@ -30,8 +39,9 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.rpc('get_standings_saves', {
-        p_championship_id: championshipId
+      const { data, error } = await supabase.rpc('get_standings_saves_by_type', {
+        p_championship_id: championshipId,
+        p_standing_type: standingType || null
       });
 
       if (error) throw error;
@@ -51,20 +61,21 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
 
   useEffect(() => {
     loadSaves();
-  }, [championshipId]);
+  }, [championshipId, standingType]);
 
   const handleRestore = async (save: StandingsSave) => {
     try {
-      const { error } = await supabase.rpc('restore_standings_by_timestamp', {
+      const { error } = await supabase.rpc('restore_standings_by_type', {
         p_championship_id: championshipId,
-        p_saved_at: save.saved_at
+        p_saved_at: save.saved_at,
+        p_standing_type: save.standing_type
       });
 
       if (error) throw error;
 
       toast({
         title: 'Classements restaurés',
-        description: `Les classements ont été restaurés à la date: ${new Date(save.saved_at).toLocaleString('fr-FR')}`,
+        description: `Le classement ${getTypeLabel(save.standing_type)} a été restauré à la date: ${new Date(save.saved_at).toLocaleString('fr-FR')}`,
       });
 
       await onRestore();
@@ -82,9 +93,10 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
 
   const handleDelete = async (save: StandingsSave) => {
     try {
-      const { error } = await supabase.rpc('delete_standings_save', {
+      const { error } = await supabase.rpc('delete_standings_save_by_type', {
         p_championship_id: championshipId,
-        p_saved_at: save.saved_at
+        p_saved_at: save.saved_at,
+        p_standing_type: save.standing_type
       });
 
       if (error) throw error;
@@ -106,6 +118,16 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
     }
   };
 
+  const getTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      general: 'Général',
+      montagne: 'Montagne',
+      rallye: 'Rallye',
+      c2r2: 'C2R2'
+    };
+    return labels[type] || type;
+  };
+
   return (
     <>
       <Card className="card-glass">
@@ -113,6 +135,7 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
           <CardTitle className="flex items-center gap-2">
             <History className="w-5 h-5" />
             Historique des sauvegardes
+            {standingType && ` - ${getTypeLabel(standingType)}`}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -128,6 +151,7 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
                 <TableRow>
                   <TableHead>Date de sauvegarde</TableHead>
                   <TableHead>Nom</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead className="text-center">Pilotes</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -137,6 +161,11 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
                   <TableRow key={index}>
                     <TableCell>{new Date(save.saved_at).toLocaleString('fr-FR')}</TableCell>
                     <TableCell>{save.save_name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {getTypeLabel(save.standing_type)}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-center">{save.drivers_count}</TableCell>
                     <TableCell className="text-right space-x-2">
                       <Button
@@ -168,13 +197,13 @@ const StandingsSavesManagement = ({ championshipId, onRestore }: StandingsSavesM
           <AlertDialogHeader>
             <AlertDialogTitle>Restaurer cette sauvegarde ?</AlertDialogTitle>
             <AlertDialogDescription>
-              Cette action va restaurer les classements et les résultats de courses à l'état suivant:
+              Cette action va restaurer le classement <strong>{restoreDialog.save && getTypeLabel(restoreDialog.save.standing_type)}</strong> à l'état suivant:
               <br />
               <strong>{restoreDialog.save?.save_name}</strong>
               <br />
               ({new Date(restoreDialog.save?.saved_at || '').toLocaleString('fr-FR')})
               <br /><br />
-              Les données actuelles seront remplacées par cette sauvegarde.
+              Les données actuelles de ce classement seront remplacées.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -94,6 +94,7 @@ export type Database = {
           rallye_position: number | null
           save_name: string | null
           saved_at: string | null
+          standing_type: string | null
           total_points: number
         }
         Insert: {
@@ -110,6 +111,7 @@ export type Database = {
           rallye_position?: number | null
           save_name?: string | null
           saved_at?: string | null
+          standing_type?: string | null
           total_points?: number
         }
         Update: {
@@ -126,6 +128,7 @@ export type Database = {
           rallye_position?: number | null
           save_name?: string | null
           saved_at?: string | null
+          standing_type?: string | null
           total_points?: number
         }
         Relationships: [
@@ -212,6 +215,7 @@ export type Database = {
           race_id: string
           save_name: string | null
           saved_at: string
+          standing_type: string | null
           time: string | null
         }
         Insert: {
@@ -226,6 +230,7 @@ export type Database = {
           race_id: string
           save_name?: string | null
           saved_at: string
+          standing_type?: string | null
           time?: string | null
         }
         Update: {
@@ -240,6 +245,7 @@ export type Database = {
           race_id?: string
           save_name?: string | null
           saved_at?: string
+          standing_type?: string | null
           time?: string | null
         }
         Relationships: []
@@ -322,8 +328,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      delete_standings_save: {
-        Args: { p_championship_id: string; p_saved_at: string }
+      delete_standings_save_by_type: {
+        Args: {
+          p_championship_id: string
+          p_saved_at: string
+          p_standing_type: string
+        }
         Returns: undefined
       }
       get_missing_drivers: {
@@ -332,12 +342,13 @@ export type Database = {
           driver_id: string
         }[]
       }
-      get_standings_saves: {
-        Args: { p_championship_id: string }
+      get_standings_saves_by_type: {
+        Args: { p_championship_id: string; p_standing_type?: string }
         Returns: {
           drivers_count: number
           save_name: string
           saved_at: string
+          standing_type: string
         }[]
       }
       get_user_role: {
@@ -358,15 +369,24 @@ export type Database = {
         Args: Record<PropertyKey, never> | { p_championship_id?: string }
         Returns: undefined
       }
-      restore_standings_by_timestamp: {
-        Args: { p_championship_id: string; p_saved_at: string }
+      restore_standings_by_type: {
+        Args: {
+          p_championship_id: string
+          p_saved_at: string
+          p_standing_type: string
+        }
         Returns: undefined
       }
       save_current_standings_as_previous: {
-        Args:
-          | Record<PropertyKey, never>
-          | { p_championship_id?: string }
-          | { p_championship_id?: string; p_save_name?: string }
+        Args: Record<PropertyKey, never> | { p_championship_id?: string }
+        Returns: undefined
+      }
+      save_standings_by_type: {
+        Args: {
+          p_championship_id: string
+          p_save_name?: string
+          p_standing_type: string
+        }
         Returns: undefined
       }
     }
