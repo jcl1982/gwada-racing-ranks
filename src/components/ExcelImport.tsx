@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { FileSpreadsheet } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
@@ -34,16 +34,6 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     resetForm,
   } = useExcelImport(drivers, onImport, championshipId);
 
-  // Afficher le dialog de sauvegarde seulement après un import réussi
-  useEffect(() => {
-    if (success && !isImporting && onSaveStandings) {
-      // Petit délai pour s'assurer que tout est bien rafraîchi
-      const timer = setTimeout(() => {
-        setShowSavePrompt(true);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [success, isImporting, onSaveStandings]);
 
   const handleFileUploadWrapper = (file: File) => {
     // Reset file input after processing
@@ -61,9 +51,21 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     const raceName = previewData?.[0]?.raceName;
     setLastImportedRaceName(raceName);
     
+    console.log('🔄 Début import Excel...');
     setIsImporting(true);
     try {
       await handleImport();
+      console.log('✅ Import Excel réussi');
+      
+      // Afficher le dialog de sauvegarde immédiatement après un import réussi
+      if (onSaveStandings) {
+        console.log('📝 Affichage du dialog de sauvegarde');
+        setTimeout(() => {
+          setShowSavePrompt(true);
+        }, 1500); // Délai pour laisser le temps aux données de se rafraîchir
+      }
+    } catch (error) {
+      console.error('❌ Erreur import Excel:', error);
     } finally {
       setIsImporting(false);
       // Reset file input after import
