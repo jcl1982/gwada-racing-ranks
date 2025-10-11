@@ -7,6 +7,7 @@ import ExcelFileUpload from '@/components/ExcelFileUpload';
 import ExcelPreview from '@/components/ExcelPreview';
 import ExcelImportInstructions from '@/components/ExcelImportInstructions';
 import RaceTypeSelector from '@/components/RaceTypeSelector';
+import SaveBeforeImportDialog from '@/components/SaveBeforeImportDialog';
 
 
 interface ExcelImportProps {
@@ -25,9 +26,12 @@ const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportPr
     previewData,
     success,
     selectedRaceType,
+    showSaveDialog,
     setSelectedRaceType,
+    setShowSaveDialog,
     handleFileUpload,
-    handleImport,
+    handleImportClick,
+    proceedWithImport,
     resetForm,
   } = useExcelImport(drivers, onImport, championshipId);
 
@@ -78,11 +82,18 @@ const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportPr
         {previewData && previewData.length > 0 && (
           <ExcelPreview
             previewData={previewData}
-            onImport={handleImport}
+            onImport={handleImportClick}
             onCancel={handleResetForm}
           />
         )}
       </div>
+
+      <SaveBeforeImportDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        onSaveAndImport={() => proceedWithImport(true)}
+        onImportWithoutSave={() => proceedWithImport(false)}
+      />
     </>
   );
 };
