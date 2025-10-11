@@ -16,37 +16,12 @@ export const createCategoryStandingsTable = (
   }>,
   races: Race[]
 ) => {
-  // Calculer les évolutions entre les courses de la même catégorie
-  const standingsWithEvolution = standings.map((standing) => {
-    let evolutionBetweenRaces = 0;
-    
-    if (races.length >= 2) {
-      // Calculer la position du pilote après la première course
-      const firstRaceResults = races[0].results;
-      const firstRaceResult = firstRaceResults.find(r => r.driverId === standing.driver.id);
-      const firstRacePosition = firstRaceResult ? firstRaceResult.position : 999;
-      
-      // Calculer la position du pilote après la deuxième course
-      const secondRaceResults = races[1].results;
-      const secondRaceResult = secondRaceResults.find(r => r.driverId === standing.driver.id);
-      const secondRacePosition = secondRaceResult ? secondRaceResult.position : 999;
-      
-      // Si le pilote a participé aux deux courses, calculer l'évolution
-      if (firstRaceResult && secondRaceResult) {
-        evolutionBetweenRaces = firstRacePosition - secondRacePosition;
-      }
-    }
-    
-    return {
-      ...standing,
-      evolutionBetweenRaces
-    };
-  });
-
-  const tableData = standingsWithEvolution.map((standing) => {
-    const evolutionIndicator = races.length >= 2 && standing.evolutionBetweenRaces !== 0 
-      ? (standing.evolutionBetweenRaces > 0 ? `+${standing.evolutionBetweenRaces}` : `${standing.evolutionBetweenRaces}`)
-      : '-';
+  const tableData = standings.map((standing) => {
+    // Utiliser l'évolution basée sur la sauvegarde précédente
+    const evolutionIndicator = getPositionEvolutionIndicator(
+      standing.positionChange || 0, 
+      standing.previousPosition
+    );
     
     const row = [standing.position.toString(), evolutionIndicator, standing.driver.name, standing.driver.carModel || '-'];
     
@@ -63,7 +38,9 @@ export const createCategoryStandingsTable = (
       }
     });
     
-    row.push(`${standing.points} pts`);
+    // Ajouter les points totaux
+    row.push(`${standing.points}`);
+    
     return row;
   });
 
@@ -80,16 +57,10 @@ export const createCategoryStandingsTable = (
     didParseCell: function(data) {
       // Colorer la colonne évolution (index 1)
       if (data.column.index === 1 && data.section === 'body') {
-        const standing = standingsWithEvolution[data.row.index];
-        if (races.length >= 2 && standing.evolutionBetweenRaces !== 0) {
-          const color = standing.evolutionBetweenRaces > 0 
-            ? PDF_STYLES.colors.success 
-            : PDF_STYLES.colors.danger;
-          data.cell.styles.textColor = color;
-          data.cell.styles.fontStyle = 'bold';
-        } else {
-          data.cell.styles.textColor = PDF_STYLES.colors.gray600;
-        }
+        const standing = standings[data.row.index];
+        const color = getEvolutionColor(standing.positionChange || 0, standing.previousPosition);
+        data.cell.styles.textColor = color;
+        data.cell.styles.fontStyle = 'bold';
       }
       
       // Colorer les lignes selon la position

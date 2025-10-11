@@ -1,7 +1,8 @@
 
 import { Mountain, Car } from 'lucide-react';
+import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { calculateDriverPoints } from '@/utils/championship';
+import { calculateMontagneStandings, calculateRallyeStandings } from '@/utils/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
@@ -26,48 +27,46 @@ const CategoryStandings = ({ title, races, drivers, type, championshipYear, prev
     previousStandingsData: previousStandings?.slice(0, 3)
   });
 
-  const standings = drivers
-    .map(driver => {
-      const points = calculateDriverPoints(driver.id, races);
-      
-      // Trouver la position précédente selon le type de classement
-      const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
-      const previousPosition = type === 'montagne' 
-        ? previousStanding?.previousMontagnePosition 
-        : previousStanding?.previousRallyePosition;
-      
-      return {
-        driver,
-        points,
-        previousPosition
-      };
-    })
-    .sort((a, b) => {
-      // Tri stable: par points (décroissant), puis par nom (alphabétique)
-      if (b.points !== a.points) {
-        return b.points - a.points;
-      }
-      return a.driver.name.localeCompare(b.driver.name);
-    })
-    .map((standing, index) => {
-      const currentPosition = index + 1;
-      const positionChange = standing.previousPosition 
-        ? standing.previousPosition - currentPosition 
-        : 0;
-      
-      console.log(`🔍 [${type}] ${standing.driver.name}:`, {
-        currentPosition,
-        previousPosition: standing.previousPosition,
-        positionChange,
-        currentPoints: standing.points
-      });
-      
-      return {
-        ...standing,
-        position: currentPosition,
-        positionChange
-      };
-    });
+  // Calculer les standings avec les fonctions dédiées qui gèrent les évolutions
+  const standings = useMemo(() => {
+    if (type === 'montagne') {
+      const montagneStandings = calculateMontagneStandings(drivers, races, previousStandings);
+      console.log('⛰️ Standings montagne calculés:', montagneStandings.slice(0, 3).map(s => ({
+        position: s.position,
+        name: s.driver.name,
+        points: s.montagnePoints,
+        previousPosition: s.previousMontagnePosition,
+        positionChange: s.positionChange
+      })));
+      // Mapper vers le format attendu par StandingsTable et PodiumSection
+      return montagneStandings.map(s => ({
+        driver: s.driver,
+        points: s.montagnePoints,
+        position: s.position,
+        positionChange: s.positionChange,
+        previousPosition: s.previousMontagnePosition
+      }));
+    } else if (type === 'rallye') {
+      const rallyeStandings = calculateRallyeStandings(drivers, races, previousStandings);
+      console.log('🏁 Standings rallye calculés:', rallyeStandings.slice(0, 3).map(s => ({
+        position: s.position,
+        name: s.driver.name,
+        points: s.rallyePoints,
+        previousPosition: s.previousRallyePosition,
+        positionChange: s.positionChange
+      })));
+      // Mapper vers le format attendu par StandingsTable et PodiumSection
+      return rallyeStandings.map(s => ({
+        driver: s.driver,
+        points: s.rallyePoints,
+        position: s.position,
+        positionChange: s.positionChange,
+        previousPosition: s.previousRallyePosition
+      }));
+    }
+    // Pour les autres types (acceleration, karting), utiliser un calcul simple
+    return [];
+  }, [drivers, races, type, previousStandings]);
 
   // Remplacer les titres pour les catégories
   const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : 

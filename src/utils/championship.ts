@@ -30,12 +30,7 @@ export const calculateChampionshipStandings = (
     drivers: drivers.length,
     montagneRaces: montagneRaces.length,
     rallyeRaces: rallyeRaces.length,
-    previousStandings: previousStandings?.length || 0,
-    previousStandingsData: previousStandings?.slice(0, 3).map(s => ({
-      position: s.position,
-      name: s.driver.name,
-      totalPoints: s.totalPoints
-    }))
+    previousStandings: previousStandings?.length || 0
   });
 
   const standings = drivers.map(driver => {
@@ -45,53 +40,144 @@ export const calculateChampionshipStandings = (
 
     // Trouver la position précédente du pilote pour le classement général
     const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
-    const previousPosition = previousStanding?.previousGeneralPosition;
-
-    console.log(`🔍 Pilote ${driver.name}:`, {
-      montagnePoints,
-      rallyePoints,
-      totalPoints: totalPoints,
-      previousGeneralPosition: previousPosition,
-      previousStanding: previousStanding ? 'trouvé' : 'non trouvé'
-    });
+    const previousGeneralPosition = previousStanding?.previousGeneralPosition;
 
     return {
       driver,
       montagnePoints,
       rallyePoints,
       totalPoints,
-      position: 0, // Will be calculated after sorting
-      previousPosition,
-      positionChange: 0 // Will be calculated after sorting
+      position: 0,
+      previousPosition: previousGeneralPosition,
+      previousGeneralPosition,
+      positionChange: 0
     };
   });
 
-  // Sort by total points (descending), then by name (ascending) for stable order
+  // Tri par points totaux (décroissant), puis par nom (alphabétique) pour ordre stable
   standings.sort((a, b) => {
     if (b.totalPoints !== a.totalPoints) {
       return b.totalPoints - a.totalPoints;
     }
     return a.driver.name.localeCompare(b.driver.name);
   });
+
+  // Attribution des positions et calcul des évolutions
   standings.forEach((standing, index) => {
     standing.position = index + 1;
     
-    // Calculer le changement de position
-    if (standing.previousPosition) {
-      standing.positionChange = standing.previousPosition - standing.position;
-      console.log(`📈 ${standing.driver.name}: ${standing.previousPosition} → ${standing.position} = ${standing.positionChange}`);
+    if (standing.previousGeneralPosition) {
+      standing.positionChange = standing.previousGeneralPosition - standing.position;
     } else {
-      standing.positionChange = 0; // Nouveau pilote ou première course
-      console.log(`🆕 ${standing.driver.name}: Nouveau pilote (pas de changement)`);
+      standing.positionChange = 0;
     }
   });
 
-  console.log('✅ Standings calculés avec évolution:', standings.slice(0, 3).map(s => ({
-    name: s.driver.name,
-    position: s.position,
-    previousPosition: s.previousPosition,
-    positionChange: s.positionChange
-  })));
+  return standings;
+};
+
+// Calculer le classement Montagne
+export const calculateMontagneStandings = (
+  drivers: Driver[],
+  montagneRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  console.log('⛰️ Calcul des standings montagne:', {
+    drivers: drivers.length,
+    montagneRaces: montagneRaces.length,
+    previousStandings: previousStandings?.length || 0
+  });
+
+  const standings = drivers.map(driver => {
+    const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
+
+    // Trouver la position précédente du pilote pour le classement montagne
+    const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
+    const previousMontagnePosition = previousStanding?.previousMontagnePosition;
+
+    return {
+      driver,
+      montagnePoints,
+      rallyePoints: 0,
+      totalPoints: montagnePoints,
+      position: 0,
+      previousPosition: previousMontagnePosition,
+      previousMontagnePosition,
+      positionChange: 0
+    };
+  });
+
+  // Tri par points montagne (décroissant), puis par nom (alphabétique)
+  standings.sort((a, b) => {
+    if (b.montagnePoints !== a.montagnePoints) {
+      return b.montagnePoints - a.montagnePoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
+
+  // Attribution des positions et calcul des évolutions
+  standings.forEach((standing, index) => {
+    standing.position = index + 1;
+    
+    if (standing.previousMontagnePosition) {
+      standing.positionChange = standing.previousMontagnePosition - standing.position;
+    } else {
+      standing.positionChange = 0;
+    }
+  });
+
+  return standings;
+};
+
+// Calculer le classement Rallye
+export const calculateRallyeStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  console.log('🏁 Calcul des standings rallye:', {
+    drivers: drivers.length,
+    rallyeRaces: rallyeRaces.length,
+    previousStandings: previousStandings?.length || 0
+  });
+
+  const standings = drivers.map(driver => {
+    const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+
+    // Trouver la position précédente du pilote pour le classement rallye
+    const previousStanding = previousStandings?.find(s => s.driver.id === driver.id);
+    const previousRallyePosition = previousStanding?.previousRallyePosition;
+
+    return {
+      driver,
+      montagnePoints: 0,
+      rallyePoints,
+      totalPoints: rallyePoints,
+      position: 0,
+      previousPosition: previousRallyePosition,
+      previousRallyePosition,
+      positionChange: 0
+    };
+  });
+
+  // Tri par points rallye (décroissant), puis par nom (alphabétique)
+  standings.sort((a, b) => {
+    if (b.rallyePoints !== a.rallyePoints) {
+      return b.rallyePoints - a.rallyePoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
+
+  // Attribution des positions et calcul des évolutions
+  standings.forEach((standing, index) => {
+    standing.position = index + 1;
+    
+    if (standing.previousRallyePosition) {
+      standing.positionChange = standing.previousRallyePosition - standing.position;
+    } else {
+      standing.positionChange = 0;
+    }
+  });
 
   return standings;
 };
