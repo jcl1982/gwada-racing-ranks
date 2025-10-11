@@ -10,8 +10,7 @@ export const useChampionshipImport = (
   drivers: Driver[],
   saveDriver: (driver: Driver) => Promise<void>,
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
-  refreshData: () => Promise<void>,
-  saveCurrentStandingsAsPrevious: () => Promise<void>
+  refreshData: () => Promise<void>
 ) => {
   const { toast } = useToast();
 

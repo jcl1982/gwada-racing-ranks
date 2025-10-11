@@ -25,9 +25,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     saveRace,
     deleteRace,
     updateChampionshipConfig,
-    saveCurrentStandingsAsPrevious,
-    resetDriversEvolution,
-    restorePreviousStandings,
     resetAllData,
     refreshData,
     setChampionshipId
@@ -69,8 +66,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     drivers,
     saveDriver,
     saveRace,
-    refreshData,
-    saveCurrentStandingsAsPrevious
+    refreshData
   );
 
   const {
@@ -105,8 +101,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     deleteAllDrivers,
     saveRace,
     deleteRace,
-    saveCurrentStandingsAsPrevious,
-    resetDriversEvolution,
-    refreshData
+    refreshData,
+    resetAllData
   };
 };

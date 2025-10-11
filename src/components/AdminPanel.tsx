@@ -24,8 +24,6 @@ interface AdminPanelProps {
   deleteAllDrivers: () => Promise<void>;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
-  saveCurrentStandingsAsPrevious: (saveName?: string) => Promise<void>;
-  resetDriversEvolution: () => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -46,8 +44,6 @@ const AdminPanel = ({
   deleteAllDrivers,
   saveRace,
   deleteRace,
-  saveCurrentStandingsAsPrevious,
-  resetDriversEvolution,
   refreshData
 }: AdminPanelProps) => {
   const [activeTab, setActiveTab] = useState('drivers');
@@ -95,8 +91,6 @@ const AdminPanel = ({
             deleteAllDrivers={deleteAllDrivers}
             saveRace={saveRace}
             deleteRace={deleteRace}
-            saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
-            resetDriversEvolution={resetDriversEvolution}
             refreshData={refreshData}
             onRaceUpdate={handleRaceUpdate}
           />

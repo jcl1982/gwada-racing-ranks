@@ -7,20 +7,17 @@ import ExcelFileUpload from '@/components/ExcelFileUpload';
 import ExcelPreview from '@/components/ExcelPreview';
 import ExcelImportInstructions from '@/components/ExcelImportInstructions';
 import RaceTypeSelector from '@/components/RaceTypeSelector';
-import SaveStandingsPromptDialog from '@/components/SaveStandingsPromptDialog';
+
 
 interface ExcelImportProps {
   drivers: Driver[];
   races?: Race[];
   onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>;
   championshipId?: string;
-  onSaveStandings?: (saveName?: string) => Promise<void>;
+  
 }
 
-const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings }: ExcelImportProps) => {
-  const [showSavePrompt, setShowSavePrompt] = useState(false);
-  const [lastImportedRaceName, setLastImportedRaceName] = useState<string>();
-  const [isImporting, setIsImporting] = useState(false);
+const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportProps) => {
   
   const {
     isLoading,
@@ -41,44 +38,7 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     if (fileInput) {
       fileInput.value = '';
     }
-    // Reset save prompt state
-    setShowSavePrompt(false);
     handleFileUpload(file);
-  };
-
-  const handleImportWrapper = async () => {
-    // Capturer le nom de la course avant l'import
-    const raceName = previewData?.[0]?.raceName;
-    setLastImportedRaceName(raceName);
-    
-    console.log('🔄 Début import Excel...');
-    setIsImporting(true);
-    try {
-      await handleImport();
-      console.log('✅ Import Excel réussi - attente de synchronisation complète');
-      
-      // Attendre un délai pour s'assurer que tous les refresh sont terminés
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('✅ Synchronisation terminée');
-      
-      // Afficher le dialog de sauvegarde
-      if (onSaveStandings) {
-        console.log('📝 Affichage du dialog de sauvegarde');
-        setShowSavePrompt(true);
-        console.log('📝 showSavePrompt mis à true');
-      } else {
-        console.warn('⚠️ onSaveStandings n\'est pas défini');
-      }
-    } catch (error) {
-      console.error('❌ Erreur import Excel:', error);
-    } finally {
-      setIsImporting(false);
-      // Reset file input after import
-      const fileInput = document.getElementById('excel-file') as HTMLInputElement;
-      if (fileInput) {
-        fileInput.value = '';
-      }
-    }
   };
 
   const handleResetForm = () => {
@@ -118,20 +78,11 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
         {previewData && previewData.length > 0 && (
           <ExcelPreview
             previewData={previewData}
-            onImport={handleImportWrapper}
+            onImport={handleImport}
             onCancel={handleResetForm}
           />
         )}
       </div>
-
-      {onSaveStandings && (
-        <SaveStandingsPromptDialog
-          open={showSavePrompt}
-          onOpenChange={setShowSavePrompt}
-          onSave={onSaveStandings}
-          raceName={lastImportedRaceName}
-        />
-      )}
     </>
   );
 };

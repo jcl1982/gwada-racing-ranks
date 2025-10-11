@@ -28,8 +28,6 @@ const ChampionshipApp = () => {
     deleteAllDrivers,
     saveRace,
     deleteRace,
-    saveCurrentStandingsAsPrevious,
-    resetDriversEvolution,
     refreshData
   } = useChampionshipData(currentView);
 
@@ -73,8 +71,6 @@ const ChampionshipApp = () => {
           deleteAllDrivers={deleteAllDrivers}
           saveRace={saveRace}
           deleteRace={deleteRace}
-          saveCurrentStandingsAsPrevious={saveCurrentStandingsAsPrevious}
-          resetDriversEvolution={resetDriversEvolution}
           refreshData={refreshData}
         />
       </div>
