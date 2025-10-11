@@ -6,6 +6,7 @@ import RacesManagement from '../RacesManagement';
 import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
 import ChampionshipSettings from '../ChampionshipSettings';
+import StandingsSavesManagement from '../StandingsSavesManagement';
 
 
 interface AdminTabsContentProps {
@@ -87,6 +88,13 @@ const AdminTabsContent = ({
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           standings={standings}
+        />
+      </TabsContent>
+
+      <TabsContent value="history" className="mt-6">
+        <StandingsSavesManagement
+          championshipId={championshipId}
+          onRestore={refreshData}
         />
       </TabsContent>
 
