@@ -91,11 +91,17 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     return baseSaveRace(raceWithChampionship);
   };
   
-  const { updateChampionshipConfig, resetAllData } = createConfigOperations(toast, championshipId);
+  const { updateChampionshipConfig, resetAllData, saveStandingsForEvolution } = createConfigOperations(toast, championshipId);
 
   // Enhanced reset function that reloads data after reset
   const handleResetAllData = async () => {
     await resetAllData();
+    await loadData();
+  };
+
+  // Auto-save standings for evolution tracking
+  const autoSaveStandingsForEvolution = async () => {
+    await saveStandingsForEvolution();
     await loadData();
   };
 
@@ -139,6 +145,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     updateChampionshipConfig: handleUpdateChampionshipConfig,
     resetAllData: handleResetAllData,
     refreshData: forceRefreshData,
+    autoSaveStandingsForEvolution,
     setChampionshipId
   };
 };

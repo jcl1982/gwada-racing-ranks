@@ -27,6 +27,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     updateChampionshipConfig,
     resetAllData,
     refreshData,
+    autoSaveStandingsForEvolution,
     setChampionshipId
   } = useSupabaseData(championshipConfig?.id);
 
@@ -66,7 +67,8 @@ export const useChampionshipData = (currentView: ViewType) => {
     drivers,
     saveDriver,
     saveRace,
-    refreshData
+    refreshData,
+    autoSaveStandingsForEvolution
   );
 
   const {

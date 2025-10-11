@@ -10,7 +10,8 @@ export const useChampionshipImport = (
   drivers: Driver[],
   saveDriver: (driver: Driver) => Promise<void>,
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
-  refreshData: () => Promise<void>
+  refreshData: () => Promise<void>,
+  autoSaveStandings: () => Promise<void>
 ) => {
   const { toast } = useToast();
 
@@ -38,6 +39,11 @@ export const useChampionshipImport = (
 
       // Rafraîchissement final complet - ATTEND la fin avant de continuer
       await performFinalRefresh(refreshData);
+
+      // Sauvegarde automatique des positions pour l'évolution
+      console.log('💾 Sauvegarde automatique des positions pour le tracking d\'évolution...');
+      await autoSaveStandings();
+      console.log('✅ Positions sauvegardées automatiquement');
 
       // Log du résumé
       logImportSummary(successCount, errorCount, totalCreated);

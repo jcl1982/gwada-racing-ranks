@@ -113,5 +113,30 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, resetAllData };
+  const saveStandingsForEvolution = async () => {
+    try {
+      console.log('💾 Sauvegarde automatique des positions pour l\'évolution...');
+
+      if (!championshipId) {
+        throw new Error('Championship ID is required');
+      }
+
+      const { error } = await supabase.rpc('save_current_standings_as_previous', {
+        p_championship_id: championshipId,
+        p_save_name: 'Auto-save'
+      });
+
+      if (error) {
+        console.error('❌ Error saving standings:', error);
+        throw error;
+      }
+
+      console.log('✅ Positions sauvegardées pour l\'évolution');
+    } catch (error) {
+      console.error('❌ Error in saveStandingsForEvolution:', error);
+      // Ne pas bloquer l'exécution si la sauvegarde échoue
+    }
+  };
+
+  return { updateChampionshipConfig, resetAllData, saveStandingsForEvolution };
 };
