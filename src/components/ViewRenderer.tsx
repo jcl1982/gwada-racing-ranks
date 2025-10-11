@@ -22,7 +22,7 @@ interface ViewRendererProps {
   
   drivers: Driver[];
   previousStandings: ChampionshipStanding[];
-  handleImport: (newRaces: Race[], newDrivers: Driver[]) => void;
+  handleImport: (newRaces: Race[], newDrivers: Driver[]) => Promise<void>;
   handleReset: () => void;
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
   handleDriversChange: (newDrivers: Driver[]) => void;

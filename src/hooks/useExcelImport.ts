@@ -4,7 +4,7 @@ import { parseExcelFile, convertExcelDataToRaces, type ExcelRaceData } from '@/u
 import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 
-export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newDrivers: Driver[]) => void, championshipId?: string) => {
+export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>, championshipId?: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ExcelRaceData[] | null>(null);

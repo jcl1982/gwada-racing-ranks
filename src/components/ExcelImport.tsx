@@ -12,7 +12,7 @@ import SaveStandingsPromptDialog from '@/components/SaveStandingsPromptDialog';
 interface ExcelImportProps {
   drivers: Driver[];
   races?: Race[];
-  onImport: (races: Race[], newDrivers: Driver[]) => void;
+  onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>;
   championshipId?: string;
   onSaveStandings?: (saveName?: string) => Promise<void>;
 }
@@ -55,13 +55,19 @@ const ExcelImport = ({ drivers, races, onImport, championshipId, onSaveStandings
     setIsImporting(true);
     try {
       await handleImport();
-      console.log('✅ Import Excel réussi - données rafraîchies');
+      console.log('✅ Import Excel réussi - attente de synchronisation complète');
       
-      // Afficher le dialog de sauvegarde après que les données soient bien rafraîchies
+      // Attendre un délai pour s'assurer que tous les refresh sont terminés
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('✅ Synchronisation terminée');
+      
+      // Afficher le dialog de sauvegarde
       if (onSaveStandings) {
         console.log('📝 Affichage du dialog de sauvegarde');
-        // Le handleImport inclut déjà le refresh, on peut afficher immédiatement
         setShowSavePrompt(true);
+        console.log('📝 showSavePrompt mis à true');
+      } else {
+        console.warn('⚠️ onSaveStandings n\'est pas défini');
       }
     } catch (error) {
       console.error('❌ Erreur import Excel:', error);
