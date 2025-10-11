@@ -18,6 +18,30 @@ export const sortStandingsByPoints = (standings: ChampionshipStanding[]): void =
 };
 
 /**
+ * Trie les standings Montagne par points Montagne décroissants, puis par nom alphabétique
+ */
+export const sortMontagneStandingsByPoints = (standings: ChampionshipStanding[]): void => {
+  standings.sort((a, b) => {
+    if (b.montagnePoints !== a.montagnePoints) {
+      return b.montagnePoints - a.montagnePoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
+};
+
+/**
+ * Trie les standings Rallye par points Rallye décroissants, puis par nom alphabétique
+ */
+export const sortRallyeStandingsByPoints = (standings: ChampionshipStanding[]): void => {
+  standings.sort((a, b) => {
+    if (b.rallyePoints !== a.rallyePoints) {
+      return b.rallyePoints - a.rallyePoints;
+    }
+    return a.driver.name.localeCompare(b.driver.name);
+  });
+};
+
+/**
  * Obtient la position précédente d'un pilote selon le type de classement
  */
 const getPreviousPosition = (

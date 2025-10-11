@@ -1,6 +1,8 @@
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import {
   sortStandingsByPoints,
+  sortMontagneStandingsByPoints,
+  sortRallyeStandingsByPoints,
   calculatePositionsAndEvolution,
   findPreviousStanding,
   createBaseStanding,
@@ -65,14 +67,16 @@ export const calculateMontagneStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
-  const standings = drivers.map(driver => {
-    const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
-    const previousStanding = findPreviousStanding(driver.id, previousStandings);
-    
-    return createBaseStanding(driver, montagnePoints, 0, previousStanding);
-  });
+  const standings = drivers
+    .map(driver => {
+      const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      
+      return createBaseStanding(driver, montagnePoints, 0, previousStanding);
+    })
+    .filter(standing => standing.montagnePoints > 0);
 
-  sortStandingsByPoints(standings);
+  sortMontagneStandingsByPoints(standings);
   calculatePositionsAndEvolution(standings, 'montagne');
 
   return standings;
@@ -90,14 +94,16 @@ export const calculateRallyeStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
-  const standings = drivers.map(driver => {
-    const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-    const previousStanding = findPreviousStanding(driver.id, previousStandings);
-    
-    return createBaseStanding(driver, 0, rallyePoints, previousStanding);
-  });
+  const standings = drivers
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
 
-  sortStandingsByPoints(standings);
+  sortRallyeStandingsByPoints(standings);
   calculatePositionsAndEvolution(standings, 'rallye');
 
   return standings;
