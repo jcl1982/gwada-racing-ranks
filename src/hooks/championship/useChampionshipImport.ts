@@ -20,6 +20,15 @@ export const useChampionshipImport = (
       // Validation initiale
       validateImportData(newRaces, newDrivers);
       
+      // Sauvegarder AVANT l'import pour préserver les évolutions
+      console.log('💾 [IMPORT] Sauvegarde du classement avant import...');
+      try {
+        await autoSaveStandings();
+        console.log('✅ [IMPORT] Positions sauvegardées avant import');
+      } catch (error) {
+        console.error('❌ [IMPORT] Erreur lors de la sauvegarde avant import:', error);
+      }
+      
       // Étape 1: Créer tous les pilotes manquants
       const missingDrivers = findMissingDrivers(newDrivers, drivers);
       const { totalCreated, totalErrors } = await createMissingDrivers(
@@ -47,18 +56,7 @@ export const useChampionshipImport = (
       const message = generateSuccessMessage(successCount, errorCount, totalCreated);
       toast(message);
       
-      console.log('✅ Import Excel terminé - Début sauvegarde automatique...');
-      
-      // Sauvegarde automatique des positions pour l'évolution
-      console.log('💾 [IMPORT] Lancement de la sauvegarde automatique des positions...');
-      try {
-        await autoSaveStandings();
-        console.log('✅ [IMPORT] Positions sauvegardées automatiquement');
-      } catch (error) {
-        console.error('❌ [IMPORT] Erreur lors de la sauvegarde automatique:', error);
-      }
-      
-      console.log('✅ Import complètement terminé - toutes les données sont synchronisées');
+      console.log('✅ Import Excel terminé et données synchronisées');
       
     } catch (error) {
       console.error('💥 Erreur critique lors de l\'import:', error);
