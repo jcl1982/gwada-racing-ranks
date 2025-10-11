@@ -44,14 +44,20 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     setShowSaveDialog(true);
   };
 
-  const saveCurrentStandings = async () => {
+  const saveCurrentStandings = async (racesNames: string[]) => {
     if (!championshipId) return;
     
     try {
       console.log('💾 Sauvegarde des classements avant import...');
+      
+      // Construire le nom de la sauvegarde avec les noms des courses
+      const saveName = racesNames.length > 0 
+        ? `Avant import: ${racesNames.join(', ')}`
+        : `Avant import - ${new Date().toLocaleString('fr-FR')}`;
+      
       const { error } = await supabase.rpc('save_current_standings_as_previous', {
         p_championship_id: championshipId,
-        p_save_name: `Avant import - ${new Date().toLocaleString('fr-FR')}`
+        p_save_name: saveName
       });
       
       if (error) {
@@ -80,8 +86,11 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     if (!previewData) return;
 
     try {
+      // Extraire les noms des courses depuis previewData
+      const racesNames = previewData.map(race => race.raceName);
+      
       if (shouldSave) {
-        const saved = await saveCurrentStandings();
+        const saved = await saveCurrentStandings(racesNames);
         if (!saved) return;
       }
 
