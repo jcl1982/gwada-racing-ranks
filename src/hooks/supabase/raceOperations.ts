@@ -40,6 +40,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       
       let raceId: string;
       let typeChanged = false;
+      let existingRaceName: string | undefined;
       
       // Si la course a un ID, c'est une mise à jour
       if ('id' in race && race.id) {
@@ -53,6 +54,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           .single();
         
         typeChanged = existingRace ? existingRace.type !== race.type : false;
+        existingRaceName = existingRace?.name;
         
         // Sauvegarder AVANT la modification si le type change
         if (typeChanged && existingRace) {
@@ -110,6 +112,21 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       console.log('🔄 Appel de loadData() pour rafraîchir les données...');
       await loadData();
       console.log('✅ loadData() terminé, données rafraîchies');
+      
+      // Sauvegarder APRÈS la modification pour établir le nouvel état comme référence
+      if (typeChanged && existingRaceName && championshipId) {
+        console.log('💾 AUTO-SAVE: Sauvegarde du nouvel état après modification de type');
+        const { error } = await supabase.rpc('save_current_standings_as_previous', {
+          p_championship_id: championshipId,
+          p_save_name: `Nouvel état après modification de "${existingRaceName}"`
+        });
+        
+        if (error) {
+          console.error('❌ Erreur lors de la sauvegarde du nouvel état:', error);
+        } else {
+          console.log('✅ AUTO-SAVE: Nouvel état sauvegardé comme référence');
+        }
+      }
       
       toast({
         title: 'id' in race && race.id ? "Course mise à jour" : "Course créée",
