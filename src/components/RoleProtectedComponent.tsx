@@ -17,14 +17,20 @@ const RoleProtectedComponent = ({
 }: RoleProtectedComponentProps) => {
   const { userRole, isAuthenticated, loading } = useUserRole();
 
-  if (loading && showLoading) {
-    return (
-      <div className="flex items-center justify-center p-4">
-        <div className="text-sm text-gray-500">Vérification des permissions...</div>
-      </div>
-    );
+  // Show loading state while checking authentication
+  if (loading) {
+    if (showLoading) {
+      return (
+        <div className="flex items-center justify-center p-4">
+          <div className="text-sm text-gray-500">Vérification des permissions...</div>
+        </div>
+      );
+    }
+    // Don't show fallback during loading to avoid flashing "Access Denied"
+    return null;
   }
 
+  // Only check authentication after loading is complete
   if (!isAuthenticated) {
     return fallback ? <>{fallback}</> : null;
   }
