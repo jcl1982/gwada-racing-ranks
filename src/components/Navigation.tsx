@@ -3,7 +3,6 @@ import { Trophy, Home, Upload, Settings, Zap, Circle } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 interface NavigationProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -102,31 +101,21 @@ const Navigation = ({
             <span className="sm:hidden">Karting</span>
           </button>
 
-          {/* Administration dropdown menu */}
-          {isAuthenticated && isAdmin && (
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isAdminView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}>
-                    <Settings size={18} />
-                    <span className="hidden sm:inline">Administration</span>
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent className="bg-white border rounded-lg shadow-lg p-2 min-w-[240px] z-50">
-                    <div className="flex flex-col gap-1">
-                      {adminMenuItems.map(({
-                      id,
-                      label,
-                      icon: Icon
-                    }) => <button key={id} onClick={() => onViewChange(id)} className={`flex items-center gap-3 px-4 py-3 rounded-md font-medium transition-all duration-200 text-left ${currentView === id ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
-                          <Icon size={18} />
-                          <span>{label}</span>
-                        </button>)}
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          )}
+          {/* Administration buttons */}
+          {isAuthenticated && isAdmin && adminMenuItems.map(({
+            id,
+            label,
+            icon: Icon
+          }) => (
+            <button 
+              key={id} 
+              onClick={() => onViewChange(id)} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === id ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}
+            >
+              <Icon size={18} />
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
         </nav>
         
         {isAuthenticated && isAdmin && <AuthButton />}
