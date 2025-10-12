@@ -1,8 +1,10 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Upload, Settings, Zap, Circle } from 'lucide-react';
+import { Trophy, Home, Upload, Settings, Zap, Circle, ChevronDown } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { useState } from 'react';
 interface NavigationProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -11,6 +13,7 @@ const Navigation = ({
   currentView,
   onViewChange
 }: NavigationProps) => {
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const {
     isAdmin,
     isAuthenticated,
@@ -101,21 +104,39 @@ const Navigation = ({
             <span className="sm:hidden">Karting</span>
           </button>
 
-          {/* Administration buttons */}
-          {isAuthenticated && isAdmin && adminMenuItems.map(({
-            id,
-            label,
-            icon: Icon
-          }) => (
-            <button 
-              key={id} 
-              onClick={() => onViewChange(id)} 
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === id ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}
-            >
-              <Icon size={18} />
-              <span className="hidden sm:inline">{label}</span>
-            </button>
-          ))}
+          {/* Administration menu with sub-items */}
+          {isAuthenticated && isAdmin && (
+            <Collapsible open={adminMenuOpen} onOpenChange={setAdminMenuOpen} className="flex flex-col gap-2">
+              <CollapsibleTrigger asChild>
+                <button 
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isAdminView ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}
+                >
+                  <Settings size={18} />
+                  <span className="hidden sm:inline">Administration</span>
+                  <ChevronDown size={16} className={`transition-transform duration-200 ${adminMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="flex flex-col gap-2 pl-4">
+                {adminMenuItems.map(({
+                  id,
+                  label,
+                  icon: Icon
+                }) => (
+                  <button 
+                    key={id} 
+                    onClick={() => {
+                      onViewChange(id);
+                      setAdminMenuOpen(false);
+                    }} 
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm ${currentView === id ? 'bg-primary text-white shadow-md' : 'bg-white/50 text-gray-700 hover:bg-white/80 hover:shadow-sm'}`}
+                  >
+                    <Icon size={16} />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          )}
         </nav>
         
         {isAuthenticated && isAdmin && <AuthButton />}
