@@ -48,9 +48,9 @@ const GeneralStandingsTable = ({
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-1 px-1 font-semibold">Position</th>
-              <th className="text-center py-1 px-1 font-semibold">Évolution</th>
-              <th className="text-left py-1 px-1 font-semibold">Pilote</th>
+              <th className="text-left py-1 px-3 font-semibold">Position</th>
+              <th className="text-center py-1 px-3 font-semibold">Évolution</th>
+              <th className="text-left py-1 px-3 font-semibold">Pilote</th>
               <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
                   <Mountain size={16} />
@@ -71,15 +71,15 @@ const GeneralStandingsTable = ({
             {standings.map((standing, index) => {
               const gap = standings[0].totalPoints - standing.totalPoints;
               return <tr key={standing.driver.id} className={`border-b transition-colors hover:bg-blue-50/50 ${index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'} ${standing.position === 1 ? 'champion-row' : ''}`}>
-                <td className="py-1 px-1">
+                <td className="py-1 px-3">
                   <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>
                     {standing.position}
                   </Badge>
                 </td>
-                <td className="py-1 px-1 text-center">
+                <td className="py-1 px-3 text-center">
                   <PositionChange change={standing.positionChange} />
                 </td>
-                <td className="py-1 px-1">
+                <td className="py-1 px-3">
                   <div className="font-semibold text-gray-900 unicode-enhanced">
                     {standing.driver.name}
                   </div>
