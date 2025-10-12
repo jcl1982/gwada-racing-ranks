@@ -83,7 +83,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   };
 
   // Create operation handlers with improved refresh
-  const { saveDriver: baseSaveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData);
+  const { saveDriver: baseSaveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData, championshipId || '');
   
   // Wrapper pour saveDriver qui passe automatiquement le championshipId
   const saveDriver = async (driver: Omit<Driver, 'id'> | Driver) => {

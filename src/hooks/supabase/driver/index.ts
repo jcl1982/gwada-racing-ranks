@@ -4,10 +4,10 @@ import { createDriverCrudOperations } from './driverCrud';
 import { createDriverDeletionOperations } from './driverDeletion';
 import { createDriverBulkOperations } from './driverBulkOperations';
 
-export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
+export const createDriverOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId: string) => {
   const { saveDriver } = createDriverCrudOperations(toast, loadData);
   const { deleteDriver } = createDriverDeletionOperations(toast, loadData);
-  const { deleteAllDrivers } = createDriverBulkOperations(toast, loadData);
+  const { deleteAllDrivers } = createDriverBulkOperations(toast, loadData, championshipId);
 
   return { saveDriver, deleteDriver, deleteAllDrivers };
 };

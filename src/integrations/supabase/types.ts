@@ -337,7 +337,7 @@ export type Database = {
         Returns: undefined
       }
       delete_all_drivers: {
-        Args: Record<PropertyKey, never>
+        Args: Record<PropertyKey, never> | { p_championship_id: string }
         Returns: undefined
       }
       delete_standings_save_by_type: {
