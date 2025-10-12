@@ -64,12 +64,22 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     setSuccess(false);
     setPreviewData(null);
 
+    console.log('📤 [IMPORT] handleFileUpload - Type sélectionné:', selectedRaceType);
+    console.log('📤 [IMPORT] Catégorie karting sélectionnée:', selectedKartingCategory);
+
     try {
       const excelData = await parseExcelFile(
         file, 
         selectedRaceType,
         selectedRaceType === 'karting' ? selectedKartingCategory : undefined
       );
+      
+      console.log('📥 [IMPORT] Données Excel parsées:', excelData.map(r => ({
+        name: r.raceName,
+        type: r.raceType,
+        category: r.kartingCategory
+      })));
+      
       setPreviewData(excelData);
       toast({
         title: "Fichier analysé",

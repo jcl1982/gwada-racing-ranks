@@ -21,7 +21,11 @@ const ExcelPreview = ({ previewData, onImport, onCancel }: ExcelPreviewProps) =>
           <div key={index} className="space-y-2">
             <h3 className="font-semibold text-lg">{race.raceName}</h3>
             <p className="text-sm text-gray-600">
-              Date: {race.raceDate} | Type: {race.raceType === 'montagne' ? 'Course de Côte' : 'Rallye'}
+              Date: {race.raceDate} | Type: {
+                race.raceType === 'montagne' ? 'Course de Côte' : 
+                race.raceType === 'karting' ? `Karting${race.kartingCategory ? ` (${race.kartingCategory})` : ''}` :
+                'Rallye'
+              }
             </p>
             
             <Table>
