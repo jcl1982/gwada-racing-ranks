@@ -74,51 +74,77 @@ const ExcelTemplateDownload = () => {
     // Données d'exemple pour Manche 1
     const manche1Data = [
       ['Manche 1 - MINI 60', '2024-12-15'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Points'], // Ligne 2: En-têtes
-      [1, 'FERDINAND Mathieu', 100],
-      [2, 'DE MITRI Laurent', 66],
-      [3, 'BHIKI Wilfried', 66],
-      [4, 'BORGIA Steeve', 54],
-      [5, 'MERI Ruddy', 39],
-      [6, 'GUSTAVE DI DUFLO Antonio', 32],
-      [7, 'BUNET Steven', 22],
-      [8, 'RAMBOJAN Pascal', 20]
+      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
+      [1, 'FERDINAND Mathieu', 'MINI 60', 100, 0],
+      [2, 'DE MITRI Laurent', 'MINI 60', 66, 0],
+      [3, 'BHIKI Wilfried', 'MINI 60', 66, 5],
+      [4, 'BORGIA Steeve', 'MINI 60', 54, 0],
+      [5, 'MERI Ruddy', 'MINI 60', 39, 0],
+      [6, 'GUSTAVE DI DUFLO Antonio', 'MINI 60', 32, 0],
+      [7, 'BUNET Steven', 'MINI 60', 22, 0],
+      [8, 'RAMBOJAN Pascal', 'MINI 60', 20, 0]
     ];
     
     // Données d'exemple pour Manche 2
     const manche2Data = [
       ['Manche 2 - SENIOR MASTER GENTLEMAN', '2024-12-22'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Points'], // Ligne 2: En-têtes
-      [1, 'MARTIN Paul', 100],
-      [2, 'DURAND Michel', 66],
-      [3, 'BERNARD Sophie', 66],
-      [4, 'PETIT Claude', 54],
-      [5, 'ROUX Sylvie', 39],
-      [6, 'BLANC Jean', 32],
-      [7, 'NOIR Julie', 22],
-      [8, 'LEROY Annie', 20]
+      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
+      [1, 'MARTIN Paul', 'SENIOR', 100, 0],
+      [2, 'DURAND Michel', 'MASTER', 66, 0],
+      [3, 'BERNARD Sophie', 'SENIOR', 66, 10],
+      [4, 'PETIT Claude', 'GENTLEMAN', 54, 0],
+      [5, 'ROUX Sylvie', 'SENIOR', 39, 0],
+      [6, 'BLANC Jean', 'MASTER', 32, 0],
+      [7, 'NOIR Julie', 'GENTLEMAN', 22, 0],
+      [8, 'LEROY Annie', 'SENIOR', 20, 0]
+    ];
+    
+    // Données d'exemple pour Manche 3
+    const manche3Data = [
+      ['Manche 3 - KZ2', '2024-12-29'], // Ligne 1: Nom de la course, Date
+      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
+      [1, 'DUPONT Alexandre', 'KZ2', 100, 0],
+      [2, 'GARCIA Lucas', 'KZ2', 66, 0],
+      [3, 'BERNARD Thomas', 'KZ2', 66, 15],
+      [4, 'MOREAU Nicolas', 'KZ2', 54, 0],
+      [5, 'SIMON Antoine', 'KZ2', 39, 0],
+      [6, 'LAURENT Maxime', 'KZ2', 32, 0]
     ];
     
     // Créer les feuilles
     const sheet1 = XLSX.utils.aoa_to_sheet(manche1Data);
     const sheet2 = XLSX.utils.aoa_to_sheet(manche2Data);
+    const sheet3 = XLSX.utils.aoa_to_sheet(manche3Data);
     
     // Définir la largeur des colonnes
     sheet1['!cols'] = [
-      { width: 15 }, // Colonne Position
+      { width: 12 }, // Colonne Position
       { width: 30 }, // Colonne Pilote
-      { width: 10 }  // Colonne Points
+      { width: 15 }, // Colonne Catégorie
+      { width: 10 }, // Colonne Points
+      { width: 10 }  // Colonne Bonus
     ];
     
     sheet2['!cols'] = [
-      { width: 15 }, // Colonne Position
+      { width: 12 }, // Colonne Position
       { width: 30 }, // Colonne Pilote
-      { width: 10 }  // Colonne Points
+      { width: 15 }, // Colonne Catégorie
+      { width: 10 }, // Colonne Points
+      { width: 10 }  // Colonne Bonus
+    ];
+    
+    sheet3['!cols'] = [
+      { width: 12 }, // Colonne Position
+      { width: 30 }, // Colonne Pilote
+      { width: 15 }, // Colonne Catégorie
+      { width: 10 }, // Colonne Points
+      { width: 10 }  // Colonne Bonus
     ];
     
     // Ajouter les feuilles au classeur
     XLSX.utils.book_append_sheet(workbook, sheet1, 'Manche 1');
     XLSX.utils.book_append_sheet(workbook, sheet2, 'Manche 2');
+    XLSX.utils.book_append_sheet(workbook, sheet3, 'Manche 3');
     
     // Générer le fichier et le télécharger
     XLSX.writeFile(workbook, 'modele_karting.xlsx');
@@ -168,9 +194,11 @@ const ExcelTemplateDownload = () => {
             <ul className="text-xs text-green-600 mb-3 list-disc list-inside space-y-1">
               <li>Chaque feuille = une manche</li>
               <li>Ligne 1 : Nom de la manche, Date (AAAA-MM-JJ)</li>
-              <li>Ligne 2 : En-têtes (Position, Pilote, Points)</li>
+              <li>Ligne 2 : En-têtes (Position, Pilote, Catégorie, Points, Bonus)</li>
               <li>Lignes suivantes : Résultats des pilotes</li>
-              <li><strong>Important :</strong> Sélectionnez la catégorie (MINI 60, SENIOR, KZ2) avant l'import</li>
+              <li><strong>Catégorie :</strong> MINI 60, SENIOR, MASTER, GENTLEMAN, KZ2, etc.</li>
+              <li><strong>Bonus :</strong> Points bonus (0 si aucun)</li>
+              <li><strong>Important :</strong> Sélectionnez la catégorie principale avant l'import</li>
             </ul>
           </div>
         </div>
