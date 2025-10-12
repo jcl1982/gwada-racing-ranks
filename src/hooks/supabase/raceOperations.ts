@@ -38,9 +38,9 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           }
         }
       } else {
-        // Sinon, vérifier si une course avec le même nom et date existe déjà
+        // Sinon, vérifier si une course avec le même nom, date et type existe déjà
         const finalChampionshipId = race.championshipId || championshipId;
-        const existingRace = await findExistingRace(race.name, race.date, finalChampionshipId);
+        const existingRace = await findExistingRace(race.name, race.date, finalChampionshipId, race.type);
         
         if (existingRace) {
           console.log('⚠️ Course existante trouvée, ajout des résultats à la course existante:', existingRace.id);
@@ -48,7 +48,7 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           
           // Pour le karting avec catégories, supprimer uniquement les résultats de la catégorie concernée
           if ('results' in race && race.results.length > 0) {
-            const isKarting = race.type === 'karting';
+            const isKarting = existingRace.type === 'karting';
             const category = race.results[0]?.category;
             
             if (isKarting && category) {

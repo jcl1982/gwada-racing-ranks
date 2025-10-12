@@ -3,15 +3,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { Race } from '@/types/championship';
 import { isValidUUID } from './utils';
 
-export const findExistingRace = async (name: string, date: string, championshipId?: string): Promise<{ id: string } | null> => {
-  console.log('🔍 [FIND_RACE] Recherche d\'une course existante:', { name, date, championshipId });
+export const findExistingRace = async (name: string, date: string, championshipId?: string, raceType?: string): Promise<{ id: string; type: string } | null> => {
+  console.log('🔍 [FIND_RACE] Recherche d\'une course existante:', { name, date, championshipId, raceType });
   
   // Normaliser le nom pour la comparaison (trim + lowercase)
   const normalizedName = name.trim().toLowerCase();
   
   let query = supabase
     .from('races')
-    .select('id, name, date, championship_id')
+    .select('id, name, date, type, championship_id')
     .eq('date', date);
   
   // Filtrer par championnat si fourni
@@ -31,20 +31,24 @@ export const findExistingRace = async (name: string, date: string, championshipI
     return null;
   }
 
-  // Chercher une course avec le même nom (case-insensitive)
-  const matchingRace = data.find(race => race.name.trim().toLowerCase() === normalizedName);
+  // Chercher une course avec le même nom et le même type (case-insensitive)
+  const matchingRace = data.find(race => 
+    race.name.trim().toLowerCase() === normalizedName &&
+    (!raceType || race.type === raceType)
+  );
   
   if (matchingRace) {
-    console.log('✅ [FIND_RACE] Course existante trouvée (même nom, date et championnat):', { 
+    console.log('✅ [FIND_RACE] Course existante trouvée (même nom, date, type et championnat):', { 
       id: matchingRace.id, 
-      name: matchingRace.name 
+      name: matchingRace.name,
+      type: matchingRace.type
     });
-    return { id: matchingRace.id };
+    return { id: matchingRace.id, type: matchingRace.type };
   }
   
-  console.log('ℹ️ [FIND_RACE] Course(s) avec même date mais nom différent:', { 
-    existing: data.map(r => r.name), 
-    new: name 
+  console.log('ℹ️ [FIND_RACE] Course(s) avec même date mais nom/type différent:', { 
+    existing: data.map(r => ({ name: r.name, type: r.type })), 
+    new: { name, type: raceType }
   });
   return null;
 };
