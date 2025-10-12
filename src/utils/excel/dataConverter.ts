@@ -130,6 +130,7 @@ export const convertExcelDataToRaces = (
       name: excelRace.raceName,
       date: formattedDate,
       type: excelRace.raceType,
+      championshipId,
       results: results.sort((a, b) => a.position - b.position)
     } as Race);
     
