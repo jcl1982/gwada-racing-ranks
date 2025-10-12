@@ -19,8 +19,9 @@ interface ViewRendererProps {
   championshipId?: string;
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  kartingRaces: Race[];
+  accelerationRaces: Race[];
   races: Race[];
-  
   drivers: Driver[];
   previousStandings: Record<string, ChampionshipStanding[]>;
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => Promise<void>;
@@ -44,8 +45,9 @@ const ViewRenderer = ({
   championshipId,
   montagneRaces,
   rallyeRaces,
+  kartingRaces,
+  accelerationRaces,
   races,
-  
   drivers,
   previousStandings,
   handleImport,
@@ -112,7 +114,7 @@ const ViewRenderer = ({
       return (
         <CategoryStandings
           title="Championnat Accélération"
-          races={[]} // À implémenter avec les courses d'accélération
+          races={accelerationRaces}
           drivers={drivers}
           type="acceleration"
           championshipYear={championshipYear}
@@ -122,7 +124,7 @@ const ViewRenderer = ({
     case 'karting':
       return (
         <KartingStandings
-          races={races}
+          races={kartingRaces}
           drivers={drivers}
           championshipYear={championshipYear}
           previousStandings={previousStandings.karting || []}

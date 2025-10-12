@@ -11,7 +11,8 @@ const ChampionshipApp = () => {
     drivers,
     montagneRaces,
     rallyeRaces,
-    
+    kartingRaces,
+    accelerationRaces,
     standings,
     previousStandings,
     championshipTitle,
@@ -32,7 +33,7 @@ const ChampionshipApp = () => {
   } = useChampionshipData(currentView);
 
   // Combiner toutes les courses pour l'import
-  const races = [...montagneRaces, ...rallyeRaces];
+  const races = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
 
   if (loading) {
     return (
@@ -57,8 +58,9 @@ const ChampionshipApp = () => {
           championshipId={championshipId}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          kartingRaces={kartingRaces}
+          accelerationRaces={accelerationRaces}
           races={races}
-          
           drivers={drivers}
           previousStandings={previousStandings}
           handleImport={handleImport}
