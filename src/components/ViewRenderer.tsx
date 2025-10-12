@@ -4,6 +4,7 @@ import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import C2R2Standings from '@/components/C2R2Standings';
 import KartingStandings from '@/components/KartingStandings';
+import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
@@ -35,6 +36,10 @@ interface ViewRendererProps {
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
   refreshData: () => Promise<void>;
+  // Ajout des standings par catégorie
+  montagneStandings?: ChampionshipStanding[];
+  rallyeStandings?: ChampionshipStanding[];
+  c2r2Standings?: ChampionshipStanding[];
 }
 
 const ViewRenderer = ({
@@ -60,7 +65,10 @@ const ViewRenderer = ({
   deleteAllDrivers,
   saveRace,
   deleteRace,
-  refreshData
+  refreshData,
+  montagneStandings = [],
+  rallyeStandings = [],
+  c2r2Standings = []
 }: ViewRendererProps) => {
   switch (currentView) {
     case 'home':
@@ -71,46 +79,26 @@ const ViewRenderer = ({
         />
       );
     case 'general':
+    case 'montagne':
+    case 'rallye':
+    case 'c2r2':
+      // Utiliser RallyeMontagneTabs pour toutes les vues Rallye-Montagne
       return (
-        <GeneralStandings 
-          standings={standings} 
+        <RallyeMontagneTabs
+          generalStandings={standings}
+          montagneStandings={montagneStandings}
+          rallyeStandings={rallyeStandings}
+          c2r2Standings={c2r2Standings}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
-        />
-      );
-    case 'montagne':
-      return (
-        <CategoryStandings
-          title="Courses de Côte"
-          races={montagneRaces}
-          drivers={drivers}
-          type="montagne"
-          championshipYear={championshipYear}
           championshipId={championshipId || ''}
-          previousStandings={previousStandings.montagne}
-        />
-      );
-    case 'rallye':
-      return (
-        <CategoryStandings
-          title="Rallyes"
-          races={rallyeRaces}
-          drivers={drivers}
-          type="rallye"
-          championshipYear={championshipYear}
-          championshipId={championshipId || ''}
-          previousStandings={previousStandings.rallye}
-        />
-      );
-    case 'c2r2':
-      return (
-        <C2R2Standings
-          drivers={drivers}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
-          championshipYear={championshipYear}
-          championshipId={championshipId || ''}
-          previousStandings={previousStandings.c2r2}
+          drivers={drivers}
+          onRaceUpdate={async (raceId, results) => {
+            // À implémenter si nécessaire
+            await refreshData();
+          }}
         />
       );
     case 'acceleration':

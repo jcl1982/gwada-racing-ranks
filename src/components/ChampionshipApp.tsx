@@ -29,7 +29,8 @@ const ChampionshipApp = () => {
     deleteAllDrivers,
     saveRace,
     deleteRace,
-    refreshData
+    refreshData,
+    standingsCalculation
   } = useChampionshipData(currentView);
 
   // Combiner toutes les courses pour l'import
@@ -74,6 +75,9 @@ const ChampionshipApp = () => {
           saveRace={saveRace}
           deleteRace={deleteRace}
           refreshData={refreshData}
+          montagneStandings={standingsCalculation.montagneStandings}
+          rallyeStandings={standingsCalculation.rallyeStandings}
+          c2r2Standings={standingsCalculation.c2r2Standings}
         />
       </div>
     </div>
