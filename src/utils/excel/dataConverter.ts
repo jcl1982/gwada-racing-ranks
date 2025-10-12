@@ -81,21 +81,36 @@ export const convertExcelDataToRaces = (
         return;
       }
       
-      // Normaliser le nom pour la comparaison (insensible à la casse et espaces)
-      const normalizedName = driverName.toLowerCase().trim();
+      // Normaliser le nom pour la comparaison (insensible à la casse, espaces multiples et accents)
+      const normalizedName = driverName
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, ' ') // Remplacer les espaces multiples par un seul espace
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Retirer les accents
       
       // Chercher d'abord dans les pilotes existants du championnat
-      let driver = existingDrivers.find(d => 
-        d.name.toLowerCase().trim() === normalizedName &&
-        d.championshipId === championshipId
-      );
+      let driver = existingDrivers.find(d => {
+        const existingNormalized = d.name
+          .toLowerCase()
+          .trim()
+          .replace(/\s+/g, ' ')
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return existingNormalized === normalizedName && d.championshipId === championshipId;
+      });
       
       if (!driver) {
         // Vérifier si on l'a déjà créé dans newDrivers pendant cette conversion
-        driver = newDrivers.find(d => 
-          d.name.toLowerCase().trim() === normalizedName &&
-          !existingDrivers.some(ed => ed.id === d.id) // Seulement les nouveaux
-        );
+        // IMPORTANT: vérifier aussi le championshipId pour éviter les doublons
+        driver = newDrivers.find(d => {
+          const newDriverNormalized = d.name
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, ' ')
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+          return newDriverNormalized === normalizedName && 
+                 d.championshipId === championshipId &&
+                 !existingDrivers.some(ed => ed.id === d.id); // Seulement les nouveaux
+        });
       }
       
       if (!driver) {

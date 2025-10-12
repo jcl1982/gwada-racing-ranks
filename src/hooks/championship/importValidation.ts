@@ -38,12 +38,24 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
       return false;
     }
     
-    // Vérifier par nom ET championshipId pour éviter les doublons
-    const normalizedNewName = newDriver.name.trim().toLowerCase();
-    const exists = existingDrivers.find(existingDriver => 
-      existingDriver.name.trim().toLowerCase() === normalizedNewName &&
-      existingDriver.championshipId === newDriver.championshipId
-    );
+    // Normaliser le nom pour une comparaison robuste (espaces multiples et accents)
+    const normalizedNewName = newDriver.name
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+    // Vérifier par nom normalisé ET championshipId pour éviter les doublons
+    const exists = existingDrivers.find(existingDriver => {
+      const normalizedExistingName = existingDriver.name
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      
+      return normalizedExistingName === normalizedNewName &&
+             existingDriver.championshipId === newDriver.championshipId;
+    });
     
     if (!exists) {
       console.log(`  ➕ Pilote manquant: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}..., ChampID: ${newDriver.championshipId?.substring(0, 8)}..., sera créé)`);
