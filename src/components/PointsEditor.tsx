@@ -5,19 +5,17 @@ import PointsEditorTabs from './points/PointsEditorTabs';
 
 interface PointsEditorProps {
   drivers: Driver[];
-  montagneRaces: Race[];
-  rallyeRaces: Race[];
+  races: Race[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
-const PointsEditor = ({ drivers, montagneRaces, rallyeRaces, onRaceUpdate }: PointsEditorProps) => {
+const PointsEditor = ({ drivers, races, onRaceUpdate }: PointsEditorProps) => {
   return (
     <div className="space-y-6">
       <PointsEditorHeader />
       <PointsEditorTabs
         drivers={drivers}
-        montagneRaces={montagneRaces}
-        rallyeRaces={rallyeRaces}
+        races={races}
         onRaceUpdate={onRaceUpdate}
       />
     </div>

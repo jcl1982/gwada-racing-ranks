@@ -7,83 +7,78 @@ import { useMemo } from 'react';
 
 interface PointsEditorTabsProps {
   drivers: Driver[];
-  montagneRaces: Race[];
-  rallyeRaces: Race[];
+  races: Race[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
 const PointsEditorTabs = ({
   drivers,
-  montagneRaces,
-  rallyeRaces,
+  races,
   onRaceUpdate
 }: PointsEditorTabsProps) => {
-  // Combiner toutes les courses pour l'onglet C2 R2
-  const allRaces = useMemo(() => {
-    return [...montagneRaces, ...rallyeRaces].sort((a, b) => 
-      new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-  }, [montagneRaces, rallyeRaces]);
-
-  // Filtrer les pilotes C2 R2
-  const c2r2Drivers = useMemo(() => {
-    return drivers.filter(driver => {
-      const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
-                             driver.carModel?.toLowerCase().includes('r2');
-      const hasC2R2Results = allRaces.some(race => 
-        race.results.some(result => 
-          result.driverId === driver.id && 
-          result.carModel?.toLowerCase().includes('c2') && 
-          result.carModel?.toLowerCase().includes('r2')
-        )
-      );
-      return hasC2R2Profile || hasC2R2Results;
+  // Grouper les courses par type
+  const racesByType = useMemo(() => {
+    const grouped: Record<string, Race[]> = {};
+    races.forEach(race => {
+      if (!grouped[race.type]) {
+        grouped[race.type] = [];
+      }
+      grouped[race.type].push(race);
     });
-  }, [drivers, allRaces]);
+    
+    // Trier chaque groupe par date
+    Object.keys(grouped).forEach(type => {
+      grouped[type].sort((a, b) => 
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      );
+    });
+    
+    return grouped;
+  }, [races]);
+
+  const raceTypes = Object.keys(racesByType);
+
+  // Configuration des icônes et labels par type
+  const typeConfig: Record<string, { icon: typeof Trophy, label: string }> = {
+    montagne: { icon: Mountain, label: 'Courses de Montagne' },
+    rallye: { icon: Car, label: 'Courses de Rallye' },
+    karting: { icon: Trophy, label: 'Courses de Karting' },
+    acceleration: { icon: Trophy, label: 'Courses d\'Accélération' }
+  };
+
+  if (raceTypes.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        Aucune course disponible. Ajoutez des courses pour gérer les points.
+      </div>
+    );
+  }
 
   return (
-    <Tabs defaultValue="montagne" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="montagne" className="flex items-center gap-2">
-          <Mountain className="w-4 h-4" />
-          Courses de Montagne
-        </TabsTrigger>
-        <TabsTrigger value="rallye" className="flex items-center gap-2">
-          <Car className="w-4 h-4" />
-          Courses de Rallye
-        </TabsTrigger>
-        <TabsTrigger value="c2r2" className="flex items-center gap-2">
-          <Trophy className="w-4 h-4" />
-          Trophée C2 R2
-        </TabsTrigger>
+    <Tabs defaultValue={raceTypes[0]} className="w-full">
+      <TabsList className={`grid w-full grid-cols-${raceTypes.length}`}>
+        {raceTypes.map(type => {
+          const config = typeConfig[type] || { icon: Trophy, label: type };
+          const Icon = config.icon;
+          return (
+            <TabsTrigger key={type} value={type} className="flex items-center gap-2">
+              <Icon className="w-4 h-4" />
+              {config.label}
+            </TabsTrigger>
+          );
+        })}
       </TabsList>
 
-      <TabsContent value="montagne" className="mt-6">
-        <RaceTypeTab
-          races={montagneRaces}
-          drivers={drivers}
-          raceType="montagne"
-          onRaceUpdate={onRaceUpdate}
-        />
-      </TabsContent>
-
-      <TabsContent value="rallye" className="mt-6">
-        <RaceTypeTab
-          races={rallyeRaces}
-          drivers={drivers}
-          raceType="rallye"
-          onRaceUpdate={onRaceUpdate}
-        />
-      </TabsContent>
-
-      <TabsContent value="c2r2" className="mt-6">
-        <RaceTypeTab
-          races={allRaces}
-          drivers={c2r2Drivers}
-          raceType="c2r2"
-          onRaceUpdate={onRaceUpdate}
-        />
-      </TabsContent>
+      {raceTypes.map(type => (
+        <TabsContent key={type} value={type} className="mt-6">
+          <RaceTypeTab
+            races={racesByType[type]}
+            drivers={drivers}
+            raceType={type}
+            onRaceUpdate={onRaceUpdate}
+          />
+        </TabsContent>
+      ))}
     </Tabs>
   );
 };

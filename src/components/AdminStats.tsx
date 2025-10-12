@@ -10,15 +10,28 @@ function parseLocalDate(dateString: string): Date {
 
 interface AdminStatsProps {
   drivers: Driver[];
-  montagneRaces: Race[];
-  rallyeRaces: Race[];
+  races: Race[];
   standings: ChampionshipStanding[];
 }
 
-const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminStatsProps) => {
-  const totalRaces = montagneRaces.length + rallyeRaces.length;
+const AdminStats = ({ drivers, races, standings }: AdminStatsProps) => {
+  const totalRaces = races.length;
   const totalParticipants = drivers.length;
   const topDriver = standings[0];
+  
+  // Grouper les courses par type
+  const racesByType = races.reduce((acc, race) => {
+    acc[race.type] = (acc[race.type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Configuration des icônes par type
+  const typeIcons: Record<string, { icon: typeof Trophy, color: string, label: string }> = {
+    montagne: { icon: Mountain, color: 'text-green-600', label: 'Courses de Côte' },
+    rallye: { icon: Car, color: 'text-orange-600', label: 'Rallyes' },
+    karting: { icon: Trophy, color: 'text-blue-600', label: 'Karting' },
+    acceleration: { icon: Trophy, color: 'text-purple-600', label: 'Accélération' }
+  };
   
   const stats = [
     {
@@ -33,18 +46,15 @@ const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminSta
       icon: Trophy,
       color: 'text-purple-600'
     },
-    {
-      title: 'Courses de Côte',
-      value: montagneRaces.length,
-      icon: Mountain,
-      color: 'text-green-600'
-    },
-    {
-      title: 'Rallyes',
-      value: rallyeRaces.length,
-      icon: Car,
-      color: 'text-orange-600'
-    }
+    ...Object.entries(racesByType).map(([type, count]) => {
+      const config = typeIcons[type] || { icon: Trophy, color: 'text-gray-600', label: type };
+      return {
+        title: config.label,
+        value: count,
+        icon: config.icon,
+        color: config.color
+      };
+    })
   ];
 
   return (
@@ -81,29 +91,33 @@ const AdminStats = ({ drivers, montagneRaces, rallyeRaces, standings }: AdminSta
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Dernières Courses</h3>
         <div className="space-y-3">
-          {[...montagneRaces, ...rallyeRaces]
-            .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
-            .slice(0, 5)
-            .map((race) => (
-              <div key={race.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  {race.type === 'montagne' ? (
-                    <Mountain className="text-green-600" size={20} />
-                  ) : (
-                    <Car className="text-blue-600" size={20} />
-                  )}
-                  <div>
-                    <p className="font-medium">{race.name}</p>
-                    <p className="text-sm text-gray-600">
-                      {parseLocalDate(race.date).toLocaleDateString('fr-FR')}
-                    </p>
+          {races.length === 0 ? (
+            <p className="text-center text-muted-foreground py-4">Aucune course enregistrée</p>
+          ) : (
+            races
+              .sort((a, b) => parseLocalDate(b.date).getTime() - parseLocalDate(a.date).getTime())
+              .slice(0, 5)
+              .map((race) => {
+                const config = typeIcons[race.type] || { icon: Trophy, color: 'text-gray-600', label: race.type };
+                const Icon = config.icon;
+                return (
+                  <div key={race.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Icon className={config.color} size={20} />
+                      <div>
+                        <p className="font-medium">{race.name}</p>
+                        <p className="text-sm text-gray-600">
+                          {parseLocalDate(race.date).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {race.results.length} participants
+                    </div>
                   </div>
-                </div>
-                <div className="text-sm text-gray-500">
-                  {race.results.length} participants
-                </div>
-              </div>
-            ))}
+                );
+              })
+          )}
         </div>
       </Card>
     </div>

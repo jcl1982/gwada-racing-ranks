@@ -82,8 +82,7 @@ const AdminTabsContent = ({
       <TabsContent value="points" className="mt-6">
         <PointsEditor
           drivers={drivers}
-          montagneRaces={montagneRaces}
-          rallyeRaces={rallyeRaces}
+          races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
           onRaceUpdate={onRaceUpdate}
         />
       </TabsContent>
@@ -91,8 +90,7 @@ const AdminTabsContent = ({
       <TabsContent value="stats" className="mt-6">
         <AdminStats
           drivers={drivers}
-          montagneRaces={montagneRaces}
-          rallyeRaces={rallyeRaces}
+          races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
           standings={standings}
         />
       </TabsContent>
