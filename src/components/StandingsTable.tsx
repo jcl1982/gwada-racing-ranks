@@ -9,7 +9,6 @@ import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import PositionChange from '@/components/PositionChange';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -133,7 +132,6 @@ const StandingsTable = ({
                   )}
                 </th>)}
               <th className="text-center py-1 px-1 font-semibold">Total</th>
-              <th className="text-center py-1 px-1 font-semibold">Évolution</th>
               <th className="text-center py-1 px-1 font-semibold">Écart</th>
             </tr>
           </thead>
@@ -170,9 +168,6 @@ const StandingsTable = ({
                     <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
                       {standing.points} pts
                     </Badge>
-                  </td>
-                  <td className="py-1 px-1 text-center">
-                    <PositionChange change={standing.positionChange || 0} />
                   </td>
                   <td className="py-1 px-1 text-center text-gray-600">
                     {gap === 0 ? 'Leader' : `-${gap} pts`}

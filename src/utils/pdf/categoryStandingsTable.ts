@@ -2,7 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
-import { getPositionRowStyle, PDF_STYLES, getPositionEvolutionIndicator, getEvolutionColor } from '../pdfStyles';
+import { getPositionRowStyle, PDF_STYLES } from '../pdfStyles';
 
 export const createCategoryStandingsTable = (
   doc: jsPDF,
@@ -35,20 +35,13 @@ export const createCategoryStandingsTable = (
     // Ajouter les points totaux
     row.push(`${standing.points}`);
     
-    // Ajouter l'évolution
-    const evolutionIndicator = getPositionEvolutionIndicator(
-      standing.positionChange || 0,
-      standing.previousPosition
-    );
-    row.push(evolutionIndicator);
-    
     return row;
   });
 
   console.log('📄 Données du tableau PDF (catégorie):', tableData);
   
-  // Mise à jour de l'en-tête pour remplacer "Position" par "Pos" et ajouter "Évol."
-  const updatedHeaders = [...headers, 'Évol.'];
+  // Mise à jour de l'en-tête pour remplacer "Position" par "Pos"
+  const updatedHeaders = [...headers];
   updatedHeaders[0] = 'Pos';
   
   autoTable(doc, {
@@ -64,16 +57,6 @@ export const createCategoryStandingsTable = (
         if (positionStyle) {
           data.cell.styles.fillColor = positionStyle.fillColor;
           data.cell.styles.textColor = positionStyle.textColor;
-          data.cell.styles.fontStyle = 'bold';
-        }
-        
-        // Colorer la colonne évolution (dernière colonne)
-        if (data.column.index === data.table.columns.length - 1) {
-          const evolutionColor = getEvolutionColor(
-            standing.positionChange || 0,
-            standing.previousPosition
-          );
-          data.cell.styles.textColor = evolutionColor;
           data.cell.styles.fontStyle = 'bold';
         }
       }
