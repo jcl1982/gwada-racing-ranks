@@ -48,8 +48,8 @@ const GeneralStandingsTable = ({
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-1 px-2 font-semibold mx-0">Position</th>
-              <th className="text-center py-1 px-2 font-semibold">Évolution</th>
+              <th className="text-left py-1 font-semibold mx-0 px-0">Position</th>
+              <th className="text-center py-1 font-semibold px-0">Évolution</th>
               <th className="text-left py-1 px-2 font-semibold">Pilote</th>
               <th className="text-center py-1 px-1 font-semibold">
                 <div className="flex items-center justify-center gap-1">
