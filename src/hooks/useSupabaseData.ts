@@ -86,8 +86,15 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   const { saveDriver: baseSaveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData, championshipId || '');
   
   // Wrapper pour saveDriver qui passe automatiquement le championshipId
-  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver) => {
+  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver): Promise<void> => {
     console.log('🔧 saveDriver wrapper called with:', { driver, championshipId });
+    await baseSaveDriver(driver, championshipId);
+    // Ignorer l'ID retourné - les composants UI n'en ont pas besoin
+  };
+  
+  // Version spéciale pour l'import qui retourne l'ID
+  const saveDriverForImport = async (driver: Driver): Promise<string> => {
+    console.log('🔧 saveDriverForImport wrapper called with:', { driver, championshipId });
     return baseSaveDriver(driver, championshipId);
   };
   
@@ -153,6 +160,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     championshipId,
     loading,
     saveDriver,
+    saveDriverForImport, // Pour l'import uniquement
     deleteDriver,
     deleteAllDrivers,
     saveRace,

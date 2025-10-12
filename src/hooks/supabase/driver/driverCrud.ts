@@ -5,7 +5,7 @@ import { isValidUUID } from '../utils';
 import { useToast } from '@/hooks/use-toast';
 
 export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>) => {
-  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver, championshipId?: string) => {
+  const saveDriver = async (driver: Omit<Driver, 'id'> | Driver, championshipId?: string): Promise<string> => {
     try {
       const driverChampionshipId = driver.championshipId || championshipId;
       
@@ -74,7 +74,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           description: "Le pilote existant a été mis à jour.",
         });
         
-        return;
+        return matchingDriver.id;
       }
 
       if ('id' in driver && driver.id) {
@@ -110,6 +110,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           }
 
           console.log('✅ Driver updated successfully');
+          return driver.id;
         } else {
           // Driver has ID but doesn't exist in DB - create with specific ID
           console.log('➕ Creating new driver with specific ID:', {
@@ -135,6 +136,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
           }
 
           console.log('✅ Driver created with ID successfully:', data);
+          return driver.id;
         }
       } else {
         // Create new driver without specific ID
@@ -161,19 +163,11 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
         }
 
         console.log('✅ Driver created successfully:', data);
+        return data.id;
       }
 
-      // Force reload of data to ensure UI updates
-      console.log('🔄 Reloading data after driver operation...');
-      await loadData();
-      
-      // Add a small delay to ensure data propagation
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      toast({
-        title: "Pilote sauvegardé",
-        description: "Le pilote a été sauvegardé avec succès.",
-      });
+      // Should never reach here
+      throw new Error('Failed to save driver - no ID returned');
     } catch (error) {
       console.error('❌ Error saving driver:', error);
       toast({
@@ -182,6 +176,11 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
         variant: "destructive"
       });
       throw error;
+    } finally {
+      // Force reload of data to ensure UI updates
+      console.log('🔄 Reloading data after driver operation...');
+      await loadData();
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
   };
 

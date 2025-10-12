@@ -22,6 +22,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     championshipId,
     loading: dataLoading,
     saveDriver,
+    saveDriverForImport,
     deleteDriver,
     deleteAllDrivers,
     saveRace,
@@ -59,7 +60,7 @@ export const useChampionshipData = (currentView: ViewType) => {
 
   const { handleImport } = useChampionshipImport(
     drivers,
-    saveDriver,
+    saveDriverForImport,
     saveRace,
     refreshData,
     autoSaveStandingsForEvolution

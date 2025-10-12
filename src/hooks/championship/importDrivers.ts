@@ -4,7 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export const createMissingDrivers = async (
   missingDrivers: Driver[],
-  saveDriver: (driver: Driver) => Promise<void>,
+  saveDriver: (driver: Driver) => Promise<string>,
   refreshData: () => Promise<void>,
   toast: ReturnType<typeof useToast>['toast']
 ) => {
@@ -38,8 +38,12 @@ export const createMissingDrivers = async (
       console.log(`💾 Création pilote ${globalIndex + 1}/${missingDrivers.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
       
       try {
-        await saveDriver(driver);
-        console.log(`✅ Pilote créé: ${driver.name}`);
+        const actualDriverId = await saveDriver(driver);
+        console.log(`✅ Pilote créé/mis à jour: ${driver.name} - ID réel: ${actualDriverId.slice(0, 8)}...`);
+        
+        // Mettre à jour l'ID du pilote dans l'objet pour que les résultats utilisent le bon ID
+        driver.id = actualDriverId;
+        
         totalCreated++;
         
         // Délai entre chaque pilote pour éviter la surcharge
