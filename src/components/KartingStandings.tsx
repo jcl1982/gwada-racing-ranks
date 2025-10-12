@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
@@ -151,105 +150,72 @@ const KartingStandings = ({
         </TabsList>
 
         <TabsContent value="mini60" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Général MINI 60
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <StandingsTable
-                  displayTitle="Classement Général MINI 60"
-                  races={races}
-                  type="karting"
-                  standings={mini60Standings}
-                  onPrintPdf={() => {}}
-                />
-                <PodiumSection standings={mini60Standings} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="races">
-              <AccordionTrigger className="text-xl font-bold">
-                Résultats par Course MINI 60
-              </AccordionTrigger>
-              <AccordionContent>
-                <KartingRaceResults
-                  races={races}
-                  drivers={drivers}
-                  category="mini60"
-                  onRaceUpdate={onRaceUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="space-y-6">
+            <StandingsTable
+              displayTitle="Classement Général MINI 60"
+              races={races}
+              type="karting"
+              standings={mini60Standings}
+              onPrintPdf={() => {}}
+            />
+            <PodiumSection standings={mini60Standings} />
+          </div>
+          
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Résultats par Course MINI 60</h3>
+            <KartingRaceResults
+              races={races}
+              drivers={drivers}
+              category="mini60"
+              onRaceUpdate={onRaceUpdate}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="senior" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Général SENIOR MASTER GENTLEMAN
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <StandingsTable
-                  displayTitle="Classement Général SENIOR MASTER GENTLEMAN"
-                  races={races}
-                  type="karting"
-                  standings={seniorStandings}
-                  onPrintPdf={() => {}}
-                />
-                <PodiumSection standings={seniorStandings} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="races">
-              <AccordionTrigger className="text-xl font-bold">
-                Résultats par Course SENIOR MASTER GENTLEMAN
-              </AccordionTrigger>
-              <AccordionContent>
-                <KartingRaceResults
-                  races={races}
-                  drivers={drivers}
-                  category="senior"
-                  onRaceUpdate={onRaceUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="space-y-6">
+            <StandingsTable
+              displayTitle="Classement Général SENIOR MASTER GENTLEMAN"
+              races={races}
+              type="karting"
+              standings={seniorStandings}
+              onPrintPdf={() => {}}
+            />
+            <PodiumSection standings={seniorStandings} />
+          </div>
+          
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Résultats par Course SENIOR MASTER GENTLEMAN</h3>
+            <KartingRaceResults
+              races={races}
+              drivers={drivers}
+              category="senior"
+              onRaceUpdate={onRaceUpdate}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="kz2" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Général KZ2
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <StandingsTable
-                  displayTitle="Classement Général KZ2"
-                  races={races}
-                  type="karting"
-                  standings={kz2Standings}
-                  onPrintPdf={() => {}}
-                />
-                <PodiumSection standings={kz2Standings} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            <AccordionItem value="races">
-              <AccordionTrigger className="text-xl font-bold">
-                Résultats par Course KZ2
-              </AccordionTrigger>
-              <AccordionContent>
-                <KartingRaceResults
-                  races={races}
-                  drivers={drivers}
-                  category="kz2"
-                  onRaceUpdate={onRaceUpdate}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="space-y-6">
+            <StandingsTable
+              displayTitle="Classement Général KZ2"
+              races={races}
+              type="karting"
+              standings={kz2Standings}
+              onPrintPdf={() => {}}
+            />
+            <PodiumSection standings={kz2Standings} />
+          </div>
+          
+          <div className="mt-8">
+            <h3 className="text-xl font-bold mb-4">Résultats par Course KZ2</h3>
+            <KartingRaceResults
+              races={races}
+              drivers={drivers}
+              category="kz2"
+              onRaceUpdate={onRaceUpdate}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
