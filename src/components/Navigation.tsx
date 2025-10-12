@@ -112,8 +112,8 @@ const Navigation = ({
                   <Settings size={18} />
                   <span className="hidden sm:inline">Administration</span>
                 </AccordionTrigger>
-                <AccordionContent className="pb-0 pt-2">
-                  <div className="flex flex-col gap-2 pl-4">
+                <AccordionContent className="pb-2 pt-2">
+                  <div className="flex flex-row gap-4 justify-center items-center px-4">
                     {adminMenuItems.map(({
                       id,
                       label,
@@ -122,7 +122,7 @@ const Navigation = ({
                       <button 
                         key={id} 
                         onClick={() => onViewChange(id)} 
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 text-sm ${currentView === id ? 'bg-primary text-white shadow-md' : 'bg-white/50 text-gray-700 hover:bg-white/80 hover:shadow-sm'}`}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded font-medium transition-all duration-300 text-sm ${currentView === id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
                       >
                         <Icon size={16} />
                         <span>{label}</span>
