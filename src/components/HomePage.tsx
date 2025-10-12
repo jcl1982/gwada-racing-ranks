@@ -92,10 +92,64 @@ const HomePage = ({
         const colorClass = getChampionshipColor(championship.title);
         const isKarting = championship.title === 'Championnat Karting';
         
+        // Fonction pour calculer les classements par catégorie karting
+        const calculateKartingCategoryStandings = (category: string) => {
+          const standingsMap = new Map<string, { totalPoints: number, driverName: string }>();
+          
+          championship.races.forEach(race => {
+            race.results.forEach(result => {
+              const resultCategory = result.category?.toLowerCase() || '';
+              const searchCategory = category.toLowerCase();
+              
+              let isMatchingCategory = false;
+              if (searchCategory === 'mini60') {
+                isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
+              } else if (searchCategory === 'senior') {
+                isMatchingCategory = resultCategory.includes('senior') || 
+                                   resultCategory.includes('master') || 
+                                   resultCategory.includes('gentleman');
+              } else if (searchCategory === 'kz2') {
+                isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+              }
+              
+              if (isMatchingCategory) {
+                const driver = championship.drivers.find(d => d.id === result.driverId);
+                const current = standingsMap.get(result.driverId) || { 
+                  totalPoints: 0, 
+                  driverName: driver?.name || 'Unknown'
+                };
+                const pointsWithBonus = result.points + (result.bonus || 0);
+                standingsMap.set(result.driverId, {
+                  totalPoints: current.totalPoints + pointsWithBonus,
+                  driverName: current.driverName
+                });
+              }
+            });
+          });
+
+          return Array.from(standingsMap.entries())
+            .map(([driverId, data]) => {
+              const driver = championship.drivers.find(d => d.id === driverId);
+              if (!driver) return null;
+              return { driver, totalPoints: data.totalPoints };
+            })
+            .filter((s): s is NonNullable<typeof s> => s !== null)
+            .sort((a, b) => b.totalPoints - a.totalPoints);
+        };
+        
         // Pour le karting, calculer les points avec bonus
         let leader = championship.standings[0];
+        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[] } | null = null;
+        
         if (isKarting && championship.drivers.length > 0) {
-          // Recalculer les standings karting avec bonus
+          // Calculer les classements par catégorie
+          kartingCategoryStandings = {
+            mini60: calculateKartingCategoryStandings('mini60').slice(0, 3),
+            senior: calculateKartingCategoryStandings('senior').slice(0, 3),
+            kz2: calculateKartingCategoryStandings('kz2').slice(0, 3)
+          };
+          
+          // Calculer le leader global
           const kartingStandings = championship.drivers.map(driver => {
             const totalPoints = championship.races.reduce((sum, race) => {
               const result = race.results.find(r => r.driverId === driver.id);
@@ -181,49 +235,108 @@ const HomePage = ({
                   </div>}
 
                 {/* Top 3 */}
-                {championship.standings.length >= 3 && <div className="border-t pt-4 mt-4">
+                {isKarting && kartingCategoryStandings ? (
+                  <div className="border-t pt-4 mt-4">
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <Award size={18} />
+                      Top 3 par Catégorie
+                    </h4>
+                    
+                    {/* MINI 60 */}
+                    <div className="mb-4">
+                      <h5 className="text-sm font-semibold text-purple-700 mb-2">MINI 60</h5>
+                      <div className="space-y-1">
+                        {kartingCategoryStandings.mini60.length > 0 ? (
+                          kartingCategoryStandings.mini60.map((standing, index) => {
+                            const positions = ['🥇', '🥈', '🥉'];
+                            return (
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">{positions[index]}</span>
+                                  <div>
+                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
+                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* SENIOR MASTER GENTLEMAN */}
+                    <div className="mb-4">
+                      <h5 className="text-sm font-semibold text-purple-700 mb-2">SENIOR MASTER GENTLEMAN</h5>
+                      <div className="space-y-1">
+                        {kartingCategoryStandings.senior.length > 0 ? (
+                          kartingCategoryStandings.senior.map((standing, index) => {
+                            const positions = ['🥇', '🥈', '🥉'];
+                            return (
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">{positions[index]}</span>
+                                  <div>
+                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
+                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* KZ2 */}
+                    <div>
+                      <h5 className="text-sm font-semibold text-purple-700 mb-2">KZ2</h5>
+                      <div className="space-y-1">
+                        {kartingCategoryStandings.kz2.length > 0 ? (
+                          kartingCategoryStandings.kz2.map((standing, index) => {
+                            const positions = ['🥇', '🥈', '🥉'];
+                            return (
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">{positions[index]}</span>
+                                  <div>
+                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
+                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : championship.standings.length >= 3 && !isKarting && <div className="border-t pt-4 mt-4">
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
                       <Award size={18} />
                       Top 3
                     </h4>
                     <div className="space-y-2">
-                      {(() => {
-                  // Pour le karting, recalculer le top 3 avec bonus
-                  let top3Standings = championship.standings.slice(0, 3);
-                  if (isKarting) {
-                    const kartingStandings = championship.drivers.map(driver => {
-                      const totalPoints = championship.races.reduce((sum, race) => {
-                        const result = race.results.find(r => r.driverId === driver.id);
-                        return sum + (result?.points || 0) + (result?.bonus || 0);
-                      }, 0);
-                      return { driver, totalPoints };
-                    }).filter(s => s.totalPoints > 0)
-                      .sort((a, b) => b.totalPoints - a.totalPoints)
-                      .slice(0, 3);
-                    
-                    top3Standings = kartingStandings.map((s, i) => ({
-                      driver: s.driver,
-                      totalPoints: s.totalPoints,
-                      montagnePoints: 0,
-                      rallyePoints: 0,
-                      position: i + 1,
-                      positionChange: 0
-                    } as ChampionshipStanding));
-                  }
-                  
-                  const positions = ['🥇', '🥈', '🥉'];
-                  return top3Standings.map((standing, index) => 
-                    <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{positions[index]}</span>
-                        <div>
-                          <p className="font-semibold text-sm">{standing.driver.name}</p>
-                          <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
+                      {championship.standings.slice(0, 3).map((standing, index) => {
+                        const positions = ['🥇', '🥈', '🥉'];
+                        return (
+                          <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">{positions[index]}</span>
+                              <div>
+                                <p className="font-semibold text-sm">{standing.driver.name}</p>
+                                <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>}
               </div>
