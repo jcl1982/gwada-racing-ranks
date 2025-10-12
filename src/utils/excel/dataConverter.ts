@@ -102,14 +102,18 @@ export const convertExcelDataToRaces = (
         // Vérifier si on l'a déjà créé dans newDrivers pendant cette conversion
         // IMPORTANT: vérifier aussi le championshipId pour éviter les doublons
         driver = newDrivers.find(d => {
+          // Ignorer les pilotes qui étaient déjà existants au départ
+          if (existingDrivers.some(ed => ed.id === d.id)) {
+            return false;
+          }
+          
           const newDriverNormalized = d.name
             .toLowerCase()
             .trim()
             .replace(/\s+/g, ' ')
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           return newDriverNormalized === normalizedName && 
-                 d.championshipId === championshipId &&
-                 !existingDrivers.some(ed => ed.id === d.id); // Seulement les nouveaux
+                 d.championshipId === championshipId;
         });
       }
       
