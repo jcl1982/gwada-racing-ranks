@@ -76,7 +76,7 @@ const GeneralStandingsTable = ({
                     {standing.position}
                   </Badge>
                 </td>
-                <td className="py-1 text-center px-0">
+                <td className="py-1 text-left px-2">
                   <PositionChange change={standing.positionChange} />
                 </td>
                 <td className="py-1 px-2">
