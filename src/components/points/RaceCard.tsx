@@ -173,36 +173,40 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
           <h3 className="text-lg font-semibold">{race.name}</h3>
           <Badge variant="outline">{parseLocalDate(race.date).toLocaleDateString('fr-FR')}</Badge>
         </div>
-        {!isEditing ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleEditRace}
-            className="flex items-center gap-2"
-          >
-            <Edit2 className="w-4 h-4" />
-            Modifier
-          </Button>
-        ) : (
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCancelEdit}
-              className="flex items-center gap-2"
-            >
-              <X className="w-4 h-4" />
-              Annuler
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSaveEdit}
-              className="flex items-center gap-2"
-            >
-              <Save className="w-4 h-4" />
-              Sauvegarder
-            </Button>
-          </div>
+        {!isKarting && (
+          <>
+            {!isEditing ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEditRace}
+                className="flex items-center gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                Modifier
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancelEdit}
+                  className="flex items-center gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  Annuler
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleSaveEdit}
+                  className="flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  Sauvegarder
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
