@@ -21,7 +21,7 @@ interface ViewRendererProps {
   races: Race[];
   
   drivers: Driver[];
-  previousStandings: Record<string, ChampionshipStanding[]>;
+  previousStandings: ChampionshipStanding[];
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => Promise<void>;
   handleReset: () => void;
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
@@ -83,7 +83,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="montagne"
           championshipYear={championshipYear}
-          previousStandings={previousStandings.montagne}
+          previousStandings={previousStandings}
         />
       );
     case 'rallye':
@@ -94,7 +94,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="rallye"
           championshipYear={championshipYear}
-          previousStandings={previousStandings.rallye}
+          previousStandings={previousStandings}
         />
       );
     case 'c2r2':
@@ -104,7 +104,7 @@ const ViewRenderer = ({
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           championshipYear={championshipYear}
-          previousStandings={previousStandings.c2r2}
+          previousStandings={previousStandings}
         />
       );
     case 'acceleration':
@@ -115,7 +115,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="acceleration"
           championshipYear={championshipYear}
-          previousStandings={[]}
+          previousStandings={previousStandings}
         />
       );
     case 'karting':
@@ -126,7 +126,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="karting"
           championshipYear={championshipYear}
-          previousStandings={[]}
+          previousStandings={previousStandings}
         />
       );
     case 'import':

@@ -9,12 +9,7 @@ import { createConfigOperations } from './supabase/configOperations';
 export const useSupabaseData = (initialChampionshipId?: string) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
-  const [previousStandings, setPreviousStandings] = useState<Record<string, ChampionshipStanding[]>>({
-    general: [],
-    montagne: [],
-    rallye: [],
-    c2r2: []
-  });
+  const [previousStandings, setPreviousStandings] = useState<ChampionshipStanding[]>([]);
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2025');
   const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
@@ -42,10 +37,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
       console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
         races: appRaces.length,
-        standingsGeneral: appPreviousStandings.general.length,
-        standingsMontagne: appPreviousStandings.montagne.length,
-        standingsRallye: appPreviousStandings.rallye.length,
-        standingsC2R2: appPreviousStandings.c2r2.length
+        standings: appPreviousStandings.length
       });
 
       // Log détaillé avant mise à jour
@@ -55,12 +47,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
       // Forcer la mise à jour des états
       setDrivers([...appDrivers]);
       setRaces([...appRaces]);
-      setPreviousStandings({
-        general: [...appPreviousStandings.general],
-        montagne: [...appPreviousStandings.montagne],
-        rallye: [...appPreviousStandings.rallye],
-        c2r2: [...appPreviousStandings.c2r2]
-      });
+      setPreviousStandings([...appPreviousStandings]);
       setChampionshipTitle(title);
       setChampionshipYear(year);
       setChampionshipId(id);
