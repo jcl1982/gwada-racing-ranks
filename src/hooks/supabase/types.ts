@@ -31,6 +31,8 @@ export interface SupabaseRaceResult {
   time?: string;
   dnf?: boolean;
   car_model?: string;
+  category?: string;
+  bonus?: number;
   created_at: string;
   updated_at: string;
 }

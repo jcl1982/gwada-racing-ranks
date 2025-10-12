@@ -14,6 +14,8 @@ export interface ExcelRaceData {
     points: number;
     time?: string;
     dnf?: boolean;
+    category?: string;
+    bonus?: number;
   }>;
 }
 
@@ -148,13 +150,23 @@ export const parseExcelFile = async (
               parseDNF(row[columnIndices.dnf]) : 
               false;
             
+            const category = columnIndices.category !== -1 ? 
+              String(row[columnIndices.category] || '').trim() : 
+              undefined;
+            
+            const bonus = columnIndices.bonus !== -1 ? 
+              parsePoints(row[columnIndices.bonus]) : 
+              0;
+            
             results.push({
               position,
               driverName: pilote.trim(),
               carModel,
               points,
               time,
-              dnf
+              dnf,
+              category,
+              bonus
             });
           }
           
@@ -209,7 +221,9 @@ const findColumnIndices = (headers: string[]) => {
     carModel: -1,
     points: -1,
     time: -1,
-    dnf: -1
+    dnf: -1,
+    category: -1,
+    bonus: -1
   };
   
   headers.forEach((header, index) => {
@@ -280,6 +294,24 @@ const findColumnIndices = (headers: string[]) => {
       headerLower.includes('statut')
     )) {
       indices.dnf = index;
+    }
+    
+    // Catégorie
+    if (indices.category === -1 && (
+      headerLower.includes('catégorie') ||
+      headerLower.includes('categorie') ||
+      headerLower.includes('category') ||
+      headerLower.includes('cat')
+    )) {
+      indices.category = index;
+    }
+    
+    // Bonus
+    if (indices.bonus === -1 && (
+      headerLower.includes('bonus') ||
+      headerLower.includes('pts bonus')
+    )) {
+      indices.bonus = index;
     }
   });
   

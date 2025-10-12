@@ -62,7 +62,9 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     time: result.time,
     dnf: result.dnf || false,
     // Utiliser le car_model du résultat s'il existe, sinon celui du pilote
-    car_model: result.carModel || carModelMap.get(result.driverId) || null
+    car_model: result.carModel || carModelMap.get(result.driverId) || null,
+    category: result.category || null,
+    bonus: result.bonus || 0
   }));
 
   console.log('📊 [SAVE_RESULTS] Données à insérer (premier élément):', resultsToInsert[0]);

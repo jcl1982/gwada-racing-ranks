@@ -114,7 +114,9 @@ export const convertExcelDataToRaces = (
         driverId: driver.id,
         position: result.position,
         points: result.points,
-        carModel: result.carModel || driver.carModel
+        carModel: result.carModel || driver.carModel,
+        category: result.category,
+        bonus: result.bonus || 0
       };
       
       // Log pour vérification C2R2

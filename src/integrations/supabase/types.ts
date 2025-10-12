@@ -150,7 +150,9 @@ export type Database = {
       }
       race_results: {
         Row: {
+          bonus: number | null
           car_model: string | null
+          category: string | null
           created_at: string
           dnf: boolean | null
           driver_id: string
@@ -162,7 +164,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bonus?: number | null
           car_model?: string | null
+          category?: string | null
           created_at?: string
           dnf?: boolean | null
           driver_id: string
@@ -174,7 +178,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bonus?: number | null
           car_model?: string | null
+          category?: string | null
           created_at?: string
           dnf?: boolean | null
           driver_id?: string
@@ -204,7 +210,9 @@ export type Database = {
       }
       race_results_archive: {
         Row: {
+          bonus: number | null
           car_model: string | null
+          category: string | null
           championship_id: string
           created_at: string
           dnf: boolean | null
@@ -219,7 +227,9 @@ export type Database = {
           time: string | null
         }
         Insert: {
+          bonus?: number | null
           car_model?: string | null
+          category?: string | null
           championship_id: string
           created_at?: string
           dnf?: boolean | null
@@ -234,7 +244,9 @@ export type Database = {
           time?: string | null
         }
         Update: {
+          bonus?: number | null
           car_model?: string | null
+          category?: string | null
           championship_id?: string
           created_at?: string
           dnf?: boolean | null

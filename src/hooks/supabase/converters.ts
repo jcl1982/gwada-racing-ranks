@@ -25,7 +25,9 @@ export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?
     points: result.points,
     time: result.time,
     dnf: result.dnf || false,
-    carModel: result.car_model
+    carModel: result.car_model,
+    category: result.category,
+    bonus: result.bonus || 0
   }))
 });
 
@@ -65,6 +67,8 @@ export const convertSupabaseRaceToApp = (supabaseRace: SupabaseRace, results: Su
     points: result.points,
     time: result.time,
     dnf: result.dnf || false,
-    carModel: result.car_model
+    carModel: result.car_model,
+    category: result.category,
+    bonus: result.bonus || 0
   }))
 });

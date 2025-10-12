@@ -15,6 +15,8 @@ export interface RaceResult {
   time?: string;
   dnf?: boolean;
   carModel?: string;
+  category?: string;
+  bonus?: number;
 }
 
 export interface Race {
