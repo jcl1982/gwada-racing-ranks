@@ -137,6 +137,12 @@ const KartingStandings = ({
       
       <RaceCalendar races={races} />
 
+      <div className="bg-muted/50 border border-border rounded-lg p-4">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-semibold">Note :</span> Bonus = Points issus du meilleur temps dans la finale
+        </p>
+      </div>
+
       <Tabs defaultValue="mini60" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="mini60">MINI 60</TabsTrigger>
