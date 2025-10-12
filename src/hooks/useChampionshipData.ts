@@ -49,10 +49,15 @@ export const useChampionshipData = (currentView: ViewType) => {
       drivers: drivers.length,
       montagneRaces: montagneRaces.length,
       rallyeRaces: rallyeRaces.length,
-      previousStandings: previousStandings.length
+      previousStandingsGeneral: previousStandings.general.length
     });
     
-    const calculatedStandings = calculateChampionshipStandings(drivers, montagneRaces, rallyeRaces, previousStandings);
+    const calculatedStandings = calculateChampionshipStandings(
+      drivers, 
+      montagneRaces, 
+      rallyeRaces, 
+      previousStandings.general
+    );
     
     console.log('✅ Classements recalculés:', calculatedStandings.slice(0, 3).map(s => ({
       position: s.position,

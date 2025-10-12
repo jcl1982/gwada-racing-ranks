@@ -115,8 +115,8 @@ export const loadSupabaseData = async (championshipId?: string) => {
       });
     }
 
-    // Load previous standings (only the most recent save for evolution tracking)
-    console.log('📊 Chargement des classements précédents...');
+    // Load previous standings by type (only the most recent save per type for evolution tracking)
+    console.log('📊 Chargement des classements précédents par type...');
     const standingsQuery = supabase
       .from('previous_standings')
       .select(`
@@ -137,28 +137,52 @@ export const loadSupabaseData = async (championshipId?: string) => {
       throw standingsError;
     }
 
-    // Get the most recent save for evolution tracking
-    // This ensures that evolutions are calculated from the last saved state (before import)
-    const uniqueSaveTimes = [...new Set(standingsData?.map(s => s.saved_at))].sort((a, b) => 
-      new Date(b).getTime() - new Date(a).getTime()
-    );
+    // Group standings by type and get the most recent save for each type
+    const standingsByType: Record<string, ChampionshipStanding[]> = {
+      general: [],
+      montagne: [],
+      rallye: [],
+      c2r2: []
+    };
+
+    if (standingsData && standingsData.length > 0) {
+      // Get unique save times per standing type
+      const typeGroups: Record<string, string[]> = {};
+      standingsData.forEach(s => {
+        const type = s.standing_type || 'general';
+        if (!typeGroups[type]) {
+          typeGroups[type] = [];
+        }
+        if (!typeGroups[type].includes(s.saved_at)) {
+          typeGroups[type].push(s.saved_at);
+        }
+      });
+
+      // Sort save times for each type
+      Object.keys(typeGroups).forEach(type => {
+        typeGroups[type].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      });
+
+      // Get the most recent save for each type
+      Object.keys(standingsByType).forEach(type => {
+        const latestSaveForType = typeGroups[type]?.[0];
+        if (latestSaveForType) {
+          standingsByType[type] = standingsData
+            .filter(s => (s.standing_type || 'general') === type && s.saved_at === latestSaveForType)
+            .map(convertSupabaseStanding);
+        }
+      });
+
+      console.log('✅ Classements précédents chargés par type:', {
+        total: standingsData.length,
+        general: { count: standingsByType.general.length, latestSave: typeGroups.general?.[0] },
+        montagne: { count: standingsByType.montagne.length, latestSave: typeGroups.montagne?.[0] },
+        rallye: { count: standingsByType.rallye.length, latestSave: typeGroups.rallye?.[0] },
+        c2r2: { count: standingsByType.c2r2.length, latestSave: typeGroups.c2r2?.[0] }
+      });
+    }
     
-    // Use the most recent save for evolution calculation
-    const referenceTimestamp = uniqueSaveTimes[0];
-    
-    const previousStandings: ChampionshipStanding[] = referenceTimestamp
-      ? standingsData
-          ?.filter(s => s.saved_at === referenceTimestamp)
-          .map(convertSupabaseStanding) || []
-      : [];
-    
-    console.log('✅ Classements précédents chargés:', {
-      total: standingsData?.length || 0,
-      uniqueSaves: uniqueSaveTimes.length,
-      latestSave: uniqueSaveTimes[0],
-      referenceForEvolution: referenceTimestamp,
-      forEvolution: previousStandings.length
-    });
+    const previousStandings = standingsByType;
 
     const result = {
       drivers,
