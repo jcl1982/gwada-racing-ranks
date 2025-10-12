@@ -11,6 +11,8 @@ interface AdminPanelProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  kartingRaces: Race[];
+  accelerationRaces: Race[];
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
@@ -31,6 +33,8 @@ const AdminPanel = ({
   drivers,
   montagneRaces,
   rallyeRaces,
+  kartingRaces,
+  accelerationRaces,
   standings,
   championshipTitle,
   championshipYear,
@@ -50,7 +54,7 @@ const AdminPanel = ({
 
   const handleRaceUpdate = async (raceId: string, results: RaceResult[]) => {
     // Trouver la course à mettre à jour
-    const allRaces = [...montagneRaces, ...rallyeRaces];
+    const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
     const raceToUpdate = allRaces.find(race => race.id === raceId);
     
     if (!raceToUpdate) {
@@ -79,6 +83,8 @@ const AdminPanel = ({
             drivers={drivers}
             montagneRaces={montagneRaces}
             rallyeRaces={rallyeRaces}
+            kartingRaces={kartingRaces}
+            accelerationRaces={accelerationRaces}
             standings={standings}
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}

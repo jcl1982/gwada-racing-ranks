@@ -13,6 +13,8 @@ interface AdminTabsContentProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  kartingRaces: Race[];
+  accelerationRaces: Race[];
   standings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
@@ -33,6 +35,8 @@ const AdminTabsContent = ({
   drivers,
   montagneRaces,
   rallyeRaces,
+  kartingRaces,
+  accelerationRaces,
   standings,
   championshipTitle,
   championshipYear,
@@ -66,6 +70,8 @@ const AdminTabsContent = ({
           drivers={drivers}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
+          kartingRaces={kartingRaces}
+          accelerationRaces={accelerationRaces}
           championshipId={championshipId}
           onRacesChange={onRacesChange}
           saveRace={saveRace}

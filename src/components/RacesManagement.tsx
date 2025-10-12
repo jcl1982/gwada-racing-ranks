@@ -9,6 +9,8 @@ interface RacesManagementProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
+  kartingRaces: Race[];
+  accelerationRaces: Race[];
   championshipId?: string;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
@@ -19,6 +21,8 @@ const RacesManagement = ({
   drivers, 
   montagneRaces, 
   rallyeRaces,
+  kartingRaces,
+  accelerationRaces,
   championshipId,
   onRacesChange, 
   saveRace, 
@@ -28,7 +32,7 @@ const RacesManagement = ({
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingRace, setEditingRace] = useState<Race | null>(null);
 
-  const allRaces = [...montagneRaces, ...rallyeRaces];
+  const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
 
   const handleAddRace = async (raceData: Omit<Race, 'id' | 'results'>) => {
     console.log('Adding new race:', raceData, 'for championship:', championshipId);
