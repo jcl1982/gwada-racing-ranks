@@ -158,7 +158,7 @@ const KartingStandings = ({
               </AccordionTrigger>
               <AccordionContent className="space-y-6">
                 <StandingsTable
-                  displayTitle="Classement MINI 60"
+                  displayTitle="Classement Général MINI 60"
                   races={races}
                   type="karting"
                   standings={mini60Standings}
@@ -192,7 +192,7 @@ const KartingStandings = ({
               </AccordionTrigger>
               <AccordionContent className="space-y-6">
                 <StandingsTable
-                  displayTitle="Classement SENIOR MASTER GENTLEMAN"
+                  displayTitle="Classement Général SENIOR MASTER GENTLEMAN"
                   races={races}
                   type="karting"
                   standings={seniorStandings}
@@ -226,7 +226,7 @@ const KartingStandings = ({
               </AccordionTrigger>
               <AccordionContent className="space-y-6">
                 <StandingsTable
-                  displayTitle="Classement KZ2"
+                  displayTitle="Classement Général KZ2"
                   races={races}
                   type="karting"
                   standings={kz2Standings}
