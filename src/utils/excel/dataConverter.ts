@@ -87,16 +87,22 @@ export const convertExcelDataToRaces = (
           name: driverName,
           number: nextDriverNumber,
           carModel: result.carModel || undefined,
+          team: excelRace.kartingCategory || undefined,
           championshipId
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Car: ${driver.carModel || 'N/A'}, Championship: ${championshipId})`);
+        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Car: ${driver.carModel || 'N/A'}, Team: ${driver.team || 'N/A'}, Championship: ${championshipId})`);
       } else {
         // Update car model if provided in Excel and not already set
         if (result.carModel && !driver.carModel) {
           driver.carModel = result.carModel;
           console.log(`Updated car model for existing driver: ${driver.name} -> ${driver.carModel}`);
+        }
+        // Update team if karting category is provided and not already set
+        if (excelRace.kartingCategory && !driver.team) {
+          driver.team = excelRace.kartingCategory;
+          console.log(`Updated team/category for existing driver: ${driver.name} -> ${driver.team}`);
         }
         console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }

@@ -5,7 +5,8 @@ import { generateValidUUID } from './uuidUtils';
 export interface ExcelRaceData {
   raceName: string;
   raceDate: string;
-  raceType: 'montagne' | 'rallye';
+  raceType: 'montagne' | 'rallye' | 'karting';
+  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2';
   results: Array<{
     position: number;
     driverName: string;
@@ -16,7 +17,11 @@ export interface ExcelRaceData {
   }>;
 }
 
-export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'): Promise<ExcelRaceData[]> => {
+export const parseExcelFile = async (
+  file: File, 
+  raceType: 'montagne' | 'rallye' | 'karting',
+  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'
+): Promise<ExcelRaceData[]> => {
   console.log('📊 Début de l\'analyse du fichier Excel...');
   
   return new Promise((resolve, reject) => {
@@ -171,6 +176,7 @@ export const parseExcelFile = async (file: File, raceType: 'montagne' | 'rallye'
             raceName,
             raceDate,
             raceType,
+            kartingCategory: raceType === 'karting' ? kartingCategory : undefined,
             results
           });
         });

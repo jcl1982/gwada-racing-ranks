@@ -10,7 +10,8 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [error, setError] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ExcelRaceData[] | null>(null);
   const [success, setSuccess] = useState(false);
-  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye'>('montagne');
+  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye' | 'karting'>('montagne');
+  const [selectedKartingCategory, setSelectedKartingCategory] = useState<'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'>('MINI 60');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const { toast } = useToast();
 
@@ -21,7 +22,11 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     setPreviewData(null);
 
     try {
-      const excelData = await parseExcelFile(file, selectedRaceType);
+      const excelData = await parseExcelFile(
+        file, 
+        selectedRaceType,
+        selectedRaceType === 'karting' ? selectedKartingCategory : undefined
+      );
       setPreviewData(excelData);
       toast({
         title: "Fichier analysé",
@@ -44,7 +49,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     setShowSaveDialog(true);
   };
 
-  const saveCurrentStandings = async (racesNames: string[], raceType: 'montagne' | 'rallye') => {
+  const saveCurrentStandings = async (racesNames: string[], raceType: 'montagne' | 'rallye' | 'karting') => {
     if (!championshipId) return false;
     
     try {
@@ -56,6 +61,10 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         : `Avant import - ${new Date().toLocaleString('fr-FR')}`;
       
       // Sauvegarder le classement correspondant au type de course importé
+      // Pour karting, on ne sauvegarde pas car c'est un classement par catégorie
+      if (raceType === 'karting') {
+        return true; // Pas de sauvegarde pour le karting
+      }
       const standingType = raceType;
       
       const { error } = await supabase.rpc('save_standings_by_type', {
@@ -135,8 +144,10 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     previewData,
     success,
     selectedRaceType,
+    selectedKartingCategory,
     showSaveDialog,
     setSelectedRaceType,
+    setSelectedKartingCategory,
     setShowSaveDialog,
     handleFileUpload,
     handleImportClick,
