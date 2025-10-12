@@ -117,7 +117,7 @@ const StandingsTable = ({
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              <th className="text-left py-1 px-1 font-semibold">Véhicule</th>
+              {type !== 'karting' && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
               {races.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
@@ -149,11 +149,13 @@ const StandingsTable = ({
                       {standing.driver.name}
                     </div>
                   </td>
-                  <td className="py-1 px-1">
-                    <div className="text-sm text-gray-600 unicode-enhanced">
-                      {standing.driver.carModel || '-'}
-                    </div>
-                  </td>
+                  {type !== 'karting' && (
+                    <td className="py-1 px-1">
+                      <div className="text-sm text-gray-600 unicode-enhanced">
+                        {standing.driver.carModel || '-'}
+                      </div>
+                    </td>
+                  )}
                   {races.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
