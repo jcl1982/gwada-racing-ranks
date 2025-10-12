@@ -3,37 +3,50 @@ import { supabase } from '@/integrations/supabase/client';
 import { Race } from '@/types/championship';
 import { isValidUUID } from './utils';
 
-export const findExistingRace = async (name: string, date: string): Promise<{ id: string } | null> => {
-  console.log('🔍 [FIND_RACE] Recherche d\'une course existante:', { name, date });
+export const findExistingRace = async (name: string, date: string, championshipId?: string): Promise<{ id: string } | null> => {
+  console.log('🔍 [FIND_RACE] Recherche d\'une course existante:', { name, date, championshipId });
   
   // Normaliser le nom pour la comparaison (trim + lowercase)
-  const normalizedName = name.trim();
+  const normalizedName = name.trim().toLowerCase();
   
-  const { data, error } = await supabase
+  let query = supabase
     .from('races')
-    .select('id, name, date')
-    .eq('date', date)
-    .maybeSingle();
+    .select('id, name, date, championship_id')
+    .eq('date', date);
+  
+  // Filtrer par championnat si fourni
+  if (championshipId) {
+    query = query.eq('championship_id', championshipId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error('❌ [FIND_RACE] Erreur lors de la recherche de course:', error);
     return null;
   }
 
-  // Vérifier si le nom correspond (case-insensitive)
-  if (data && data.name.trim().toLowerCase() === normalizedName.toLowerCase()) {
-    console.log('✅ [FIND_RACE] Course existante trouvée (même nom et date):', { id: data.id, name: data.name });
-    return { id: data.id };
-  } else if (data) {
-    console.log('ℹ️ [FIND_RACE] Course avec même date mais nom différent:', { 
-      existing: data.name, 
-      new: normalizedName 
-    });
-    return null;
-  } else {
-    console.log('ℹ️ [FIND_RACE] Aucune course existante trouvée pour cette date');
+  if (!data || data.length === 0) {
+    console.log('ℹ️ [FIND_RACE] Aucune course existante trouvée pour cette date et ce championnat');
     return null;
   }
+
+  // Chercher une course avec le même nom (case-insensitive)
+  const matchingRace = data.find(race => race.name.trim().toLowerCase() === normalizedName);
+  
+  if (matchingRace) {
+    console.log('✅ [FIND_RACE] Course existante trouvée (même nom, date et championnat):', { 
+      id: matchingRace.id, 
+      name: matchingRace.name 
+    });
+    return { id: matchingRace.id };
+  }
+  
+  console.log('ℹ️ [FIND_RACE] Course(s) avec même date mais nom différent:', { 
+    existing: data.map(r => r.name), 
+    new: name 
+  });
+  return null;
 };
 
 export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>, championshipId?: string): Promise<string> => {

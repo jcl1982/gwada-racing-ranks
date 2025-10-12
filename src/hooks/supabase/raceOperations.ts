@@ -31,10 +31,11 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         }
       } else {
         // Sinon, vérifier si une course avec le même nom et date existe déjà
-        const existingRace = await findExistingRace(race.name, race.date);
+        const finalChampionshipId = race.championshipId || championshipId;
+        const existingRace = await findExistingRace(race.name, race.date, finalChampionshipId);
         
         if (existingRace) {
-          console.log('🔄 Course existante trouvée, mise à jour:', existingRace.id);
+          console.log('⚠️ Course existante trouvée, utilisation de la course existante:', existingRace.id);
           raceId = existingRace.id;
           
           // Supprimer les anciens résultats avant d'ajouter les nouveaux
