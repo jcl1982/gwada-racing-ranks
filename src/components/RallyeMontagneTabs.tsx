@@ -1,6 +1,5 @@
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Trophy, Mountain, Car, Award } from 'lucide-react';
 import GeneralStandingsHeader from '@/components/GeneralStandingsHeader';
 import GeneralStandingsTable from '@/components/GeneralStandingsTable';
@@ -125,152 +124,104 @@ const RallyeMontagneTabs = ({
 
         {/* Classement Général */}
         <TabsContent value="general" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full" defaultValue="standings">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Général Provisoire
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <GeneralStandingsHeader 
-                  championshipTitle={championshipTitle}
-                  championshipYear={championshipYear}
-                />
-                <GeneralStandingsTable
-                  standings={generalStandings}
-                  championshipTitle={championshipTitle}
-                  championshipYear={championshipYear}
-                  onPrintPdf={handleGeneralPrintPdf}
-                  onPrintImage={handleGeneralPrintImage}
-                  onPrintWeb={handleGeneralPrintWeb}
-                  onPrintUnicode={handleGeneralPrintUnicode}
-                />
-                <GeneralStandingsStats standings={generalStandings} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            {onRaceUpdate && (
-              <AccordionItem value="races">
-                <AccordionTrigger className="text-xl font-bold">
-                  Résultats par Course
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PointsEditor
-                    races={[...montagneRaces, ...rallyeRaces]}
-                    drivers={drivers}
-                    onRaceUpdate={onRaceUpdate}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            )}
-          </Accordion>
+          <GeneralStandingsHeader 
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+          />
+          <GeneralStandingsTable
+            standings={generalStandings}
+            championshipTitle={championshipTitle}
+            championshipYear={championshipYear}
+            onPrintPdf={handleGeneralPrintPdf}
+            onPrintImage={handleGeneralPrintImage}
+            onPrintWeb={handleGeneralPrintWeb}
+            onPrintUnicode={handleGeneralPrintUnicode}
+          />
+          <GeneralStandingsStats standings={generalStandings} />
+          
+          {onRaceUpdate && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course</h2>
+              <PointsEditor
+                races={[...montagneRaces, ...rallyeRaces]}
+                drivers={drivers}
+                onRaceUpdate={onRaceUpdate}
+              />
+            </div>
+          )}
         </TabsContent>
 
         {/* Trophée de la Montagne */}
         <TabsContent value="montagne" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full" defaultValue="standings">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Trophée de la Montagne
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <CategoryHeader 
-                  displayTitle="Trophée de la Montagne" 
-                  championshipYear={championshipYear} 
-                />
-                <RaceCalendar races={montagneRaces} />
-                <StandingsTable
-                  displayTitle="Trophée de la Montagne"
-                  races={montagneRaces}
-                  type="montagne"
-                  standings={toSimplifiedStandings(montagneStandings, 'montagne')}
-                  onPrintPdf={handleMontagnePrintPdf}
-                />
-                <PodiumSection standings={toSimplifiedStandings(montagneStandings, 'montagne')} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            {onRaceUpdate && (
-              <AccordionItem value="races">
-                <AccordionTrigger className="text-xl font-bold">
-                  Résultats par Course Montagne
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PointsEditor
-                    races={montagneRaces}
-                    drivers={drivers}
-                    onRaceUpdate={onRaceUpdate}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            )}
-          </Accordion>
+          <CategoryHeader 
+            displayTitle="Trophée de la Montagne" 
+            championshipYear={championshipYear} 
+          />
+          <RaceCalendar races={montagneRaces} />
+          <StandingsTable
+            displayTitle="Trophée de la Montagne"
+            races={montagneRaces}
+            type="montagne"
+            standings={toSimplifiedStandings(montagneStandings, 'montagne')}
+            onPrintPdf={handleMontagnePrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(montagneStandings, 'montagne')} />
+          
+          {onRaceUpdate && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course Montagne</h2>
+              <PointsEditor
+                races={montagneRaces}
+                drivers={drivers}
+                onRaceUpdate={onRaceUpdate}
+              />
+            </div>
+          )}
         </TabsContent>
 
         {/* Trophée des Rallyes */}
         <TabsContent value="rallye" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full" defaultValue="standings">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Trophée des Rallyes
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <CategoryHeader 
-                  displayTitle="Trophée des Rallyes" 
-                  championshipYear={championshipYear} 
-                />
-                <RaceCalendar races={rallyeRaces} />
-                <StandingsTable
-                  displayTitle="Trophée des Rallyes"
-                  races={rallyeRaces}
-                  type="rallye"
-                  standings={toSimplifiedStandings(rallyeStandings, 'rallye')}
-                  onPrintPdf={handleRallyePrintPdf}
-                />
-                <PodiumSection standings={toSimplifiedStandings(rallyeStandings, 'rallye')} />
-              </AccordionContent>
-            </AccordionItem>
-            
-            {onRaceUpdate && (
-              <AccordionItem value="races">
-                <AccordionTrigger className="text-xl font-bold">
-                  Résultats par Course Rallye
-                </AccordionTrigger>
-                <AccordionContent>
-                  <PointsEditor
-                    races={rallyeRaces}
-                    drivers={drivers}
-                    onRaceUpdate={onRaceUpdate}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            )}
-          </Accordion>
+          <CategoryHeader 
+            displayTitle="Trophée des Rallyes" 
+            championshipYear={championshipYear} 
+          />
+          <RaceCalendar races={rallyeRaces} />
+          <StandingsTable
+            displayTitle="Trophée des Rallyes"
+            races={rallyeRaces}
+            type="rallye"
+            standings={toSimplifiedStandings(rallyeStandings, 'rallye')}
+            onPrintPdf={handleRallyePrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(rallyeStandings, 'rallye')} />
+          
+          {onRaceUpdate && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
+              <PointsEditor
+                races={rallyeRaces}
+                drivers={drivers}
+                onRaceUpdate={onRaceUpdate}
+              />
+            </div>
+          )}
         </TabsContent>
 
         {/* Trophée C2 R2 */}
         <TabsContent value="c2r2" className="space-y-6">
-          <Accordion type="single" collapsible className="w-full" defaultValue="standings">
-            <AccordionItem value="standings">
-              <AccordionTrigger className="text-xl font-bold">
-                Classement Trophée C2 R2
-              </AccordionTrigger>
-              <AccordionContent className="space-y-6">
-                <CategoryHeader 
-                  displayTitle="Trophée C2 R2" 
-                  championshipYear={championshipYear} 
-                />
-                <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} />
-                <StandingsTable
-                  displayTitle="Trophée C2 R2"
-                  races={[...montagneRaces, ...rallyeRaces]}
-                  type="c2r2"
-                  standings={toSimplifiedStandings(c2r2Standings, 'c2r2')}
-                  onPrintPdf={handleC2R2PrintPdf}
-                />
-                <PodiumSection standings={toSimplifiedStandings(c2r2Standings, 'c2r2')} />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <CategoryHeader 
+            displayTitle="Trophée C2 R2" 
+            championshipYear={championshipYear} 
+          />
+          <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} />
+          <StandingsTable
+            displayTitle="Trophée C2 R2"
+            races={[...montagneRaces, ...rallyeRaces]}
+            type="c2r2"
+            standings={toSimplifiedStandings(c2r2Standings, 'c2r2')}
+            onPrintPdf={handleC2R2PrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(c2r2Standings, 'c2r2')} />
         </TabsContent>
       </Tabs>
     </div>
