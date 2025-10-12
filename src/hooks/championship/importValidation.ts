@@ -24,20 +24,29 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
   
   console.log('🔍 [FIND_MISSING] Liste des pilotes existants:');
   existingDrivers.forEach((d, i) => {
-    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}...)`);
+    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., ChampID: ${d.championshipId?.substring(0, 8)}...)`);
   });
   
   console.log('🔍 [FIND_MISSING] Comparaison en cours...');
   
   const missing = newDrivers.filter(newDriver => {
-    // Normaliser les noms (trim + lowercase) pour comparaison robuste
+    // Ne considérer que les pilotes qui ne sont PAS dans existingDrivers
+    const isExisting = existingDrivers.some(ed => ed.id === newDriver.id);
+    
+    if (isExisting) {
+      console.log(`  ⏭️ Pilote déjà existant ignoré: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}...)`);
+      return false;
+    }
+    
+    // Vérifier par nom ET championshipId pour éviter les doublons
     const normalizedNewName = newDriver.name.trim().toLowerCase();
     const exists = existingDrivers.find(existingDriver => 
-      existingDriver.name.trim().toLowerCase() === normalizedNewName
+      existingDriver.name.trim().toLowerCase() === normalizedNewName &&
+      existingDriver.championshipId === newDriver.championshipId
     );
     
     if (!exists) {
-      console.log(`  ➕ Pilote manquant: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}..., sera créé)`);
+      console.log(`  ➕ Pilote manquant: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}..., ChampID: ${newDriver.championshipId?.substring(0, 8)}..., sera créé)`);
     } else {
       console.log(`  ✅ Pilote existe déjà: "${newDriver.name}" → trouvé: "${exists.name}" (ID: ${exists.id.substring(0, 8)}...)`);
     }
@@ -50,7 +59,7 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
   if (missing.length > 0) {
     console.log('🔍 [FIND_MISSING] Liste des pilotes à créer:');
     missing.forEach((d, i) => {
-      console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}...)`);
+      console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., ChampID: ${d.championshipId?.substring(0, 8)}...)`);
     });
   }
   console.log('🔍 [FIND_MISSING] ====================');

@@ -84,13 +84,22 @@ export const convertExcelDataToRaces = (
       // Normaliser le nom pour la comparaison (insensible à la casse et espaces)
       const normalizedName = driverName.toLowerCase().trim();
       
-      // Chercher le pilote dans newDrivers (qui contient déjà tous les existingDrivers)
-      let driver = newDrivers.find(d => 
-        d.name.toLowerCase().trim() === normalizedName
+      // Chercher d'abord dans les pilotes existants du championnat
+      let driver = existingDrivers.find(d => 
+        d.name.toLowerCase().trim() === normalizedName &&
+        d.championshipId === championshipId
       );
       
       if (!driver) {
-        // Créer un nouveau pilote uniquement s'il n'existe vraiment pas
+        // Vérifier si on l'a déjà créé dans newDrivers pendant cette conversion
+        driver = newDrivers.find(d => 
+          d.name.toLowerCase().trim() === normalizedName &&
+          !existingDrivers.some(ed => ed.id === d.id) // Seulement les nouveaux
+        );
+      }
+      
+      if (!driver) {
+        // Créer un nouveau pilote temporaire (sera créé dans la DB plus tard)
         driver = {
           id: generateValidUUID(),
           name: driverName,
@@ -101,7 +110,7 @@ export const convertExcelDataToRaces = (
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`➕ [CONVERTER] Nouveau pilote créé: "${driver.name}" (ID: ${driver.id.substring(0, 8)}..., Numéro: ${driver.number})`);
+        console.log(`➕ [CONVERTER] Nouveau pilote identifié: "${driver.name}" (ID: ${driver.id.substring(0, 8)}..., Numéro: ${driver.number})`);
       } else {
         console.log(`✅ [CONVERTER] Pilote existant réutilisé: "${driver.name}" (ID: ${driver.id.substring(0, 8)}...)`);
         

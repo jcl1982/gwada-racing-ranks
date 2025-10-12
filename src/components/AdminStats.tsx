@@ -12,12 +12,63 @@ interface AdminStatsProps {
   drivers: Driver[];
   races: Race[];
   standings: ChampionshipStanding[];
+  championshipType?: string;
 }
 
-const AdminStats = ({ drivers, races, standings }: AdminStatsProps) => {
+const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsProps) => {
   const totalRaces = races.length;
   const totalParticipants = drivers.length;
-  const topDriver = standings[0];
+  const isKarting = championshipType === 'karting';
+  
+  // Pour le karting, calculer les meilleurs pilotes par catégorie
+  const getKartingTopDrivers = () => {
+    if (!isKarting) return [];
+    
+    const categories = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2'];
+    return categories.map(category => {
+      const categoryRaces = races.filter(r => r.type === 'karting');
+      const driverPoints = new Map<string, number>();
+      
+      categoryRaces.forEach(race => {
+        race.results.forEach(result => {
+          const resultCategory = result.category?.toLowerCase() || '';
+          const searchCategory = category.toLowerCase();
+          
+          let isMatchingCategory = false;
+          if (searchCategory.includes('mini') && searchCategory.includes('60')) {
+            isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
+          } else if (searchCategory.includes('senior')) {
+            isMatchingCategory = resultCategory.includes('senior') || 
+                               resultCategory.includes('master') || 
+                               resultCategory.includes('gentleman');
+          } else if (searchCategory.includes('kz2')) {
+            isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+          }
+          
+          if (isMatchingCategory) {
+            const current = driverPoints.get(result.driverId) || 0;
+            driverPoints.set(result.driverId, current + result.points + (result.bonus || 0));
+          }
+        });
+      });
+      
+      const sortedDrivers = Array.from(driverPoints.entries())
+        .map(([driverId, points]) => ({
+          driver: drivers.find(d => d.id === driverId),
+          points
+        }))
+        .filter(d => d.driver)
+        .sort((a, b) => b.points - a.points);
+      
+      return {
+        category,
+        topDriver: sortedDrivers[0]
+      };
+    }).filter(c => c.topDriver);
+  };
+  
+  const kartingTopDrivers = getKartingTopDrivers();
+  const topDriver = !isKarting ? standings[0] : null;
   
   // Grouper les courses par type
   const racesByType = races.reduce((acc, race) => {
@@ -75,7 +126,7 @@ const AdminStats = ({ drivers, races, standings }: AdminStatsProps) => {
         ))}
       </div>
 
-      {topDriver && (
+      {topDriver && !isKarting && (
         <Card className="p-6">
           <div className="flex items-center gap-4">
             <Star className="text-yellow-500 w-8 h-8" />
@@ -84,6 +135,29 @@ const AdminStats = ({ drivers, races, standings }: AdminStatsProps) => {
               <p className="text-gray-600">{topDriver.driver.name}</p>
               <p className="text-sm text-gray-500">{topDriver.totalPoints} points</p>
             </div>
+          </div>
+        </Card>
+      )}
+
+      {isKarting && kartingTopDrivers.length > 0 && (
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Star className="text-yellow-500 w-6 h-6" />
+            Leaders par Catégorie
+          </h3>
+          <div className="space-y-3">
+            {kartingTopDrivers.map(({ category, topDriver }) => (
+              <div key={category} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-sm text-gray-500">{category}</p>
+                  <p className="text-lg font-semibold">{topDriver.driver?.name}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-primary">{topDriver.points}</p>
+                  <p className="text-xs text-gray-500">points</p>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       )}

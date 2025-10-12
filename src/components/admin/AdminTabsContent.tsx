@@ -52,6 +52,14 @@ const AdminTabsContent = ({
   refreshData,
   onRaceUpdate
 }: AdminTabsContentProps) => {
+  // Détecter le type de championnat en fonction des courses
+  const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
+  const championshipType = kartingRaces.length > 0 && kartingRaces.length >= allRaces.length * 0.5
+    ? 'karting'
+    : montagneRaces.length > rallyeRaces.length
+    ? 'montagne'
+    : 'rallye';
+
   return (
     <>
       <TabsContent value="drivers" className="mt-6">
@@ -92,6 +100,7 @@ const AdminTabsContent = ({
           drivers={drivers}
           races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
           standings={standings}
+          championshipType={championshipType}
         />
       </TabsContent>
 
