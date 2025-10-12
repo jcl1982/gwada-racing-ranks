@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { calculateC2R2Standings } from '@/utils/championship';
+import { useStandingsCalculation } from '@/hooks/useStandingsCalculation';
+import { toSimplifiedStandings } from '@/utils/standingsConverter';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -20,6 +21,7 @@ interface C2R2StandingsProps {
   montagneRaces: Race[];
   rallyeRaces: Race[];
   championshipYear: string;
+  championshipId: string;
   previousStandings?: ChampionshipStanding[];
 }
 
@@ -27,15 +29,20 @@ const C2R2Standings = ({
   drivers, 
   montagneRaces, 
   rallyeRaces, 
-  championshipYear, 
+  championshipYear,
+  championshipId,
   previousStandings 
 }: C2R2StandingsProps) => {
   const { exportCategoryStandings } = usePdfExport();
 
-  // Calculer le classement C2 R2 avec les changements de position
-  const c2r2Standings = useMemo(() => {
-    return calculateC2R2Standings(drivers, montagneRaces, rallyeRaces, previousStandings);
-  }, [drivers, montagneRaces, rallyeRaces, previousStandings]);
+  // Utiliser le hook centralisé pour calculer les standings C2R2
+  const { c2r2Standings } = useStandingsCalculation({
+    drivers,
+    montagneRaces,
+    rallyeRaces,
+    previousStandings,
+    championshipId
+  });
 
   // Combiner toutes les courses pour l'affichage du calendrier
   const allRaces = useMemo(() => {
@@ -44,15 +51,9 @@ const C2R2Standings = ({
     );
   }, [montagneRaces, rallyeRaces]);
 
-  // Convertir ChampionshipStanding au format attendu par StandingsTable
+  // Convertir ChampionshipStanding au format simplifié
   const formattedStandings = useMemo(() => {
-    return c2r2Standings.map(standing => ({
-      driver: standing.driver,
-      points: standing.totalPoints,
-      position: standing.position,
-      positionChange: standing.positionChange,
-      previousPosition: standing.previousPosition
-    }));
+    return toSimplifiedStandings(c2r2Standings, 'c2r2');
   }, [c2r2Standings]);
 
   const handlePrintPdf = () => {

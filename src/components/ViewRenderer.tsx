@@ -86,6 +86,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="montagne"
           championshipYear={championshipYear}
+          championshipId={championshipId || ''}
           previousStandings={previousStandings.montagne}
         />
       );
@@ -97,6 +98,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="rallye"
           championshipYear={championshipYear}
+          championshipId={championshipId || ''}
           previousStandings={previousStandings.rallye}
         />
       );
@@ -107,6 +109,7 @@ const ViewRenderer = ({
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           championshipYear={championshipYear}
+          championshipId={championshipId || ''}
           previousStandings={previousStandings.c2r2}
         />
       );
@@ -118,6 +121,7 @@ const ViewRenderer = ({
           drivers={drivers}
           type="acceleration"
           championshipYear={championshipYear}
+          championshipId={championshipId || ''}
           previousStandings={[]}
         />
       );

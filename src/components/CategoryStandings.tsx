@@ -1,9 +1,9 @@
 
-import { Mountain, Car } from 'lucide-react';
 import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { calculateMontagneStandings, calculateRallyeStandings } from '@/utils/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
+import { useStandingsCalculation } from '@/hooks/useStandingsCalculation';
+import { toSimplifiedStandings } from '@/utils/standingsConverter';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
@@ -15,58 +15,53 @@ interface CategoryStandingsProps {
   drivers: Driver[];
   type: 'montagne' | 'rallye' | 'c2r2' | 'acceleration' | 'karting';
   championshipYear: string;
+  championshipId: string;
   previousStandings?: ChampionshipStanding[];
 }
 
-const CategoryStandings = ({ title, races, drivers, type, championshipYear, previousStandings }: CategoryStandingsProps) => {
+const CategoryStandings = ({ 
+  title, 
+  races, 
+  drivers, 
+  type, 
+  championshipYear, 
+  championshipId,
+  previousStandings 
+}: CategoryStandingsProps) => {
   const { exportCategoryStandings } = usePdfExport();
 
-  console.log(`🔍 [${type}] Données pour le calcul d'évolution:`, {
-    drivers: drivers.length,
-    previousStandings: previousStandings?.length || 0,
-    previousStandingsData: previousStandings?.slice(0, 3)
+  // Séparer les courses par type pour le calcul centralisé
+  const montagneRaces = useMemo(() => 
+    races.filter(r => r.type === 'montagne'),
+    [races]
+  );
+
+  const rallyeRaces = useMemo(() => 
+    races.filter(r => r.type === 'rallye'),
+    [races]
+  );
+
+  // Utiliser le hook centralisé pour calculer les standings
+  const { montagneStandings, rallyeStandings } = useStandingsCalculation({
+    drivers,
+    montagneRaces,
+    rallyeRaces,
+    previousStandings,
+    championshipId
   });
 
-  // Calculer les standings avec les fonctions dédiées qui gèrent les évolutions
+  // Sélectionner et convertir les standings appropriés selon le type
   const standings = useMemo(() => {
     if (type === 'montagne') {
-      const montagneStandings = calculateMontagneStandings(drivers, races, previousStandings);
-      console.log('⛰️ Standings montagne calculés:', montagneStandings.slice(0, 3).map(s => ({
-        position: s.position,
-        name: s.driver.name,
-        points: s.montagnePoints,
-        previousPosition: s.previousMontagnePosition,
-        positionChange: s.positionChange
-      })));
-      // Mapper vers le format attendu par StandingsTable et PodiumSection
-      return montagneStandings.map(s => ({
-        driver: s.driver,
-        points: s.montagnePoints,
-        position: s.position,
-        positionChange: s.positionChange,
-        previousPosition: s.previousMontagnePosition
-      }));
+      console.log('⛰️ Standings montagne:', montagneStandings.slice(0, 3));
+      return toSimplifiedStandings(montagneStandings, 'montagne');
     } else if (type === 'rallye') {
-      const rallyeStandings = calculateRallyeStandings(drivers, races, previousStandings);
-      console.log('🏁 Standings rallye calculés:', rallyeStandings.slice(0, 3).map(s => ({
-        position: s.position,
-        name: s.driver.name,
-        points: s.rallyePoints,
-        previousPosition: s.previousRallyePosition,
-        positionChange: s.positionChange
-      })));
-      // Mapper vers le format attendu par StandingsTable et PodiumSection
-      return rallyeStandings.map(s => ({
-        driver: s.driver,
-        points: s.rallyePoints,
-        position: s.position,
-        positionChange: s.positionChange,
-        previousPosition: s.previousRallyePosition
-      }));
+      console.log('🏁 Standings rallye:', rallyeStandings.slice(0, 3));
+      return toSimplifiedStandings(rallyeStandings, 'rallye');
     }
-    // Pour les autres types (acceleration, karting), utiliser un calcul simple
+    // Pour les autres types (acceleration, karting), retourner vide
     return [];
-  }, [drivers, races, type, previousStandings]);
+  }, [type, montagneStandings, rallyeStandings]);
 
   // Remplacer les titres pour les catégories
   const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : 

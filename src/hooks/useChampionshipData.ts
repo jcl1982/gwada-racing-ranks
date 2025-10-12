@@ -1,9 +1,9 @@
 import { useMemo, useEffect } from 'react';
-import { calculateChampionshipStandings } from '@/utils/championship';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useChampionshipImport } from '@/hooks/championship/useChampionshipImport';
 import { useChampionshipHandlers } from '@/hooks/championship/useChampionshipHandlers';
 import { useChampionshipConfig } from '@/hooks/useChampionshipConfig';
+import { useStandingsCalculation } from '@/hooks/useStandingsCalculation';
 import { ViewType } from '@/hooks/useViewNavigation';
 
 export const useChampionshipData = (currentView: ViewType) => {
@@ -45,30 +45,17 @@ export const useChampionshipData = (currentView: ViewType) => {
     }
   }, [championshipConfig?.id, championshipId, setChampionshipId]);
 
-  // Utiliser useMemo pour s'assurer que les classements se recalculent à chaque changement de données
-  const standings = useMemo(() => {
-    console.log('🏆 Recalcul des classements avec:', {
-      drivers: drivers.length,
-      montagneRaces: montagneRaces.length,
-      rallyeRaces: rallyeRaces.length,
-      previousStandingsGeneral: previousStandings.general.length
-    });
-    
-    const calculatedStandings = calculateChampionshipStandings(
-      drivers, 
-      montagneRaces, 
-      rallyeRaces, 
-      previousStandings.general
-    );
-    
-    console.log('✅ Classements recalculés:', calculatedStandings.slice(0, 3).map(s => ({
-      position: s.position,
-      name: s.driver.name,
-      totalPoints: s.totalPoints
-    })));
-    
-    return calculatedStandings;
-  }, [drivers, montagneRaces, rallyeRaces, previousStandings]);
+  // Utiliser le hook centralisé pour calculer tous les standings
+  const standingsCalculation = useStandingsCalculation({
+    drivers,
+    montagneRaces,
+    rallyeRaces,
+    previousStandings: previousStandings.general,
+    championshipId: championshipConfig?.id || championshipId || ''
+  });
+
+  // Alias pour compatibilité avec le code existant
+  const standings = standingsCalculation.generalStandings;
 
   const { handleImport } = useChampionshipImport(
     drivers,
@@ -113,6 +100,8 @@ export const useChampionshipData = (currentView: ViewType) => {
     saveRace,
     deleteRace,
     refreshData,
-    resetAllData
+    resetAllData,
+    // Exposer tous les classements calculés pour un accès direct
+    standingsCalculation
   };
 };
