@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Edit2, Save, X, Mountain, Car } from 'lucide-react';
 import { Driver, Race, RaceResult } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
+import { useUserRole } from '@/hooks/useUserRole';
 import DriverResultRow from './DriverResultRow';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
@@ -24,6 +25,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingResults, setEditingResults] = useState<RaceResult[]>([]);
   const { toast } = useToast();
+  const { isAdmin } = useUserRole();
 
   const handleEditRace = () => {
     setIsEditing(true);
@@ -173,7 +175,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
           <h3 className="text-lg font-semibold">{race.name}</h3>
           <Badge variant="outline">{parseLocalDate(race.date).toLocaleDateString('fr-FR')}</Badge>
         </div>
-        {!isKarting && (
+        {!isKarting && isAdmin && (
           <>
             {!isEditing ? (
               <Button

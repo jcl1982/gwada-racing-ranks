@@ -6,6 +6,7 @@ import { Mountain, Car, Edit, Trash2, Calendar } from 'lucide-react';
 import { Race } from '@/types/championship';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useUserRole } from '@/hooks/useUserRole';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -20,6 +21,8 @@ interface RaceCardProps {
 }
 
 const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
+  const { isAdmin } = useUserRole();
+  
   const formatDateRange = (startDate: string, endDate?: string) => {
     const start = format(parseLocalDate(startDate), 'dd/MM/yyyy', { locale: fr });
     if (!endDate) return start;
@@ -45,38 +48,40 @@ const RaceCard = ({ race, onEdit, onDelete }: RaceCardProps) => {
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onEdit(race)}
-            className="flex items-center gap-1"
-          >
-            <Edit size={16} />
-            Modifier
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm">
-                <Trash2 size={16} />
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Supprimer la course</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Êtes-vous sûr de vouloir supprimer "{race.name}" ? Cette action est irréversible.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(race.id)}>
-                  Supprimer
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        {isAdmin && (
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onEdit(race)}
+              className="flex items-center gap-1"
+            >
+              <Edit size={16} />
+              Modifier
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <Trash2 size={16} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Supprimer la course</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Êtes-vous sûr de vouloir supprimer "{race.name}" ? Cette action est irréversible.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Annuler</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete(race.id)}>
+                    Supprimer
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </div>
     </Card>
   );
