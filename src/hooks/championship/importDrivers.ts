@@ -10,11 +10,14 @@ export const createMissingDrivers = async (
 ) => {
   if (missingDrivers.length === 0) {
     console.log('👤 Aucun pilote manquant à créer');
-    return { totalCreated: 0, totalErrors: 0 };
+    return { totalCreated: 0, totalErrors: 0, idMap: new Map<string, string>() };
   }
 
   console.log('👤 Pilotes manquants à créer:', missingDrivers.length);
   console.log('💾 Création des pilotes manquants...');
+  
+  // Map pour suivre les IDs temporaires -> IDs réels
+  const temporaryToRealIdMap = new Map<string, string>();
   
   // Créer les pilotes par très petits lots pour une meilleure fiabilité
   const batchSize = 3;
@@ -34,14 +37,18 @@ export const createMissingDrivers = async (
     for (let driverIndex = 0; driverIndex < batch.length; driverIndex++) {
       const driver = batch[driverIndex];
       const globalIndex = batchIndex * batchSize + driverIndex;
+      const temporaryId = driver.id;
       
-      console.log(`💾 Création pilote ${globalIndex + 1}/${missingDrivers.length}: ${driver.name} (ID: ${driver.id.slice(0, 8)}...)`);
+      console.log(`💾 Création pilote ${globalIndex + 1}/${missingDrivers.length}: ${driver.name} (ID temp: ${temporaryId.slice(0, 8)}...)`);
       
       try {
         const actualDriverId = await saveDriver(driver);
-        console.log(`✅ Pilote créé/mis à jour: ${driver.name} - ID réel: ${actualDriverId.slice(0, 8)}...`);
+        console.log(`✅ Pilote créé/mis à jour: ${driver.name} - ID temp: ${temporaryId.slice(0, 8)}... → ID réel: ${actualDriverId.slice(0, 8)}...`);
         
-        // Mettre à jour l'ID du pilote dans l'objet pour que les résultats utilisent le bon ID
+        // Enregistrer la correspondance ID temporaire → ID réel
+        temporaryToRealIdMap.set(temporaryId, actualDriverId);
+        
+        // Mettre à jour l'ID du pilote dans l'objet
         driver.id = actualDriverId;
         
         totalCreated++;
@@ -66,11 +73,15 @@ export const createMissingDrivers = async (
   }
 
   console.log(`📊 Création des pilotes terminée: ${totalCreated} succès, ${totalErrors} erreurs`);
+  console.log(`🗺️ Map des IDs créée: ${temporaryToRealIdMap.size} correspondances`);
+  temporaryToRealIdMap.forEach((realId, tempId) => {
+    console.log(`  ${tempId.slice(0, 8)}... → ${realId.slice(0, 8)}...`);
+  });
 
   // Rafraîchissements multiples après création de tous les pilotes
   await performDriverPropagation(refreshData);
 
-  return { totalCreated, totalErrors };
+  return { totalCreated, totalErrors, idMap: temporaryToRealIdMap };
 };
 
 const performDriverPropagation = async (refreshData: () => Promise<void>) => {
