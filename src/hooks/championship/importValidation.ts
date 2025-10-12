@@ -18,9 +18,16 @@ export const validateImportData = (newRaces: Race[], newDrivers: Driver[]) => {
 };
 
 export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver[]): Driver[] => {
-  console.log('🔍 [FIND_MISSING] Recherche de pilotes manquants...');
-  console.log('🔍 [FIND_MISSING] Nouveaux pilotes:', newDrivers.length);
-  console.log('🔍 [FIND_MISSING] Pilotes existants:', existingDrivers.length);
+  console.log('🔍 [FIND_MISSING] ===== RECHERCHE DES PILOTES MANQUANTS =====');
+  console.log('🔍 [FIND_MISSING] Pilotes de l\'import (newDrivers):', newDrivers.length);
+  console.log('🔍 [FIND_MISSING] Pilotes existants (existingDrivers):', existingDrivers.length);
+  
+  console.log('🔍 [FIND_MISSING] Liste des pilotes existants:');
+  existingDrivers.forEach((d, i) => {
+    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}...)`);
+  });
+  
+  console.log('🔍 [FIND_MISSING] Comparaison en cours...');
   
   const missing = newDrivers.filter(newDriver => {
     // Normaliser les noms (trim + lowercase) pour comparaison robuste
@@ -30,13 +37,24 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
     );
     
     if (!exists) {
-      console.log(`➕ [FIND_MISSING] Pilote manquant trouvé: ${newDriver.name}`);
+      console.log(`  ➕ Pilote manquant: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}..., sera créé)`);
+    } else {
+      console.log(`  ✅ Pilote existe déjà: "${newDriver.name}" → trouvé: "${exists.name}" (ID: ${exists.id.substring(0, 8)}...)`);
     }
     
     return !exists;
   });
   
-  console.log(`📊 [FIND_MISSING] Total pilotes manquants: ${missing.length}`);
+  console.log('🔍 [FIND_MISSING] ===== RÉSULTAT =====');
+  console.log(`🔍 [FIND_MISSING] Pilotes à créer: ${missing.length}`);
+  if (missing.length > 0) {
+    console.log('🔍 [FIND_MISSING] Liste des pilotes à créer:');
+    missing.forEach((d, i) => {
+      console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}...)`);
+    });
+  }
+  console.log('🔍 [FIND_MISSING] ====================');
+  
   return missing;
 };
 

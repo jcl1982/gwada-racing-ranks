@@ -54,12 +54,16 @@ export const convertExcelDataToRaces = (
   );
   let nextDriverNumber = maxDriverNumber + 1;
   
-  console.log('📊 [CONVERTER] Conversion des données Excel:', {
-    racesCount: excelData.length,
-    existingDriversCount: existingDrivers.length,
-    maxDriverNumber,
-    championshipId
+  console.log('📊 [CONVERTER] ===== DÉBUT DE CONVERSION =====');
+  console.log('📊 [CONVERTER] Pilotes existants reçus:', existingDrivers.length);
+  console.log('📊 [CONVERTER] Liste des pilotes existants:');
+  existingDrivers.forEach((d, i) => {
+    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., championshipId: ${d.championshipId?.substring(0, 8)}...)`);
   });
+  console.log('📊 [CONVERTER] Courses à convertir:', excelData.length);
+  console.log('📊 [CONVERTER] Championship ID cible:', championshipId?.substring(0, 8) + '...');
+  console.log('📊 [CONVERTER] Numéro de pilote suivant:', nextDriverNumber);
+  console.log('📊 [CONVERTER] ==============================');
   
   excelData.forEach((excelRace, raceIndex) => {
     // Ne pas générer d'ID ici - laisser saveRace() créer la course dans la DB
@@ -73,17 +77,20 @@ export const convertExcelDataToRaces = (
       // Ensure driverName is a string and not empty
       const driverName = String(result.driverName || '').trim();
       if (!driverName) {
-        console.log(`Skipping empty driver name in result ${resultIndex + 1}`);
+        console.log(`⚠️ [CONVERTER] Nom de pilote vide ignoré (résultat ${resultIndex + 1})`);
         return;
       }
       
-      // Find or create driver
+      // Normaliser le nom pour la comparaison (insensible à la casse et espaces)
+      const normalizedName = driverName.toLowerCase().trim();
+      
+      // Chercher le pilote dans newDrivers (qui contient déjà tous les existingDrivers)
       let driver = newDrivers.find(d => 
-        String(d.name).toLowerCase() === driverName.toLowerCase()
+        d.name.toLowerCase().trim() === normalizedName
       );
       
       if (!driver) {
-        // Create new driver with valid UUID, number, and car model from Excel
+        // Créer un nouveau pilote uniquement s'il n'existe vraiment pas
         driver = {
           id: generateValidUUID(),
           name: driverName,
@@ -94,19 +101,19 @@ export const convertExcelDataToRaces = (
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`Created new driver: ${driver.name} (ID: ${driver.id}, Number: ${driver.number}, Car: ${driver.carModel || 'N/A'}, Team: ${driver.team || 'N/A'}, Championship: ${championshipId})`);
+        console.log(`➕ [CONVERTER] Nouveau pilote créé: "${driver.name}" (ID: ${driver.id.substring(0, 8)}..., Numéro: ${driver.number})`);
       } else {
-        // Update car model if provided in Excel and not already set
+        console.log(`✅ [CONVERTER] Pilote existant réutilisé: "${driver.name}" (ID: ${driver.id.substring(0, 8)}...)`);
+        
+        // Mettre à jour les informations optionnelles si nécessaire
         if (result.carModel && !driver.carModel) {
           driver.carModel = result.carModel;
-          console.log(`Updated car model for existing driver: ${driver.name} -> ${driver.carModel}`);
+          console.log(`  🔧 Modèle de voiture ajouté: ${driver.carModel}`);
         }
-        // Update team if karting category is provided and not already set
         if (excelRace.kartingCategory && !driver.team) {
           driver.team = excelRace.kartingCategory;
-          console.log(`Updated team/category for existing driver: ${driver.name} -> ${driver.team}`);
+          console.log(`  🔧 Catégorie ajoutée: ${driver.team}`);
         }
-        console.log(`Found existing driver: ${driver.name} (ID: ${driver.id})`);
       }
       
       // Inclure le carModel du résultat Excel ou celui du pilote
@@ -141,10 +148,16 @@ export const convertExcelDataToRaces = (
     console.log(`✅ [CONVERTER] Course préparée: "${excelRace.raceName}" avec ${results.length} résultats - ChampionshipId: ${championshipId}`);
   });
   
-  console.log('Conversion completed:');
-  console.log('- New races created:', races.length);
-  console.log('- Total drivers:', newDrivers.length);
-  console.log('- New drivers added:', newDrivers.length - existingDrivers.length);
+  console.log('📊 [CONVERTER] ===== FIN DE CONVERSION =====');
+  console.log('📊 [CONVERTER] Courses créées:', races.length);
+  console.log('📊 [CONVERTER] Total pilotes dans newDrivers:', newDrivers.length);
+  console.log('📊 [CONVERTER] Nouveaux pilotes créés:', newDrivers.length - existingDrivers.length);
+  console.log('📊 [CONVERTER] Liste finale des pilotes:');
+  newDrivers.forEach((d, i) => {
+    const isNew = !existingDrivers.find(ed => ed.id === d.id);
+    console.log(`  ${i + 1}. "${d.name}" ${isNew ? '🆕 NOUVEAU' : '✅ EXISTANT'} (ID: ${d.id.substring(0, 8)}...)`);
+  });
+  console.log('📊 [CONVERTER] ============================');
   
   return { races, newDrivers };
 };
