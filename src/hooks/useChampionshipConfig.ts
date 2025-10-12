@@ -16,7 +16,8 @@ const VIEW_TO_CHAMPIONSHIP_TITLE: Record<string, string> = {
   'montagne': 'Championnat Rallye-Montagne',
   'rallye': 'Championnat Rallye-Montagne',
   'c2r2': 'Championnat Rallye-Montagne',
-  'import': 'Championnat Rallye-Montagne',
+  // 'import' ne devrait pas être lié à un championnat spécifique
+  // car l'utilisateur choisit le championnat via le sélecteur de type de course
   
   // Accélération views
   'admin-acceleration': 'Championnat Accélération',

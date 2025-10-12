@@ -43,15 +43,21 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
             await deleteExistingResults(raceId);
           }
         } else {
-          console.log('🆕 Création d\'une nouvelle course:', race.name);
+          console.log('🆕 [SAVE_RACE] Création d\'une nouvelle course:', race.name);
+          console.log('🔍 [SAVE_RACE] ChampionshipIds disponibles:', {
+            'race.championshipId': race.championshipId,
+            'context championshipId': championshipId,
+            'sera utilisé': race.championshipId || championshipId
+          });
+          
           raceId = await createRaceInDatabase({
             name: race.name,
             date: race.date,
             endDate: race.endDate,
             organizer: race.organizer,
             type: race.type,
-            championshipId: championshipId || race.championshipId
-          }, championshipId);
+            championshipId: race.championshipId || championshipId
+          }, race.championshipId || championshipId);
         }
       }
 

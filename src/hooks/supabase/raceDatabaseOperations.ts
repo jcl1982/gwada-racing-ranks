@@ -28,31 +28,38 @@ export const findExistingRace = async (name: string, date: string): Promise<{ id
 };
 
 export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>, championshipId?: string): Promise<string> => {
-  console.log('➕ Création d\'une nouvelle course:', {
+  console.log('➕ [CREATE_RACE_DB] Création d\'une nouvelle course:', {
     name: race.name,
     date: race.date,
     endDate: race.endDate,
     organizer: race.organizer,
     type: race.type,
-    championshipId: championshipId || race.championshipId
+    'race.championshipId': race.championshipId,
+    'param championshipId': championshipId
   });
 
   const finalChampionshipId = championshipId || race.championshipId;
+  
+  console.log('🔑 [CREATE_RACE_DB] CHAMPIONSHIPID FINAL UTILISÉ POUR L\'INSERTION:', finalChampionshipId);
   
   if (!finalChampionshipId) {
     throw new Error('Championship ID is required to create a race');
   }
 
+  const insertData = {
+    name: race.name,
+    date: race.date,
+    end_date: race.endDate || null,
+    organizer: race.organizer || null,
+    type: race.type,
+    championship_id: finalChampionshipId
+  };
+  
+  console.log('📤 [CREATE_RACE_DB] Données envoyées à Supabase:', insertData);
+
   const { data, error } = await supabase
     .from('races')
-    .insert({
-      name: race.name,
-      date: race.date,
-      end_date: race.endDate || null,
-      organizer: race.organizer || null,
-      type: race.type,
-      championship_id: finalChampionshipId
-    })
+    .insert(insertData)
     .select()
     .single();
 
