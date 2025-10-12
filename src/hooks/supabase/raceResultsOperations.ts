@@ -16,12 +16,21 @@ export const deleteExistingResults = async (raceId: string): Promise<void> => {
 };
 
 export const saveRaceResults = async (raceId: string, results: RaceResult[]): Promise<void> => {
+  console.log('📊 [SAVE_RESULTS] Début saveRaceResults - RaceId:', raceId);
+  console.log('📊 [SAVE_RESULTS] Nombre de résultats reçus:', results.length);
+  
   if (results.length === 0) {
-    console.log('📊 Aucun résultat à sauvegarder');
+    console.warn('⚠️ [SAVE_RESULTS] AUCUN RÉSULTAT À SAUVEGARDER !');
     return;
   }
 
-  console.log('📊 Sauvegarde des résultats:', results.length, 'résultats');
+  console.log('📊 [SAVE_RESULTS] Sauvegarde de', results.length, 'résultats');
+  console.log('📊 [SAVE_RESULTS] Premier résultat:', {
+    driverId: results[0].driverId.slice(0, 8) + '...',
+    position: results[0].position,
+    points: results[0].points,
+    carModel: results[0].carModel
+  });
   
   // Validate all driver IDs before inserting
   validateDriverIds(results);
@@ -55,6 +64,9 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     // Utiliser le car_model du résultat s'il existe, sinon celui du pilote
     car_model: result.carModel || carModelMap.get(result.driverId) || null
   }));
+
+  console.log('📊 [SAVE_RESULTS] Données à insérer (premier élément):', resultsToInsert[0]);
+  console.log('📊 [SAVE_RESULTS] Insertion dans race_results...');
 
   const { error: resultError } = await supabase
     .from('race_results')

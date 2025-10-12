@@ -15,8 +15,18 @@ export const processRaces = async (
   
   for (let i = 0; i < newRaces.length; i++) {
     const race = newRaces[i];
-    console.log(`🏁 Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
-    console.log(`📊 Nombre de résultats: ${race.results.length}`);
+    console.log(`🏁 [IMPORT_RACE] Traitement course ${i + 1}/${newRaces.length}: ${race.name}`);
+    console.log(`📊 [IMPORT_RACE] Nombre de résultats dans race.results: ${race.results?.length || 0}`);
+    console.log(`🔍 [IMPORT_RACE] Race object keys:`, Object.keys(race));
+    console.log(`📋 [IMPORT_RACE] Premier résultat:`, race.results?.[0]);
+    
+    // Vérifier que les résultats contiennent bien position et points
+    if (race.results && race.results.length > 0) {
+      const firstResult = race.results[0];
+      console.log(`✓ [IMPORT_RACE] Exemple de résultat - Position: ${firstResult.position}, Points: ${firstResult.points}, DriverId: ${firstResult.driverId.slice(0, 8)}...`);
+    } else {
+      console.warn(`⚠️ [IMPORT_RACE] ATTENTION: La course ${race.name} n'a PAS de résultats !`);
+    }
     
     // Vérification préalable renforcée
     const raceDriverIds = race.results.map(r => r.driverId);
@@ -24,6 +34,7 @@ export const processRaces = async (
     
     try {
       // Tentative de sauvegarde avec gestion d'erreur améliorée
+      console.log(`💾 [IMPORT_RACE] Appel de saveRace() avec championshipId: ${race.championshipId}`);
       await saveRace(race);
       console.log(`✅ Course sauvegardée avec succès: ${race.name}`);
       successCount++;

@@ -18,11 +18,26 @@ export const validateImportData = (newRaces: Race[], newDrivers: Driver[]) => {
 };
 
 export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver[]): Driver[] => {
-  return newDrivers.filter(newDriver => 
-    !existingDrivers.find(existingDriver => 
-      existingDriver.name.toLowerCase() === newDriver.name.toLowerCase()
-    )
-  );
+  console.log('🔍 [FIND_MISSING] Recherche de pilotes manquants...');
+  console.log('🔍 [FIND_MISSING] Nouveaux pilotes:', newDrivers.length);
+  console.log('🔍 [FIND_MISSING] Pilotes existants:', existingDrivers.length);
+  
+  const missing = newDrivers.filter(newDriver => {
+    // Normaliser les noms (trim + lowercase) pour comparaison robuste
+    const normalizedNewName = newDriver.name.trim().toLowerCase();
+    const exists = existingDrivers.find(existingDriver => 
+      existingDriver.name.trim().toLowerCase() === normalizedNewName
+    );
+    
+    if (!exists) {
+      console.log(`➕ [FIND_MISSING] Pilote manquant trouvé: ${newDriver.name}`);
+    }
+    
+    return !exists;
+  });
+  
+  console.log(`📊 [FIND_MISSING] Total pilotes manquants: ${missing.length}`);
+  return missing;
 };
 
 export const logImportSummary = (

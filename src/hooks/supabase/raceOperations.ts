@@ -62,9 +62,24 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
       }
 
       // Insert race results if they exist
-      if ('results' in race && race.results.length > 0) {
-        console.log('📊 Ajout des résultats à la course...');
-        await saveRaceResults(raceId, race.results);
+      console.log('🔍 [SAVE_RACE] Vérification des résultats...');
+      console.log('🔍 [SAVE_RACE] "results" in race:', 'results' in race);
+      
+      if ('results' in race) {
+        const raceWithResults = race as Race;
+        console.log('🔍 [SAVE_RACE] race.results:', raceWithResults.results);
+        console.log('🔍 [SAVE_RACE] race.results.length:', raceWithResults.results?.length);
+        
+        if (raceWithResults.results && raceWithResults.results.length > 0) {
+          console.log(`📊 [SAVE_RACE] Ajout de ${raceWithResults.results.length} résultats à la course ${raceId}...`);
+          console.log(`📊 [SAVE_RACE] Premier résultat - Position: ${raceWithResults.results[0].position}, Points: ${raceWithResults.results[0].points}`);
+          await saveRaceResults(raceId, raceWithResults.results);
+          console.log('✅ [SAVE_RACE] Résultats sauvegardés avec succès');
+        } else {
+          console.warn('⚠️ [SAVE_RACE] AUCUN RÉSULTAT À SAUVEGARDER pour cette course !');
+        }
+      } else {
+        console.warn('⚠️ [SAVE_RACE] La course ne contient pas de propriété results');
       }
 
       console.log('✅ Course et résultats sauvegardés avec succès');
