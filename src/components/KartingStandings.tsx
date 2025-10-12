@@ -1,16 +1,19 @@
 import { useMemo } from 'react';
-import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
+import KartingRaceResults from '@/components/points/KartingRaceResults';
 
 interface KartingStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
   previousStandings?: ChampionshipStanding[];
+  onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
 // Catégories de karting
@@ -24,7 +27,8 @@ const KartingStandings = ({
   races, 
   drivers, 
   championshipYear,
-  previousStandings 
+  previousStandings,
+  onRaceUpdate
 }: KartingStandingsProps) => {
   
   // Fonction pour calculer les classements par catégorie
@@ -116,36 +120,105 @@ const KartingStandings = ({
         </TabsList>
 
         <TabsContent value="mini60" className="space-y-6">
-          <StandingsTable
-            displayTitle="Classement MINI 60"
-            races={races}
-            type="karting"
-            standings={mini60Standings}
-            onPrintPdf={() => {}}
-          />
-          <PodiumSection standings={mini60Standings} />
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="standings">
+              <AccordionTrigger className="text-xl font-bold">
+                Classement Général MINI 60
+              </AccordionTrigger>
+              <AccordionContent className="space-y-6">
+                <StandingsTable
+                  displayTitle="Classement MINI 60"
+                  races={races}
+                  type="karting"
+                  standings={mini60Standings}
+                  onPrintPdf={() => {}}
+                />
+                <PodiumSection standings={mini60Standings} />
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="races">
+              <AccordionTrigger className="text-xl font-bold">
+                Résultats par Course MINI 60
+              </AccordionTrigger>
+              <AccordionContent>
+                <KartingRaceResults
+                  races={races}
+                  drivers={drivers}
+                  category="mini60"
+                  onRaceUpdate={onRaceUpdate}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
 
         <TabsContent value="senior" className="space-y-6">
-          <StandingsTable
-            displayTitle="Classement SENIOR MASTER GENTLEMAN"
-            races={races}
-            type="karting"
-            standings={seniorStandings}
-            onPrintPdf={() => {}}
-          />
-          <PodiumSection standings={seniorStandings} />
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="standings">
+              <AccordionTrigger className="text-xl font-bold">
+                Classement Général SENIOR MASTER GENTLEMAN
+              </AccordionTrigger>
+              <AccordionContent className="space-y-6">
+                <StandingsTable
+                  displayTitle="Classement SENIOR MASTER GENTLEMAN"
+                  races={races}
+                  type="karting"
+                  standings={seniorStandings}
+                  onPrintPdf={() => {}}
+                />
+                <PodiumSection standings={seniorStandings} />
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="races">
+              <AccordionTrigger className="text-xl font-bold">
+                Résultats par Course SENIOR MASTER GENTLEMAN
+              </AccordionTrigger>
+              <AccordionContent>
+                <KartingRaceResults
+                  races={races}
+                  drivers={drivers}
+                  category="senior"
+                  onRaceUpdate={onRaceUpdate}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
 
         <TabsContent value="kz2" className="space-y-6">
-          <StandingsTable
-            displayTitle="Classement KZ2"
-            races={races}
-            type="karting"
-            standings={kz2Standings}
-            onPrintPdf={() => {}}
-          />
-          <PodiumSection standings={kz2Standings} />
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="standings">
+              <AccordionTrigger className="text-xl font-bold">
+                Classement Général KZ2
+              </AccordionTrigger>
+              <AccordionContent className="space-y-6">
+                <StandingsTable
+                  displayTitle="Classement KZ2"
+                  races={races}
+                  type="karting"
+                  standings={kz2Standings}
+                  onPrintPdf={() => {}}
+                />
+                <PodiumSection standings={kz2Standings} />
+              </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="races">
+              <AccordionTrigger className="text-xl font-bold">
+                Résultats par Course KZ2
+              </AccordionTrigger>
+              <AccordionContent>
+                <KartingRaceResults
+                  races={races}
+                  drivers={drivers}
+                  category="kz2"
+                  onRaceUpdate={onRaceUpdate}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
       </Tabs>
     </div>
