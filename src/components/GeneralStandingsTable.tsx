@@ -25,7 +25,7 @@ const GeneralStandingsTable = ({
   onPrintUnicode
 }: GeneralStandingsTableProps) => {
   return <Card className="card-glass overflow-hidden" id="general-standings-table">
-      <div className="gradient-ocean p-6 text-white relative">
+      <div className="gradient-ocean p-6 text-white relative px-[20px]">
         {/* Logo de la ligue (haut gauche) */}
         <Logo src="/lovable-uploads/a51e24a3-77b9-4a08-a1b1-c446ea39eb10.png" alt="Logo Ligue Sport Automobile Guadeloupe" className="absolute top-4 left-4 w-12 h-12 object-contain" removeBackground={false} />
         
@@ -48,7 +48,7 @@ const GeneralStandingsTable = ({
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-1 px-2 font-semibold">Position</th>
+              <th className="text-left py-1 px-2 font-semibold mx-0">Position</th>
               <th className="text-center py-1 px-2 font-semibold">Évolution</th>
               <th className="text-left py-1 px-2 font-semibold">Pilote</th>
               <th className="text-center py-1 px-1 font-semibold">
