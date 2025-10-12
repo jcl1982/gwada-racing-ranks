@@ -6,6 +6,7 @@ import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
 import PartnerLogos from '@/components/PartnerLogos';
 import { useAllChampionshipsData } from '@/hooks/useAllChampionshipsData';
+import { ChampionshipStanding } from '@/types/championship';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -89,7 +90,33 @@ const HomePage = ({
         {championships.map(championship => {
         const ChampIcon = getChampionshipIcon(championship.title);
         const colorClass = getChampionshipColor(championship.title);
-        const leader = championship.standings[0];
+        const isKarting = championship.title === 'Championnat Karting';
+        
+        // Pour le karting, calculer les points avec bonus
+        let leader = championship.standings[0];
+        if (isKarting && championship.drivers.length > 0) {
+          // Recalculer les standings karting avec bonus
+          const kartingStandings = championship.drivers.map(driver => {
+            const totalPoints = championship.races.reduce((sum, race) => {
+              const result = race.results.find(r => r.driverId === driver.id);
+              return sum + (result?.points || 0) + (result?.bonus || 0);
+            }, 0);
+            return { driver, totalPoints };
+          }).filter(s => s.totalPoints > 0)
+            .sort((a, b) => b.totalPoints - a.totalPoints);
+          
+          if (kartingStandings.length > 0) {
+            leader = {
+              driver: kartingStandings[0].driver,
+              totalPoints: kartingStandings[0].totalPoints,
+              montagnePoints: 0,
+              rallyePoints: 0,
+              position: 1,
+              positionChange: 0
+            } as ChampionshipStanding;
+          }
+        }
+        
         const montagneRaces = championship.races.filter(r => r.type === 'montagne');
         const rallyeRaces = championship.races.filter(r => r.type === 'rallye');
         const totalRaces = championship.races.length;
@@ -143,6 +170,9 @@ const HomePage = ({
                             <span className="text-gray-500"> Rallye</span>
                           </div>
                         </div>}
+                      {isKarting && <div className="mt-3 text-xs text-center">
+                          <p className="text-gray-500">Points totaux (course + bonus)</p>
+                        </div>}
                     </div>
                   </div> : <div className="border-t pt-4 mt-4">
                     <p className="text-center text-gray-500 py-4">
@@ -157,18 +187,43 @@ const HomePage = ({
                       Top 3
                     </h4>
                     <div className="space-y-2">
-                      {championship.standings.slice(0, 3).map((standing, index) => {
+                      {(() => {
+                  // Pour le karting, recalculer le top 3 avec bonus
+                  let top3Standings = championship.standings.slice(0, 3);
+                  if (isKarting) {
+                    const kartingStandings = championship.drivers.map(driver => {
+                      const totalPoints = championship.races.reduce((sum, race) => {
+                        const result = race.results.find(r => r.driverId === driver.id);
+                        return sum + (result?.points || 0) + (result?.bonus || 0);
+                      }, 0);
+                      return { driver, totalPoints };
+                    }).filter(s => s.totalPoints > 0)
+                      .sort((a, b) => b.totalPoints - a.totalPoints)
+                      .slice(0, 3);
+                    
+                    top3Standings = kartingStandings.map((s, i) => ({
+                      driver: s.driver,
+                      totalPoints: s.totalPoints,
+                      montagnePoints: 0,
+                      rallyePoints: 0,
+                      position: i + 1,
+                      positionChange: 0
+                    } as ChampionshipStanding));
+                  }
+                  
                   const positions = ['🥇', '🥈', '🥉'];
-                  return <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xl">{positions[index]}</span>
-                              <div>
-                                <p className="font-semibold text-sm">{standing.driver.name}</p>
-                                <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
-                              </div>
-                            </div>
-                          </div>;
-                })}
+                  return top3Standings.map((standing, index) => 
+                    <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl">{positions[index]}</span>
+                        <div>
+                          <p className="font-semibold text-sm">{standing.driver.name}</p>
+                          <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
                     </div>
                   </div>}
               </div>
