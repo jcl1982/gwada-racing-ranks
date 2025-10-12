@@ -10,22 +10,36 @@ interface KartingRaceResultsProps {
 }
 
 const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingRaceResultsProps) => {
-  // Filtrer les pilotes par catégorie
-  const categoryDrivers = drivers.filter(driver => {
-    const driverCategory = driver.team?.toLowerCase() || '';
-    const searchCategory = category.toLowerCase();
+  // Récupérer tous les pilotes qui ont participé aux courses de cette catégorie
+  const getCategoryDrivers = () => {
+    const driverIds = new Set<string>();
     
-    if (searchCategory === 'mini60') {
-      return driverCategory.includes('mini') && driverCategory.includes('60');
-    } else if (searchCategory === 'senior') {
-      return driverCategory.includes('senior') || 
-             driverCategory.includes('master') || 
-             driverCategory.includes('gentleman');
-    } else if (searchCategory === 'kz2') {
-      return driverCategory.includes('kz2') || driverCategory.includes('kz 2');
-    }
-    return false;
-  });
+    races.forEach(race => {
+      race.results.forEach(result => {
+        const resultCategory = result.category?.toLowerCase() || '';
+        const searchCategory = category.toLowerCase();
+        
+        let isMatchingCategory = false;
+        if (searchCategory === 'mini60') {
+          isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
+        } else if (searchCategory === 'senior') {
+          isMatchingCategory = resultCategory.includes('senior') || 
+                             resultCategory.includes('master') || 
+                             resultCategory.includes('gentleman');
+        } else if (searchCategory === 'kz2') {
+          isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+        }
+        
+        if (isMatchingCategory) {
+          driverIds.add(result.driverId);
+        }
+      });
+    });
+    
+    return drivers.filter(d => driverIds.has(d.id));
+  };
+  
+  const categoryDrivers = getCategoryDrivers();
 
   const emptyMessage = category === 'mini60' 
     ? "Aucune course MINI 60 disponible"

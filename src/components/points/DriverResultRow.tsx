@@ -12,6 +12,10 @@ interface DriverResultRowProps {
   onPointsChange: (driverId: string, newPoints: number) => void;
   onPositionChange: (driverId: string, newPosition: number) => void;
   onCarModelChange: (driverId: string, newCarModel: string) => void;
+  onCategoryChange?: (driverId: string, newCategory: string) => void;
+  onBonusChange?: (driverId: string, newBonus: number) => void;
+  showCategory?: boolean;
+  showBonus?: boolean;
 }
 
 const DriverResultRow = ({
@@ -20,7 +24,11 @@ const DriverResultRow = ({
   isEditing,
   onPointsChange,
   onPositionChange,
-  onCarModelChange
+  onCarModelChange,
+  onCategoryChange,
+  onBonusChange,
+  showCategory = false,
+  showBonus = false
 }: DriverResultRowProps) => {
   return (
     <TableRow>
@@ -38,6 +46,23 @@ const DriverResultRow = ({
           result?.position || '-'
         )}
       </TableCell>
+      {showCategory && (
+        <TableCell className="text-center">
+          {isEditing && onCategoryChange ? (
+            <Input
+              type="text"
+              value={result?.category || ''}
+              onChange={(e) => onCategoryChange(driver.id, e.target.value)}
+              className="w-32 text-center"
+              placeholder="Catégorie"
+            />
+          ) : (
+            <Badge variant="outline" className="text-xs">
+              {result?.category || '-'}
+            </Badge>
+          )}
+        </TableCell>
+      )}
       <TableCell className="text-center">
         {isEditing ? (
           <Input
@@ -53,6 +78,23 @@ const DriverResultRow = ({
           </Badge>
         )}
       </TableCell>
+      {showBonus && (
+        <TableCell className="text-center">
+          {isEditing && onBonusChange ? (
+            <Input
+              type="number"
+              min="0"
+              value={result?.bonus || 0}
+              onChange={(e) => onBonusChange(driver.id, parseInt(e.target.value) || 0)}
+              className="w-20 text-center"
+            />
+          ) : (
+            <Badge variant={result?.bonus ? "default" : "outline"} className="text-xs">
+              +{result?.bonus || 0}
+            </Badge>
+          )}
+        </TableCell>
+      )}
       <TableCell className="text-center">
         {isEditing ? (
           <div className="flex flex-col gap-1">

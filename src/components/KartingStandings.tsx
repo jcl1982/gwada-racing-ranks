@@ -31,58 +31,83 @@ const KartingStandings = ({
   onRaceUpdate
 }: KartingStandingsProps) => {
   
-  // Fonction pour calculer les classements par catégorie
+  // Fonction pour calculer les classements par catégorie basée sur les résultats importés
   const calculateCategoryStandings = (category: string) => {
-    // Filtrer les pilotes par catégorie (utilise le champ team pour l'instant)
-    const categoryDrivers = drivers.filter(driver => {
-      const driverCategory = driver.team?.toLowerCase() || '';
-      const searchCategory = category.toLowerCase();
-      
-      if (searchCategory === 'mini60') {
-        return driverCategory.includes('mini') && driverCategory.includes('60');
-      } else if (searchCategory === 'senior') {
-        return driverCategory.includes('senior') || 
-               driverCategory.includes('master') || 
-               driverCategory.includes('gentleman');
-      } else if (searchCategory === 'kz2') {
-        return driverCategory.includes('kz2') || driverCategory.includes('kz 2');
-      }
-      return false;
-    });
-
-    // Calculer les points pour chaque pilote de cette catégorie
-    const standingsMap = new Map<string, number>();
+    console.log(`📊 Calcul du classement pour la catégorie: ${category}`);
     
-    categoryDrivers.forEach(driver => {
-      let totalPoints = 0;
-      
-      races.forEach(race => {
-        const result = race.results.find(r => r.driverId === driver.id);
-        if (result) {
-          totalPoints += result.points;
+    // Créer une map pour accumuler les points par pilote
+    const standingsMap = new Map<string, { 
+      totalPoints: number, 
+      totalBonus: number,
+      driverName: string 
+    }>();
+    
+    // Parcourir toutes les courses et leurs résultats
+    races.forEach(race => {
+      console.log(`  📝 Course: ${race.name}`);
+      race.results.forEach(result => {
+        // Récupérer la catégorie du résultat (depuis l'import)
+        const resultCategory = result.category?.toLowerCase() || '';
+        const searchCategory = category.toLowerCase();
+        
+        // Vérifier si le résultat correspond à la catégorie recherchée
+        let isMatchingCategory = false;
+        
+        if (searchCategory === 'mini60') {
+          isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
+        } else if (searchCategory === 'senior') {
+          isMatchingCategory = resultCategory.includes('senior') || 
+                             resultCategory.includes('master') || 
+                             resultCategory.includes('gentleman');
+        } else if (searchCategory === 'kz2') {
+          isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+        }
+        
+        // Si le résultat correspond, accumuler les points et bonus
+        if (isMatchingCategory) {
+          const driver = drivers.find(d => d.id === result.driverId);
+          const current = standingsMap.get(result.driverId) || { 
+            totalPoints: 0, 
+            totalBonus: 0,
+            driverName: driver?.name || 'Unknown'
+          };
+          const pointsWithBonus = result.points + (result.bonus || 0);
+          standingsMap.set(result.driverId, {
+            totalPoints: current.totalPoints + pointsWithBonus,
+            totalBonus: current.totalBonus + (result.bonus || 0),
+            driverName: current.driverName
+          });
+          console.log(`    ✅ ${current.driverName}: +${result.points} pts + ${result.bonus || 0} bonus (catégorie: ${result.category})`);
         }
       });
-      
-      if (totalPoints > 0) {
-        standingsMap.set(driver.id, totalPoints);
-      }
     });
 
-    // Créer le classement trié
-    const standings = categoryDrivers
-      .filter(driver => standingsMap.has(driver.id))
-      .map(driver => ({
-        driver,
-        points: standingsMap.get(driver.id) || 0,
-        position: 0,
-        positionChange: 0,
-        previousPosition: undefined
-      }))
+    console.log(`  📊 Total pilotes dans la catégorie ${category}: ${standingsMap.size}`);
+
+    // Créer le classement avec tous les pilotes qui ont des points dans cette catégorie
+    const standings = Array.from(standingsMap.entries())
+      .map(([driverId, data]) => {
+        const driver = drivers.find(d => d.id === driverId);
+        if (!driver) return null;
+        
+        return {
+          driver,
+          points: data.totalPoints,
+          bonus: data.totalBonus,
+          position: 0,
+          positionChange: 0,
+          previousPosition: undefined
+        };
+      })
+      .filter((s): s is NonNullable<typeof s> => s !== null)
       .sort((a, b) => b.points - a.points)
-      .map((standing, index) => ({
-        ...standing,
-        position: index + 1
-      }));
+      .map((standing, index) => {
+        console.log(`    ${index + 1}. ${standing.driver.name}: ${standing.points} pts (bonus: ${standing.bonus})`);
+        return {
+          ...standing,
+          position: index + 1
+        };
+      });
 
     return standings;
   };

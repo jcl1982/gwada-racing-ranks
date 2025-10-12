@@ -103,9 +103,50 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
     });
   };
 
+  const handleCategoryChange = (driverId: string, newCategory: string) => {
+    setEditingResults(prev => {
+      const existing = prev.find(r => r.driverId === driverId);
+      if (existing) {
+        return prev.map(r => 
+          r.driverId === driverId 
+            ? { ...r, category: newCategory }
+            : r
+        );
+      } else {
+        return [...prev, {
+          driverId,
+          position: prev.length + 1,
+          points: 0,
+          category: newCategory
+        }];
+      }
+    });
+  };
+
+  const handleBonusChange = (driverId: string, newBonus: number) => {
+    setEditingResults(prev => {
+      const existing = prev.find(r => r.driverId === driverId);
+      if (existing) {
+        return prev.map(r => 
+          r.driverId === driverId 
+            ? { ...r, bonus: newBonus }
+            : r
+        );
+      } else {
+        return [...prev, {
+          driverId,
+          position: prev.length + 1,
+          points: 0,
+          bonus: newBonus
+        }];
+      }
+    });
+  };
+
   const resultsToShow = isEditing ? editingResults : race.results;
   const Icon = race.type === 'montagne' ? Mountain : Car;
   const colorClass = race.type === 'montagne' ? 'text-green-600' : 'text-blue-600';
+  const isKarting = race.type === 'karting';
 
   return (
     <Card className="p-4">
@@ -153,7 +194,9 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
           <TableRow>
             <TableHead>Pilote</TableHead>
             <TableHead className="text-center">Position</TableHead>
+            {isKarting && <TableHead className="text-center">Catégorie</TableHead>}
             <TableHead className="text-center">Points</TableHead>
+            {isKarting && <TableHead className="text-center">Bonus</TableHead>}
             <TableHead className="text-center">Modèle de voiture</TableHead>
           </TableRow>
         </TableHeader>
@@ -167,6 +210,10 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
               onPointsChange={handlePointsChange}
               onPositionChange={handlePositionChange}
               onCarModelChange={handleCarModelChange}
+              onCategoryChange={handleCategoryChange}
+              onBonusChange={handleBonusChange}
+              showCategory={isKarting}
+              showBonus={isKarting}
             />
           ))}
         </TableBody>
