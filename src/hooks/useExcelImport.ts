@@ -30,11 +30,11 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       const championshipTitle = RACE_TYPE_TO_CHAMPIONSHIP[selectedRaceType];
       
       if (!championshipTitle) {
-        console.warn('⚠️ Aucun titre de championnat trouvé pour le type:', selectedRaceType);
+        console.warn('⚠️ [IMPORT] Aucun titre de championnat trouvé pour le type:', selectedRaceType);
         return;
       }
 
-      console.log('🔧 Chargement du championshipId pour:', championshipTitle);
+      console.log('🔧 [IMPORT] Chargement du championshipId pour:', championshipTitle);
 
       const { data, error } = await supabase
         .from('championship_config')
@@ -43,15 +43,15 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         .maybeSingle();
 
       if (error) {
-        console.error('❌ Erreur lors du chargement du championshipId:', error);
+        console.error('❌ [IMPORT] Erreur lors du chargement du championshipId:', error);
         return;
       }
 
       if (data) {
-        console.log('✅ ChampionshipId chargé:', data.id, 'pour', championshipTitle);
+        console.log('✅ [IMPORT] ChampionshipId chargé:', data.id, 'pour', championshipTitle);
         setChampionshipId(data.id);
       } else {
-        console.warn('⚠️ Aucun championnat trouvé pour:', championshipTitle);
+        console.warn('⚠️ [IMPORT] Aucun championnat trouvé pour:', championshipTitle);
       }
     };
 
@@ -142,6 +142,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     if (!previewData) return;
     
     if (!championshipId) {
+      console.error('❌ [IMPORT] Pas de championshipId disponible');
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -151,7 +152,13 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     }
 
     try {
-      console.log('🚀 [IMPORT] Début de l\'import avec championshipId:', championshipId);
+      const championshipTitle = RACE_TYPE_TO_CHAMPIONSHIP[selectedRaceType];
+      console.log('🚀 [IMPORT] Début de l\'import:', {
+        raceType: selectedRaceType,
+        championshipTitle,
+        championshipId,
+        racesCount: previewData.length
+      });
       
       // Extraire les noms des courses depuis previewData
       const racesNames = previewData.map(race => race.raceName);
@@ -161,6 +168,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         if (!saved) return;
       }
 
+      console.log('📦 [IMPORT] Conversion des données Excel avec championshipId:', championshipId);
       const { races, newDrivers } = convertExcelDataToRaces(previewData, drivers, championshipId);
       
       const newDriversCount = newDrivers.length - drivers.length;

@@ -54,10 +54,12 @@ export const convertExcelDataToRaces = (
   );
   let nextDriverNumber = maxDriverNumber + 1;
   
-  console.log('Converting Excel data to races...');
-  console.log('Starting with', existingDrivers.length, 'existing drivers');
-  console.log('Max driver number:', maxDriverNumber);
-  console.log('Championship ID:', championshipId);
+  console.log('📊 [CONVERTER] Conversion des données Excel:', {
+    racesCount: excelData.length,
+    existingDriversCount: existingDrivers.length,
+    maxDriverNumber,
+    championshipId
+  });
   
   excelData.forEach((excelRace, raceIndex) => {
     // Ne pas générer d'ID ici - laisser saveRace() créer la course dans la DB
@@ -65,7 +67,7 @@ export const convertExcelDataToRaces = (
     
     // Formater la date correctement
     const formattedDate = formatDate(excelRace.raceDate);
-    console.log(`Processing race ${raceIndex + 1}: ${excelRace.raceName} (date: ${formattedDate})`);
+    console.log(`📅 [CONVERTER] Course ${raceIndex + 1}: "${excelRace.raceName}" (${formattedDate}) - Type: ${excelRace.raceType} - ChampionshipId: ${championshipId}`);
     
     excelRace.results.forEach((result, resultIndex) => {
       // Ensure driverName is a string and not empty
@@ -134,7 +136,7 @@ export const convertExcelDataToRaces = (
       results: results.sort((a, b) => a.position - b.position)
     } as Race);
     
-    console.log(`Prepared new race: ${excelRace.raceName} (date: ${formattedDate}) with ${results.length} results`);
+    console.log(`✅ [CONVERTER] Course préparée: "${excelRace.raceName}" avec ${results.length} résultats - ChampionshipId: ${championshipId}`);
   });
   
   console.log('Conversion completed:');
