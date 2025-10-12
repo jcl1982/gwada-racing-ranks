@@ -1,11 +1,19 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { parseExcelFile, convertExcelDataToRaces, type ExcelRaceData } from '@/utils/excel';
 import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>, championshipId?: string) => {
+// Mapping des types de course vers les titres de championnats
+const RACE_TYPE_TO_CHAMPIONSHIP: Record<string, string> = {
+  'montagne': 'Championnat Rallye-Montagne',
+  'rallye': 'Championnat Rallye-Montagne',
+  'karting': 'Championnat Karting',
+  'acceleration': 'Championnat Accélération',
+};
+
+export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>, defaultChampionshipId?: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewData, setPreviewData] = useState<ExcelRaceData[] | null>(null);
@@ -13,7 +21,42 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye' | 'karting'>('montagne');
   const [selectedKartingCategory, setSelectedKartingCategory] = useState<'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'>('MINI 60');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [championshipId, setChampionshipId] = useState<string | undefined>(defaultChampionshipId);
   const { toast } = useToast();
+
+  // Charger le championshipId approprié basé sur le type de course sélectionné
+  useEffect(() => {
+    const loadChampionshipId = async () => {
+      const championshipTitle = RACE_TYPE_TO_CHAMPIONSHIP[selectedRaceType];
+      
+      if (!championshipTitle) {
+        console.warn('⚠️ Aucun titre de championnat trouvé pour le type:', selectedRaceType);
+        return;
+      }
+
+      console.log('🔧 Chargement du championshipId pour:', championshipTitle);
+
+      const { data, error } = await supabase
+        .from('championship_config')
+        .select('id')
+        .eq('title', championshipTitle)
+        .maybeSingle();
+
+      if (error) {
+        console.error('❌ Erreur lors du chargement du championshipId:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('✅ ChampionshipId chargé:', data.id, 'pour', championshipTitle);
+        setChampionshipId(data.id);
+      } else {
+        console.warn('⚠️ Aucun championnat trouvé pour:', championshipTitle);
+      }
+    };
+
+    loadChampionshipId();
+  }, [selectedRaceType]);
 
   const handleFileUpload = async (file: File) => {
     setIsLoading(true);
