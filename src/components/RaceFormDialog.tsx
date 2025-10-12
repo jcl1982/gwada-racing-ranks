@@ -98,7 +98,7 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
             <Label htmlFor="race-type">Type de course</Label>
             <Select 
               value={formData.type} 
-              onValueChange={(value: 'montagne' | 'rallye') => updateFormData({ type: value })}
+              onValueChange={(value: 'montagne' | 'rallye' | 'karting' | 'acceleration') => updateFormData({ type: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -106,6 +106,8 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
               <SelectContent className="bg-background z-50">
                 <SelectItem value="montagne">Course de Côte</SelectItem>
                 <SelectItem value="rallye">Rallye</SelectItem>
+                <SelectItem value="karting">Karting</SelectItem>
+                <SelectItem value="acceleration">Accélération</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -3,6 +3,7 @@ import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import C2R2Standings from '@/components/C2R2Standings';
+import KartingStandings from '@/components/KartingStandings';
 import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
@@ -120,13 +121,11 @@ const ViewRenderer = ({
       );
     case 'karting':
       return (
-        <CategoryStandings
-          title="Championnat Karting"
-          races={[]} // À implémenter avec les courses de karting
+        <KartingStandings
+          races={races}
           drivers={drivers}
-          type="karting"
           championshipYear={championshipYear}
-          previousStandings={[]}
+          previousStandings={previousStandings.karting || []}
         />
       );
     case 'import':
