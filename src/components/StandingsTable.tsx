@@ -101,7 +101,7 @@ const StandingsTable = ({
           <div className="flex items-center gap-3">
             <Icon size={32} />
             <h2 className="font-bold text-2xl text-center">
-              {type === 'montagne' ? 'Classement Trophée de la Montagne' : type === 'rallye' ? `Classement ${displayTitle}` : `Classement ${displayTitle}`}
+              {type === 'montagne' ? 'Classement Trophée de la Montagne' : type === 'karting' ? displayTitle : `Classement ${displayTitle}`}
             </h2>
           </div>
         </div>
