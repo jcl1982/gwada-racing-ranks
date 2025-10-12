@@ -148,6 +148,23 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
   const colorClass = race.type === 'montagne' ? 'text-green-600' : 'text-blue-600';
   const isKarting = race.type === 'karting';
 
+  // Trier les pilotes par position dans la course
+  const sortedDrivers = [...drivers].sort((a, b) => {
+    const resultA = resultsToShow.find(r => r.driverId === a.id);
+    const resultB = resultsToShow.find(r => r.driverId === b.id);
+    
+    // Si les deux ont des résultats, trier par position
+    if (resultA && resultB) {
+      return resultA.position - resultB.position;
+    }
+    // Si seul A a un résultat, A vient en premier
+    if (resultA) return -1;
+    // Si seul B a un résultat, B vient en premier
+    if (resultB) return 1;
+    // Si aucun n'a de résultat, trier par nom
+    return a.name.localeCompare(b.name);
+  });
+
   return (
     <Card className="p-4">
       <div className="flex items-center justify-between mb-4">
@@ -201,7 +218,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {drivers.map(driver => (
+          {sortedDrivers.map(driver => (
             <DriverResultRow
               key={driver.id}
               driver={driver}
