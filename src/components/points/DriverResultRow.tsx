@@ -63,21 +63,6 @@ const DriverResultRow = ({
           )}
         </TableCell>
       )}
-      <TableCell className="text-center">
-        {isEditing ? (
-          <Input
-            type="number"
-            min="0"
-            value={result?.points || ''}
-            onChange={(e) => onPointsChange(driver.id, parseInt(e.target.value) || 0)}
-            className="w-20 text-center"
-          />
-        ) : (
-          <Badge variant={result?.points ? "default" : "secondary"}>
-            {result?.points || 0} pts
-          </Badge>
-        )}
-      </TableCell>
       {showBonus && (
         <TableCell className="text-center">
           {isEditing && onBonusChange ? (
@@ -95,6 +80,21 @@ const DriverResultRow = ({
           )}
         </TableCell>
       )}
+      <TableCell className="text-center">
+        {isEditing ? (
+          <Input
+            type="number"
+            min="0"
+            value={result?.points || ''}
+            onChange={(e) => onPointsChange(driver.id, parseInt(e.target.value) || 0)}
+            className="w-20 text-center"
+          />
+        ) : (
+          <Badge variant={result?.points ? "default" : "secondary"}>
+            {result?.points || 0} pts
+          </Badge>
+        )}
+      </TableCell>
       <TableCell className="text-center">
         {isEditing ? (
           <div className="flex flex-col gap-1">

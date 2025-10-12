@@ -74,41 +74,41 @@ const ExcelTemplateDownload = () => {
     // Données d'exemple pour Manche 1
     const manche1Data = [
       ['Manche 1 - MINI 60', '2024-12-15'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
-      [1, 'FERDINAND Mathieu', 'MINI 60', 100, 0],
-      [2, 'DE MITRI Laurent', 'MINI 60', 66, 0],
-      [3, 'BHIKI Wilfried', 'MINI 60', 66, 5],
-      [4, 'BORGIA Steeve', 'MINI 60', 54, 0],
-      [5, 'MERI Ruddy', 'MINI 60', 39, 0],
-      [6, 'GUSTAVE DI DUFLO Antonio', 'MINI 60', 32, 0],
-      [7, 'BUNET Steven', 'MINI 60', 22, 0],
-      [8, 'RAMBOJAN Pascal', 'MINI 60', 20, 0]
+      ['Position', 'Pilote', 'Catégorie', 'Bonus', 'Points'], // Ligne 2: En-têtes
+      [1, 'FERDINAND Mathieu', 'MINI 60', 0, 100],
+      [2, 'DE MITRI Laurent', 'MINI 60', 0, 66],
+      [3, 'BHIKI Wilfried', 'MINI 60', 5, 66],
+      [4, 'BORGIA Steeve', 'MINI 60', 0, 54],
+      [5, 'MERI Ruddy', 'MINI 60', 0, 39],
+      [6, 'GUSTAVE DI DUFLO Antonio', 'MINI 60', 0, 32],
+      [7, 'BUNET Steven', 'MINI 60', 0, 22],
+      [8, 'RAMBOJAN Pascal', 'MINI 60', 0, 20]
     ];
     
     // Données d'exemple pour Manche 2
     const manche2Data = [
       ['Manche 2 - SENIOR MASTER GENTLEMAN', '2024-12-22'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
-      [1, 'MARTIN Paul', 'SENIOR', 100, 0],
-      [2, 'DURAND Michel', 'MASTER', 66, 0],
-      [3, 'BERNARD Sophie', 'SENIOR', 66, 10],
-      [4, 'PETIT Claude', 'GENTLEMAN', 54, 0],
-      [5, 'ROUX Sylvie', 'SENIOR', 39, 0],
-      [6, 'BLANC Jean', 'MASTER', 32, 0],
-      [7, 'NOIR Julie', 'GENTLEMAN', 22, 0],
-      [8, 'LEROY Annie', 'SENIOR', 20, 0]
+      ['Position', 'Pilote', 'Catégorie', 'Bonus', 'Points'], // Ligne 2: En-têtes
+      [1, 'MARTIN Paul', 'SENIOR', 0, 100],
+      [2, 'DURAND Michel', 'MASTER', 0, 66],
+      [3, 'BERNARD Sophie', 'SENIOR', 10, 66],
+      [4, 'PETIT Claude', 'GENTLEMAN', 0, 54],
+      [5, 'ROUX Sylvie', 'SENIOR', 0, 39],
+      [6, 'BLANC Jean', 'MASTER', 0, 32],
+      [7, 'NOIR Julie', 'GENTLEMAN', 0, 22],
+      [8, 'LEROY Annie', 'SENIOR', 0, 20]
     ];
     
     // Données d'exemple pour Manche 3
     const manche3Data = [
       ['Manche 3 - KZ2', '2024-12-29'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Catégorie', 'Points', 'Bonus'], // Ligne 2: En-têtes
-      [1, 'DUPONT Alexandre', 'KZ2', 100, 0],
-      [2, 'GARCIA Lucas', 'KZ2', 66, 0],
-      [3, 'BERNARD Thomas', 'KZ2', 66, 15],
-      [4, 'MOREAU Nicolas', 'KZ2', 54, 0],
-      [5, 'SIMON Antoine', 'KZ2', 39, 0],
-      [6, 'LAURENT Maxime', 'KZ2', 32, 0]
+      ['Position', 'Pilote', 'Catégorie', 'Bonus', 'Points'], // Ligne 2: En-têtes
+      [1, 'DUPONT Alexandre', 'KZ2', 0, 100],
+      [2, 'GARCIA Lucas', 'KZ2', 0, 66],
+      [3, 'BERNARD Thomas', 'KZ2', 15, 66],
+      [4, 'MOREAU Nicolas', 'KZ2', 0, 54],
+      [5, 'SIMON Antoine', 'KZ2', 0, 39],
+      [6, 'LAURENT Maxime', 'KZ2', 0, 32]
     ];
     
     // Créer les feuilles
@@ -121,24 +121,24 @@ const ExcelTemplateDownload = () => {
       { width: 12 }, // Colonne Position
       { width: 30 }, // Colonne Pilote
       { width: 15 }, // Colonne Catégorie
-      { width: 10 }, // Colonne Points
-      { width: 10 }  // Colonne Bonus
+      { width: 10 }, // Colonne Bonus
+      { width: 10 }  // Colonne Points
     ];
     
     sheet2['!cols'] = [
       { width: 12 }, // Colonne Position
       { width: 30 }, // Colonne Pilote
       { width: 15 }, // Colonne Catégorie
-      { width: 10 }, // Colonne Points
-      { width: 10 }  // Colonne Bonus
+      { width: 10 }, // Colonne Bonus
+      { width: 10 }  // Colonne Points
     ];
     
     sheet3['!cols'] = [
       { width: 12 }, // Colonne Position
       { width: 30 }, // Colonne Pilote
       { width: 15 }, // Colonne Catégorie
-      { width: 10 }, // Colonne Points
-      { width: 10 }  // Colonne Bonus
+      { width: 10 }, // Colonne Bonus
+      { width: 10 }  // Colonne Points
     ];
     
     // Ajouter les feuilles au classeur
@@ -194,7 +194,7 @@ const ExcelTemplateDownload = () => {
             <ul className="text-xs text-green-600 mb-3 list-disc list-inside space-y-1">
               <li>Chaque feuille = une manche</li>
               <li>Ligne 1 : Nom de la manche, Date (AAAA-MM-JJ)</li>
-              <li>Ligne 2 : En-têtes (Position, Pilote, Catégorie, Points, Bonus)</li>
+              <li>Ligne 2 : En-têtes (Position, Pilote, Catégorie, Bonus, Points)</li>
               <li>Lignes suivantes : Résultats des pilotes</li>
               <li><strong>Catégorie :</strong> MINI 60, SENIOR, MASTER, GENTLEMAN, KZ2, etc.</li>
               <li><strong>Bonus :</strong> Points bonus (0 si aucun)</li>

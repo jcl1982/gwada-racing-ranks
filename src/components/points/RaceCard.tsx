@@ -195,8 +195,8 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
             <TableHead>Pilote</TableHead>
             <TableHead className="text-center">Position</TableHead>
             {isKarting && <TableHead className="text-center">Catégorie</TableHead>}
-            <TableHead className="text-center">Points</TableHead>
             {isKarting && <TableHead className="text-center">Bonus</TableHead>}
+            <TableHead className="text-center">Points</TableHead>
             <TableHead className="text-center">Modèle de voiture</TableHead>
           </TableRow>
         </TableHeader>
