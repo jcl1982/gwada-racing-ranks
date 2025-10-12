@@ -3,7 +3,7 @@ import { Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { validateRaceData } from './raceValidation';
-import { deleteExistingResults, saveRaceResults } from './raceResultsOperations';
+import { deleteExistingResults, deleteResultsByCategory, saveRaceResults } from './raceResultsOperations';
 import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, findExistingRace } from './raceDatabaseOperations';
 
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
@@ -24,10 +24,18 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         await updateRaceInDatabase(race, championshipId);
         raceId = race.id;
         
-        // Supprimer les anciens résultats avant d'ajouter les nouveaux
+        // Pour le karting avec catégories, supprimer uniquement les résultats de la catégorie concernée
         if ('results' in race && race.results.length > 0) {
-          console.log('🗑️ Suppression des anciens résultats...');
-          await deleteExistingResults(raceId);
+          const isKarting = race.type === 'karting';
+          const category = race.results[0]?.category;
+          
+          if (isKarting && category) {
+            console.log(`🗑️ Suppression des résultats de la catégorie "${category}"...`);
+            await deleteResultsByCategory(raceId, category);
+          } else {
+            console.log('🗑️ Suppression de tous les résultats...');
+            await deleteExistingResults(raceId);
+          }
         }
       } else {
         // Sinon, vérifier si une course avec le même nom et date existe déjà
@@ -35,13 +43,21 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         const existingRace = await findExistingRace(race.name, race.date, finalChampionshipId);
         
         if (existingRace) {
-          console.log('⚠️ Course existante trouvée, utilisation de la course existante:', existingRace.id);
+          console.log('⚠️ Course existante trouvée, ajout des résultats à la course existante:', existingRace.id);
           raceId = existingRace.id;
           
-          // Supprimer les anciens résultats avant d'ajouter les nouveaux
+          // Pour le karting avec catégories, supprimer uniquement les résultats de la catégorie concernée
           if ('results' in race && race.results.length > 0) {
-            console.log('🗑️ Suppression des anciens résultats...');
-            await deleteExistingResults(raceId);
+            const isKarting = race.type === 'karting';
+            const category = race.results[0]?.category;
+            
+            if (isKarting && category) {
+              console.log(`🗑️ Suppression des résultats existants pour la catégorie "${category}"...`);
+              await deleteResultsByCategory(raceId, category);
+            } else {
+              console.log('🗑️ Suppression de tous les résultats...');
+              await deleteExistingResults(raceId);
+            }
           }
         } else {
           console.log('🆕 [SAVE_RACE] Création d\'une nouvelle course:', race.name);

@@ -15,6 +15,24 @@ export const deleteExistingResults = async (raceId: string): Promise<void> => {
   }
 };
 
+// Nouvelle fonction pour supprimer uniquement les résultats d'une catégorie spécifique (pour karting)
+export const deleteResultsByCategory = async (raceId: string, category: string): Promise<void> => {
+  console.log(`🗑️ Suppression des résultats pour la catégorie "${category}" de la course ${raceId}`);
+  
+  const { error: deleteError } = await supabase
+    .from('race_results')
+    .delete()
+    .eq('race_id', raceId)
+    .eq('category', category);
+
+  if (deleteError) {
+    console.error('❌ Erreur lors de la suppression des résultats par catégorie:', deleteError);
+    throw deleteError;
+  }
+  
+  console.log(`✅ Résultats de la catégorie "${category}" supprimés`);
+};
+
 export const saveRaceResults = async (raceId: string, results: RaceResult[]): Promise<void> => {
   console.log('📊 [SAVE_RESULTS] Début saveRaceResults - RaceId:', raceId);
   console.log('📊 [SAVE_RESULTS] Nombre de résultats reçus:', results.length);
