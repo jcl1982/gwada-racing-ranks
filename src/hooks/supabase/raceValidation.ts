@@ -34,9 +34,10 @@ export const validateRaceData = (race: Omit<Race, 'id' | 'results'> | Race): voi
   }
   
   // Valider le type
-  if (!race.type || (race.type !== 'montagne' && race.type !== 'rallye')) {
+  const validTypes = ['montagne', 'rallye', 'karting', 'acceleration'];
+  if (!race.type || !validTypes.includes(race.type)) {
     console.error('❌ Type de course invalide:', race.type);
-    throw new Error('Le type de course doit être "montagne" ou "rallye"');
+    throw new Error('Le type de course doit être "montagne", "rallye", "karting" ou "acceleration"');
   }
 };
 

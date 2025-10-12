@@ -99,7 +99,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
 
     const races: Race[] = racesData?.map(race => convertSupabaseRace({
       ...race,
-      type: race.type as 'montagne' | 'rallye' // Type assertion to handle the database string type
+      type: race.type as 'montagne' | 'rallye' | 'karting' | 'acceleration' // Type assertion to handle the database string type
     })) || [];
     console.log('✅ Courses chargées:', races.length);
     

@@ -16,7 +16,7 @@ export interface SupabaseRace {
   date: string;
   end_date?: string;
   organizer?: string;
-  type: 'montagne' | 'rallye';
+  type: 'montagne' | 'rallye' | 'karting' | 'acceleration';
   championship_id: string;
   created_at: string;
   updated_at: string;
