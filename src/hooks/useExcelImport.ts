@@ -21,7 +21,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye' | 'karting'>('montagne');
   const [selectedKartingCategory, setSelectedKartingCategory] = useState<'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'>('MINI 60');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [championshipId, setChampionshipId] = useState<string | undefined>(defaultChampionshipId);
+  const [championshipId, setChampionshipId] = useState<string | undefined>(undefined);
   const { toast } = useToast();
 
   // Charger le championshipId approprié basé sur le type de course sélectionné
@@ -140,8 +140,19 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
 
   const proceedWithImport = async (shouldSave: boolean) => {
     if (!previewData) return;
+    
+    if (!championshipId) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Le championnat n'a pas été chargé correctement. Veuillez réessayer.",
+      });
+      return;
+    }
 
     try {
+      console.log('🚀 [IMPORT] Début de l\'import avec championshipId:', championshipId);
+      
       // Extraire les noms des courses depuis previewData
       const racesNames = previewData.map(race => race.raceName);
       
