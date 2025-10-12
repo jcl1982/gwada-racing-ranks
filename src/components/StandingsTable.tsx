@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mountain, Car } from 'lucide-react';
+import { Mountain, Car, Flame } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
@@ -42,8 +42,11 @@ const StandingsTable = ({
     printWebPage,
     printWithUnicodeSupport
   } = useWebPrint();
-  const Icon = type === 'montagne' ? Mountain : Car;
-  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : type === 'c2r2' ? 'from-orange-600 to-red-600' : 'from-blue-600 to-cyan-600';
+  const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
+  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
+                       type === 'c2r2' ? 'from-orange-600 to-red-600' : 
+                       type === 'karting' ? 'from-purple-600 to-pink-600' : 
+                       'from-blue-600 to-cyan-600';
   const formatDateRange = (startDate: string, endDate?: string) => {
     const start = format(parseLocalDate(startDate), 'dd/MM/yy', {
       locale: fr
