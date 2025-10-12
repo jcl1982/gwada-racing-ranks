@@ -51,9 +51,8 @@ const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver,
       
       await deleteDriver(driverId);
       
-      // Trigger refresh of drivers list
-      console.log('🔄 Triggering drivers list refresh...');
-      onDriversChange([...drivers.filter(d => d.id !== driverId)]);
+      // No need to call onDriversChange - deleteDriver already refreshes data
+      console.log('✅ Driver deleted, data will refresh automatically');
       
     } catch (error) {
       console.error('❌ Error in handleDeleteDriver:', error);
@@ -78,9 +77,8 @@ const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver,
       
       await deleteAllDrivers();
       
-      // Trigger refresh of drivers list
-      console.log('🔄 Triggering drivers list refresh...');
-      onDriversChange([]);
+      // No need to call onDriversChange - deleteAllDrivers already refreshes data
+      console.log('✅ All drivers deleted, data will refresh automatically');
       
     } catch (error) {
       console.error('❌ Error in handleDeleteAllDrivers:', error);
