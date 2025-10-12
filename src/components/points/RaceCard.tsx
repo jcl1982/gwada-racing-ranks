@@ -175,7 +175,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
           <h3 className="text-lg font-semibold">{race.name}</h3>
           <Badge variant="outline">{parseLocalDate(race.date).toLocaleDateString('fr-FR')}</Badge>
         </div>
-        {!isKarting && isAdmin && (
+        {isAdmin && (
           <>
             {!isEditing ? (
               <Button
