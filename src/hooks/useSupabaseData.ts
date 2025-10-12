@@ -96,10 +96,10 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   // Wrapper pour saveRace qui passe automatiquement le championshipId
   const saveRace = async (race: Omit<Race, 'id' | 'results'> | Race) => {
     console.log('🔧 saveRace wrapper called with:', { race, championshipId });
-    // S'assurer que le championshipId est ajouté à la course
+    // Priorité au championshipId de la course, fallback sur le contexte
     const raceWithChampionship = {
       ...race,
-      championshipId: championshipId || race.championshipId
+      championshipId: race.championshipId || championshipId
     };
     return baseSaveRace(raceWithChampionship);
   };
