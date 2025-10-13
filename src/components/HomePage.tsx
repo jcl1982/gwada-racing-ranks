@@ -91,31 +91,29 @@ const HomePage = ({
         const ChampIcon = getChampionshipIcon(championship.title);
         const colorClass = getChampionshipColor(championship.title);
         const isKarting = championship.title === 'Championnat Karting';
-        
+
         // Fonction pour calculer les classements par catégorie karting
         const calculateKartingCategoryStandings = (category: string) => {
-          const standingsMap = new Map<string, { totalPoints: number, driverName: string }>();
-          
+          const standingsMap = new Map<string, {
+            totalPoints: number;
+            driverName: string;
+          }>();
           championship.races.forEach(race => {
             race.results.forEach(result => {
               const resultCategory = result.category?.toLowerCase() || '';
               const searchCategory = category.toLowerCase();
-              
               let isMatchingCategory = false;
               if (searchCategory === 'mini60') {
                 isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
               } else if (searchCategory === 'senior') {
-                isMatchingCategory = resultCategory.includes('senior') || 
-                                   resultCategory.includes('master') || 
-                                   resultCategory.includes('gentleman');
+                isMatchingCategory = resultCategory.includes('senior') || resultCategory.includes('master') || resultCategory.includes('gentleman');
               } else if (searchCategory === 'kz2') {
                 isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
               }
-              
               if (isMatchingCategory) {
                 const driver = championship.drivers.find(d => d.id === result.driverId);
-                const current = standingsMap.get(result.driverId) || { 
-                  totalPoints: 0, 
+                const current = standingsMap.get(result.driverId) || {
+                  totalPoints: 0,
                   driverName: driver?.name || 'Unknown'
                 };
                 const pointsWithBonus = result.points + (result.bonus || 0);
@@ -126,21 +124,23 @@ const HomePage = ({
               }
             });
           });
-
-          return Array.from(standingsMap.entries())
-            .map(([driverId, data]) => {
-              const driver = championship.drivers.find(d => d.id === driverId);
-              if (!driver) return null;
-              return { driver, totalPoints: data.totalPoints };
-            })
-            .filter((s): s is NonNullable<typeof s> => s !== null)
-            .sort((a, b) => b.totalPoints - a.totalPoints);
+          return Array.from(standingsMap.entries()).map(([driverId, data]) => {
+            const driver = championship.drivers.find(d => d.id === driverId);
+            if (!driver) return null;
+            return {
+              driver,
+              totalPoints: data.totalPoints
+            };
+          }).filter((s): s is NonNullable<typeof s> => s !== null).sort((a, b) => b.totalPoints - a.totalPoints);
         };
-        
+
         // Pour le karting, calculer les points avec bonus
         let leader = championship.standings[0];
-        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[] } | null = null;
-        
+        let kartingCategoryStandings: {
+          mini60: any[];
+          senior: any[];
+          kz2: any[];
+        } | null = null;
         if (isKarting && championship.drivers.length > 0) {
           // Calculer les classements par catégorie
           kartingCategoryStandings = {
@@ -148,17 +148,18 @@ const HomePage = ({
             senior: calculateKartingCategoryStandings('senior').slice(0, 3),
             kz2: calculateKartingCategoryStandings('kz2').slice(0, 3)
           };
-          
+
           // Calculer le leader global
           const kartingStandings = championship.drivers.map(driver => {
             const totalPoints = championship.races.reduce((sum, race) => {
               const result = race.results.find(r => r.driverId === driver.id);
               return sum + (result?.points || 0) + (result?.bonus || 0);
             }, 0);
-            return { driver, totalPoints };
-          }).filter(s => s.totalPoints > 0)
-            .sort((a, b) => b.totalPoints - a.totalPoints);
-          
+            return {
+              driver,
+              totalPoints
+            };
+          }).filter(s => s.totalPoints > 0).sort((a, b) => b.totalPoints - a.totalPoints);
           if (kartingStandings.length > 0) {
             leader = {
               driver: kartingStandings[0].driver,
@@ -170,7 +171,6 @@ const HomePage = ({
             } as ChampionshipStanding;
           }
         }
-        
         const montagneRaces = championship.races.filter(r => r.type === 'montagne');
         const rallyeRaces = championship.races.filter(r => r.type === 'rallye');
         const totalRaces = championship.races.length;
@@ -201,55 +201,7 @@ const HomePage = ({
                 </div>
 
                 {/* Leader */}
-                {isKarting && kartingCategoryStandings ? (
-                  <div className="border-t pt-4 mt-4">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Trophy size={20} className="text-yellow-500" />
-                      <h4 className="font-semibold">Leader</h4>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      {/* MINI 60 Leader */}
-                      {kartingCategoryStandings.mini60.length > 0 && (
-                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
-                          <p className="text-xs font-semibold text-purple-700 mb-1">MINI 60</p>
-                          <p className="font-bold text-base">{kartingCategoryStandings.mini60[0].driver.name}</p>
-                          <p className="text-xs text-gray-600">{kartingCategoryStandings.mini60[0].driver.team}</p>
-                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
-                            {kartingCategoryStandings.mini60[0].totalPoints} points
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      {/* SENIOR MASTER GENTLEMAN Leader */}
-                      {kartingCategoryStandings.senior.length > 0 && (
-                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
-                          <p className="text-xs font-semibold text-purple-700 mb-1">SENIOR MASTER GENTLEMAN</p>
-                          <p className="font-bold text-base">{kartingCategoryStandings.senior[0].driver.name}</p>
-                          <p className="text-xs text-gray-600">{kartingCategoryStandings.senior[0].driver.team}</p>
-                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
-                            {kartingCategoryStandings.senior[0].totalPoints} points
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      {/* KZ2 Leader */}
-                      {kartingCategoryStandings.kz2.length > 0 && (
-                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
-                          <p className="text-xs font-semibold text-purple-700 mb-1">KZ2</p>
-                          <p className="font-bold text-base">{kartingCategoryStandings.kz2[0].driver.name}</p>
-                          <p className="text-xs text-gray-600">{kartingCategoryStandings.kz2[0].driver.team}</p>
-                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
-                            {kartingCategoryStandings.kz2[0].totalPoints} points
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      <p className="text-xs text-gray-500 text-center mt-2">Points totaux (course + bonus)</p>
-                    </div>
-                  </div>
-                ) : leader ? (
-                  <div className="border-t pt-4 mt-4">
+                {leader ? <div className="border-t pt-4 mt-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Trophy size={20} className="text-yellow-500" />
                       <h4 className="font-semibold">Leader</h4>
@@ -262,8 +214,7 @@ const HomePage = ({
                           {leader.totalPoints} points
                         </Badge>
                       </div>
-                      {championship.title === 'Championnat Rallye-Montagne' && (
-                        <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                      {championship.title === 'Championnat Rallye-Montagne' && <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
                           <div className="text-center">
                             <span className="text-green-600 font-semibold">{leader.montagnePoints}</span>
                             <span className="text-gray-500"> Montagne</span>
@@ -272,21 +223,19 @@ const HomePage = ({
                             <span className="text-blue-600 font-semibold">{leader.rallyePoints}</span>
                             <span className="text-gray-500"> Rallye</span>
                           </div>
-                        </div>
-                      )}
+                        </div>}
+                      {isKarting && <div className="mt-3 text-xs text-center">
+                          <p className="text-gray-500">Points totaux (course + bonus)</p>
+                        </div>}
                     </div>
-                  </div>
-                ) : (
-                  <div className="border-t pt-4 mt-4">
+                  </div> : <div className="border-t pt-4 mt-4">
                     <p className="text-center text-gray-500 py-4">
                       Aucun classement disponible
                     </p>
-                  </div>
-                )}
+                  </div>}
 
                 {/* Top 3 */}
-                {isKarting && kartingCategoryStandings ? (
-                  <div className="border-t pt-4 mt-4">
+                {isKarting && kartingCategoryStandings ? <div className="border-t pt-4 mt-4">
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
                       <Award size={18} />
                       Top 3 par Catégorie
@@ -295,37 +244,16 @@ const HomePage = ({
                     {/* MINI 60 */}
                     <div className="mb-4">
                       <h5 className="text-sm font-semibold text-purple-700 mb-2">MINI 60</h5>
-                      <div className="space-y-1">
-                        {kartingCategoryStandings.mini60.length > 0 ? (
-                          kartingCategoryStandings.mini60.map((standing, index) => {
-                            const positions = ['🥇', '🥈', '🥉'];
-                            return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-lg">{positions[index]}</span>
-                                  <div>
-                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
-                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
-                        )}
-                      </div>
+                      
                     </div>
                     
                     {/* SENIOR MASTER GENTLEMAN */}
                     <div className="mb-4">
                       <h5 className="text-sm font-semibold text-purple-700 mb-2">SENIOR MASTER GENTLEMAN</h5>
                       <div className="space-y-1">
-                        {kartingCategoryStandings.senior.length > 0 ? (
-                          kartingCategoryStandings.senior.map((standing, index) => {
-                            const positions = ['🥇', '🥈', '🥉'];
-                            return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                        {kartingCategoryStandings.senior.length > 0 ? kartingCategoryStandings.senior.map((standing, index) => {
+                    const positions = ['🥇', '🥈', '🥉'];
+                    return <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">{positions[index]}</span>
                                   <div>
@@ -333,12 +261,8 @@ const HomePage = ({
                                     <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
-                        )}
+                              </div>;
+                  }) : <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>}
                       </div>
                     </div>
                     
@@ -346,11 +270,9 @@ const HomePage = ({
                     <div>
                       <h5 className="text-sm font-semibold text-purple-700 mb-2">KZ2</h5>
                       <div className="space-y-1">
-                        {kartingCategoryStandings.kz2.length > 0 ? (
-                          kartingCategoryStandings.kz2.map((standing, index) => {
-                            const positions = ['🥇', '🥈', '🥉'];
-                            return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                        {kartingCategoryStandings.kz2.length > 0 ? kartingCategoryStandings.kz2.map((standing, index) => {
+                    const positions = ['🥇', '🥈', '🥉'];
+                    return <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">{positions[index]}</span>
                                   <div>
@@ -358,25 +280,19 @@ const HomePage = ({
                                     <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
-                        )}
+                              </div>;
+                  }) : <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>}
                       </div>
                     </div>
-                  </div>
-                ) : championship.standings.length >= 3 && !isKarting && <div className="border-t pt-4 mt-4">
+                  </div> : championship.standings.length >= 3 && !isKarting && <div className="border-t pt-4 mt-4">
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
                       <Award size={18} />
                       Top 3
                     </h4>
                     <div className="space-y-2">
                       {championship.standings.slice(0, 3).map((standing, index) => {
-                        const positions = ['🥇', '🥈', '🥉'];
-                        return (
-                          <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                  const positions = ['🥇', '🥈', '🥉'];
+                  return <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
                             <div className="flex items-center gap-2">
                               <span className="text-xl">{positions[index]}</span>
                               <div>
@@ -384,9 +300,8 @@ const HomePage = ({
                                 <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          </div>;
+                })}
                     </div>
                   </div>}
               </div>
