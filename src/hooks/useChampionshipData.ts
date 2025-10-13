@@ -1,3 +1,4 @@
+import { useMemo, useEffect } from 'react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useChampionshipImport } from '@/hooks/championship/useChampionshipImport';
 import { useChampionshipHandlers } from '@/hooks/championship/useChampionshipHandlers';
@@ -7,7 +8,7 @@ import { ViewType } from '@/hooks/useViewNavigation';
 
 export const useChampionshipData = (currentView: ViewType) => {
   // Charger la configuration du championnat basée sur la vue actuelle
-  const { config: championshipConfig, loading: configLoading, refresh: refreshConfig } = useChampionshipConfig(currentView);
+  const { config: championshipConfig, loading: configLoading } = useChampionshipConfig(currentView);
 
   const {
     drivers,
@@ -29,8 +30,21 @@ export const useChampionshipData = (currentView: ViewType) => {
     updateChampionshipConfig,
     resetAllData,
     refreshData,
-    autoSaveStandingsForEvolution
+    autoSaveStandingsForEvolution,
+    setChampionshipId
   } = useSupabaseData(championshipConfig?.id);
+
+  // Mettre à jour le championshipId quand la config change
+  useEffect(() => {
+    if (championshipConfig?.id && championshipConfig.id !== championshipId) {
+      console.log('🔄 Changement de championnat détecté:', {
+        from: championshipId,
+        to: championshipConfig.id,
+        title: championshipConfig.title
+      });
+      setChampionshipId(championshipConfig.id);
+    }
+  }, [championshipConfig?.id, championshipId, setChampionshipId]);
 
   // Utiliser le hook centralisé pour calculer tous les standings
   const standingsCalculation = useStandingsCalculation({
@@ -60,9 +74,7 @@ export const useChampionshipData = (currentView: ViewType) => {
   } = useChampionshipHandlers(
     refreshData,
     resetAllData,
-    updateChampionshipConfig,
-    refreshConfig,
-    championshipConfig?.id // Passer le bon championshipId
+    updateChampionshipConfig
   );
 
   return {

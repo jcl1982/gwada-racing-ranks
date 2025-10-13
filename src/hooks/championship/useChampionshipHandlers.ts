@@ -1,11 +1,10 @@
+
 import { Driver, Race } from '@/types/championship';
 
 export const useChampionshipHandlers = (
   refreshData: () => Promise<void>,
   resetAllData: () => Promise<void>,
-  updateChampionshipConfig: (title: string, year: string, championshipId?: string) => Promise<void>,
-  refreshConfig: () => void,
-  currentChampionshipId?: string
+  updateChampionshipConfig: (title: string, year: string) => Promise<void>
 ) => {
   const handleReset = async () => {
     await resetAllData();
@@ -30,10 +29,7 @@ export const useChampionshipHandlers = (
   };
 
   const handleTitleChange = async (title: string, year: string) => {
-    // Passer le currentChampionshipId pour s'assurer qu'on met à jour le bon championnat
-    await updateChampionshipConfig(title, year, currentChampionshipId);
-    // Rafraîchir la configuration après la mise à jour
-    refreshConfig();
+    await updateChampionshipConfig(title, year);
   };
 
   return {

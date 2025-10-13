@@ -8,72 +8,66 @@ export interface ChampionshipConfig {
   year: string;
 }
 
-// Mapping des vues vers les types de championnats (identifiants stables)
-const VIEW_TO_CHAMPIONSHIP_TYPE: Record<string, string> = {
+// Mapping des vues vers les titres de championnats
+const VIEW_TO_CHAMPIONSHIP_TITLE: Record<string, string> = {
   // Rallye-Montagne views
-  'admin': 'rallye-montagne',
-  'general': 'rallye-montagne',
-  'montagne': 'rallye-montagne',
-  'rallye': 'rallye-montagne',
-  'c2r2': 'rallye-montagne',
+  'admin': 'Championnat Rallye-Montagne',
+  'general': 'Championnat Rallye-Montagne',
+  'montagne': 'Championnat Rallye-Montagne',
+  'rallye': 'Championnat Rallye-Montagne',
+  'c2r2': 'Championnat Rallye-Montagne',
+  // 'import' ne devrait pas être lié à un championnat spécifique
+  // car l'utilisateur choisit le championnat via le sélecteur de type de course
   
   // Accélération views
-  'admin-acceleration': 'acceleration',
-  'acceleration': 'acceleration',
+  'admin-acceleration': 'Championnat Accélération',
+  'acceleration': 'Championnat Accélération',
   
   // Karting views  
-  'admin-karting': 'karting',
-  'karting': 'karting',
+  'admin-karting': 'Championnat Karting',
+  'karting': 'Championnat Karting',
 };
 
 export const useChampionshipConfig = (currentView: ViewType) => {
   const [config, setConfig] = useState<ChampionshipConfig | null>(null);
   const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const loadConfig = async () => {
-    setLoading(true);
-    try {
-      const championshipType = VIEW_TO_CHAMPIONSHIP_TYPE[currentView] || 'rallye-montagne';
-      
-      console.log('🔧 Chargement de la configuration pour le type:', championshipType);
-      
-      const { data, error } = await supabase
-        .from('championship_config')
-        .select('*')
-        .eq('type', championshipType)
-        .maybeSingle();
-
-      if (error) {
-        console.error('❌ Erreur lors du chargement de la configuration:', error);
-        throw error;
-      }
-
-      if (data) {
-        setConfig({
-          id: data.id,
-          title: data.title,
-          year: data.year
-        });
-        console.log('✅ Configuration chargée:', data);
-      } else {
-        console.warn('⚠️ Aucune configuration trouvée pour le type:', championshipType);
-      }
-    } catch (error) {
-      console.error('❌ Erreur:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const loadConfig = async () => {
+      setLoading(true);
+      try {
+        const championshipTitle = VIEW_TO_CHAMPIONSHIP_TITLE[currentView] || 'Championnat Rallye-Montagne';
+        
+        console.log('🔧 Chargement de la configuration pour:', championshipTitle);
+        
+        const { data, error } = await supabase
+          .from('championship_config')
+          .select('*')
+          .eq('title', championshipTitle)
+          .maybeSingle();
+
+        if (error) {
+          console.error('❌ Erreur lors du chargement de la configuration:', error);
+          throw error;
+        }
+
+        if (data) {
+          setConfig({
+            id: data.id,
+            title: data.title,
+            year: data.year
+          });
+          console.log('✅ Configuration chargée:', data);
+        }
+      } catch (error) {
+        console.error('❌ Erreur:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadConfig();
-  }, [currentView, refreshKey]);
+  }, [currentView]);
 
-  const refresh = () => {
-    console.log('🔄 Rafraîchissement de la configuration demandé');
-    setRefreshKey(prev => prev + 1);
-  };
-
-  return { config, loading, refresh };
+  return { config, loading };
 };
