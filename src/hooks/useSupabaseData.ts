@@ -93,9 +93,15 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   };
   
   // Version spéciale pour l'import qui retourne l'ID
+  // IMPORTANT: Ne PAS passer le championshipId du contexte, utiliser celui du driver
   const saveDriverForImport = async (driver: Driver): Promise<string> => {
-    console.log('🔧 saveDriverForImport wrapper called with:', { driver, championshipId });
-    return baseSaveDriver(driver, championshipId);
+    console.log('🔧 saveDriverForImport wrapper called with:', { 
+      driverName: driver.name,
+      driverChampionshipId: driver.championshipId,
+      contextChampionshipId: championshipId 
+    });
+    // Utiliser le championshipId du driver en priorité, sinon celui du contexte
+    return baseSaveDriver(driver, driver.championshipId || championshipId);
   };
   
   const { saveRace: baseSaveRace, deleteRace } = createRaceOperations(toast, loadData, championshipId);
