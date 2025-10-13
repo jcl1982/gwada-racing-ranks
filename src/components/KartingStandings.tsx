@@ -123,9 +123,9 @@ const KartingStandings = ({
 
       <Tabs defaultValue="mini60" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="mini60" className="text-gray-400">MINI 60</TabsTrigger>
-          <TabsTrigger value="senior">SENIOR MASTER GENTLEMAN</TabsTrigger>
-          <TabsTrigger value="kz2">KZ2</TabsTrigger>
+          <TabsTrigger value="mini60" className="text-gray-400 bg-blue-400 hover:bg-blue-300">MINI 60</TabsTrigger>
+          <TabsTrigger value="senior" className="bg-blue-400 hover:bg-blue-300">SENIOR MASTER GENTLEMAN</TabsTrigger>
+          <TabsTrigger value="kz2" className="bg-blue-400 hover:bg-blue-300">KZ2</TabsTrigger>
         </TabsList>
 
         <TabsContent value="mini60" className="space-y-6">
