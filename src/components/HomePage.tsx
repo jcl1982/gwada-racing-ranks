@@ -201,7 +201,55 @@ const HomePage = ({
                 </div>
 
                 {/* Leader */}
-                {leader ? <div className="border-t pt-4 mt-4">
+                {isKarting && kartingCategoryStandings ? (
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Trophy size={20} className="text-yellow-500" />
+                      <h4 className="font-semibold">Leader</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {/* MINI 60 Leader */}
+                      {kartingCategoryStandings.mini60.length > 0 && (
+                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
+                          <p className="text-xs font-semibold text-purple-700 mb-1">MINI 60</p>
+                          <p className="font-bold text-base">{kartingCategoryStandings.mini60[0].driver.name}</p>
+                          <p className="text-xs text-gray-600">{kartingCategoryStandings.mini60[0].driver.team}</p>
+                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
+                            {kartingCategoryStandings.mini60[0].totalPoints} points
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* SENIOR MASTER GENTLEMAN Leader */}
+                      {kartingCategoryStandings.senior.length > 0 && (
+                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
+                          <p className="text-xs font-semibold text-purple-700 mb-1">SENIOR MASTER GENTLEMAN</p>
+                          <p className="font-bold text-base">{kartingCategoryStandings.senior[0].driver.name}</p>
+                          <p className="text-xs text-gray-600">{kartingCategoryStandings.senior[0].driver.team}</p>
+                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
+                            {kartingCategoryStandings.senior[0].totalPoints} points
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* KZ2 Leader */}
+                      {kartingCategoryStandings.kz2.length > 0 && (
+                        <div className="bg-purple-50 rounded-lg p-3 border-l-4 border-purple-500">
+                          <p className="text-xs font-semibold text-purple-700 mb-1">KZ2</p>
+                          <p className="font-bold text-base">{kartingCategoryStandings.kz2[0].driver.name}</p>
+                          <p className="text-xs text-gray-600">{kartingCategoryStandings.kz2[0].driver.team}</p>
+                          <Badge className="mt-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white font-bold">
+                            {kartingCategoryStandings.kz2[0].totalPoints} points
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      <p className="text-xs text-gray-500 text-center mt-2">Points totaux (course + bonus)</p>
+                    </div>
+                  </div>
+                ) : leader ? (
+                  <div className="border-t pt-4 mt-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Trophy size={20} className="text-yellow-500" />
                       <h4 className="font-semibold">Leader</h4>
@@ -214,7 +262,8 @@ const HomePage = ({
                           {leader.totalPoints} points
                         </Badge>
                       </div>
-                      {championship.title === 'Championnat Rallye-Montagne' && <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
+                      {championship.title === 'Championnat Rallye-Montagne' && (
+                        <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
                           <div className="text-center">
                             <span className="text-green-600 font-semibold">{leader.montagnePoints}</span>
                             <span className="text-gray-500"> Montagne</span>
@@ -223,16 +272,17 @@ const HomePage = ({
                             <span className="text-blue-600 font-semibold">{leader.rallyePoints}</span>
                             <span className="text-gray-500"> Rallye</span>
                           </div>
-                        </div>}
-                      {isKarting && <div className="mt-3 text-xs text-center">
-                          <p className="text-gray-500">Points totaux (course + bonus)</p>
-                        </div>}
+                        </div>
+                      )}
                     </div>
-                  </div> : <div className="border-t pt-4 mt-4">
+                  </div>
+                ) : (
+                  <div className="border-t pt-4 mt-4">
                     <p className="text-center text-gray-500 py-4">
                       Aucun classement disponible
                     </p>
-                  </div>}
+                  </div>
+                )}
 
                 {/* Top 3 */}
                 {isKarting && kartingCategoryStandings ? (
