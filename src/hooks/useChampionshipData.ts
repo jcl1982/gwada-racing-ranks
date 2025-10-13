@@ -8,7 +8,7 @@ import { ViewType } from '@/hooks/useViewNavigation';
 
 export const useChampionshipData = (currentView: ViewType) => {
   // Charger la configuration du championnat basée sur la vue actuelle
-  const { config: championshipConfig, loading: configLoading } = useChampionshipConfig(currentView);
+  const { config: championshipConfig, loading: configLoading, refresh: refreshConfig } = useChampionshipConfig(currentView);
 
   const {
     drivers,
@@ -74,7 +74,8 @@ export const useChampionshipData = (currentView: ViewType) => {
   } = useChampionshipHandlers(
     refreshData,
     resetAllData,
-    updateChampionshipConfig
+    updateChampionshipConfig,
+    refreshConfig
   );
 
   return {
