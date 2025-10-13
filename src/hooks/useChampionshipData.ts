@@ -1,4 +1,3 @@
-import { useMemo, useEffect } from 'react';
 import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { useChampionshipImport } from '@/hooks/championship/useChampionshipImport';
 import { useChampionshipHandlers } from '@/hooks/championship/useChampionshipHandlers';
@@ -30,21 +29,8 @@ export const useChampionshipData = (currentView: ViewType) => {
     updateChampionshipConfig,
     resetAllData,
     refreshData,
-    autoSaveStandingsForEvolution,
-    setChampionshipId
+    autoSaveStandingsForEvolution
   } = useSupabaseData(championshipConfig?.id);
-
-  // Mettre à jour le championshipId quand la config change
-  useEffect(() => {
-    if (championshipConfig?.id && championshipConfig.id !== championshipId) {
-      console.log('🔄 Changement de championnat détecté:', {
-        from: championshipId,
-        to: championshipConfig.id,
-        title: championshipConfig.title
-      });
-      setChampionshipId(championshipConfig.id);
-    }
-  }, [championshipConfig?.id, championshipId, setChampionshipId]);
 
   // Utiliser le hook centralisé pour calculer tous les standings
   const standingsCalculation = useStandingsCalculation({
