@@ -128,8 +128,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   // Enhanced config update that updates local state
   const handleUpdateChampionshipConfig = async (title: string, year: string) => {
     await updateChampionshipConfig(title, year);
-    setChampionshipTitle(title);
-    setChampionshipYear(year);
+    await loadData();
   };
 
   // Enhanced refresh function that forces complete reload
