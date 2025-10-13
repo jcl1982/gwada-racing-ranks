@@ -61,7 +61,8 @@ export const useChampionshipData = (currentView: ViewType) => {
     refreshData,
     resetAllData,
     updateChampionshipConfig,
-    refreshConfig
+    refreshConfig,
+    championshipConfig?.id // Passer le bon championshipId
   );
 
   return {

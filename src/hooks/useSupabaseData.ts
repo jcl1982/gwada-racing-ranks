@@ -126,8 +126,8 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   };
 
   // Enhanced config update that updates local state
-  const handleUpdateChampionshipConfig = async (title: string, year: string) => {
-    await updateChampionshipConfig(title, year);
+  const handleUpdateChampionshipConfig = async (title: string, year: string, specificChampionshipId?: string) => {
+    await updateChampionshipConfig(title, year, specificChampionshipId);
     await loadData();
   };
 

@@ -3,11 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast'], championshipId?: string) => {
-  const updateChampionshipConfig = async (title: string, year: string) => {
+  const updateChampionshipConfig = async (title: string, year: string, specificChampionshipId?: string) => {
     try {
-      console.log('⚙️ Updating championship config:', { title, year, championshipId });
+      // Utiliser le championshipId spécifique si fourni, sinon fallback sur celui du contexte
+      const idToUse = specificChampionshipId || championshipId;
+      console.log('⚙️ Updating championship config:', { title, year, championshipId: idToUse });
 
-      if (!championshipId) {
+      if (!idToUse) {
         throw new Error('Championship ID is required');
       }
 
@@ -18,7 +20,7 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
           year,
           updated_at: new Date().toISOString()
         })
-        .eq('id', championshipId);
+        .eq('id', idToUse);
 
       if (error) {
         console.error('❌ Update config error:', error);
