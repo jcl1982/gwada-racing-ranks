@@ -5,12 +5,12 @@ import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-// Mapping des types de course vers les titres de championnats
-const RACE_TYPE_TO_CHAMPIONSHIP: Record<string, string> = {
-  'montagne': 'Championnat Rallye-Montagne',
-  'rallye': 'Championnat Rallye-Montagne',
-  'karting': 'Championnat Karting',
-  'acceleration': 'Championnat Accélération',
+// Mapping des types de course vers les types de championnats (colonne 'type')
+const RACE_TYPE_TO_CHAMPIONSHIP_TYPE: Record<string, string> = {
+  'montagne': 'rallye-montagne',
+  'rallye': 'rallye-montagne',
+  'karting': 'karting',
+  'acceleration': 'acceleration',
 };
 
 export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newDrivers: Driver[]) => Promise<void>, defaultChampionshipId?: string) => {
@@ -27,19 +27,19 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   // Charger le championshipId approprié basé sur le type de course sélectionné
   useEffect(() => {
     const loadChampionshipId = async () => {
-      const championshipTitle = RACE_TYPE_TO_CHAMPIONSHIP[selectedRaceType];
+      const championshipType = RACE_TYPE_TO_CHAMPIONSHIP_TYPE[selectedRaceType];
       
-      if (!championshipTitle) {
-        console.warn('⚠️ [IMPORT] Aucun titre de championnat trouvé pour le type:', selectedRaceType);
+      if (!championshipType) {
+        console.warn('⚠️ [IMPORT] Aucun type de championnat trouvé pour:', selectedRaceType);
         return;
       }
 
-      console.log('🔧 [IMPORT] Chargement du championshipId pour:', championshipTitle);
+      console.log('🔧 [IMPORT] Chargement du championshipId pour le type:', championshipType);
 
       const { data, error } = await supabase
         .from('championship_config')
-        .select('id')
-        .eq('title', championshipTitle)
+        .select('id, title')
+        .eq('type', championshipType)
         .maybeSingle();
 
       if (error) {
@@ -48,10 +48,10 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       }
 
       if (data) {
-        console.log('✅ [IMPORT] ChampionshipId chargé:', data.id, 'pour', championshipTitle);
+        console.log('✅ [IMPORT] ChampionshipId chargé:', data.id, 'pour', data.title, `(type: ${championshipType})`);
         setChampionshipId(data.id);
       } else {
-        console.warn('⚠️ [IMPORT] Aucun championnat trouvé pour:', championshipTitle);
+        console.warn('⚠️ [IMPORT] Aucun championnat trouvé pour le type:', championshipType);
       }
     };
 
@@ -162,10 +162,10 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     }
 
     try {
-      const championshipTitle = RACE_TYPE_TO_CHAMPIONSHIP[selectedRaceType];
+      const championshipType = RACE_TYPE_TO_CHAMPIONSHIP_TYPE[selectedRaceType];
       console.log('🚀 [IMPORT] Début de l\'import:', {
         raceType: selectedRaceType,
-        championshipTitle,
+        championshipType,
         championshipId,
         racesCount: previewData.length
       });
