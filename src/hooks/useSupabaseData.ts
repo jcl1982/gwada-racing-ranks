@@ -143,6 +143,9 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
 
   // Load data on component mount or when championshipId changes
   useEffect(() => {
+    console.log('🔄 useSupabaseData - useEffect triggered', { championshipId });
+    // Toujours charger les données, même si championshipId est undefined
+    // loadSupabaseData gère le cas undefined en chargeant le championnat par défaut
     loadData(championshipId);
   }, [championshipId]);
 

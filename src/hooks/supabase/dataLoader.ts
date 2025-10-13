@@ -34,7 +34,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
       const { data, error: configError } = await supabase
         .from('championship_config')
         .select('*')
-        .eq('title', 'Championnat Rallye-Montagne')
+        .eq('type', 'rallye-montagne')
         .maybeSingle();
 
       if (configError) {

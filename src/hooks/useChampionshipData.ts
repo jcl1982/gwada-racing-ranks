@@ -10,6 +10,13 @@ export const useChampionshipData = (currentView: ViewType) => {
   // Charger la configuration du championnat basée sur la vue actuelle
   const { config: championshipConfig, loading: configLoading } = useChampionshipConfig(currentView);
 
+  console.log('📊 useChampionshipData', { 
+    currentView, 
+    championshipConfigId: championshipConfig?.id,
+    championshipConfigTitle: championshipConfig?.title,
+    configLoading 
+  });
+
   const {
     drivers,
     montagneRaces,
@@ -32,6 +39,12 @@ export const useChampionshipData = (currentView: ViewType) => {
     refreshData,
     autoSaveStandingsForEvolution
   } = useSupabaseData(championshipConfig?.id);
+
+  console.log('👥 useChampionshipData - Pilotes chargés:', {
+    count: drivers.length,
+    championshipId,
+    drivers: drivers.slice(0, 3).map(d => ({ name: d.name, championshipId: d.championshipId }))
+  });
 
   // Utiliser le hook centralisé pour calculer tous les standings
   const standingsCalculation = useStandingsCalculation({
