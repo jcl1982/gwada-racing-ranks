@@ -11,7 +11,7 @@ const ExcelTemplateDownload = () => {
     // Données d'exemple pour Course 1
     const course1Data = [
       ['Course de Côte de Bouillante', '2024-12-15'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Rôle', 'Marque et Modèle', 'Points'], // Ligne 2: En-têtes
+      ['Position', 'Nom', 'Rôle', 'Marque et Modèle', 'Points'], // Ligne 2: En-têtes
       [1, 'Jean Dupont', 'Pilote', 'Subaru WRX', 25],
       [2, 'Marie Martin', 'Pilote', 'Mitsubishi Lancer Evo', 18],
       [3, 'Pierre Durand', 'Pilote', 'Peugeot 206 RC', 15],
@@ -27,7 +27,7 @@ const ExcelTemplateDownload = () => {
     // Données d'exemple pour Course 2
     const course2Data = [
       ['Rallye de Basse-Terre', '2024-12-22'], // Ligne 1: Nom de la course, Date
-      ['Position', 'Pilote', 'Rôle', 'Marque et Modèle', 'Points'], // Ligne 2: En-têtes
+      ['Position', 'Nom', 'Rôle', 'Marque et Modèle', 'Points'], // Ligne 2: En-têtes
       [1, 'Marie Martin', 'Pilote', 'Mitsubishi Lancer Evo', 25],
       [2, 'Pierre Durand', 'Pilote', 'Peugeot 206 RC', 18],
       [3, 'Jean Dupont', 'Copilote', 'Subaru WRX', 15],
@@ -47,7 +47,7 @@ const ExcelTemplateDownload = () => {
     // Définir la largeur des colonnes
     sheet1['!cols'] = [
       { width: 12 }, // Colonne Position
-      { width: 25 }, // Colonne Pilote
+      { width: 25 }, // Colonne Nom
       { width: 15 }, // Colonne Rôle
       { width: 25 }, // Colonne Marque et Modèle
       { width: 10 }  // Colonne Points
@@ -55,7 +55,7 @@ const ExcelTemplateDownload = () => {
     
     sheet2['!cols'] = [
       { width: 12 }, // Colonne Position
-      { width: 25 }, // Colonne Pilote
+      { width: 25 }, // Colonne Nom
       { width: 15 }, // Colonne Rôle
       { width: 25 }, // Colonne Marque et Modèle
       { width: 10 }  // Colonne Points
@@ -167,7 +167,7 @@ const ExcelTemplateDownload = () => {
             <ul className="text-xs text-blue-600 mb-3 list-disc list-inside space-y-1">
               <li>Chaque feuille = une course</li>
               <li>Ligne 1 : Nom de la course, Date (AAAA-MM-JJ)</li>
-              <li>Ligne 2 : En-têtes (Position, Pilote, Rôle, Marque et Modèle, Points)</li>
+              <li>Ligne 2 : En-têtes (Position, Nom, Rôle, Marque et Modèle, Points)</li>
               <li>Lignes suivantes : Résultats des pilotes et copilotes</li>
               <li><strong>Rôle :</strong> "Pilote" ou "Copilote" (si vide = Pilote par défaut)</li>
             </ul>
