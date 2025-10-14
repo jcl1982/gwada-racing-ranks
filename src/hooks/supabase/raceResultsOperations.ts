@@ -43,12 +43,12 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
   }
 
   console.log('📊 [SAVE_RESULTS] Sauvegarde de', results.length, 'résultats');
-  console.log('📊 [SAVE_RESULTS] Premier résultat:', {
-    driverId: results[0].driverId.slice(0, 8) + '...',
-    position: results[0].position,
-    points: results[0].points,
-    carModel: results[0].carModel
-  });
+  console.log('📊 [SAVE_RESULTS] Tous les résultats:', results.map(r => ({
+    driverId: r.driverId.slice(0, 8) + '...',
+    position: r.position,
+    points: r.points,
+    carModel: r.carModel
+  })));
   
   // Validate all driver IDs before inserting
   validateDriverIds(results);
@@ -69,16 +69,22 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
   
   await validateDriversExistence(driverIds, raceData?.championship_id);
 
-  // Récupérer les modèles de voiture des pilotes
+  // Récupérer les informations complètes des pilotes/copilotes
   const { data: driversData, error: driversError } = await supabase
     .from('drivers')
-    .select('id, car_model')
+    .select('id, car_model, driver_role, name')
     .in('id', driverIds);
 
   if (driversError) {
-    console.error('❌ Erreur lors de la récupération des modèles de voiture:', driversError);
+    console.error('❌ Erreur lors de la récupération des infos des pilotes:', driversError);
     throw driversError;
   }
+
+  console.log('📊 [SAVE_RESULTS] Pilotes/Copilotes récupérés:', driversData?.map(d => ({
+    name: d.name,
+    role: d.driver_role,
+    carModel: d.car_model
+  })));
 
   // Créer une map pour accéder facilement aux car_model
   const carModelMap = new Map(driversData?.map(d => [d.id, d.car_model]) || []);
