@@ -8,10 +8,19 @@ interface PointsEditorProps {
   races: Race[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
   driverLabel?: string;
+  showRoleSelector?: boolean;
+  defaultRole?: DriverRole;
 }
 
-const PointsEditor = ({ drivers, races, onRaceUpdate, driverLabel }: PointsEditorProps) => {
-  const [selectedRole, setSelectedRole] = useState<DriverRole>('pilote');
+const PointsEditor = ({ 
+  drivers, 
+  races, 
+  onRaceUpdate, 
+  driverLabel,
+  showRoleSelector = true,
+  defaultRole = 'pilote'
+}: PointsEditorProps) => {
+  const [selectedRole, setSelectedRole] = useState<DriverRole>(defaultRole);
 
   // Filtrer les drivers selon le rôle sélectionné
   const filteredDrivers = useMemo(() => {
@@ -24,10 +33,12 @@ const PointsEditor = ({ drivers, races, onRaceUpdate, driverLabel }: PointsEdito
 
   return (
     <div className="space-y-6">
-      <PointsEditorHeader 
-        selectedRole={selectedRole}
-        onRoleChange={setSelectedRole}
-      />
+      {showRoleSelector && (
+        <PointsEditorHeader 
+          selectedRole={selectedRole}
+          onRoleChange={setSelectedRole}
+        />
+      )}
       <PointsEditorTabs
         drivers={filteredDrivers}
         races={races}

@@ -13,6 +13,7 @@ import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import { toSimplifiedStandings } from '@/utils/standingsConverter';
 import PointsEditor from '@/components/PointsEditor';
+import { useUserRole } from '@/hooks/useUserRole';
 
 interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
@@ -46,6 +47,7 @@ const RallyeMontagneTabs = ({
   const { exportGeneralStandings, exportCategoryStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
+  const { isAdmin } = useUserRole();
 
   // Handlers pour le classement général
   const handleGeneralPrintPdf = () => {
@@ -150,13 +152,14 @@ const RallyeMontagneTabs = ({
           />
           <GeneralStandingsStats standings={generalStandings} />
           
-          {onRaceUpdate && (
+          {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course</h2>
               <PointsEditor
                 races={[...montagneRaces, ...rallyeRaces]}
                 drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
+                showRoleSelector={true}
               />
             </div>
           )}
@@ -178,13 +181,14 @@ const RallyeMontagneTabs = ({
           />
           <PodiumSection standings={toSimplifiedStandings(montagneStandings, 'montagne')} />
           
-          {onRaceUpdate && (
+          {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course Montagne</h2>
               <PointsEditor
                 races={montagneRaces}
                 drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
+                showRoleSelector={true}
               />
             </div>
           )}
@@ -206,13 +210,14 @@ const RallyeMontagneTabs = ({
           />
           <PodiumSection standings={toSimplifiedStandings(rallyeStandings, 'rallye')} />
           
-          {onRaceUpdate && (
+          {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
               <PointsEditor
                 races={rallyeRaces}
                 drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
+                showRoleSelector={true}
               />
             </div>
           )}
@@ -251,13 +256,15 @@ const RallyeMontagneTabs = ({
           />
           <PodiumSection standings={toSimplifiedStandings(copiloteStandings, 'copilote')} />
           
-          {onRaceUpdate && (
+          {onRaceUpdate && isAdmin && (
             <div className="mt-8">
-              <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
+              <h2 className="text-xl font-bold mb-4">Résultats par Course Copilote</h2>
               <PointsEditor
                 races={rallyeRaces}
-                drivers={drivers}
+                drivers={drivers.filter(d => d.driverRole === 'copilote')}
                 onRaceUpdate={onRaceUpdate}
+                showRoleSelector={false}
+                defaultRole="copilote"
               />
             </div>
           )}
