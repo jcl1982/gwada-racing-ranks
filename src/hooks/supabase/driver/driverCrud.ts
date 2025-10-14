@@ -54,9 +54,11 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
             number: driver.number || matchingDriver.number,
             car_model: driver.carModel || matchingDriver.car_model,
             driver_role: driver.driverRole || 'pilote',
+            championship_id: driverChampionshipId,
             updated_at: new Date().toISOString()
           })
-          .eq('id', matchingDriver.id);
+          .eq('id', matchingDriver.id)
+          .eq('championship_id', driverChampionshipId);
 
         if (error) {
           console.error('❌ Update driver error:', error);
@@ -79,11 +81,12 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
       }
 
       if ('id' in driver && driver.id) {
-        // Check if driver exists by ID
+        // Check if driver exists by ID in this championship
         const { data: existingDriver, error: checkError } = await supabase
           .from('drivers')
           .select('id')
           .eq('id', driver.id)
+          .eq('championship_id', driverChampionshipId)
           .maybeSingle();
 
         if (checkError) {
@@ -102,9 +105,11 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
               number: driver.number,
               car_model: driver.carModel,
               driver_role: driver.driverRole || 'pilote',
+              championship_id: driverChampionshipId,
               updated_at: new Date().toISOString()
             })
-            .eq('id', driver.id);
+            .eq('id', driver.id)
+            .eq('championship_id', driverChampionshipId);
 
           if (error) {
             console.error('❌ Update driver error:', error);
