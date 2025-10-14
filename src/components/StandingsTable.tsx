@@ -61,14 +61,6 @@ const StandingsTable = ({
     return `${start}-${end}`;
   };
 
-  // Filtrer les courses pour n'afficher que celles où les pilotes du classement ont des résultats
-  const relevantRaces = races.filter(race => {
-    const driverIds = standings.map(s => s.driver.id);
-    return race.results.some(result => 
-      driverIds.includes(result.driverId) && result.points > 0
-    );
-  });
-
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
   const getDriverPointsForRace = (driverId: string, race: Race): number => {
     const result = race.results.find(r => r.driverId === driverId);
@@ -132,7 +124,7 @@ const StandingsTable = ({
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
               {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
-              {relevantRaces.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
+              {races.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
                   </div>
@@ -170,7 +162,7 @@ const StandingsTable = ({
                       </div>
                     </td>
                   )}
-                  {relevantRaces.map(race => {
+                  {races.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
                 const isValid = isC2R2Valid(result);
