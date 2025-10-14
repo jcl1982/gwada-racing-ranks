@@ -20,6 +20,8 @@ const PointsEditor = ({ drivers, races, onRaceUpdate, driverLabel }: PointsEdito
 
   console.log('🎯 [PointsEditor] Rôle sélectionné:', selectedRole, 'Drivers filtrés:', filteredDrivers.length);
 
+  const currentDriverLabel = selectedRole === 'pilote' ? 'Pilote' : 'Copilote';
+
   return (
     <div className="space-y-6">
       <PointsEditorHeader 
@@ -30,7 +32,8 @@ const PointsEditor = ({ drivers, races, onRaceUpdate, driverLabel }: PointsEdito
         drivers={filteredDrivers}
         races={races}
         onRaceUpdate={onRaceUpdate}
-        driverLabel={driverLabel}
+        driverLabel={currentDriverLabel}
+        selectedRole={selectedRole}
       />
     </div>
   );

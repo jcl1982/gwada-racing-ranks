@@ -9,9 +9,10 @@ interface RaceTypeTabProps {
   raceType: string;
   onRaceUpdate: (raceId: string, results: any[]) => Promise<void>;
   driverLabel?: string;
+  selectedRole: 'pilote' | 'copilote';
 }
 
-const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel }: RaceTypeTabProps) => {
+const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel, selectedRole }: RaceTypeTabProps) => {
   const typeLabels: Record<string, string> = {
     montagne: "Aucune course de montagne disponible",
     rallye: "Aucune course de rallye disponible",
@@ -30,6 +31,8 @@ const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel }: Ra
     );
   }
 
+  const roleLabel = selectedRole === 'pilote' ? 'Pilotes' : 'Copilotes';
+
   return (
     <div className="space-y-4">
       {races.map(race => (
@@ -39,6 +42,7 @@ const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel }: Ra
           drivers={drivers}
           onRaceUpdate={onRaceUpdate}
           driverLabel={driverLabel}
+          roleLabel={roleLabel}
         />
       ))}
     </div>

@@ -10,13 +10,15 @@ interface PointsEditorTabsProps {
   races: Race[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
   driverLabel?: string;
+  selectedRole: 'pilote' | 'copilote';
 }
 
 const PointsEditorTabs = ({
   drivers,
   races,
   onRaceUpdate,
-  driverLabel
+  driverLabel,
+  selectedRole
 }: PointsEditorTabsProps) => {
   // Grouper les courses par type
   const racesByType = useMemo(() => {
@@ -73,13 +75,14 @@ const PointsEditorTabs = ({
 
       {raceTypes.map(type => (
         <TabsContent key={type} value={type} className="mt-6">
-          <RaceTypeTab
-            races={racesByType[type]}
-            drivers={drivers}
-            raceType={type}
-            onRaceUpdate={onRaceUpdate}
-            driverLabel={driverLabel}
-          />
+            <RaceTypeTab
+              races={racesByType[type]}
+              drivers={drivers}
+              raceType={type}
+              onRaceUpdate={onRaceUpdate}
+              driverLabel={driverLabel}
+              selectedRole={selectedRole}
+            />
         </TabsContent>
       ))}
     </Tabs>

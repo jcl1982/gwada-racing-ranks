@@ -20,9 +20,10 @@ interface RaceCardProps {
   drivers: Driver[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
   driverLabel?: string;
+  roleLabel?: string;
 }
 
-const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote" }: RaceCardProps) => {
+const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLabel = "Pilotes" }: RaceCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingResults, setEditingResults] = useState<RaceResult[]>([]);
   const { toast } = useToast();

@@ -155,7 +155,7 @@ const RallyeMontagneTabs = ({
               <h2 className="text-xl font-bold mb-4">Résultats par Course</h2>
               <PointsEditor
                 races={[...montagneRaces, ...rallyeRaces]}
-                drivers={drivers.filter(d => d.driverRole === 'pilote')}
+                drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
               />
             </div>
@@ -183,7 +183,7 @@ const RallyeMontagneTabs = ({
               <h2 className="text-xl font-bold mb-4">Résultats par Course Montagne</h2>
               <PointsEditor
                 races={montagneRaces}
-                drivers={drivers.filter(d => d.driverRole === 'pilote')}
+                drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
               />
             </div>
@@ -211,7 +211,7 @@ const RallyeMontagneTabs = ({
               <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
               <PointsEditor
                 races={rallyeRaces}
-                drivers={drivers.filter(d => d.driverRole === 'pilote')}
+                drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
               />
             </div>
@@ -253,12 +253,11 @@ const RallyeMontagneTabs = ({
           
           {onRaceUpdate && (
             <div className="mt-8">
-              <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye (Copilotes)</h2>
+              <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
               <PointsEditor
                 races={rallyeRaces}
-                drivers={drivers.filter(d => d.driverRole === 'copilote')}
+                drivers={drivers}
                 onRaceUpdate={onRaceUpdate}
-                driverLabel="Copilote"
               />
             </div>
           )}
