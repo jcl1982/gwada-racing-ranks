@@ -12,9 +12,18 @@ function parseLocalDate(dateString: string): Date {
 
 interface RaceCalendarProps {
   races: Race[];
+  driverIds?: string[]; // Liste des IDs de pilotes pour filtrer les courses
 }
 
-const RaceCalendar = ({ races }: RaceCalendarProps) => {
+const RaceCalendar = ({ races, driverIds }: RaceCalendarProps) => {
+  // Filtrer les courses pour n'afficher que celles où au moins un pilote de la liste a participé
+  const relevantRaces = driverIds 
+    ? races.filter(race => {
+        return race.results.some(result => 
+          driverIds.includes(result.driverId) && result.points > 0
+        );
+      })
+    : races;
   const formatDateRange = (startDate: string, endDate?: string) => {
     const start = format(parseLocalDate(startDate), 'dd MMMM yyyy', { locale: fr });
     if (!endDate) return start;
@@ -29,7 +38,7 @@ const RaceCalendar = ({ races }: RaceCalendarProps) => {
         Calendrier des Courses
       </h3>
       <div className="grid md:grid-cols-2 gap-4">
-        {races.map(race => (
+        {relevantRaces.map(race => (
           <div key={race.id} className="bg-white/70 rounded-lg p-4 border border-white/20">
             <h4 className="font-semibold text-lg flex items-center gap-2">
               <MapPin size={16} />

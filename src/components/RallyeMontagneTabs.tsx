@@ -48,6 +48,12 @@ const RallyeMontagneTabs = ({
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
   const { isAdmin } = useUserRole();
+  
+  // Séparer les pilotes et copilotes
+  const pilotes = drivers.filter(d => d.driverRole === 'pilote');
+  const copilotes = drivers.filter(d => d.driverRole === 'copilote');
+  const piloteIds = pilotes.map(d => d.id);
+  const copiloteIds = copilotes.map(d => d.id);
 
   // Handlers pour le classement général
   const handleGeneralPrintPdf = () => {
@@ -171,7 +177,7 @@ const RallyeMontagneTabs = ({
             displayTitle="Trophée de la Montagne" 
             championshipYear={championshipYear} 
           />
-          <RaceCalendar races={montagneRaces} />
+          <RaceCalendar races={montagneRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée de la Montagne"
             races={montagneRaces}
@@ -200,7 +206,7 @@ const RallyeMontagneTabs = ({
             displayTitle="Trophée des Rallyes" 
             championshipYear={championshipYear} 
           />
-          <RaceCalendar races={rallyeRaces} />
+          <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée des Rallyes"
             races={rallyeRaces}
@@ -229,7 +235,7 @@ const RallyeMontagneTabs = ({
             displayTitle="Trophée C2 R2" 
             championshipYear={championshipYear} 
           />
-          <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} />
+          <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée C2 R2"
             races={[...montagneRaces, ...rallyeRaces]}
@@ -246,7 +252,7 @@ const RallyeMontagneTabs = ({
             displayTitle="Trophée Copilote" 
             championshipYear={championshipYear} 
           />
-          <RaceCalendar races={rallyeRaces} />
+          <RaceCalendar races={rallyeRaces} driverIds={copiloteIds} />
           <StandingsTable
             displayTitle="Trophée Copilote"
             races={rallyeRaces}

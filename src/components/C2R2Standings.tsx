@@ -55,6 +55,12 @@ const C2R2Standings = ({
   const formattedStandings = useMemo(() => {
     return toSimplifiedStandings(c2r2Standings, 'c2r2');
   }, [c2r2Standings]);
+  
+  // Extraire les IDs des pilotes C2R2
+  const c2r2DriverIds = useMemo(() => 
+    c2r2Standings.map(s => s.driver.id),
+    [c2r2Standings]
+  );
 
   const handlePrintPdf = () => {
     // Filtrer les pilotes qui ont au moins couru avec une C2 R2
@@ -84,7 +90,7 @@ const C2R2Standings = ({
     return (
       <div className="space-y-6">
         <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
-        <RaceCalendar races={allRaces} />
+      <RaceCalendar races={allRaces} driverIds={c2r2DriverIds} />
         <div className="bg-card p-8 rounded-lg shadow-sm text-center">
           <p className="text-muted-foreground">Aucun pilote C2 R2 trouvé</p>
         </div>
@@ -95,7 +101,7 @@ const C2R2Standings = ({
   return (
     <div className="space-y-6">
       <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
-      <RaceCalendar races={allRaces} />
+      <RaceCalendar races={allRaces} driverIds={c2r2DriverIds} />
       <Alert className="bg-primary/10 border-primary/30 text-primary">
         <Info className="h-4 w-4 text-primary" />
         <AlertDescription className="text-foreground">

@@ -134,7 +134,7 @@ const KartingStandings = ({
         championshipYear={championshipYear} 
       />
       
-      <RaceCalendar races={races} />
+      <RaceCalendar races={races} driverIds={drivers.map(d => d.id)} />
 
       <div className="bg-muted/50 border border-border rounded-lg p-4">
         <p className="text-sm text-muted-foreground">

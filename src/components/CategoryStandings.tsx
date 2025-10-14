@@ -76,8 +76,8 @@ const CategoryStandings = ({
   return (
     <div className="space-y-6">
       <CategoryHeader displayTitle={displayTitle} championshipYear={championshipYear} />
-      <RaceCalendar races={races} />
-      <StandingsTable 
+      <RaceCalendar races={races} driverIds={drivers.map(d => d.id)} />
+      <StandingsTable
         displayTitle={displayTitle}
         races={races}
         type={type}
