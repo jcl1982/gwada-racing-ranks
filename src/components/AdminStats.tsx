@@ -17,7 +17,8 @@ interface AdminStatsProps {
 
 const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsProps) => {
   const totalRaces = races.length;
-  const totalParticipants = drivers.length;
+  const totalPilotes = drivers.filter(d => d.driverRole === 'pilote').length;
+  const totalCopilotes = drivers.filter(d => d.driverRole === 'copilote').length;
   const isKarting = championshipType === 'karting';
   
   // Pour le karting, calculer les meilleurs pilotes par catégorie
@@ -87,9 +88,15 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
   const stats = [
     {
       title: 'Total Pilotes',
-      value: totalParticipants,
+      value: totalPilotes,
       icon: Users,
       color: 'text-blue-600'
+    },
+    {
+      title: 'Total Copilotes',
+      value: totalCopilotes,
+      icon: Users,
+      color: 'text-cyan-600'
     },
     {
       title: 'Total Courses',
