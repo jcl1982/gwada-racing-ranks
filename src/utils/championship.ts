@@ -41,7 +41,10 @@ export const calculateChampionshipStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
-  const standings = drivers.map(driver => {
+  // Filtrer uniquement les pilotes (exclure les copilotes)
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+
+  const standings = pilotes.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
     const previousStanding = findPreviousStanding(driver.id, previousStandings);
@@ -67,7 +70,10 @@ export const calculateMontagneStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
-  const standings = drivers
+  // Filtrer uniquement les pilotes (exclure les copilotes)
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+
+  const standings = pilotes
     .map(driver => {
       const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
@@ -94,7 +100,10 @@ export const calculateRallyeStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
-  const standings = drivers
+  // Filtrer uniquement les pilotes (exclure les copilotes)
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+
+  const standings = pilotes
     .map(driver => {
       const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
@@ -118,8 +127,11 @@ export const calculateC2R2Standings = (
 ): ChampionshipStanding[] => {
   const allRaces = [...montagneRaces, ...rallyeRaces];
   
+  // Filtrer uniquement les pilotes (exclure les copilotes)
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+  
   // Filtrer les pilotes qui ont au moins un résultat avec une C2 R2
-  const c2r2Drivers = drivers.filter(driver => {
+  const c2r2Drivers = pilotes.filter(driver => {
     // Vérifier si le pilote a une C2 R2 dans sa fiche
     const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
                            driver.carModel?.toLowerCase().includes('r2');
