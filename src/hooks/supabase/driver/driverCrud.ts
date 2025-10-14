@@ -22,10 +22,10 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
         .replace(/\s+/g, ' ')
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-      // Vérifier si un pilote avec le même nom existe déjà dans ce championnat
+      // Vérifier si un pilote avec le même nom ET le même rôle existe déjà dans ce championnat
       const { data: existingDrivers, error: nameCheckError } = await supabase
         .from('drivers')
-        .select('id, name, number, car_model')
+        .select('id, name, number, car_model, driver_role')
         .eq('championship_id', driverChampionshipId);
 
       if (nameCheckError) {
@@ -33,14 +33,20 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
         throw nameCheckError;
       }
 
-      // Filtrer les pilotes par nom normalisé
+      // Filtrer les pilotes par nom normalisé ET rôle
+      const targetRole = driver.driverRole || 'pilote';
       const matchingDriver = existingDrivers?.find(existingDriver => {
         const existingNormalized = existingDriver.name
           .toLowerCase()
           .trim()
           .replace(/\s+/g, ' ')
           .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return existingNormalized === normalizedName;
+        const nameMatches = existingNormalized === normalizedName;
+        const roleMatches = existingDriver.driver_role === targetRole;
+        
+        console.log(`🔍 [SAVE_DRIVER] Comparaison: "${driver.name}" (${targetRole}) vs "${existingDriver.name}" (${existingDriver.driver_role}): name=${nameMatches}, role=${roleMatches}`);
+        
+        return nameMatches && roleMatches;
       });
 
       if (matchingDriver) {
