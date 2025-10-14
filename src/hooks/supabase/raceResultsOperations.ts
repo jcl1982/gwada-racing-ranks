@@ -121,6 +121,7 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     console.error('❌ Erreur lors de la récupération du championship_id de la course:', raceError);
   }
   
+  console.log('📊 [SAVE_RESULTS] ChampionshipId de la course:', raceData?.championship_id);
   await validateDriversExistence(driverIds, raceData?.championship_id);
 
   // Récupérer les informations complètes des pilotes/copilotes
@@ -157,17 +158,31 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
     bonus: result.bonus || 0
   }));
 
-  console.log('📊 [SAVE_RESULTS] Données à insérer (premier élément):', resultsToInsert[0]);
+  console.log('📊 [SAVE_RESULTS] Données à insérer (3 premiers éléments):', resultsToInsert.slice(0, 3));
   console.log('📊 [SAVE_RESULTS] Insertion dans race_results...');
 
-  const { error: resultError } = await supabase
+  const { data: insertedData, error: resultError } = await supabase
     .from('race_results')
-    .insert(resultsToInsert);
+    .insert(resultsToInsert)
+    .select();
 
   if (resultError) {
-    console.error('❌ Erreur lors de la sauvegarde des résultats:', resultError);
+    console.error('❌ [SAVE_RESULTS] Erreur lors de la sauvegarde des résultats:', resultError);
+    console.error('❌ [SAVE_RESULTS] Détails de l\'erreur:', {
+      message: resultError.message,
+      details: resultError.details,
+      hint: resultError.hint,
+      code: resultError.code
+    });
     throw resultError;
   }
 
-  console.log('✅ Tous les résultats ont été sauvegardés avec succès');
+  console.log(`✅ [SAVE_RESULTS] ${insertedData?.length || 0} résultats insérés avec succès sur ${resultsToInsert.length} attendus`);
+  if (insertedData && insertedData.length > 0) {
+    console.log('📊 [SAVE_RESULTS] Exemples de résultats insérés:', insertedData.slice(0, 3).map(r => ({
+      driver_id: r.driver_id.slice(0, 8) + '...',
+      position: r.position,
+      points: r.points
+    })));
+  }
 };
