@@ -80,15 +80,28 @@ export const useAuth = () => {
   const fetchUserRole = async (userId: string) => {
     try {
       console.log('🔐 [useAuth] Fetching role for user:', userId);
+      
+      // Petit délai pour s'assurer que la session est établie côté serveur
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
-        console.error('❌ [useAuth] Error fetching user role:', error);
-        setUserRole('user'); // Default to user role on error
+      console.log('🔐 [useAuth] Role query result:', { data, error, userId });
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // Pas de rôle trouvé, utiliser 'user' par défaut
+          console.log('⚠️ [useAuth] No role found, defaulting to user');
+          setUserRole('user');
+        } else {
+          console.error('❌ [useAuth] Error fetching user role:', error);
+          console.error('❌ [useAuth] Error details:', JSON.stringify(error, null, 2));
+          setUserRole('user');
+        }
       } else {
         const role = data?.role || 'user';
         console.log('✅ [useAuth] User role fetched:', role);
