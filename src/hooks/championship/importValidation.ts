@@ -24,7 +24,7 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
   
   console.log('🔍 [FIND_MISSING] Liste des pilotes existants:');
   existingDrivers.forEach((d, i) => {
-    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., ChampID: ${d.championshipId?.substring(0, 8)}...)`);
+    console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., Role: ${d.driverRole}, ChampID: ${d.championshipId?.substring(0, 8)}...)`);
   });
   
   console.log('🔍 [FIND_MISSING] Comparaison en cours...');
@@ -45,7 +45,7 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
       .replace(/\s+/g, ' ')
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     
-    // Vérifier par nom normalisé ET championshipId pour éviter les doublons
+    // Vérifier par nom normalisé, championshipId ET driver_role pour éviter les doublons
     const exists = existingDrivers.find(existingDriver => {
       const normalizedExistingName = existingDriver.name
         .trim()
@@ -53,14 +53,17 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
         .replace(/\s+/g, ' ')
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       
-      return normalizedExistingName === normalizedNewName &&
-             existingDriver.championshipId === newDriver.championshipId;
+      const nameMatches = normalizedExistingName === normalizedNewName;
+      const championshipMatches = existingDriver.championshipId === newDriver.championshipId;
+      const roleMatches = existingDriver.driverRole === newDriver.driverRole;
+      
+      return nameMatches && championshipMatches && roleMatches;
     });
     
     if (!exists) {
-      console.log(`  ➕ Pilote manquant: "${newDriver.name}" (ID: ${newDriver.id.substring(0, 8)}..., ChampID: ${newDriver.championshipId?.substring(0, 8)}..., sera créé)`);
+      console.log(`  ➕ Pilote manquant: "${newDriver.name}" (Role: ${newDriver.driverRole}, ID: ${newDriver.id.substring(0, 8)}..., ChampID: ${newDriver.championshipId?.substring(0, 8)}..., sera créé)`);
     } else {
-      console.log(`  ✅ Pilote existe déjà: "${newDriver.name}" → trouvé: "${exists.name}" (ID: ${exists.id.substring(0, 8)}...)`);
+      console.log(`  ✅ Pilote existe déjà: "${newDriver.name}" (Role: ${newDriver.driverRole}) → trouvé: "${exists.name}" (ID: ${exists.id.substring(0, 8)}...)`);
     }
     
     return !exists;
@@ -71,7 +74,7 @@ export const findMissingDrivers = (newDrivers: Driver[], existingDrivers: Driver
   if (missing.length > 0) {
     console.log('🔍 [FIND_MISSING] Liste des pilotes à créer:');
     missing.forEach((d, i) => {
-      console.log(`  ${i + 1}. "${d.name}" (ID: ${d.id.substring(0, 8)}..., ChampID: ${d.championshipId?.substring(0, 8)}...)`);
+      console.log(`  ${i + 1}. "${d.name}" (Role: ${d.driverRole}, ID: ${d.id.substring(0, 8)}..., ChampID: ${d.championshipId?.substring(0, 8)}...)`);
     });
   }
   console.log('🔍 [FIND_MISSING] ====================');
