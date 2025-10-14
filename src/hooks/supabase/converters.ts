@@ -8,7 +8,8 @@ export const convertSupabaseDriver = (supabaseDriver: SupabaseDriver): Driver =>
   team: supabaseDriver.team,
   number: supabaseDriver.number || 0,
   carModel: supabaseDriver.car_model,
-  championshipId: supabaseDriver.championship_id
+  championshipId: supabaseDriver.championship_id,
+  driverRole: ((supabaseDriver as any).driver_role as 'pilote' | 'copilote') || 'pilote'
 });
 
 export const convertSupabaseRace = (supabaseRace: SupabaseRace & { race_results?: Array<SupabaseRaceResult & { drivers: SupabaseDriver }> }): Race => ({
@@ -37,7 +38,8 @@ export const convertSupabaseStanding = (supabaseStanding: any): ChampionshipStan
     name: supabaseStanding.drivers?.name || 'Unknown Driver',
     team: supabaseStanding.drivers?.team,
     number: supabaseStanding.drivers?.number || 0,
-    carModel: supabaseStanding.drivers?.car_model
+    carModel: supabaseStanding.drivers?.car_model,
+    driverRole: (supabaseStanding.drivers?.driver_role as 'pilote' | 'copilote') || 'pilote'
   },
   position: supabaseStanding.position,
   totalPoints: supabaseStanding.total_points,

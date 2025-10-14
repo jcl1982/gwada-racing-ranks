@@ -40,6 +40,7 @@ interface ViewRendererProps {
   montagneStandings?: ChampionshipStanding[];
   rallyeStandings?: ChampionshipStanding[];
   c2r2Standings?: ChampionshipStanding[];
+  copiloteStandings?: ChampionshipStanding[];
 }
 
 const ViewRenderer = ({
@@ -68,7 +69,8 @@ const ViewRenderer = ({
   refreshData,
   montagneStandings = [],
   rallyeStandings = [],
-  c2r2Standings = []
+  c2r2Standings = [],
+  copiloteStandings = []
 }: ViewRendererProps) => {
   switch (currentView) {
     case 'home':
@@ -89,6 +91,7 @@ const ViewRenderer = ({
           montagneStandings={montagneStandings}
           rallyeStandings={rallyeStandings}
           c2r2Standings={c2r2Standings}
+          copiloteStandings={copiloteStandings}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}

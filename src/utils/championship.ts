@@ -169,6 +169,41 @@ export const calculateC2R2Standings = (
   return standings;
 };
 
+// Calculer le classement Copilote (uniquement les copilotes en Rallye)
+export const calculateCopiloteStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  console.log('👥 Calcul des standings copilote:', {
+    drivers: drivers.length,
+    rallyeRaces: rallyeRaces.length,
+    previousStandings: previousStandings?.length || 0
+  });
+
+  // Filtrer uniquement les copilotes
+  const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
+
+  console.log('👥 Copilotes trouvés:', {
+    total: copilotes.length,
+    names: copilotes.map(d => d.name)
+  });
+
+  const standings = copilotes
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
+
+  sortRallyeStandingsByPoints(standings);
+  calculatePositionsAndEvolution(standings, 'rallye'); // Utiliser le type rallye pour l'évolution
+
+  return standings;
+};
+
 export const getPositionBadgeColor = (position: number): string => {
   if (position === 1) return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
   if (position === 2) return 'bg-gradient-to-r from-gray-300 to-gray-500 text-white';

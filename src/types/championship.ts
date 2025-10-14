@@ -1,4 +1,6 @@
 
+export type DriverRole = 'pilote' | 'copilote';
+
 export interface Driver {
   id: string;
   name: string;
@@ -6,6 +8,7 @@ export interface Driver {
   number?: number;
   carModel?: string;
   championshipId?: string;
+  driverRole?: DriverRole;
 }
 
 export interface RaceResult {

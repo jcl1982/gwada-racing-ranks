@@ -1,6 +1,6 @@
 import { ChampionshipStanding, Race, Driver } from '@/types/championship';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Mountain, Car, Award } from 'lucide-react';
+import { Trophy, Mountain, Car, Award, Users } from 'lucide-react';
 import GeneralStandingsHeader from '@/components/GeneralStandingsHeader';
 import GeneralStandingsTable from '@/components/GeneralStandingsTable';
 import GeneralStandingsStats from '@/components/GeneralStandingsStats';
@@ -19,6 +19,7 @@ interface RallyeMontagneTabsProps {
   montagneStandings: ChampionshipStanding[];
   rallyeStandings: ChampionshipStanding[];
   c2r2Standings: ChampionshipStanding[];
+  copiloteStandings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
@@ -33,6 +34,7 @@ const RallyeMontagneTabs = ({
   montagneStandings,
   rallyeStandings,
   c2r2Standings,
+  copiloteStandings,
   championshipTitle,
   championshipYear,
   championshipId,
@@ -100,10 +102,15 @@ const RallyeMontagneTabs = ({
     exportCategoryStandings('Trophée C2 R2', allRaces, drivers, championshipYear, simplifiedStandings);
   };
 
+  const handleCopiPrintPdf = () => {
+    const simplifiedStandings = toSimplifiedStandings(copiloteStandings, 'copilote');
+    exportCategoryStandings('Trophée Copilote', rallyeRaces, drivers, championshipYear, simplifiedStandings);
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
             <span className="hidden sm:inline">Général</span>
@@ -119,6 +126,10 @@ const RallyeMontagneTabs = ({
           <TabsTrigger value="c2r2" className="flex items-center gap-2">
             <Award className="w-4 h-4" />
             <span className="hidden sm:inline">C2 R2</span>
+          </TabsTrigger>
+          <TabsTrigger value="copilote" className="flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            <span className="hidden sm:inline">Copilote</span>
           </TabsTrigger>
         </TabsList>
 
@@ -222,6 +233,34 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleC2R2PrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(c2r2Standings, 'c2r2')} />
+        </TabsContent>
+
+        {/* Trophée Copilote */}
+        <TabsContent value="copilote" className="space-y-6">
+          <CategoryHeader 
+            displayTitle="Trophée Copilote" 
+            championshipYear={championshipYear} 
+          />
+          <RaceCalendar races={rallyeRaces} />
+          <StandingsTable
+            displayTitle="Trophée Copilote"
+            races={rallyeRaces}
+            type="rallye"
+            standings={toSimplifiedStandings(copiloteStandings, 'copilote')}
+            onPrintPdf={handleCopiPrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(copiloteStandings, 'copilote')} />
+          
+          {onRaceUpdate && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye (Copilotes)</h2>
+              <PointsEditor
+                races={rallyeRaces}
+                drivers={drivers.filter(d => d.driverRole === 'copilote')}
+                onRaceUpdate={onRaceUpdate}
+              />
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

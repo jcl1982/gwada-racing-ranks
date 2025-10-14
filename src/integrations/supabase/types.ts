@@ -46,6 +46,7 @@ export type Database = {
           car_model: string | null
           championship_id: string
           created_at: string
+          driver_role: Database["public"]["Enums"]["driver_role"]
           id: string
           name: string
           number: number | null
@@ -56,6 +57,7 @@ export type Database = {
           car_model?: string | null
           championship_id: string
           created_at?: string
+          driver_role?: Database["public"]["Enums"]["driver_role"]
           id?: string
           name: string
           number?: number | null
@@ -66,6 +68,7 @@ export type Database = {
           car_model?: string | null
           championship_id?: string
           created_at?: string
+          driver_role?: Database["public"]["Enums"]["driver_role"]
           id?: string
           name?: string
           number?: number | null
@@ -407,6 +410,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      driver_role: "pilote" | "copilote"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -535,6 +539,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      driver_role: ["pilote", "copilote"],
     },
   },
 } as const

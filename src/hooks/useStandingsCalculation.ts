@@ -4,10 +4,11 @@ import {
   calculateChampionshipStandings,
   calculateMontagneStandings,
   calculateRallyeStandings,
-  calculateC2R2Standings
+  calculateC2R2Standings,
+  calculateCopiloteStandings
 } from '@/utils/championship';
 
-export type StandingsType = 'general' | 'montagne' | 'rallye' | 'c2r2';
+export type StandingsType = 'general' | 'montagne' | 'rallye' | 'c2r2' | 'copilote';
 
 interface UseStandingsCalculationParams {
   drivers: Driver[];
@@ -112,10 +113,25 @@ export const useStandingsCalculation = ({
     );
   }, [championshipDrivers, championshipMontagneRaces, championshipRallyeRaces, championshipPreviousStandings]);
 
+  // Classement Copilote (Rallye uniquement)
+  const copiloteStandings = useMemo(() => {
+    console.log(`👥 [useStandingsCalculation] Calcul Copilote pour championnat ${championshipId}:`, {
+      drivers: championshipDrivers.length,
+      rallyeRaces: championshipRallyeRaces.length
+    });
+
+    return calculateCopiloteStandings(
+      championshipDrivers,
+      championshipRallyeRaces,
+      championshipPreviousStandings
+    );
+  }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
+
   return {
     generalStandings,
     montagneStandings,
     rallyeStandings,
-    c2r2Standings
+    c2r2Standings,
+    copiloteStandings
   };
 };

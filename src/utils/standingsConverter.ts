@@ -17,7 +17,7 @@ export interface SimplifiedStanding {
  */
 export const toSimplifiedStanding = (
   standing: ChampionshipStanding,
-  type: 'general' | 'montagne' | 'rallye' | 'c2r2'
+  type: 'general' | 'montagne' | 'rallye' | 'c2r2' | 'copilote'
 ): SimplifiedStanding => {
   switch (type) {
     case 'montagne':
@@ -30,6 +30,7 @@ export const toSimplifiedStanding = (
       };
     
     case 'rallye':
+    case 'copilote':
       return {
         driver: standing.driver,
         points: standing.rallyePoints,
@@ -56,7 +57,7 @@ export const toSimplifiedStanding = (
  */
 export const toSimplifiedStandings = (
   standings: ChampionshipStanding[],
-  type: 'general' | 'montagne' | 'rallye' | 'c2r2'
+  type: 'general' | 'montagne' | 'rallye' | 'c2r2' | 'copilote'
 ): SimplifiedStanding[] => {
   return standings.map(standing => toSimplifiedStanding(standing, type));
 };
