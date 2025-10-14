@@ -31,10 +31,16 @@ export const useChampionshipImport = (
       
       // Étape 1: Créer une map complète TEMP_ID → REAL_ID pour TOUS les pilotes
       console.log('🗺️ [IMPORT] Construction de la map complète des IDs...');
+      console.log(`🗺️ [IMPORT] Pilotes dans newDrivers: ${newDrivers.length}`);
+      console.log(`🗺️ [IMPORT] Pilotes dans drivers (existants): ${drivers.length}`);
+      
       const completeIdMap = new Map<string, string>();
       
       // D'abord, mapper les pilotes existants (leurs IDs temporaires du Excel → IDs réels de la DB)
-      newDrivers.forEach(newDriver => {
+      console.log('🗺️ [IMPORT] === Mapping des pilotes existants ===');
+      newDrivers.forEach((newDriver, index) => {
+        console.log(`🔍 [IMPORT] Recherche pilote ${index + 1}/${newDrivers.length}: "${newDriver.name}" (Rôle: ${newDriver.driverRole}, ChampID: ${newDriver.championshipId?.slice(0, 8)}..., TempID: ${newDriver.id.slice(0, 8)}...)`);
+        
         const existingDriver = drivers.find(d => {
           const normalizedNewName = newDriver.name.trim().toLowerCase()
             .replace(/\s+/g, ' ')
@@ -43,14 +49,22 @@ export const useChampionshipImport = (
             .replace(/\s+/g, ' ')
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           
-          return normalizedNewName === normalizedExistingName &&
-                 d.championshipId === newDriver.championshipId &&
-                 d.driverRole === newDriver.driverRole;
+          const nameMatch = normalizedNewName === normalizedExistingName;
+          const championshipMatch = d.championshipId === newDriver.championshipId;
+          const roleMatch = d.driverRole === newDriver.driverRole;
+          
+          if (normalizedNewName === normalizedExistingName) {
+            console.log(`  🔎 Candidat: "${d.name}" (Rôle: ${d.driverRole}, ChampID: ${d.championshipId?.slice(0, 8)}...) - NameMatch: ${nameMatch}, ChampMatch: ${championshipMatch}, RoleMatch: ${roleMatch}`);
+          }
+          
+          return nameMatch && championshipMatch && roleMatch;
         });
         
         if (existingDriver) {
-          console.log(`  ✅ Pilote existant mappé: ${newDriver.name} (${newDriver.driverRole}) - Temp ID: ${newDriver.id.slice(0, 8)}... → Real ID: ${existingDriver.id.slice(0, 8)}...`);
+          console.log(`  ✅ [IMPORT] Pilote existant mappé: "${newDriver.name}" (${newDriver.driverRole}) - Temp ID: ${newDriver.id.slice(0, 8)}... → Real ID: ${existingDriver.id.slice(0, 8)}...`);
           completeIdMap.set(newDriver.id, existingDriver.id);
+        } else {
+          console.log(`  ⚠️ [IMPORT] Pilote NON trouvé dans les existants (sera créé): "${newDriver.name}" (${newDriver.driverRole})`);
         }
       });
       
