@@ -59,7 +59,6 @@ export const useChampionshipData = (currentView: ViewType) => {
   const standings = standingsCalculation.generalStandings;
 
   const { handleImport } = useChampionshipImport(
-    drivers,
     saveDriverForImport,
     saveRace,
     refreshData,

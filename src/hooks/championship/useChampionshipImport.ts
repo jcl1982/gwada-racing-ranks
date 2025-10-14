@@ -1,13 +1,14 @@
 
 import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { convertSupabaseDriver } from '@/hooks/supabase/converters';
 import { createMissingDrivers } from './importDrivers';
 import { processRaces } from './importRaces';
 import { validateImportData, findMissingDrivers, logImportSummary } from './importValidation';
 import { generateSuccessMessage, generateErrorMessage, performFinalRefresh } from './importUtils';
 
 export const useChampionshipImport = (
-  drivers: Driver[],
   saveDriver: (driver: Driver) => Promise<string>,
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
   refreshData: () => Promise<void>,
@@ -19,6 +20,34 @@ export const useChampionshipImport = (
     try {
       // Validation initiale
       validateImportData(newRaces, newDrivers);
+      
+      // Détecter le championshipId depuis les courses à importer
+      const targetChampionshipId = newRaces[0]?.championshipId;
+      if (!targetChampionshipId) {
+        throw new Error('Aucun championshipId trouvé dans les courses à importer');
+      }
+      
+      console.log('🎯 [IMPORT] ChampionshipId cible:', targetChampionshipId);
+      
+      // Charger TOUS les drivers de ce championnat pour le mapping
+      console.log('👥 [IMPORT] Chargement des drivers du championnat cible...');
+      const { data: targetDriversData, error: driversError } = await supabase
+        .from('drivers')
+        .select('*')
+        .eq('championship_id', targetChampionshipId)
+        .order('name');
+      
+      if (driversError) {
+        console.error('❌ [IMPORT] Erreur lors du chargement des drivers:', driversError);
+        throw driversError;
+      }
+      
+      const targetChampionshipDrivers: Driver[] = targetDriversData?.map(convertSupabaseDriver) || [];
+      console.log('✅ [IMPORT] Drivers du championnat cible chargés:', targetChampionshipDrivers.length);
+      console.log('👥 [IMPORT] Répartition:', {
+        pilotes: targetChampionshipDrivers.filter(d => d.driverRole === 'pilote').length,
+        copilotes: targetChampionshipDrivers.filter(d => d.driverRole === 'copilote').length
+      });
       
       // Sauvegarder AVANT l'import pour préserver les évolutions
       console.log('💾 [IMPORT] Sauvegarde du classement avant import...');
@@ -32,7 +61,11 @@ export const useChampionshipImport = (
       // Étape 1: Créer une map complète TEMP_ID → REAL_ID pour TOUS les pilotes
       console.log('🗺️ [IMPORT] Construction de la map complète des IDs...');
       console.log(`🗺️ [IMPORT] Pilotes dans newDrivers: ${newDrivers.length}`);
-      console.log(`🗺️ [IMPORT] Pilotes dans drivers (existants): ${drivers.length}`);
+      console.log(`🗺️ [IMPORT] Pilotes dans targetChampionshipDrivers (existants): ${targetChampionshipDrivers.length}`);
+      
+      // Afficher les noms des pilotes pour debug
+      console.log('🗺️ [IMPORT] Liste des newDrivers:', newDrivers.map(d => `"${d.name}" (${d.driverRole})`));
+      console.log('🗺️ [IMPORT] Liste des targetChampionshipDrivers:', targetChampionshipDrivers.map(d => `"${d.name}" (${d.driverRole})`));
       
       const completeIdMap = new Map<string, string>();
       
@@ -41,7 +74,7 @@ export const useChampionshipImport = (
       newDrivers.forEach((newDriver, index) => {
         console.log(`🔍 [IMPORT] Recherche pilote ${index + 1}/${newDrivers.length}: "${newDriver.name}" (Rôle: ${newDriver.driverRole}, ChampID: ${newDriver.championshipId?.slice(0, 8)}..., TempID: ${newDriver.id.slice(0, 8)}...)`);
         
-        const existingDriver = drivers.find(d => {
+        const existingDriver = targetChampionshipDrivers.find(d => {
           const normalizedNewName = newDriver.name.trim().toLowerCase()
             .replace(/\s+/g, ' ')
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -68,8 +101,10 @@ export const useChampionshipImport = (
         }
       });
       
+      console.log(`🗺️ [IMPORT] Résultat du premier mapping: ${completeIdMap.size} correspondances trouvées`);
+      
       // Étape 2: Créer tous les pilotes manquants
-      const missingDrivers = findMissingDrivers(newDrivers, drivers);
+      const missingDrivers = findMissingDrivers(newDrivers, targetChampionshipDrivers);
       const { totalCreated, totalErrors, idMap } = await createMissingDrivers(
         missingDrivers,
         saveDriver,
@@ -109,7 +144,7 @@ export const useChampionshipImport = (
         console.error(`❌ [IMPORT] ${notFoundCount} références de pilotes NON TROUVÉES!`);
       }
 
-      // Étape 3: Traiter les courses
+      // Étape 4: Traiter les courses
       const { successCount, errorCount } = await processRaces(
         newRaces,
         saveRace,

@@ -186,13 +186,24 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       return;
     }
 
+    if (targetChampionshipDrivers.length === 0) {
+      console.error('❌ [IMPORT] Pas de drivers chargés pour le championnat cible');
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Les drivers du championnat n'ont pas été chargés. Veuillez réessayer.",
+      });
+      return;
+    }
+
     try {
       const championshipType = RACE_TYPE_TO_CHAMPIONSHIP_TYPE[selectedRaceType];
       console.log('🚀 [IMPORT] Début de l\'import:', {
         raceType: selectedRaceType,
         championshipType,
         championshipId,
-        racesCount: previewData.length
+        racesCount: previewData.length,
+        targetDriversCount: targetChampionshipDrivers.length
       });
       
       // Extraire les noms des courses depuis previewData
@@ -207,9 +218,10 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       console.log('📦 [IMPORT] Utilisation des drivers du championnat cible:', targetChampionshipDrivers.length);
       const { races, newDrivers } = convertExcelDataToRaces(previewData, targetChampionshipDrivers, championshipId);
       
-      const newDriversCount = newDrivers.length - drivers.length;
+      const newDriversCount = newDrivers.length - targetChampionshipDrivers.length;
       const racesCount = races.length;
       
+      // Passer targetChampionshipDrivers au lieu de drivers pour que l'import utilise les bons drivers
       await onImport(races, newDrivers);
       setSuccess(true);
       setPreviewData(null);
