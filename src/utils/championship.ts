@@ -187,45 +187,61 @@ export const calculateCopiloteStandings = (
   rallyeRaces: Race[],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
-  console.log('👥 Calcul des standings copilote:', {
-    drivers: drivers.length,
-    rallyeRaces: rallyeRaces.length,
-    previousStandings: previousStandings?.length || 0
-  });
+  console.log('👥 [COPILOTE] ===== CALCUL DU CLASSEMENT COPILOTE =====');
+  console.log('👥 [COPILOTE] Pilotes reçus:', drivers.length);
+  console.log('👥 [COPILOTE] Courses rallye reçues:', rallyeRaces.length);
 
   // Log détaillé des courses rallye
-  console.log('👥 Courses rallye reçues:', rallyeRaces.map(r => ({
-    name: r.name,
-    resultsCount: r.results.length,
-    results: r.results.map(res => ({ driverId: res.driverId.slice(0, 8), points: res.points }))
-  })));
+  rallyeRaces.forEach(race => {
+    console.log(`👥 [COPILOTE] Course: ${race.name}`);
+    console.log(`  - Résultats: ${race.results.length}`);
+    if (race.results.length > 0) {
+      race.results.forEach((result, idx) => {
+        console.log(`    ${idx + 1}. DriverId: ${result.driverId.slice(0, 8)}... - Position: ${result.position} - Points: ${result.points}`);
+      });
+    }
+  });
 
   // Filtrer uniquement les copilotes
   const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
 
-  console.log('👥 Copilotes trouvés:', {
-    total: copilotes.length,
-    copilotes: copilotes.map(d => ({ id: d.id.slice(0, 8), name: d.name, role: d.driverRole }))
+  console.log('👥 [COPILOTE] Copilotes trouvés:', copilotes.length);
+  copilotes.forEach((copilote, idx) => {
+    console.log(`  ${idx + 1}. ${copilote.name} (ID: ${copilote.id.slice(0, 8)}..., Role: ${copilote.driverRole})`);
   });
+
+  if (copilotes.length === 0) {
+    console.warn('⚠️ [COPILOTE] AUCUN COPILOTE TROUVÉ !');
+    return [];
+  }
 
   const standings = copilotes
     .map(driver => {
       const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-      console.log(`👥 Points pour ${driver.name}:`, rallyePoints);
+      console.log(`👥 [COPILOTE] ${driver.name}: ${rallyePoints} points`);
+      
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
       
       return createBaseStanding(driver, 0, rallyePoints, previousStanding);
     })
-    .filter(standing => standing.rallyePoints > 0);
+    .filter(standing => {
+      const hasPoints = standing.rallyePoints > 0;
+      if (!hasPoints) {
+        console.log(`  ⏭️ [COPILOTE] ${standing.driver.name} exclu (0 points)`);
+      }
+      return hasPoints;
+    });
 
-  console.log('👥 Classement copilote final:', standings.map(s => ({
-    name: s.driver.name,
-    points: s.rallyePoints,
-    position: s.position
-  })));
+  console.log('👥 [COPILOTE] Classement avant tri:', standings.length, 'copilotes avec des points');
 
   sortRallyeStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'rallye'); // Utiliser le type rallye pour l'évolution
+  calculatePositionsAndEvolution(standings, 'rallye');
+
+  console.log('👥 [COPILOTE] ===== CLASSEMENT FINAL =====');
+  standings.forEach((standing, idx) => {
+    console.log(`  ${idx + 1}. ${standing.driver.name}: ${standing.rallyePoints} points (Position: ${standing.position})`);
+  });
+  console.log('👥 [COPILOTE] =====================================');
 
   return standings;
 };

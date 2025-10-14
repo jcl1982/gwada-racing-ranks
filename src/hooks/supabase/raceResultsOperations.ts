@@ -35,13 +35,29 @@ export const deleteResultsByCategory = async (raceId: string, category: string):
 
 // Nouvelle fonction pour supprimer uniquement les résultats d'un rôle spécifique (pilote/copilote)
 export const deleteResultsByDriverRole = async (raceId: string, driverRole: 'pilote' | 'copilote'): Promise<void> => {
-  console.log(`🗑️ Suppression des résultats des ${driverRole}s pour la course ${raceId}`);
+  console.log(`🗑️ [DELETE_BY_ROLE] Suppression des résultats des ${driverRole}s pour la course ${raceId}`);
   
-  // Récupérer les IDs des drivers avec le rôle spécifié
+  // Récupérer le championship_id de la course
+  const { data: raceData, error: raceError } = await supabase
+    .from('races')
+    .select('championship_id')
+    .eq('id', raceId)
+    .single();
+
+  if (raceError) {
+    console.error('❌ Erreur lors de la récupération du championship_id:', raceError);
+    throw raceError;
+  }
+
+  const championshipId = raceData.championship_id;
+  console.log(`🔍 [DELETE_BY_ROLE] ChampionshipId de la course: ${championshipId}`);
+  
+  // Récupérer les IDs des drivers avec le rôle spécifié ET du même championnat
   const { data: driversWithRole, error: fetchError } = await supabase
     .from('drivers')
-    .select('id')
-    .eq('driver_role', driverRole);
+    .select('id, name')
+    .eq('driver_role', driverRole)
+    .eq('championship_id', championshipId);
 
   if (fetchError) {
     console.error('❌ Erreur lors de la récupération des drivers:', fetchError);
@@ -49,9 +65,11 @@ export const deleteResultsByDriverRole = async (raceId: string, driverRole: 'pil
   }
 
   if (!driversWithRole || driversWithRole.length === 0) {
-    console.log(`ℹ️ Aucun ${driverRole} trouvé, rien à supprimer`);
+    console.log(`ℹ️ [DELETE_BY_ROLE] Aucun ${driverRole} trouvé dans ce championnat, rien à supprimer`);
     return;
   }
+
+  console.log(`🔍 [DELETE_BY_ROLE] ${driversWithRole.length} ${driverRole}s trouvés:`, driversWithRole.map(d => d.name));
 
   const driverIds = driversWithRole.map(d => d.id);
   
@@ -66,7 +84,7 @@ export const deleteResultsByDriverRole = async (raceId: string, driverRole: 'pil
     throw deleteError;
   }
   
-  console.log(`✅ Résultats des ${driverRole}s supprimés`);
+  console.log(`✅ [DELETE_BY_ROLE] Résultats des ${driverRole}s supprimés avec succès`);
 };
 
 export const saveRaceResults = async (raceId: string, results: RaceResult[]): Promise<void> => {
