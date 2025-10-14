@@ -88,19 +88,22 @@ export const convertExcelDataToRaces = (
         .replace(/\s+/g, ' ') // Remplacer les espaces multiples par un seul espace
         .normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Retirer les accents
       
-      // Chercher d'abord dans les pilotes existants du championnat
+      // Chercher d'abord dans les pilotes existants du championnat avec le même rôle
+      const targetRole = result.driverRole || 'pilote';
       let driver = existingDrivers.find(d => {
         const existingNormalized = d.name
           .toLowerCase()
           .trim()
           .replace(/\s+/g, ' ')
           .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return existingNormalized === normalizedName && d.championshipId === championshipId;
+        return existingNormalized === normalizedName && 
+               d.championshipId === championshipId &&
+               d.driverRole === targetRole;
       });
       
       if (!driver) {
         // Vérifier si on l'a déjà créé dans newDrivers pendant cette conversion
-        // IMPORTANT: vérifier aussi le championshipId pour éviter les doublons
+        // IMPORTANT: vérifier aussi le championshipId ET le rôle pour éviter les doublons
         driver = newDrivers.find(d => {
           // Ignorer les pilotes qui étaient déjà existants au départ
           if (existingDrivers.some(ed => ed.id === d.id)) {
@@ -113,7 +116,8 @@ export const convertExcelDataToRaces = (
             .replace(/\s+/g, ' ')
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           return newDriverNormalized === normalizedName && 
-                 d.championshipId === championshipId;
+                 d.championshipId === championshipId &&
+                 d.driverRole === targetRole;
         });
       }
       
