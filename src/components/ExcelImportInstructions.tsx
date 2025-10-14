@@ -12,6 +12,7 @@ const ExcelImportInstructions = () => {
           <li>Ligne 2 : En-têtes (Position, Pilote, Marque et Modèle, Points)</li>
           <li>Lignes suivantes : Résultats des pilotes</li>
           <li><strong>Note :</strong> Le type de course (montagne/rallye) est sélectionné ci-dessus</li>
+          <li><strong>Rôle (optionnel) :</strong> Ajoutez une colonne "Rôle" pour distinguer pilotes et copilotes</li>
         </ul>
       </div>
       

@@ -10,6 +10,7 @@ export interface ExcelRaceData {
   results: Array<{
     position: number;
     driverName: string;
+    driverRole?: 'pilote' | 'copilote';
     carModel?: string;
     points: number;
     time?: string;
@@ -119,6 +120,9 @@ export const parseExcelFile = async (
             
             const position = parsePosition(row[columnIndices.position]);
             const pilote = parsePilote(row[columnIndices.pilote]);
+            const driverRole = columnIndices.role !== -1 ? 
+              parseDriverRole(row[columnIndices.role]) : 
+              'pilote';
             const carModel = columnIndices.carModel !== -1 ? 
               String(row[columnIndices.carModel] || '').trim() : 
               undefined;
@@ -127,6 +131,7 @@ export const parseExcelFile = async (
               raw: row,
               position,
               pilote,
+              driverRole,
               carModel,
               positionRaw: row[columnIndices.position],
               piloteRaw: row[columnIndices.pilote]
@@ -161,6 +166,7 @@ export const parseExcelFile = async (
             results.push({
               position,
               driverName: pilote.trim(),
+              driverRole,
               carModel,
               points,
               time,
@@ -218,6 +224,7 @@ const findColumnIndices = (headers: string[]) => {
   const indices = {
     position: -1,
     pilote: -1,
+    role: -1,
     carModel: -1,
     points: -1,
     time: -1,
@@ -254,6 +261,16 @@ const findColumnIndices = (headers: string[]) => {
       headerLower === 'conducteur'
     )) {
       indices.pilote = index;
+    }
+    
+    // Rôle (pilote/copilote)
+    if (indices.role === -1 && (
+      headerLower.includes('rôle') ||
+      headerLower.includes('role') ||
+      headerLower === 'rôle' ||
+      headerLower === 'role'
+    )) {
+      indices.role = index;
     }
     
     // Marque et Modèle
@@ -344,6 +361,18 @@ const parsePilote = (value: any): string => {
     .replace(/[^\p{L}\p{N}\s\-\.]/gu, ' ') // Préserver les lettres Unicode (avec accents), chiffres, espaces, tirets et points
     .replace(/\s+/g, ' ') // Normaliser les espaces multiples
     .trim();
+};
+
+const parseDriverRole = (value: any): 'pilote' | 'copilote' => {
+  if (value === null || value === undefined) return 'pilote';
+  
+  const str = String(value).toLowerCase().trim();
+  
+  if (str.includes('copilote') || str.includes('co-pilote') || str === 'copilote') {
+    return 'copilote';
+  }
+  
+  return 'pilote';
 };
 
 const parsePoints = (value: any): number => {

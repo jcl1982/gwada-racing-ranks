@@ -2,10 +2,12 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DriverRole } from '@/types/championship';
 
 interface DriverFormProps {
-  formData: { name: string; number: string; carModel: string };
-  onFormDataChange: (data: { name: string; number: string; carModel: string }) => void;
+  formData: { name: string; number: string; carModel: string; driverRole?: DriverRole };
+  onFormDataChange: (data: { name: string; number: string; carModel: string; driverRole?: DriverRole }) => void;
   onSubmit: () => void;
   onCancel: () => void;
   isLoading: boolean;
@@ -55,6 +57,22 @@ const DriverForm = ({
           placeholder="Ex: Peugeot 208 R2, Citroën C2 R2"
           disabled={isLoading}
         />
+      </div>
+      <div>
+        <Label htmlFor="driverRole">Rôle</Label>
+        <Select 
+          value={formData.driverRole || 'pilote'} 
+          onValueChange={(value: DriverRole) => onFormDataChange({ ...formData, driverRole: value })}
+          disabled={isLoading}
+        >
+          <SelectTrigger id="driverRole">
+            <SelectValue placeholder="Sélectionner le rôle" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="pilote">Pilote</SelectItem>
+            <SelectItem value="copilote">Copilote</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex gap-2">
         <Button onClick={onSubmit} className="flex-1" disabled={isLoading}>

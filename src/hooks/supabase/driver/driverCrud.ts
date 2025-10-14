@@ -53,6 +53,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
             name: driver.name,
             number: driver.number || matchingDriver.number,
             car_model: driver.carModel || matchingDriver.car_model,
+            driver_role: driver.driverRole || 'pilote',
             updated_at: new Date().toISOString()
           })
           .eq('id', matchingDriver.id);
@@ -100,6 +101,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
               name: driver.name,
               number: driver.number,
               car_model: driver.carModel,
+              driver_role: driver.driverRole || 'pilote',
               updated_at: new Date().toISOString()
             })
             .eq('id', driver.id);
@@ -125,6 +127,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
               name: driver.name,
               number: driver.number,
               car_model: driver.carModel,
+              driver_role: driver.driverRole || 'pilote',
               championship_id: driverChampionshipId
             })
             .select()
@@ -152,6 +155,7 @@ export const createDriverCrudOperations = (toast: ReturnType<typeof useToast>['t
             name: driver.name,
             number: driver.number,
             car_model: driver.carModel,
+            driver_role: driver.driverRole || 'pilote',
             championship_id: driverChampionshipId
           })
           .select()

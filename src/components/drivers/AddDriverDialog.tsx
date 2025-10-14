@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { Driver } from '@/types/championship';
+import { Driver, DriverRole } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import DriverForm from './DriverForm';
 
@@ -17,9 +17,18 @@ interface AddDriverDialogProps {
 
 const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading, championshipId }: AddDriverDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', number: '', carModel: '' });
+  const [formData, setFormData] = useState({ name: '', number: '', carModel: '', driverRole: 'pilote' as Driver['driverRole'] });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const handleFormDataChange = (data: { name: string; number: string; carModel: string; driverRole?: DriverRole }) => {
+    setFormData({
+      name: data.name,
+      number: data.number,
+      carModel: data.carModel,
+      driverRole: data.driverRole || 'pilote'
+    });
+  };
 
   const handleSubmit = async () => {
     if (!formData.name.trim() || !formData.number.trim()) {
@@ -37,13 +46,14 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading, cha
         name: formData.name.trim(),
         number: parseInt(formData.number),
         carModel: formData.carModel.trim() || undefined,
+        driverRole: formData.driverRole || 'pilote',
         championshipId: championshipId
       };
       
       console.log('Adding driver:', newDriver);
       await onDriverAdd(newDriver);
       
-      setFormData({ name: '', number: '', carModel: '' });
+      setFormData({ name: '', number: '', carModel: '', driverRole: 'pilote' as Driver['driverRole'] });
       setIsOpen(false);
       
       // Trigger refresh of drivers list
@@ -66,7 +76,7 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading, cha
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', number: '', carModel: '' });
+    setFormData({ name: '', number: '', carModel: '', driverRole: 'pilote' as Driver['driverRole'] });
     setIsOpen(false);
   };
 
@@ -84,7 +94,7 @@ const AddDriverDialog = ({ onDriverAdd, onDriversChange, drivers, isLoading, cha
         </DialogHeader>
         <DriverForm
           formData={formData}
-          onFormDataChange={setFormData}
+          onFormDataChange={handleFormDataChange}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isLoading={isSubmitting}

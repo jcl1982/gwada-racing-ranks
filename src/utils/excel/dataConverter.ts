@@ -125,11 +125,12 @@ export const convertExcelDataToRaces = (
           number: nextDriverNumber,
           carModel: result.carModel || undefined,
           team: excelRace.kartingCategory || undefined,
+          driverRole: result.driverRole || 'pilote',
           championshipId
         };
         newDrivers.push(driver);
         nextDriverNumber++;
-        console.log(`➕ [CONVERTER] Nouveau pilote identifié: "${driver.name}" (ID: ${driver.id.substring(0, 8)}..., Numéro: ${driver.number})`);
+        console.log(`➕ [CONVERTER] Nouveau pilote identifié: "${driver.name}" (ID: ${driver.id.substring(0, 8)}..., Numéro: ${driver.number}, Rôle: ${driver.driverRole})`);
       } else {
         console.log(`✅ [CONVERTER] Pilote existant réutilisé: "${driver.name}" (ID: ${driver.id.substring(0, 8)}...)`);
         

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Driver } from '@/types/championship';
+import { Driver, DriverRole } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import DriverForm from './DriverForm';
 
@@ -20,7 +20,7 @@ const EditDriverDialog = ({
   drivers, 
   onClose 
 }: EditDriverDialogProps) => {
-  const [formData, setFormData] = useState({ name: '', number: '', carModel: '' });
+  const [formData, setFormData] = useState({ name: '', number: '', carModel: '', driverRole: 'pilote' as DriverRole });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -29,10 +29,20 @@ const EditDriverDialog = ({
       setFormData({ 
         name: editingDriver.name, 
         number: editingDriver.number?.toString() || '',
-        carModel: editingDriver.carModel || ''
+        carModel: editingDriver.carModel || '',
+        driverRole: editingDriver.driverRole || 'pilote'
       });
     }
   }, [editingDriver]);
+
+  const handleFormDataChange = (data: { name: string; number: string; carModel: string; driverRole?: DriverRole }) => {
+    setFormData({
+      name: data.name,
+      number: data.number,
+      carModel: data.carModel,
+      driverRole: data.driverRole || 'pilote'
+    });
+  };
 
   const handleSubmit = async () => {
     if (!editingDriver || !formData.name.trim() || !formData.number.trim()) {
@@ -50,14 +60,15 @@ const EditDriverDialog = ({
         ...editingDriver,
         name: formData.name.trim(),
         number: parseInt(formData.number),
-        carModel: formData.carModel.trim() || undefined
+        carModel: formData.carModel.trim() || undefined,
+        driverRole: formData.driverRole || 'pilote'
       };
       
       console.log('Updating driver:', updatedDriver);
       await onDriverUpdate(updatedDriver);
       
       onClose();
-      setFormData({ name: '', number: '', carModel: '' });
+      setFormData({ name: '', number: '', carModel: '', driverRole: 'pilote' });
       
       // Trigger refresh of drivers list
       onDriversChange([...drivers]);
@@ -79,7 +90,7 @@ const EditDriverDialog = ({
   };
 
   const handleCancel = () => {
-    setFormData({ name: '', number: '', carModel: '' });
+    setFormData({ name: '', number: '', carModel: '', driverRole: 'pilote' });
     onClose();
   };
 
@@ -91,7 +102,7 @@ const EditDriverDialog = ({
         </DialogHeader>
         <DriverForm
           formData={formData}
-          onFormDataChange={setFormData}
+          onFormDataChange={handleFormDataChange}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isLoading={isSubmitting}
