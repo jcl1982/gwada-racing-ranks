@@ -35,6 +35,12 @@ export const createCategoryStandingsTable = (
     // Ajouter les points totaux
     row.push(`${standing.points}`);
     
+    // Ajouter l'écart de points
+    const leaderPoints = standings[0]?.points || 0;
+    const gap = leaderPoints - standing.points;
+    const gapText = gap === 0 ? '—' : `-${gap}`;
+    row.push(gapText);
+    
     return row;
   });
 

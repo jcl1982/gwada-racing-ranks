@@ -131,11 +131,12 @@ export const usePdfExport = () => {
       }
       
       // Construction des en-têtes de colonnes
-      const headers = ['Position', 'Évol.', 'Pilote', 'Véhicule'];
+      const headers = ['Position', 'Pilote', 'Véhicule'];
       races.forEach(race => {
         headers.push(`${race.name} (${new Date(race.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })})`);
       });
       headers.push('Total');
+      headers.push('Écart');
       
       // Création du tableau
       createCategoryStandingsTable(doc, headers, standings, races);
