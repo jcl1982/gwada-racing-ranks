@@ -33,6 +33,42 @@ export const deleteResultsByCategory = async (raceId: string, category: string):
   console.log(`✅ Résultats de la catégorie "${category}" supprimés`);
 };
 
+// Nouvelle fonction pour supprimer uniquement les résultats d'un rôle spécifique (pilote/copilote)
+export const deleteResultsByDriverRole = async (raceId: string, driverRole: 'pilote' | 'copilote'): Promise<void> => {
+  console.log(`🗑️ Suppression des résultats des ${driverRole}s pour la course ${raceId}`);
+  
+  // Récupérer les IDs des drivers avec le rôle spécifié
+  const { data: driversWithRole, error: fetchError } = await supabase
+    .from('drivers')
+    .select('id')
+    .eq('driver_role', driverRole);
+
+  if (fetchError) {
+    console.error('❌ Erreur lors de la récupération des drivers:', fetchError);
+    throw fetchError;
+  }
+
+  if (!driversWithRole || driversWithRole.length === 0) {
+    console.log(`ℹ️ Aucun ${driverRole} trouvé, rien à supprimer`);
+    return;
+  }
+
+  const driverIds = driversWithRole.map(d => d.id);
+  
+  const { error: deleteError } = await supabase
+    .from('race_results')
+    .delete()
+    .eq('race_id', raceId)
+    .in('driver_id', driverIds);
+
+  if (deleteError) {
+    console.error(`❌ Erreur lors de la suppression des résultats des ${driverRole}s:`, deleteError);
+    throw deleteError;
+  }
+  
+  console.log(`✅ Résultats des ${driverRole}s supprimés`);
+};
+
 export const saveRaceResults = async (raceId: string, results: RaceResult[]): Promise<void> => {
   console.log('📊 [SAVE_RESULTS] Début saveRaceResults - RaceId:', raceId);
   console.log('📊 [SAVE_RESULTS] Nombre de résultats reçus:', results.length);

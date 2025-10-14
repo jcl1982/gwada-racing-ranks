@@ -3,7 +3,7 @@ import { Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { validateRaceData } from './raceValidation';
-import { deleteExistingResults, deleteResultsByCategory, saveRaceResults } from './raceResultsOperations';
+import { deleteExistingResults, deleteResultsByCategory, deleteResultsByDriverRole, saveRaceResults } from './raceResultsOperations';
 import { createRaceInDatabase, updateRaceInDatabase, deleteRaceFromDatabase, findExistingRace } from './raceDatabaseOperations';
 
 export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast'], loadData: () => Promise<void>, championshipId?: string) => {
@@ -25,13 +25,31 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
         raceId = race.id;
         
         // Pour le karting avec catégories, supprimer uniquement les résultats de la catégorie concernée
+        // Pour le rallye, supprimer uniquement les résultats du même rôle (pilote/copilote)
         if ('results' in race && race.results.length > 0) {
           const isKarting = race.type === 'karting';
+          const isRallye = race.type === 'rallye';
           const category = race.results[0]?.category;
           
           if (isKarting && category) {
             console.log(`🗑️ Suppression des résultats de la catégorie "${category}"...`);
             await deleteResultsByCategory(raceId, category);
+          } else if (isRallye) {
+            // Pour le rallye, détecter le rôle des résultats à importer
+            const firstDriverId = race.results[0]?.driverId;
+            const { data: driverData } = await supabase
+              .from('drivers')
+              .select('driver_role')
+              .eq('id', firstDriverId)
+              .single();
+            
+            if (driverData?.driver_role) {
+              console.log(`🗑️ Suppression des résultats des ${driverData.driver_role}s uniquement...`);
+              await deleteResultsByDriverRole(raceId, driverData.driver_role);
+            } else {
+              console.log('🗑️ Suppression de tous les résultats...');
+              await deleteExistingResults(raceId);
+            }
           } else {
             console.log('🗑️ Suppression de tous les résultats...');
             await deleteExistingResults(raceId);
@@ -47,13 +65,31 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           raceId = existingRace.id;
           
           // Pour le karting avec catégories, supprimer uniquement les résultats de la catégorie concernée
+          // Pour le rallye, supprimer uniquement les résultats du même rôle (pilote/copilote)
           if ('results' in race && race.results.length > 0) {
             const isKarting = existingRace.type === 'karting';
+            const isRallye = existingRace.type === 'rallye';
             const category = race.results[0]?.category;
             
             if (isKarting && category) {
               console.log(`🗑️ Suppression des résultats existants pour la catégorie "${category}"...`);
               await deleteResultsByCategory(raceId, category);
+            } else if (isRallye) {
+              // Pour le rallye, détecter le rôle des résultats à importer
+              const firstDriverId = race.results[0]?.driverId;
+              const { data: driverData } = await supabase
+                .from('drivers')
+                .select('driver_role')
+                .eq('id', firstDriverId)
+                .single();
+              
+              if (driverData?.driver_role) {
+                console.log(`🗑️ Suppression des résultats des ${driverData.driver_role}s uniquement...`);
+                await deleteResultsByDriverRole(raceId, driverData.driver_role);
+              } else {
+                console.log('🗑️ Suppression de tous les résultats...');
+                await deleteExistingResults(raceId);
+              }
             } else {
               console.log('🗑️ Suppression de tous les résultats...');
               await deleteExistingResults(raceId);
