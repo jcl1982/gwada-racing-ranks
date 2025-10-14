@@ -8,9 +8,12 @@ interface GeneralStandingsStatsProps {
 }
 
 const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
-  const leader = standings[0];
-  const bestMontagne = standings.sort((a, b) => b.montagnePoints - a.montagnePoints)[0];
-  const bestRallye = standings.sort((a, b) => b.rallyePoints - a.rallyePoints)[0];
+  // Filtrer uniquement les pilotes (exclure les copilotes)
+  const piloteStandings = standings.filter(s => s.driver.driverRole === 'pilote');
+  
+  const leader = piloteStandings[0];
+  const bestMontagne = [...piloteStandings].sort((a, b) => b.montagnePoints - a.montagnePoints)[0];
+  const bestRallye = [...piloteStandings].sort((a, b) => b.rallyePoints - a.rallyePoints)[0];
 
   return (
     <div className="grid md:grid-cols-3 gap-6">
