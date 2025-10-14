@@ -193,22 +193,36 @@ export const calculateCopiloteStandings = (
     previousStandings: previousStandings?.length || 0
   });
 
+  // Log détaillé des courses rallye
+  console.log('👥 Courses rallye reçues:', rallyeRaces.map(r => ({
+    name: r.name,
+    resultsCount: r.results.length,
+    results: r.results.map(res => ({ driverId: res.driverId.slice(0, 8), points: res.points }))
+  })));
+
   // Filtrer uniquement les copilotes
   const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
 
   console.log('👥 Copilotes trouvés:', {
     total: copilotes.length,
-    names: copilotes.map(d => d.name)
+    copilotes: copilotes.map(d => ({ id: d.id.slice(0, 8), name: d.name, role: d.driverRole }))
   });
 
   const standings = copilotes
     .map(driver => {
       const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      console.log(`👥 Points pour ${driver.name}:`, rallyePoints);
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
       
       return createBaseStanding(driver, 0, rallyePoints, previousStanding);
     })
     .filter(standing => standing.rallyePoints > 0);
+
+  console.log('👥 Classement copilote final:', standings.map(s => ({
+    name: s.driver.name,
+    points: s.rallyePoints,
+    position: s.position
+  })));
 
   sortRallyeStandingsByPoints(standings);
   calculatePositionsAndEvolution(standings, 'rallye'); // Utiliser le type rallye pour l'évolution
