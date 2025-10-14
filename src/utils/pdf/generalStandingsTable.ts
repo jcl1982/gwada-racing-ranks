@@ -13,7 +13,7 @@ export const createGeneralStandingsTable = (
     .map(standing => {
       const leaderPoints = standings[0]?.totalPoints || 0;
       const gap = leaderPoints - standing.totalPoints;
-      const gapText = gap === 0 ? '—' : `+${gap}`;
+      const gapText = gap === 0 ? '—' : `-${gap}`;
       
       return [
         standing.position.toString(),

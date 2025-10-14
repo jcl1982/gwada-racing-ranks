@@ -115,8 +115,8 @@ const GeneralStandingsTable = ({
                   </Badge>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge variant="outline" className={`${gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-gray-50 border-gray-200'}`}>
-                    {gap === 0 ? '—' : `+${gap}`}
+                  <Badge variant="outline" className={`${gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                    {gap === 0 ? '—' : `-${gap}`}
                   </Badge>
                 </td>
               </tr>
