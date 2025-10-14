@@ -191,15 +191,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       return;
     }
 
-    if (targetChampionshipDrivers.length === 0) {
-      console.error('❌ [IMPORT] Pas de drivers chargés pour le championnat cible');
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Les drivers du championnat n'ont pas été chargés. Veuillez réessayer.",
-      });
-      return;
-    }
+    console.log('🚀 [IMPORT] Début de l\'import avec', targetChampionshipDrivers.length, 'drivers existants');
 
     try {
       const championshipType = RACE_TYPE_TO_CHAMPIONSHIP_TYPE[selectedRaceType];
