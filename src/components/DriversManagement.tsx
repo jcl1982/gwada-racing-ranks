@@ -89,70 +89,94 @@ const DriversManagement = ({ drivers, onDriversChange, saveDriver, deleteDriver,
     }
   };
 
+  const pilotes = drivers.filter(d => d.driverRole === 'pilote');
+  const copilotes = drivers.filter(d => d.driverRole === 'copilote');
+
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Gestion des Pilotes ({drivers.length})</h2>
-        <div className="flex gap-2">
-          <AddDriverDialog
-            onDriverAdd={saveDriver}
-            onDriversChange={onDriversChange}
-            drivers={drivers}
-            isLoading={isLoading}
-            championshipId={championshipId}
-          />
-          
-          {drivers.length > 0 && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button 
-                  variant="destructive" 
-                  disabled={isLoading || isDeletingAll}
-                  className="gap-2"
-                >
-                  <Trash2 size={16} />
-                  Supprimer tous
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Supprimer tous les pilotes</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Êtes-vous absolument sûr de vouloir supprimer <strong>TOUS</strong> les pilotes ? 
-                    <br />
-                    <br />
-                    Cette action supprimera définitivement :
-                    <ul className="list-disc list-inside mt-2 text-sm">
-                      <li><strong>{drivers.length} pilotes</strong></li>
-                      <li>Tous leurs résultats de course</li>
-                      <li>Tous leurs classements précédents</li>
-                    </ul>
-                    <br />
-                    <strong className="text-red-600">Cette action est irréversible et ne peut pas être annulée.</strong>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={handleDeleteAllDrivers}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+    <div className="space-y-8">
+      {/* Section Pilotes */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">Gestion des Pilotes ({pilotes.length})</h2>
+          <div className="flex gap-2">
+            <AddDriverDialog
+              onDriverAdd={saveDriver}
+              onDriversChange={onDriversChange}
+              drivers={drivers}
+              isLoading={isLoading}
+              championshipId={championshipId}
+            />
+            
+            {drivers.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="destructive" 
+                    disabled={isLoading || isDeletingAll}
+                    className="gap-2"
                   >
-                    Supprimer tous les pilotes
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+                    <Trash2 size={16} />
+                    Supprimer tous
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Supprimer tous les pilotes et copilotes</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Êtes-vous absolument sûr de vouloir supprimer <strong>TOUS</strong> les pilotes et copilotes ? 
+                      <br />
+                      <br />
+                      Cette action supprimera définitivement :
+                      <ul className="list-disc list-inside mt-2 text-sm">
+                        <li><strong>{pilotes.length} pilotes</strong></li>
+                        <li><strong>{copilotes.length} copilotes</strong></li>
+                        <li>Tous leurs résultats de course</li>
+                        <li>Tous leurs classements précédents</li>
+                      </ul>
+                      <br />
+                      <strong className="text-red-600">Cette action est irréversible et ne peut pas être annulée.</strong>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleDeleteAllDrivers}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Supprimer tous
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </div>
+
+        <DriversList
+          drivers={pilotes}
+          onEdit={handleEditDriver}
+          onDelete={handleDeleteDriver}
+          isLoading={isLoading}
+          deletingDriverId={deletingDriverId}
+        />
       </div>
 
-      <DriversList
-        drivers={drivers}
-        onEdit={handleEditDriver}
-        onDelete={handleDeleteDriver}
-        isLoading={isLoading}
-        deletingDriverId={deletingDriverId}
-      />
+      {/* Section Copilotes */}
+      {copilotes.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Gestion des Copilotes ({copilotes.length})</h2>
+          </div>
+
+          <DriversList
+            drivers={copilotes}
+            onEdit={handleEditDriver}
+            onDelete={handleDeleteDriver}
+            isLoading={isLoading}
+            deletingDriverId={deletingDriverId}
+          />
+        </div>
+      )}
 
       <EditDriverDialog
         editingDriver={editingDriver}
