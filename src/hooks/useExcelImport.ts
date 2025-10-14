@@ -37,7 +37,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         return;
       }
 
-      console.log('🔧 [IMPORT] Chargement du championnat pour le type:', championshipType);
+      console.log('🔧 [IMPORT] Chargement du championnat pour le type:', championshipType, 'et rôle:', selectedDriverRole);
 
       const { data, error } = await supabase
         .from('championship_config')
@@ -55,7 +55,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         setChampionshipId(data.id);
         
         // Charger TOUS les drivers de ce championnat (pilotes ET copilotes)
-        console.log('👥 [IMPORT] Chargement des drivers du championnat:', data.id);
+        console.log('👥 [IMPORT] Chargement des drivers du championnat:', data.id, '- Rôle sélectionné:', selectedDriverRole);
         const { data: driversData, error: driversError } = await supabase
           .from('drivers')
           .select('*')
@@ -64,6 +64,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         
         if (driversError) {
           console.error('❌ [IMPORT] Erreur lors du chargement des drivers:', driversError);
+          setTargetChampionshipDrivers([]);
           return;
         }
         
@@ -73,14 +74,18 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
           pilotes: championshipDrivers.filter(d => d.driverRole === 'pilote').length,
           copilotes: championshipDrivers.filter(d => d.driverRole === 'copilote').length
         });
+        
+        // IMPORTANT: Toujours charger TOUS les drivers pour le mapping
+        // même si on importe que des copilotes, il faut tous les drivers du championnat
         setTargetChampionshipDrivers(championshipDrivers);
       } else {
         console.warn('⚠️ [IMPORT] Aucun championnat trouvé pour le type:', championshipType);
+        setTargetChampionshipDrivers([]);
       }
     };
 
     loadChampionshipData();
-  }, [selectedRaceType]);
+  }, [selectedRaceType, selectedDriverRole]);
 
   const handleFileUpload = async (file: File) => {
     setIsLoading(true);
