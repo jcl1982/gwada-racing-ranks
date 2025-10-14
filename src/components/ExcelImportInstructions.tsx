@@ -9,7 +9,13 @@ const ExcelImportInstructions = () => {
         <ul className="list-disc list-inside space-y-1">
           <li>Chaque feuille = une course</li>
           <li>Ligne 1 : Nom de la course, Date (AAAA-MM-JJ)</li>
-          <li>Ligne 2 : En-têtes (Position, Pilote, Rôle, Marque et Modèle, Points)</li>
+          <li><strong>Ligne 2 (En-têtes) :</strong></li>
+          <li className="ml-6">
+            <strong>Sans colonne Rôle :</strong> Position, Pilote, Marque et Modèle, Points
+          </li>
+          <li className="ml-6">
+            <strong>Avec colonne Rôle :</strong> Position, Nom, Rôle, Marque et Modèle, Points
+          </li>
           <li>Lignes suivantes : Résultats des participants (pilotes et copilotes)</li>
           <li><strong>Note :</strong> Le type de course (montagne/rallye) est sélectionné ci-dessus</li>
         </ul>
