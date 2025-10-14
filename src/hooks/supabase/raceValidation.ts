@@ -56,22 +56,32 @@ export const validateDriverIds = (results: Array<{ driverId: string }>): void =>
   }
 };
 
-export const validateDriversExistence = async (driverIds: string[]): Promise<void> => {
+export const validateDriversExistence = async (driverIds: string[], championshipId?: string): Promise<void> => {
   console.log('🔍 Vérification de l\'existence des pilotes:', driverIds.length, 'pilotes à vérifier');
+  if (championshipId) {
+    console.log('🔍 Championship ID pour validation:', championshipId.substring(0, 8) + '...');
+  }
   
   // Stratégie renforcée avec plus de tentatives et délais plus longs
   let attempt = 0;
-  const maxAttempts = 8; // Augmenté de 5 à 8
+  const maxAttempts = 8;
   let existingDrivers = null;
   
   while (attempt < maxAttempts) {
     attempt++;
     
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('drivers')
-        .select('id, name')
+        .select('id, name, championship_id, driver_role')
         .in('id', driverIds);
+
+      // Filtrer par championshipId si fourni (ne pas filtrer si non fourni pour compatibilité)
+      if (championshipId) {
+        query = query.eq('championship_id', championshipId);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('❌ Erreur lors de la vérification des pilotes:', error);

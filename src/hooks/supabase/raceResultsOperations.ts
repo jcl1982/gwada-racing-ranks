@@ -55,7 +55,19 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
 
   // Verify all drivers exist in database
   const driverIds = results.map(r => r.driverId);
-  await validateDriversExistence(driverIds);
+  
+  // Récupérer le championshipId de la course pour valider les pilotes dans le bon championnat
+  const { data: raceData, error: raceError } = await supabase
+    .from('races')
+    .select('championship_id')
+    .eq('id', raceId)
+    .single();
+  
+  if (raceError) {
+    console.error('❌ Erreur lors de la récupération du championship_id de la course:', raceError);
+  }
+  
+  await validateDriversExistence(driverIds, raceData?.championship_id);
 
   // Récupérer les modèles de voiture des pilotes
   const { data: driversData, error: driversError } = await supabase
