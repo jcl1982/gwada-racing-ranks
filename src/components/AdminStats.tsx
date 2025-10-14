@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Users, Trophy, Mountain, Car, Star } from 'lucide-react';
+import { Users, Trophy, Mountain, Car, Star, Zap } from 'lucide-react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
@@ -81,9 +81,12 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
   const typeIcons: Record<string, { icon: typeof Trophy, color: string, label: string }> = {
     montagne: { icon: Mountain, color: 'text-green-600', label: 'Courses de Côte' },
     rallye: { icon: Car, color: 'text-orange-600', label: 'Rallyes' },
-    karting: { icon: Trophy, color: 'text-blue-600', label: 'Karting' },
-    acceleration: { icon: Trophy, color: 'text-purple-600', label: 'Accélération' }
+    acceleration: { icon: Zap, color: 'text-purple-600', label: 'Accélération' },
+    karting: { icon: Trophy, color: 'text-blue-600', label: 'Karting' }
   };
+  
+  // Définir l'ordre d'affichage des types de courses selon les menus
+  const raceTypeOrder = ['montagne', 'rallye', 'acceleration', 'karting'];
   
   const stats = [
     {
@@ -104,15 +107,17 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
       icon: Trophy,
       color: 'text-purple-600'
     },
-    ...Object.entries(racesByType).map(([type, count]) => {
-      const config = typeIcons[type] || { icon: Trophy, color: 'text-gray-600', label: type };
-      return {
-        title: config.label,
-        value: count,
-        icon: config.icon,
-        color: config.color
-      };
-    })
+    ...raceTypeOrder
+      .filter(type => racesByType[type]) // Seulement les types qui existent
+      .map(type => {
+        const config = typeIcons[type];
+        return {
+          title: config.label,
+          value: racesByType[type],
+          icon: config.icon,
+          color: config.color
+        };
+      })
   ];
 
   return (
