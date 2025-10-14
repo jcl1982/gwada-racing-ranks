@@ -50,6 +50,16 @@ const StandingsTable = ({
   
   // Détecter si c'est un classement copilote pour masquer la colonne véhicule
   const isCopiloteStandings = displayTitle.toLowerCase().includes('copilote');
+  
+  // Filtrer les courses pour n'afficher que celles pertinentes au rôle
+  const relevantRaces = races.filter(race => {
+    // Une course est pertinente si au moins un pilote du classement actuel y a des points
+    return standings.some(standing => {
+      const result = race.results.find(r => r.driverId === standing.driver.id);
+      return result && result.points > 0;
+    });
+  });
+  
   const formatDateRange = (startDate: string, endDate?: string) => {
     const start = format(parseLocalDate(startDate), 'dd/MM/yy', {
       locale: fr
@@ -124,7 +134,7 @@ const StandingsTable = ({
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
               {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
-              {races.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
+              {relevantRaces.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
                   </div>
@@ -162,7 +172,7 @@ const StandingsTable = ({
                       </div>
                     </td>
                   )}
-                  {races.map(race => {
+                  {relevantRaces.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
                 const isValid = isC2R2Valid(result);
