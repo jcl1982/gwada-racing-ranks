@@ -23,9 +23,11 @@ export interface ExcelRaceData {
 export const parseExcelFile = async (
   file: File, 
   raceType: 'montagne' | 'rallye' | 'karting',
-  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'
+  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2',
+  forceDriverRole?: 'pilote' | 'copilote'
 ): Promise<ExcelRaceData[]> => {
   console.log('📊 Début de l\'analyse du fichier Excel...');
+  console.log('🔧 [PARSER] Rôle forcé:', forceDriverRole || 'Auto-détection');
   
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -120,9 +122,10 @@ export const parseExcelFile = async (
             
             const position = parsePosition(row[columnIndices.position]);
             const pilote = parsePilote(row[columnIndices.pilote]);
-            const driverRole = columnIndices.role !== -1 ? 
-              parseDriverRole(row[columnIndices.role]) : 
-              'pilote';
+            const driverRole = forceDriverRole || 
+              (columnIndices.role !== -1 ? 
+                parseDriverRole(row[columnIndices.role]) : 
+                'pilote');
             const carModel = columnIndices.carModel !== -1 ? 
               String(row[columnIndices.carModel] || '').trim() : 
               undefined;

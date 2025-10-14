@@ -8,6 +8,7 @@ import ExcelPreview from '@/components/ExcelPreview';
 import ExcelImportInstructions from '@/components/ExcelImportInstructions';
 import RaceTypeSelector from '@/components/RaceTypeSelector';
 import KartingCategorySelector from '@/components/KartingCategorySelector';
+import DriverRoleSelector from '@/components/DriverRoleSelector';
 import SaveBeforeImportDialog from '@/components/SaveBeforeImportDialog';
 
 
@@ -28,9 +29,11 @@ const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportPr
     success,
     selectedRaceType,
     selectedKartingCategory,
+    selectedDriverRole,
     showSaveDialog,
     setSelectedRaceType,
     setSelectedKartingCategory,
+    setSelectedDriverRole,
     setShowSaveDialog,
     handleFileUpload,
     handleImportClick,
@@ -72,6 +75,12 @@ const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportPr
               selectedType={selectedRaceType}
               onTypeChange={setSelectedRaceType}
             />
+            {(selectedRaceType === 'montagne' || selectedRaceType === 'rallye') && (
+              <DriverRoleSelector
+                selectedRole={selectedDriverRole}
+                onRoleChange={setSelectedDriverRole}
+              />
+            )}
             {selectedRaceType === 'karting' && (
               <KartingCategorySelector
                 selectedCategory={selectedKartingCategory}

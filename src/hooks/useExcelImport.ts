@@ -20,6 +20,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [success, setSuccess] = useState(false);
   const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye' | 'karting'>('montagne');
   const [selectedKartingCategory, setSelectedKartingCategory] = useState<'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2'>('MINI 60');
+  const [selectedDriverRole, setSelectedDriverRole] = useState<'pilote' | 'copilote'>('pilote');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [championshipId, setChampionshipId] = useState<string | undefined>(undefined);
   const { toast } = useToast();
@@ -71,7 +72,8 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       const excelData = await parseExcelFile(
         file, 
         selectedRaceType,
-        selectedRaceType === 'karting' ? selectedKartingCategory : undefined
+        selectedRaceType === 'karting' ? selectedKartingCategory : undefined,
+        selectedDriverRole
       );
       
       console.log('📥 [IMPORT] Données Excel parsées:', excelData.map(r => ({
@@ -217,9 +219,11 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     success,
     selectedRaceType,
     selectedKartingCategory,
+    selectedDriverRole,
     showSaveDialog,
     setSelectedRaceType,
     setSelectedKartingCategory,
+    setSelectedDriverRole,
     setShowSaveDialog,
     handleFileUpload,
     handleImportClick,
