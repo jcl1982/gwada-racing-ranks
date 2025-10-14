@@ -83,10 +83,14 @@ const GeneralStandingsTable = ({
                 </div>
               </th>
               <th className="text-center py-1 px-1 font-semibold">Total</th>
+              <th className="text-center py-1 px-1 font-semibold">Écart</th>
             </tr>
           </thead>
           <tbody>
-            {standings.map((standing, index) => (
+            {standings.map((standing, index) => {
+              const leaderPoints = standings[0]?.totalPoints || 0;
+              const gap = leaderPoints - standing.totalPoints;
+              return (
               <tr
                 key={standing.driver.id}
                 className={`border-b transition-colors hover:bg-blue-50/50 ${index % 2 === 0 ? "bg-white/50" : "bg-white/30"} ${standing.position === 1 ? "champion-row" : ""}`}
@@ -115,8 +119,14 @@ const GeneralStandingsTable = ({
                     {standing.totalPoints} pts
                   </Badge>
                 </td>
+                <td className="py-1 px-1 text-center">
+                  <Badge variant="outline" className={`${gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-gray-50 border-gray-200'}`}>
+                    {gap === 0 ? '—' : `+${gap}`}
+                  </Badge>
+                </td>
               </tr>
-            ))}
+            );
+            })}
           </tbody>
         </table>
       </div>

@@ -16,12 +16,17 @@ export const createGeneralStandingsTable = (
         standing.previousPosition
       );
       
+      const leaderPoints = standings[0]?.totalPoints || 0;
+      const gap = leaderPoints - standing.totalPoints;
+      const gapText = gap === 0 ? '—' : `+${gap}`;
+      
       return [
         standing.position.toString(),
         standing.driver.name,
         `${standing.montagnePoints}`,
         `${standing.rallyePoints}`,
         `${standing.totalPoints}`,
+        gapText,
         evolutionIndicator
       ];
     });
@@ -29,7 +34,7 @@ export const createGeneralStandingsTable = (
   console.log('📄 Données du tableau PDF:', tableData);
   
   autoTable(doc, {
-    head: [['Pos', 'Pilote', 'Montagne', 'Rallye', 'Total', 'Évol.']],
+    head: [['Pos', 'Pilote', 'Montagne', 'Rallye', 'Total', 'Écart', 'Évol.']],
     body: tableData,
     startY: PDF_STYLES.positions.tableStart.y,
     didParseCell: function(data) {
@@ -44,8 +49,8 @@ export const createGeneralStandingsTable = (
           data.cell.styles.fontStyle = 'bold';
         }
         
-        // Colorer la colonne évolution (colonne 5)
-        if (data.column.index === 5) {
+        // Colorer la colonne évolution (colonne 6)
+        if (data.column.index === 6) {
           const evolutionColor = getEvolutionColor(
             standing.positionChange,
             standing.previousPosition
