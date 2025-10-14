@@ -258,6 +258,7 @@ const RallyeMontagneTabs = ({
                 races={rallyeRaces}
                 drivers={drivers.filter(d => d.driverRole === 'copilote')}
                 onRaceUpdate={onRaceUpdate}
+                driverLabel="Copilote"
               />
             </div>
           )}

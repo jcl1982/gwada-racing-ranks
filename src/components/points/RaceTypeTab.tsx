@@ -8,9 +8,10 @@ interface RaceTypeTabProps {
   drivers: Driver[];
   raceType: string;
   onRaceUpdate: (raceId: string, results: any[]) => Promise<void>;
+  driverLabel?: string;
 }
 
-const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate }: RaceTypeTabProps) => {
+const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel }: RaceTypeTabProps) => {
   const typeLabels: Record<string, string> = {
     montagne: "Aucune course de montagne disponible",
     rallye: "Aucune course de rallye disponible",
@@ -37,6 +38,7 @@ const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate }: RaceTypeTabProp
           race={race}
           drivers={drivers}
           onRaceUpdate={onRaceUpdate}
+          driverLabel={driverLabel}
         />
       ))}
     </div>

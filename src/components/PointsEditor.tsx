@@ -7,9 +7,10 @@ interface PointsEditorProps {
   drivers: Driver[];
   races: Race[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
+  driverLabel?: string;
 }
 
-const PointsEditor = ({ drivers, races, onRaceUpdate }: PointsEditorProps) => {
+const PointsEditor = ({ drivers, races, onRaceUpdate, driverLabel }: PointsEditorProps) => {
   return (
     <div className="space-y-6">
       <PointsEditorHeader />
@@ -17,6 +18,7 @@ const PointsEditor = ({ drivers, races, onRaceUpdate }: PointsEditorProps) => {
         drivers={drivers}
         races={races}
         onRaceUpdate={onRaceUpdate}
+        driverLabel={driverLabel}
       />
     </div>
   );

@@ -19,9 +19,10 @@ interface RaceCardProps {
   race: Race;
   drivers: Driver[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
+  driverLabel?: string;
 }
 
-const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
+const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote" }: RaceCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingResults, setEditingResults] = useState<RaceResult[]>([]);
   const { toast } = useToast();
@@ -222,7 +223,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Pilote</TableHead>
+            <TableHead>{driverLabel}</TableHead>
             <TableHead className="text-center">Position</TableHead>
             {isKarting && <TableHead className="text-center">Catégorie</TableHead>}
             {isKarting && <TableHead className="text-center">Bonus</TableHead>}
