@@ -4,6 +4,7 @@ import { parseExcelFile, convertExcelDataToRaces, type ExcelRaceData } from '@/u
 import { Driver, Race } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { convertSupabaseDriver } from '@/hooks/supabase/converters';
 
 // Mapping des types de course vers les types de championnats (colonne 'type')
 const RACE_TYPE_TO_CHAMPIONSHIP_TYPE: Record<string, string> = {
@@ -23,11 +24,12 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
   const [selectedDriverRole, setSelectedDriverRole] = useState<'pilote' | 'copilote'>('pilote');
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [championshipId, setChampionshipId] = useState<string | undefined>(undefined);
+  const [targetChampionshipDrivers, setTargetChampionshipDrivers] = useState<Driver[]>([]);
   const { toast } = useToast();
 
-  // Charger le championshipId approprié basé sur le type de course sélectionné
+  // Charger le championshipId ET les drivers du championnat cible
   useEffect(() => {
-    const loadChampionshipId = async () => {
+    const loadChampionshipData = async () => {
       const championshipType = RACE_TYPE_TO_CHAMPIONSHIP_TYPE[selectedRaceType];
       
       if (!championshipType) {
@@ -35,7 +37,7 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
         return;
       }
 
-      console.log('🔧 [IMPORT] Chargement du championshipId pour le type:', championshipType);
+      console.log('🔧 [IMPORT] Chargement du championnat pour le type:', championshipType);
 
       const { data, error } = await supabase
         .from('championship_config')
@@ -51,12 +53,33 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       if (data) {
         console.log('✅ [IMPORT] ChampionshipId chargé:', data.id, 'pour', data.title, `(type: ${championshipType})`);
         setChampionshipId(data.id);
+        
+        // Charger TOUS les drivers de ce championnat (pilotes ET copilotes)
+        console.log('👥 [IMPORT] Chargement des drivers du championnat:', data.id);
+        const { data: driversData, error: driversError } = await supabase
+          .from('drivers')
+          .select('*')
+          .eq('championship_id', data.id)
+          .order('name');
+        
+        if (driversError) {
+          console.error('❌ [IMPORT] Erreur lors du chargement des drivers:', driversError);
+          return;
+        }
+        
+        const championshipDrivers: Driver[] = driversData?.map(convertSupabaseDriver) || [];
+        console.log('✅ [IMPORT] Drivers chargés:', championshipDrivers.length);
+        console.log('👥 [IMPORT] Répartition:', {
+          pilotes: championshipDrivers.filter(d => d.driverRole === 'pilote').length,
+          copilotes: championshipDrivers.filter(d => d.driverRole === 'copilote').length
+        });
+        setTargetChampionshipDrivers(championshipDrivers);
       } else {
         console.warn('⚠️ [IMPORT] Aucun championnat trouvé pour le type:', championshipType);
       }
     };
 
-    loadChampionshipId();
+    loadChampionshipData();
   }, [selectedRaceType]);
 
   const handleFileUpload = async (file: File) => {
@@ -181,7 +204,8 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
       }
 
       console.log('📦 [IMPORT] Conversion des données Excel avec championshipId:', championshipId);
-      const { races, newDrivers } = convertExcelDataToRaces(previewData, drivers, championshipId);
+      console.log('📦 [IMPORT] Utilisation des drivers du championnat cible:', targetChampionshipDrivers.length);
+      const { races, newDrivers } = convertExcelDataToRaces(previewData, targetChampionshipDrivers, championshipId);
       
       const newDriversCount = newDrivers.length - drivers.length;
       const racesCount = races.length;
