@@ -42,13 +42,13 @@ const ExcelImport = ({ drivers, races, onImport, championshipId }: ExcelImportPr
   } = useExcelImport(drivers, onImport, championshipId);
 
 
-  const handleFileUploadWrapper = (file: File) => {
+  const handleFileUploadWrapper = (files: File[]) => {
     // Reset file input after processing
     const fileInput = document.getElementById('excel-file') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
-    handleFileUpload(file);
+    handleFileUpload(files);
   };
 
   const handleResetForm = () => {

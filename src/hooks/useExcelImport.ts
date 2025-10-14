@@ -87,36 +87,44 @@ export const useExcelImport = (drivers: Driver[], onImport: (races: Race[], newD
     loadChampionshipData();
   }, [selectedRaceType, selectedDriverRole]);
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (files: File[]) => {
     setIsLoading(true);
     setError(null);
     setSuccess(false);
     setPreviewData(null);
 
-    console.log('📤 [IMPORT] handleFileUpload - Type sélectionné:', selectedRaceType);
+    console.log('📤 [IMPORT] handleFileUpload - Nombre de fichiers:', files.length);
+    console.log('📤 [IMPORT] Type sélectionné:', selectedRaceType);
     console.log('📤 [IMPORT] Catégorie karting sélectionnée:', selectedKartingCategory);
 
     try {
-      const excelData = await parseExcelFile(
-        file, 
-        selectedRaceType,
-        selectedRaceType === 'karting' ? selectedKartingCategory : undefined,
-        selectedDriverRole
-      );
+      const allExcelData: ExcelRaceData[] = [];
       
-      console.log('📥 [IMPORT] Données Excel parsées:', excelData.map(r => ({
-        name: r.raceName,
-        type: r.raceType,
-        category: r.kartingCategory
-      })));
+      for (const file of files) {
+        console.log('📄 [IMPORT] Traitement du fichier:', file.name);
+        const excelData = await parseExcelFile(
+          file, 
+          selectedRaceType,
+          selectedRaceType === 'karting' ? selectedKartingCategory : undefined,
+          selectedDriverRole
+        );
+        
+        console.log('📥 [IMPORT] Données Excel parsées depuis', file.name, ':', excelData.map(r => ({
+          name: r.raceName,
+          type: r.raceType,
+          category: r.kartingCategory
+        })));
+        
+        allExcelData.push(...excelData);
+      }
       
-      setPreviewData(excelData);
+      setPreviewData(allExcelData);
       toast({
-        title: "Fichier analysé",
-        description: `${excelData.length} course(s) trouvée(s) dans le fichier Excel.`,
+        title: "Fichiers analysés",
+        description: `${files.length} fichier(s) analysé(s) - ${allExcelData.length} course(s) trouvée(s).`,
       });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la lecture du fichier';
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la lecture des fichiers';
       setError(errorMessage);
       toast({
         variant: "destructive",

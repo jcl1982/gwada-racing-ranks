@@ -4,7 +4,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Upload, AlertCircle, Check } from 'lucide-react';
 
 interface ExcelFileUploadProps {
-  onFileUpload: (file: File) => void;
+  onFileUpload: (files: File[]) => void;
   isLoading: boolean;
   error: string | null;
   success: boolean;
@@ -12,9 +12,9 @@ interface ExcelFileUploadProps {
 
 const ExcelFileUpload = ({ onFileUpload, isLoading, error, success }: ExcelFileUploadProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      onFileUpload(file);
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      onFileUpload(Array.from(files));
     }
   };
 
@@ -22,12 +22,13 @@ const ExcelFileUpload = ({ onFileUpload, isLoading, error, success }: ExcelFileU
     <div className="space-y-4">
       <div className="space-y-2">
         <label htmlFor="excel-file" className="text-sm font-medium">
-          Sélectionner un fichier Excel (.xlsx, .xls)
+          Sélectionner un ou plusieurs fichiers Excel (.xlsx, .xls)
         </label>
         <Input
           id="excel-file"
           type="file"
           accept=".xlsx,.xls"
+          multiple
           onChange={handleFileChange}
           disabled={isLoading}
         />
@@ -37,7 +38,7 @@ const ExcelFileUpload = ({ onFileUpload, isLoading, error, success }: ExcelFileU
         <Alert>
           <Upload className="h-4 w-4" />
           <AlertDescription>
-            Traitement du fichier en cours...
+            Traitement des fichiers en cours...
           </AlertDescription>
         </Alert>
       )}
