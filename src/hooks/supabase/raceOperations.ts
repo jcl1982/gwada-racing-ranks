@@ -37,18 +37,21 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
           } else if (isRallye) {
             // Pour le rallye, détecter le rôle des résultats à importer
             const firstDriverId = race.results[0]?.driverId;
-            const { data: driverData } = await supabase
+            const { data: driverData, error: driverError } = await supabase
               .from('drivers')
               .select('driver_role')
               .eq('id', firstDriverId)
-              .single();
+              .maybeSingle();
             
-            if (driverData?.driver_role) {
+            if (driverError) {
+              console.error('❌ Erreur lors de la récupération du driver_role:', driverError);
+              console.log('🗑️ Suppression de tous les résultats par sécurité...');
+              await deleteExistingResults(raceId);
+            } else if (driverData?.driver_role) {
               console.log(`🗑️ Suppression des résultats des ${driverData.driver_role}s uniquement...`);
               await deleteResultsByDriverRole(raceId, driverData.driver_role);
             } else {
-              console.log('🗑️ Suppression de tous les résultats...');
-              await deleteExistingResults(raceId);
+              console.warn('⚠️ Driver non trouvé, pas de suppression de résultats');
             }
           } else {
             console.log('🗑️ Suppression de tous les résultats...');
@@ -77,18 +80,21 @@ export const createRaceOperations = (toast: ReturnType<typeof useToast>['toast']
             } else if (isRallye) {
               // Pour le rallye, détecter le rôle des résultats à importer
               const firstDriverId = race.results[0]?.driverId;
-              const { data: driverData } = await supabase
+              const { data: driverData, error: driverError } = await supabase
                 .from('drivers')
                 .select('driver_role')
                 .eq('id', firstDriverId)
-                .single();
+                .maybeSingle();
               
-              if (driverData?.driver_role) {
+              if (driverError) {
+                console.error('❌ Erreur lors de la récupération du driver_role:', driverError);
+                console.log('🗑️ Suppression de tous les résultats par sécurité...');
+                await deleteExistingResults(raceId);
+              } else if (driverData?.driver_role) {
                 console.log(`🗑️ Suppression des résultats des ${driverData.driver_role}s uniquement...`);
                 await deleteResultsByDriverRole(raceId, driverData.driver_role);
               } else {
-                console.log('🗑️ Suppression de tous les résultats...');
-                await deleteExistingResults(raceId);
+                console.warn('⚠️ Driver non trouvé, pas de suppression de résultats');
               }
             } else {
               console.log('🗑️ Suppression de tous les résultats...');
