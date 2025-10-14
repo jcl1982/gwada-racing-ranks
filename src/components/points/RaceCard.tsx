@@ -223,8 +223,8 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote" }: RaceC
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{driverLabel}</TableHead>
             <TableHead className="text-center">Position</TableHead>
+            <TableHead>{driverLabel}</TableHead>
             {isKarting && <TableHead className="text-center">Catégorie</TableHead>}
             {isKarting && <TableHead className="text-center">Bonus</TableHead>}
             <TableHead className="text-center">Points</TableHead>

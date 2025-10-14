@@ -34,7 +34,6 @@ const DriverResultRow = ({
 }: DriverResultRowProps) => {
   return (
     <TableRow>
-      <TableCell className="font-medium">{driver.name}</TableCell>
       <TableCell className="text-center">
         {isEditing ? (
           <Input
@@ -48,6 +47,7 @@ const DriverResultRow = ({
           result?.position || '-'
         )}
       </TableCell>
+      <TableCell className="font-medium">{driver.name}</TableCell>
       {showCategory && (
         <TableCell className="text-center">
           {isEditing && onCategoryChange ? (
