@@ -364,14 +364,29 @@ const parsePilote = (value: any): string => {
 };
 
 const parseDriverRole = (value: any): 'pilote' | 'copilote' => {
-  if (value === null || value === undefined) return 'pilote';
+  if (value === null || value === undefined) {
+    console.log('⚠️ [PARSER] Rôle vide/null détecté, utilisation de "pilote" par défaut');
+    return 'pilote';
+  }
   
   const str = String(value).toLowerCase().trim();
+  console.log('🔍 [PARSER] Analyse du rôle:', { original: value, normalized: str });
   
-  if (str.includes('copilote') || str.includes('co-pilote') || str === 'copilote') {
+  // Vérifications plus exhaustives pour détecter "copilote"
+  if (
+    str === 'copilote' || 
+    str === 'co-pilote' || 
+    str === 'co pilote' ||
+    str.includes('copilote') || 
+    str.includes('co-pilote') ||
+    str.includes('copilo') ||
+    str === 'c'  // Au cas où la colonne contient juste "C" pour copilote
+  ) {
+    console.log('✅ [PARSER] Rôle identifié: COPILOTE');
     return 'copilote';
   }
   
+  console.log('✅ [PARSER] Rôle identifié: PILOTE');
   return 'pilote';
 };
 

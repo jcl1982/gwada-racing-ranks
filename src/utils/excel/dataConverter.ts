@@ -90,15 +90,23 @@ export const convertExcelDataToRaces = (
       
       // Chercher d'abord dans les pilotes existants du championnat avec le même rôle
       const targetRole = result.driverRole || 'pilote';
+      console.log(`🔍 [CONVERTER] Recherche du pilote "${driverName}" avec le rôle "${targetRole}"`);
+      
       let driver = existingDrivers.find(d => {
         const existingNormalized = d.name
           .toLowerCase()
           .trim()
           .replace(/\s+/g, ' ')
           .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return existingNormalized === normalizedName && 
+        const matches = existingNormalized === normalizedName && 
                d.championshipId === championshipId &&
                d.driverRole === targetRole;
+        
+        if (existingNormalized === normalizedName && d.championshipId === championshipId) {
+          console.log(`  🔎 Pilote candidat: "${d.name}" (rôle: ${d.driverRole}, recherché: ${targetRole}) - Match: ${matches}`);
+        }
+        
+        return matches;
       });
       
       if (!driver) {
