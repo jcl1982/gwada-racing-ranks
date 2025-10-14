@@ -47,6 +47,9 @@ const StandingsTable = ({
                        type === 'c2r2' ? 'from-orange-600 to-red-600' : 
                        type === 'karting' ? 'from-purple-600 to-pink-600' : 
                        'from-blue-600 to-cyan-600';
+  
+  // Détecter si c'est un classement copilote pour masquer la colonne véhicule
+  const isCopiloteStandings = displayTitle.toLowerCase().includes('copilote');
   const formatDateRange = (startDate: string, endDate?: string) => {
     const start = format(parseLocalDate(startDate), 'dd/MM/yy', {
       locale: fr
@@ -120,7 +123,7 @@ const StandingsTable = ({
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              {type !== 'karting' && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
+              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
               {races.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
                   <div className="text-xs">
                     {race.name}
@@ -152,7 +155,7 @@ const StandingsTable = ({
                       {standing.driver.name}
                     </div>
                   </td>
-                  {type !== 'karting' && (
+                  {type !== 'karting' && !isCopiloteStandings && (
                     <td className="py-1 px-1">
                       <div className="text-sm text-gray-600 unicode-enhanced">
                         {standing.driver.carModel || '-'}
