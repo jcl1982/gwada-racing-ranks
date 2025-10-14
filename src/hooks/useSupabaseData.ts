@@ -147,6 +147,17 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     console.log('✅ Rafraîchissement forcé terminé');
   };
 
+  // Sync initialChampionshipId to local state when it changes
+  useEffect(() => {
+    if (initialChampionshipId !== championshipId) {
+      console.log('🔄 initialChampionshipId changed, updating local state', { 
+        from: championshipId, 
+        to: initialChampionshipId 
+      });
+      setChampionshipId(initialChampionshipId);
+    }
+  }, [initialChampionshipId]);
+
   // Load data on component mount or when championshipId changes
   useEffect(() => {
     console.log('🔄 useSupabaseData - useEffect triggered', { championshipId });
