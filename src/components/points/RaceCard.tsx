@@ -150,8 +150,15 @@ const RaceCard = ({ race, drivers, onRaceUpdate }: RaceCardProps) => {
   const colorClass = race.type === 'montagne' ? 'text-green-600' : 'text-blue-600';
   const isKarting = race.type === 'karting';
 
+  // Filtrer les pilotes selon le type de course
+  // Pour rallye : pilotes + copilotes
+  // Pour les autres : pilotes uniquement
+  const filteredDrivers = race.type === 'rallye' 
+    ? drivers 
+    : drivers.filter(d => d.driverRole === 'pilote');
+
   // Trier les pilotes par position dans la course
-  const sortedDrivers = [...drivers].sort((a, b) => {
+  const sortedDrivers = [...filteredDrivers].sort((a, b) => {
     const resultA = resultsToShow.find(r => r.driverId === a.id);
     const resultB = resultsToShow.find(r => r.driverId === b.id);
     
