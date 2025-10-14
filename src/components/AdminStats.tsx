@@ -84,6 +84,9 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
     acceleration: { icon: Trophy, color: 'text-purple-600', label: 'Accélération' }
   };
   
+  // Ordre fixe des types de courses
+  const raceTypeOrder = ['montagne', 'rallye', 'karting', 'acceleration'];
+  
   const stats = [
     {
       title: 'Total Pilotes',
@@ -97,15 +100,17 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
       icon: Trophy,
       color: 'text-purple-600'
     },
-    ...Object.entries(racesByType).map(([type, count]) => {
-      const config = typeIcons[type] || { icon: Trophy, color: 'text-gray-600', label: type };
-      return {
-        title: config.label,
-        value: count,
-        icon: config.icon,
-        color: config.color
-      };
-    })
+    ...raceTypeOrder
+      .filter(type => racesByType[type] > 0)
+      .map(type => {
+        const config = typeIcons[type];
+        return {
+          title: config.label,
+          value: racesByType[type],
+          icon: config.icon,
+          color: config.color
+        };
+      })
   ];
 
   return (
