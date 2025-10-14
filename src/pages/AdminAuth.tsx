@@ -17,18 +17,16 @@ const AdminAuth = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // CRITICAL: Only redirect after auth is fully loaded (including role)
     if (!authLoading && user) {
+      // Redirect admins immediately to home
       if (isAdmin) {
         navigate('/');
-      } else {
-        toast({
-          title: "Accès refusé",
-          description: "Vous devez être administrateur pour accéder à cette page.",
-          variant: "destructive"
-        });
       }
+      // Don't show error message - users can navigate away naturally
+      // The page will remain visible for non-admins but they won't be redirected
     }
-  }, [user, isAdmin, authLoading, navigate, toast]);
+  }, [user, isAdmin, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
