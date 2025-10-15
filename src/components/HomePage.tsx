@@ -188,7 +188,7 @@ const HomePage = ({
                     <div className="gradient-caribbean w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
                       <Users className="text-white" size={20} />
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">{championship.drivers.length}</p>
+                    <p className="text-2xl font-bold text-gray-800">{championship.drivers.filter(d => d.driverRole === 'pilote').length}</p>
                     <p className="text-sm text-gray-600">Pilotes</p>
                   </div>
                   <div className="text-center">
