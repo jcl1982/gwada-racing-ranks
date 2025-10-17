@@ -104,4 +104,22 @@ All colors MUST be HSL.
   .card-glass {
     @apply bg-white/90 backdrop-blur-sm border border-white/20 shadow-xl;
   }
+
+  /* Masquer les éléments no-print lors de l'export en image */
+  .no-print {
+    @media print {
+      display: none !important;
+    }
+  }
+}
+
+/* Classe pour masquer les éléments lors de la capture html2canvas */
+@media screen {
+  [data-html2canvas-ignore],
+  .no-export {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    visibility: hidden !important;
+  }
 }

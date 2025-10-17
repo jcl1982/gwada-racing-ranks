@@ -25,6 +25,12 @@ export const useImageExport = () => {
         imageTimeout: 15000,
         height: element.scrollHeight,
         width: element.scrollWidth,
+        ignoreElements: (element) => {
+          // Ignorer les éléments avec la classe no-print ou no-export
+          return element.classList?.contains('no-print') || 
+                 element.classList?.contains('no-export') ||
+                 element.hasAttribute('data-html2canvas-ignore');
+        },
       });
 
       // Convertir en image et télécharger
