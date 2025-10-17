@@ -5,6 +5,8 @@ import { Driver, Race } from '@/types/championship';
 import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
+import { useImageExport } from '@/hooks/useImageExport';
+import { useWebPrint } from '@/hooks/useWebPrint';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -33,6 +35,13 @@ const StandingsTable = ({
   standings,
   onPrintPdf
 }: StandingsTableProps) => {
+  const {
+    exportToImage
+  } = useImageExport();
+  const {
+    printWebPage,
+    printWithUnicodeSupport
+  } = useWebPrint();
   const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
                        type === 'r2' ? 'from-orange-600 to-red-600' : 
@@ -75,6 +84,27 @@ const StandingsTable = ({
     const carModel = result.carModel.toLowerCase();
     return carModel.includes('c2') && carModel.includes('r2');
   };
+  const handlePrintImage = () => {
+    console.log('📸 Export image demandé - Classement catégorie:', displayTitle);
+    const filename = displayTitle.toLowerCase().replace(/\s+/g, '-');
+    exportToImage('category-standings-table', `${filename}-2024`, `${displayTitle} - Saison 2024`);
+  };
+  const handlePrintWeb = () => {
+    console.log('🖨️ Impression web demandée - Classement catégorie:', displayTitle);
+    printWebPage('category-standings-table', `${displayTitle} - Saison 2024`);
+  };
+  const handlePrintUnicode = () => {
+    console.log('🔤 Impression Unicode demandée - Classement catégorie:', displayTitle);
+    printWithUnicodeSupport('category-standings-table', `${displayTitle} - Saison 2024 • Classement avec caractères spéciaux ✓`, `
+        .unicode-enhanced {
+          font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
+          text-rendering: optimizeLegibility;
+        }
+        .position-badge {
+          font-variant-numeric: tabular-nums;
+        }
+      `);
+  };
   return <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white relative`}>
         {/* Logo de la ligue (haut gauche) */}
@@ -93,7 +123,7 @@ const StandingsTable = ({
         </div>
         
         <div className="absolute top-6 right-20">
-          <PrintButton onPrintPdf={onPrintPdf} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" adminOnly={true} />
+          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={handlePrintImage} onPrintWeb={handlePrintWeb} onPrintUnicode={handlePrintUnicode} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" adminOnly={true} />
         </div>
       </div>
 
