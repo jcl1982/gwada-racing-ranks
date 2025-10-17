@@ -13,7 +13,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     general: [],
     montagne: [],
     rallye: [],
-    c2r2: []
+    r2: []
   });
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2025');
@@ -45,7 +45,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
         standingsGeneral: appPreviousStandings.general.length,
         standingsMontagne: appPreviousStandings.montagne.length,
         standingsRallye: appPreviousStandings.rallye.length,
-        standingsC2R2: appPreviousStandings.c2r2.length
+        standingsR2: appPreviousStandings.r2.length
       });
 
       // Log détaillé avant mise à jour
@@ -59,7 +59,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
         general: [...appPreviousStandings.general],
         montagne: [...appPreviousStandings.montagne],
         rallye: [...appPreviousStandings.rallye],
-        c2r2: [...appPreviousStandings.c2r2]
+        r2: [...appPreviousStandings.r2]
       });
       setChampionshipTitle(title);
       setChampionshipYear(year);

@@ -15,7 +15,7 @@ const VIEW_TO_CHAMPIONSHIP_TYPE: Record<string, string> = {
   'general': 'rallye-montagne',
   'montagne': 'rallye-montagne',
   'rallye': 'rallye-montagne',
-  'c2r2': 'rallye-montagne',
+  'r2': 'rallye-montagne',
   // 'import' ne devrait pas être lié à un championnat spécifique
   // car l'utilisateur choisit le championnat via le sélecteur de type de course
   

@@ -130,7 +130,7 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
       }
 
       // Sauvegarder tous les types de classements
-      const types: Array<'general' | 'montagne' | 'rallye' | 'c2r2'> = ['general', 'montagne', 'rallye', 'c2r2'];
+      const types: Array<'general' | 'montagne' | 'rallye' | 'r2'> = ['general', 'montagne', 'rallye', 'r2'];
       
       for (const type of types) {
         console.log(`💾 [AUTO-SAVE] Sauvegarde du classement ${type}...`);

@@ -13,7 +13,7 @@ interface CategoryStandingsProps {
   title: string;
   races: Race[];
   drivers: Driver[];
-  type: 'montagne' | 'rallye' | 'c2r2' | 'acceleration' | 'karting';
+  type: 'montagne' | 'rallye' | 'r2' | 'acceleration' | 'karting';
   championshipYear: string;
   championshipId: string;
   previousStandings?: ChampionshipStanding[];
@@ -65,7 +65,7 @@ const CategoryStandings = ({
 
   // Remplacer les titres pour les catégories
   const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : 
-                      type === 'c2r2' ? 'Trophée C2 R2' : 
+                      type === 'r2' ? 'Trophée R2' : 
                       'Trophée des Rallyes';
 
   const handlePrintPdf = () => {

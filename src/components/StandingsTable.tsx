@@ -18,7 +18,7 @@ function parseLocalDate(dateString: string): Date {
 interface StandingsTableProps {
   displayTitle: string;
   races: Race[];
-  type: 'montagne' | 'rallye' | 'c2r2' | 'acceleration' | 'karting';
+  type: 'montagne' | 'rallye' | 'r2' | 'acceleration' | 'karting';
   standings: Array<{
     driver: Driver;
     points: number;
@@ -44,7 +44,7 @@ const StandingsTable = ({
   } = useWebPrint();
   const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
-                       type === 'c2r2' ? 'from-orange-600 to-red-600' : 
+                       type === 'r2' ? 'from-orange-600 to-red-600' : 
                        type === 'karting' ? 'from-purple-600 to-pink-600' : 
                        'from-blue-600 to-cyan-600';
   
@@ -78,8 +78,8 @@ const StandingsTable = ({
   };
 
   // Fonction pour vérifier si les points sont comptabilisés dans le classement C2 R2
-  const isC2R2Valid = (result: any): boolean => {
-    if (type !== 'c2r2') return true;
+  const isR2Valid = (result: any): boolean => {
+    if (type !== 'r2') return true;
     if (!result?.carModel) return false;
     const carModel = result.carModel.toLowerCase();
     return carModel.includes('c2') && carModel.includes('r2');
@@ -175,7 +175,7 @@ const StandingsTable = ({
                   {relevantRaces.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
-                const isValid = isC2R2Valid(result);
+                const isValid = isR2Valid(result);
                 return <td key={race.id} className="py-1 px-1 text-center">
                         {points > 0 ? <Badge variant="outline" className={`text-xs ${!isValid ? 'bg-destructive/10 text-destructive border-destructive/30' : ''}`}>
                             {points} pts

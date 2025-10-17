@@ -45,5 +45,5 @@ export interface ChampionshipStanding {
   previousGeneralPosition?: number;
   previousMontagnePosition?: number;
   previousRallyePosition?: number;
-  previousC2R2Position?: number;
+  previousR2Position?: number;
 }

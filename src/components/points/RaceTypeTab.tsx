@@ -18,7 +18,7 @@ const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel, sele
     rallye: "Aucune course de rallye disponible",
     karting: "Aucune course de karting disponible",
     acceleration: "Aucune course d'accélération disponible",
-    c2r2: "Aucune course C2 R2 disponible"
+    r2: "Aucune course R2 disponible"
   };
 
   const emptyMessage = typeLabels[raceType] || `Aucune course ${raceType} disponible`;

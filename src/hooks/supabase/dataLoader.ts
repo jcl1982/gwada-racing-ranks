@@ -142,7 +142,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
       general: [],
       montagne: [],
       rallye: [],
-      c2r2: []
+      r2: []
     };
 
     if (standingsData && standingsData.length > 0) {
@@ -178,7 +178,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
         general: { count: standingsByType.general.length, latestSave: typeGroups.general?.[0] },
         montagne: { count: standingsByType.montagne.length, latestSave: typeGroups.montagne?.[0] },
         rallye: { count: standingsByType.rallye.length, latestSave: typeGroups.rallye?.[0] },
-        c2r2: { count: standingsByType.c2r2.length, latestSave: typeGroups.c2r2?.[0] }
+        r2: { count: standingsByType.r2.length, latestSave: typeGroups.r2?.[0] }
       });
     }
     

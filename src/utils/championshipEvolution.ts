@@ -3,7 +3,7 @@ import { Driver, ChampionshipStanding } from '@/types/championship';
 /**
  * Type de classement pour identifier quelle position précédente utiliser
  */
-export type StandingType = 'general' | 'montagne' | 'rallye' | 'c2r2';
+export type StandingType = 'general' | 'montagne' | 'rallye' | 'r2';
 
 /**
  * Trie les standings par points décroissants, puis par nom alphabétique
@@ -55,8 +55,8 @@ const getPreviousPosition = (
       return standing.previousMontagnePosition;
     case 'rallye':
       return standing.previousRallyePosition;
-    case 'c2r2':
-      return standing.previousC2R2Position;
+    case 'r2':
+      return standing.previousR2Position;
     default:
       return undefined;
   }
@@ -114,6 +114,6 @@ export const createBaseStanding = (
     previousGeneralPosition: previousStanding?.previousGeneralPosition,
     previousMontagnePosition: previousStanding?.previousMontagnePosition,
     previousRallyePosition: previousStanding?.previousRallyePosition,
-    previousC2R2Position: previousStanding?.previousC2R2Position
+    previousR2Position: previousStanding?.previousR2Position
   };
 };

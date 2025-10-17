@@ -16,7 +16,7 @@ import PodiumSection from '@/components/PodiumSection';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
 
-interface C2R2StandingsProps {
+interface R2StandingsProps {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
@@ -25,18 +25,18 @@ interface C2R2StandingsProps {
   previousStandings?: ChampionshipStanding[];
 }
 
-const C2R2Standings = ({ 
+const R2Standings = ({ 
   drivers, 
   montagneRaces, 
   rallyeRaces, 
   championshipYear,
   championshipId,
   previousStandings 
-}: C2R2StandingsProps) => {
+}: R2StandingsProps) => {
   const { exportCategoryStandings } = usePdfExport();
 
-  // Utiliser le hook centralisé pour calculer les standings C2R2
-  const { c2r2Standings } = useStandingsCalculation({
+  // Utiliser le hook centralisé pour calculer les standings R2
+  const { r2Standings } = useStandingsCalculation({
     drivers,
     montagneRaces,
     rallyeRaces,
@@ -53,46 +53,46 @@ const C2R2Standings = ({
 
   // Convertir ChampionshipStanding au format simplifié
   const formattedStandings = useMemo(() => {
-    return toSimplifiedStandings(c2r2Standings, 'c2r2');
-  }, [c2r2Standings]);
+    return toSimplifiedStandings(r2Standings, 'r2');
+  }, [r2Standings]);
   
-  // Extraire les IDs des pilotes C2R2
-  const c2r2DriverIds = useMemo(() => 
-    c2r2Standings.map(s => s.driver.id),
-    [c2r2Standings]
+  // Extraire les IDs des pilotes R2
+  const r2DriverIds = useMemo(() => 
+    r2Standings.map(s => s.driver.id),
+    [r2Standings]
   );
 
   const handlePrintPdf = () => {
     // Filtrer les pilotes qui ont au moins couru avec une C2 R2
-    const c2r2Drivers = drivers.filter(driver => {
-      const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
+    const r2Drivers = drivers.filter(driver => {
+      const hasR2Profile = driver.carModel?.toLowerCase().includes('c2') && 
                              driver.carModel?.toLowerCase().includes('r2');
-      const hasC2R2Results = allRaces.some(race => 
+      const hasR2Results = allRaces.some(race => 
         race.results.some(result => 
           result.driverId === driver.id && 
           result.carModel?.toLowerCase().includes('c2') && 
           result.carModel?.toLowerCase().includes('r2')
         )
       );
-      return hasC2R2Profile || hasC2R2Results;
+      return hasR2Profile || hasR2Results;
     });
     
     exportCategoryStandings(
-      'Trophée C2 R2',
+      'Trophée R2',
       allRaces,
-      c2r2Drivers,
+      r2Drivers,
       championshipYear,
       formattedStandings
     );
   };
 
-  if (c2r2Standings.length === 0) {
+  if (r2Standings.length === 0) {
     return (
       <div className="space-y-6">
-        <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
-      <RaceCalendar races={allRaces} driverIds={c2r2DriverIds} />
+        <CategoryHeader displayTitle="Trophée R2" championshipYear={championshipYear} />
+      <RaceCalendar races={allRaces} driverIds={r2DriverIds} />
         <div className="bg-card p-8 rounded-lg shadow-sm text-center">
-          <p className="text-muted-foreground">Aucun pilote C2 R2 trouvé</p>
+          <p className="text-muted-foreground">Aucun pilote R2 trouvé</p>
         </div>
       </div>
     );
@@ -100,19 +100,19 @@ const C2R2Standings = ({
 
   return (
     <div className="space-y-6">
-      <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
-      <RaceCalendar races={allRaces} driverIds={c2r2DriverIds} />
+      <CategoryHeader displayTitle="Trophée R2" championshipYear={championshipYear} />
+      <RaceCalendar races={allRaces} driverIds={r2DriverIds} />
       <Alert className="bg-primary/10 border-primary/30 text-primary">
         <Info className="h-4 w-4 text-primary" />
         <AlertDescription className="text-foreground">
-          <strong>Règlement du Trophée C2 R2 :</strong> Seules les courses disputées avec une Citroën C2 R2 sont prises en compte pour ce classement. 
+          <strong>Règlement du Trophée R2 :</strong> Seules les courses disputées avec une Citroën C2 R2 sont prises en compte pour ce classement. 
           Les points marqués avec d'autres véhicules n'entrent pas dans le calcul du trophée.
         </AlertDescription>
       </Alert>
       <StandingsTable 
-        displayTitle="Trophée C2 R2"
+        displayTitle="Trophée R2"
         races={allRaces}
-        type="c2r2"
+        type="r2"
         standings={formattedStandings}
         onPrintPdf={handlePrintPdf}
       />
@@ -121,4 +121,4 @@ const C2R2Standings = ({
   );
 };
 
-export default C2R2Standings;
+export default R2Standings;

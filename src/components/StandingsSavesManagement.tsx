@@ -15,7 +15,7 @@ interface StandingsSave {
   drivers_count: number;
 }
 
-type StandingType = 'general' | 'montagne' | 'rallye' | 'c2r2';
+type StandingType = 'general' | 'montagne' | 'rallye' | 'r2';
 
 interface StandingsSavesManagementProps {
   championshipId?: string;
@@ -123,7 +123,7 @@ const StandingsSavesManagement = ({
       general: 'Général',
       montagne: 'Montagne',
       rallye: 'Rallye',
-      c2r2: 'C2R2'
+      r2: 'R2'
     };
     return labels[type] || type;
   };

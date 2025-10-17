@@ -4,11 +4,11 @@ import {
   calculateChampionshipStandings,
   calculateMontagneStandings,
   calculateRallyeStandings,
-  calculateC2R2Standings,
+  calculateR2Standings,
   calculateCopiloteStandings
 } from '@/utils/championship';
 
-export type StandingsType = 'general' | 'montagne' | 'rallye' | 'c2r2' | 'copilote';
+export type StandingsType = 'general' | 'montagne' | 'rallye' | 'r2' | 'copilote';
 
 interface UseStandingsCalculationParams {
   drivers: Driver[];
@@ -97,15 +97,15 @@ export const useStandingsCalculation = ({
     );
   }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
 
-  // Classement C2 R2
-  const c2r2Standings = useMemo(() => {
-    console.log(`🏎️ [useStandingsCalculation] Calcul C2 R2 pour championnat ${championshipId}:`, {
+  // Classement R2
+  const r2Standings = useMemo(() => {
+    console.log(`🏎️ [useStandingsCalculation] Calcul R2 pour championnat ${championshipId}:`, {
       drivers: championshipDrivers.length,
       montagneRaces: championshipMontagneRaces.length,
       rallyeRaces: championshipRallyeRaces.length
     });
 
-    return calculateC2R2Standings(
+    return calculateR2Standings(
       championshipDrivers,
       championshipMontagneRaces,
       championshipRallyeRaces,
@@ -131,7 +131,7 @@ export const useStandingsCalculation = ({
     generalStandings,
     montagneStandings,
     rallyeStandings,
-    c2r2Standings,
+    r2Standings,
     copiloteStandings
   };
 };

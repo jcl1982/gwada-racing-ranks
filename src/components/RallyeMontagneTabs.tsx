@@ -19,7 +19,7 @@ interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
   montagneStandings: ChampionshipStanding[];
   rallyeStandings: ChampionshipStanding[];
-  c2r2Standings: ChampionshipStanding[];
+  r2Standings: ChampionshipStanding[];
   copiloteStandings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
@@ -34,7 +34,7 @@ const RallyeMontagneTabs = ({
   generalStandings,
   montagneStandings,
   rallyeStandings,
-  c2r2Standings,
+  r2Standings,
   copiloteStandings,
   championshipTitle,
   championshipYear,
@@ -106,10 +106,10 @@ const RallyeMontagneTabs = ({
     exportCategoryStandings("Trophée des Rallyes", rallyeRaces, drivers, championshipYear, simplifiedStandings);
   };
 
-  const handleC2R2PrintPdf = () => {
-    const simplifiedStandings = toSimplifiedStandings(c2r2Standings, "c2r2");
+  const handleR2PrintPdf = () => {
+    const simplifiedStandings = toSimplifiedStandings(r2Standings, "r2");
     const allRaces = [...montagneRaces, ...rallyeRaces];
-    exportCategoryStandings("Trophée C2 R2", allRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings("Trophée R2", allRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleCopiPrintPdf = () => {
@@ -133,7 +133,7 @@ const RallyeMontagneTabs = ({
             <Car className="w-4 h-4" />
             <span className="hidden sm:inline">Rallye</span>
           </TabsTrigger>
-          <TabsTrigger value="c2r2" className="flex items-center gap-2">
+          <TabsTrigger value="r2" className="flex items-center gap-2">
             <Award className="w-4 h-4" />
             <span className="hidden sm:inline">R2</span>
           </TabsTrigger>
@@ -217,18 +217,18 @@ const RallyeMontagneTabs = ({
           )}
         </TabsContent>
 
-        {/* Trophée C2 R2 */}
-        <TabsContent value="c2r2" className="space-y-6">
-          <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
+        {/* Trophée R2 */}
+        <TabsContent value="r2" className="space-y-6">
+          <CategoryHeader displayTitle="Trophée R2" championshipYear={championshipYear} />
           <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} driverIds={piloteIds} />
           <StandingsTable
-            displayTitle="Trophée C2 R2"
+            displayTitle="Trophée R2"
             races={[...montagneRaces, ...rallyeRaces]}
-            type="c2r2"
-            standings={toSimplifiedStandings(c2r2Standings, "c2r2")}
-            onPrintPdf={handleC2R2PrintPdf}
+            type="r2"
+            standings={toSimplifiedStandings(r2Standings, "r2")}
+            onPrintPdf={handleR2PrintPdf}
           />
-          <PodiumSection standings={toSimplifiedStandings(c2r2Standings, "c2r2")} />
+          <PodiumSection standings={toSimplifiedStandings(r2Standings, "r2")} />
         </TabsContent>
 
         {/* Trophée Copilote */}

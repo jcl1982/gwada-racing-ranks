@@ -50,7 +50,7 @@ export const convertSupabaseStanding = (supabaseStanding: any): ChampionshipStan
   previousGeneralPosition: supabaseStanding.general_position,
   previousMontagnePosition: supabaseStanding.montagne_position,
   previousRallyePosition: supabaseStanding.rallye_position,
-  previousC2R2Position: supabaseStanding.c2r2_position
+  previousR2Position: supabaseStanding.r2_position
 });
 
 // Keep the original function names for backward compatibility

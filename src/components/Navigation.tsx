@@ -64,7 +64,7 @@ const Navigation = ({
     return true;
   });
   console.log('📋 Navigation - Visible items:', visibleOtherItems.map(item => item.id));
-  const isRallyeMontagnView = ['general', 'montagne', 'rallye', 'c2r2'].includes(currentView);
+  const isRallyeMontagnView = ['general', 'montagne', 'rallye', 'r2'].includes(currentView);
   const isAccelerationView = ['acceleration', 'admin-acceleration'].includes(currentView);
   const isKartingView = ['karting', 'admin-karting'].includes(currentView);
   const isAdminView = ['admin', 'admin-acceleration', 'admin-karting'].includes(currentView);

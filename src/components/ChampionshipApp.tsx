@@ -77,7 +77,7 @@ const ChampionshipApp = () => {
           refreshData={refreshData}
           montagneStandings={standingsCalculation.montagneStandings}
           rallyeStandings={standingsCalculation.rallyeStandings}
-          c2r2Standings={standingsCalculation.c2r2Standings}
+          r2Standings={standingsCalculation.r2Standings}
           copiloteStandings={standingsCalculation.copiloteStandings}
         />
       </div>

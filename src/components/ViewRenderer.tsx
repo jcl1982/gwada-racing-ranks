@@ -2,7 +2,7 @@
 import HomePage from '@/components/HomePage';
 import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
-import C2R2Standings from '@/components/C2R2Standings';
+import R2Standings from '@/components/R2Standings';
 import KartingStandings from '@/components/KartingStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
@@ -39,7 +39,7 @@ interface ViewRendererProps {
   // Ajout des standings par catégorie
   montagneStandings?: ChampionshipStanding[];
   rallyeStandings?: ChampionshipStanding[];
-  c2r2Standings?: ChampionshipStanding[];
+  r2Standings?: ChampionshipStanding[];
   copiloteStandings?: ChampionshipStanding[];
 }
 
@@ -69,7 +69,7 @@ const ViewRenderer = ({
   refreshData,
   montagneStandings = [],
   rallyeStandings = [],
-  c2r2Standings = [],
+  r2Standings = [],
   copiloteStandings = []
 }: ViewRendererProps) => {
   switch (currentView) {
@@ -83,14 +83,14 @@ const ViewRenderer = ({
     case 'general':
     case 'montagne':
     case 'rallye':
-    case 'c2r2':
+    case 'r2':
       // Utiliser RallyeMontagneTabs pour toutes les vues Rallye-Montagne
       return (
         <RallyeMontagneTabs
           generalStandings={standings}
           montagneStandings={montagneStandings}
           rallyeStandings={rallyeStandings}
-          c2r2Standings={c2r2Standings}
+          r2Standings={r2Standings}
           copiloteStandings={copiloteStandings}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
