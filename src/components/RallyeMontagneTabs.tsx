@@ -9,8 +9,6 @@ import RaceCalendar from "@/components/RaceCalendar";
 import StandingsTable from "@/components/StandingsTable";
 import PodiumSection from "@/components/PodiumSection";
 import { usePdfExport } from "@/hooks/usePdfExport";
-import { useImageExport } from "@/hooks/useImageExport";
-import { useWebPrint } from "@/hooks/useWebPrint";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -45,8 +43,6 @@ const RallyeMontagneTabs = ({
   onRaceUpdate,
 }: RallyeMontagneTabsProps) => {
   const { exportGeneralStandings, exportCategoryStandings } = usePdfExport();
-  const { exportToImage } = useImageExport();
-  const { printWebPage, printWithUnicodeSupport } = useWebPrint();
   const { isAdmin } = useUserRole();
 
   // Séparer les pilotes et copilotes
@@ -62,36 +58,6 @@ const RallyeMontagneTabs = ({
       championshipTitle,
       "Classement Général Provisoire de la LSAG",
       championshipYear,
-    );
-  };
-
-  const handleGeneralPrintImage = () => {
-    exportToImage(
-      "general-standings-table",
-      `classement-general-provisoire-${championshipYear}`,
-      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`,
-    );
-  };
-
-  const handleGeneralPrintWeb = () => {
-    printWebPage("general-standings-table", `${championshipTitle} - Classement Général Provisoire ${championshipYear}`);
-  };
-
-  const handleGeneralPrintUnicode = () => {
-    printWithUnicodeSupport(
-      "general-standings-table",
-      `${championshipTitle} • Classement Général Provisoire ${championshipYear} ★`,
-      `
-        .unicode-enhanced {
-          font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
-          text-rendering: optimizeLegibility;
-        }
-        .champion-row {
-          background: linear-gradient(135deg, #ffd700, #ffed4e);
-          color: #1a1a1a;
-          font-weight: 700;
-        }
-      `,
     );
   };
 
@@ -151,9 +117,6 @@ const RallyeMontagneTabs = ({
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
             onPrintPdf={handleGeneralPrintPdf}
-            onPrintImage={handleGeneralPrintImage}
-            onPrintWeb={handleGeneralPrintWeb}
-            onPrintUnicode={handleGeneralPrintUnicode}
           />
           <GeneralStandingsStats standings={generalStandings} />
 
