@@ -1,19 +1,19 @@
-import { ChampionshipStanding, Race, Driver } from '@/types/championship';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trophy, Mountain, Car, Award, Users } from 'lucide-react';
-import GeneralStandingsHeader from '@/components/GeneralStandingsHeader';
-import GeneralStandingsTable from '@/components/GeneralStandingsTable';
-import GeneralStandingsStats from '@/components/GeneralStandingsStats';
-import CategoryHeader from '@/components/CategoryHeader';
-import RaceCalendar from '@/components/RaceCalendar';
-import StandingsTable from '@/components/StandingsTable';
-import PodiumSection from '@/components/PodiumSection';
-import { usePdfExport } from '@/hooks/usePdfExport';
-import { useImageExport } from '@/hooks/useImageExport';
-import { useWebPrint } from '@/hooks/useWebPrint';
-import { toSimplifiedStandings } from '@/utils/standingsConverter';
-import PointsEditor from '@/components/PointsEditor';
-import { useUserRole } from '@/hooks/useUserRole';
+import { ChampionshipStanding, Race, Driver } from "@/types/championship";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Trophy, Mountain, Car, Award, Users } from "lucide-react";
+import GeneralStandingsHeader from "@/components/GeneralStandingsHeader";
+import GeneralStandingsTable from "@/components/GeneralStandingsTable";
+import GeneralStandingsStats from "@/components/GeneralStandingsStats";
+import CategoryHeader from "@/components/CategoryHeader";
+import RaceCalendar from "@/components/RaceCalendar";
+import StandingsTable from "@/components/StandingsTable";
+import PodiumSection from "@/components/PodiumSection";
+import { usePdfExport } from "@/hooks/usePdfExport";
+import { useImageExport } from "@/hooks/useImageExport";
+import { useWebPrint } from "@/hooks/useWebPrint";
+import { toSimplifiedStandings } from "@/utils/standingsConverter";
+import PointsEditor from "@/components/PointsEditor";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
@@ -42,42 +42,44 @@ const RallyeMontagneTabs = ({
   montagneRaces,
   rallyeRaces,
   drivers,
-  onRaceUpdate
+  onRaceUpdate,
 }: RallyeMontagneTabsProps) => {
   const { exportGeneralStandings, exportCategoryStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
   const { isAdmin } = useUserRole();
-  
+
   // Séparer les pilotes et copilotes
-  const pilotes = drivers.filter(d => d.driverRole === 'pilote');
-  const copilotes = drivers.filter(d => d.driverRole === 'copilote');
-  const piloteIds = pilotes.map(d => d.id);
-  const copiloteIds = copilotes.map(d => d.id);
+  const pilotes = drivers.filter((d) => d.driverRole === "pilote");
+  const copilotes = drivers.filter((d) => d.driverRole === "copilote");
+  const piloteIds = pilotes.map((d) => d.id);
+  const copiloteIds = copilotes.map((d) => d.id);
 
   // Handlers pour le classement général
   const handleGeneralPrintPdf = () => {
-    exportGeneralStandings(generalStandings, championshipTitle, "Classement Général Provisoire de la LSAG", championshipYear);
+    exportGeneralStandings(
+      generalStandings,
+      championshipTitle,
+      "Classement Général Provisoire de la LSAG",
+      championshipYear,
+    );
   };
 
   const handleGeneralPrintImage = () => {
     exportToImage(
-      'general-standings-table',
+      "general-standings-table",
       `classement-general-provisoire-${championshipYear}`,
-      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`
+      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`,
     );
   };
 
   const handleGeneralPrintWeb = () => {
-    printWebPage(
-      'general-standings-table',
-      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`
-    );
+    printWebPage("general-standings-table", `${championshipTitle} - Classement Général Provisoire ${championshipYear}`);
   };
 
   const handleGeneralPrintUnicode = () => {
     printWithUnicodeSupport(
-      'general-standings-table',
+      "general-standings-table",
       `${championshipTitle} • Classement Général Provisoire ${championshipYear} ★`,
       `
         .unicode-enhanced {
@@ -89,30 +91,30 @@ const RallyeMontagneTabs = ({
           color: #1a1a1a;
           font-weight: 700;
         }
-      `
+      `,
     );
   };
 
   // Handlers pour les catégories
   const handleMontagnePrintPdf = () => {
-    const simplifiedStandings = toSimplifiedStandings(montagneStandings, 'montagne');
-    exportCategoryStandings('Trophée de la Montagne', montagneRaces, drivers, championshipYear, simplifiedStandings);
+    const simplifiedStandings = toSimplifiedStandings(montagneStandings, "montagne");
+    exportCategoryStandings("Trophée de la Montagne", montagneRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleRallyePrintPdf = () => {
-    const simplifiedStandings = toSimplifiedStandings(rallyeStandings, 'rallye');
-    exportCategoryStandings('Trophée des Rallyes', rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    const simplifiedStandings = toSimplifiedStandings(rallyeStandings, "rallye");
+    exportCategoryStandings("Trophée des Rallyes", rallyeRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleC2R2PrintPdf = () => {
-    const simplifiedStandings = toSimplifiedStandings(c2r2Standings, 'c2r2');
+    const simplifiedStandings = toSimplifiedStandings(c2r2Standings, "c2r2");
     const allRaces = [...montagneRaces, ...rallyeRaces];
-    exportCategoryStandings('Trophée C2 R2', allRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings("Trophée C2 R2", allRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleCopiPrintPdf = () => {
-    const simplifiedStandings = toSimplifiedStandings(copiloteStandings, 'copilote');
-    exportCategoryStandings('Trophée Copilote', rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    const simplifiedStandings = toSimplifiedStandings(copiloteStandings, "copilote");
+    exportCategoryStandings("Trophée Copilote", rallyeRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   return (
@@ -133,7 +135,7 @@ const RallyeMontagneTabs = ({
           </TabsTrigger>
           <TabsTrigger value="c2r2" className="flex items-center gap-2">
             <Award className="w-4 h-4" />
-            <span className="hidden sm:inline">C2 R2</span>
+            <span className="hidden sm:inline">R2</span>
           </TabsTrigger>
           <TabsTrigger value="copilote" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
@@ -143,10 +145,7 @@ const RallyeMontagneTabs = ({
 
         {/* Classement Général */}
         <TabsContent value="general" className="space-y-6">
-          <GeneralStandingsHeader 
-            championshipTitle={championshipTitle}
-            championshipYear={championshipYear}
-          />
+          <GeneralStandingsHeader championshipTitle={championshipTitle} championshipYear={championshipYear} />
           <GeneralStandingsTable
             standings={generalStandings}
             championshipTitle={championshipTitle}
@@ -157,7 +156,7 @@ const RallyeMontagneTabs = ({
             onPrintUnicode={handleGeneralPrintUnicode}
           />
           <GeneralStandingsStats standings={generalStandings} />
-          
+
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course</h2>
@@ -173,20 +172,17 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée de la Montagne */}
         <TabsContent value="montagne" className="space-y-6">
-          <CategoryHeader 
-            displayTitle="Trophée de la Montagne" 
-            championshipYear={championshipYear} 
-          />
+          <CategoryHeader displayTitle="Trophée de la Montagne" championshipYear={championshipYear} />
           <RaceCalendar races={montagneRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée de la Montagne"
             races={montagneRaces}
             type="montagne"
-            standings={toSimplifiedStandings(montagneStandings, 'montagne')}
+            standings={toSimplifiedStandings(montagneStandings, "montagne")}
             onPrintPdf={handleMontagnePrintPdf}
           />
-          <PodiumSection standings={toSimplifiedStandings(montagneStandings, 'montagne')} />
-          
+          <PodiumSection standings={toSimplifiedStandings(montagneStandings, "montagne")} />
+
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course Montagne</h2>
@@ -202,72 +198,58 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée des Rallyes */}
         <TabsContent value="rallye" className="space-y-6">
-          <CategoryHeader 
-            displayTitle="Trophée des Rallyes" 
-            championshipYear={championshipYear} 
-          />
+          <CategoryHeader displayTitle="Trophée des Rallyes" championshipYear={championshipYear} />
           <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée des Rallyes"
             races={rallyeRaces}
             type="rallye"
-            standings={toSimplifiedStandings(rallyeStandings, 'rallye')}
+            standings={toSimplifiedStandings(rallyeStandings, "rallye")}
             onPrintPdf={handleRallyePrintPdf}
           />
-          <PodiumSection standings={toSimplifiedStandings(rallyeStandings, 'rallye')} />
-          
+          <PodiumSection standings={toSimplifiedStandings(rallyeStandings, "rallye")} />
+
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course Rallye</h2>
-              <PointsEditor
-                races={rallyeRaces}
-                drivers={drivers}
-                onRaceUpdate={onRaceUpdate}
-                showRoleSelector={true}
-              />
+              <PointsEditor races={rallyeRaces} drivers={drivers} onRaceUpdate={onRaceUpdate} showRoleSelector={true} />
             </div>
           )}
         </TabsContent>
 
         {/* Trophée C2 R2 */}
         <TabsContent value="c2r2" className="space-y-6">
-          <CategoryHeader 
-            displayTitle="Trophée C2 R2" 
-            championshipYear={championshipYear} 
-          />
+          <CategoryHeader displayTitle="Trophée C2 R2" championshipYear={championshipYear} />
           <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} driverIds={piloteIds} />
           <StandingsTable
             displayTitle="Trophée C2 R2"
             races={[...montagneRaces, ...rallyeRaces]}
             type="c2r2"
-            standings={toSimplifiedStandings(c2r2Standings, 'c2r2')}
+            standings={toSimplifiedStandings(c2r2Standings, "c2r2")}
             onPrintPdf={handleC2R2PrintPdf}
           />
-          <PodiumSection standings={toSimplifiedStandings(c2r2Standings, 'c2r2')} />
+          <PodiumSection standings={toSimplifiedStandings(c2r2Standings, "c2r2")} />
         </TabsContent>
 
         {/* Trophée Copilote */}
         <TabsContent value="copilote" className="space-y-6">
-          <CategoryHeader 
-            displayTitle="Trophée Copilote" 
-            championshipYear={championshipYear} 
-          />
+          <CategoryHeader displayTitle="Trophée Copilote" championshipYear={championshipYear} />
           <RaceCalendar races={rallyeRaces} driverIds={copiloteIds} />
           <StandingsTable
             displayTitle="Trophée Copilote"
             races={rallyeRaces}
             type="rallye"
-            standings={toSimplifiedStandings(copiloteStandings, 'copilote')}
+            standings={toSimplifiedStandings(copiloteStandings, "copilote")}
             onPrintPdf={handleCopiPrintPdf}
           />
-          <PodiumSection standings={toSimplifiedStandings(copiloteStandings, 'copilote')} />
-          
+          <PodiumSection standings={toSimplifiedStandings(copiloteStandings, "copilote")} />
+
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
               <h2 className="text-xl font-bold mb-4">Résultats par Course Copilote</h2>
               <PointsEditor
                 races={rallyeRaces}
-                drivers={drivers.filter(d => d.driverRole === 'copilote')}
+                drivers={drivers.filter((d) => d.driverRole === "copilote")}
                 onRaceUpdate={onRaceUpdate}
                 showRoleSelector={false}
                 defaultRole="copilote"
