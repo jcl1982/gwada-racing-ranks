@@ -11,6 +11,7 @@ import PodiumSection from "@/components/PodiumSection";
 import { usePdfExport } from "@/hooks/usePdfExport";
 import { useImageExport } from "@/hooks/useImageExport";
 import { useWebPrint } from "@/hooks/useWebPrint";
+import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -47,6 +48,7 @@ const RallyeMontagneTabs = ({
   const { exportGeneralStandings, exportCategoryStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
+  const { exportGeneralToExcel, exportCategoryToExcel } = useExcelExport();
   const { isAdmin } = useUserRole();
 
   // Séparer les pilotes et copilotes
@@ -95,6 +97,10 @@ const RallyeMontagneTabs = ({
     );
   };
 
+  const handleGeneralExportExcel = () => {
+    exportGeneralToExcel(generalStandings, championshipTitle, championshipYear);
+  };
+
   // Handlers pour les catégories
   const handleMontagnePrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(montagneStandings, "montagne");
@@ -115,6 +121,28 @@ const RallyeMontagneTabs = ({
   const handleCopiPrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(copiloteStandings, "copilote");
     exportCategoryStandings("Trophée Copilote", rallyeRaces, drivers, championshipYear, simplifiedStandings);
+  };
+
+  // Handlers Excel pour les catégories
+  const handleMontagneExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(montagneStandings, "montagne");
+    exportCategoryToExcel(simplifiedStandings, montagneRaces, "Trophée de la Montagne", "montagne");
+  };
+
+  const handleRallyeExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(rallyeStandings, "rallye");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, "Trophée des Rallyes", "rallye");
+  };
+
+  const handleR2ExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(r2Standings, "r2");
+    const allRaces = [...montagneRaces, ...rallyeRaces];
+    exportCategoryToExcel(simplifiedStandings, allRaces, "Trophée R2", "r2");
+  };
+
+  const handleCopiExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(copiloteStandings, "copilote");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, "Trophée Copilote", "rallye");
   };
 
   return (
@@ -154,6 +182,7 @@ const RallyeMontagneTabs = ({
             onPrintImage={handleGeneralPrintImage}
             onPrintWeb={handleGeneralPrintWeb}
             onPrintUnicode={handleGeneralPrintUnicode}
+            onPrintExcel={handleGeneralExportExcel}
           />
           <GeneralStandingsStats standings={generalStandings} />
 

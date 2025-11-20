@@ -13,6 +13,7 @@ interface GeneralStandingsTableProps {
   onPrintImage: () => void;
   onPrintWeb: () => void;
   onPrintUnicode: () => void;
+  onPrintExcel: () => void;
 }
 const GeneralStandingsTable = ({
   standings,
@@ -22,6 +23,7 @@ const GeneralStandingsTable = ({
   onPrintImage,
   onPrintWeb,
   onPrintUnicode,
+  onPrintExcel,
 }: GeneralStandingsTableProps) => {
   return (
     <Card className="card-glass overflow-hidden" id="general-standings-table">
@@ -55,6 +57,7 @@ const GeneralStandingsTable = ({
             onPrintImage={onPrintImage}
             onPrintWeb={onPrintWeb}
             onPrintUnicode={onPrintUnicode}
+            onPrintExcel={onPrintExcel}
             variant="outline"
             className="bg-white/20 hover:bg-white/30 border-white/30 no-print"
             adminOnly={true}
