@@ -342,10 +342,9 @@ export type Database = {
         Args: { p_championship_id: string }
         Returns: undefined
       }
-      delete_all_drivers: {
-        Args: Record<PropertyKey, never> | { p_championship_id: string }
-        Returns: undefined
-      }
+      delete_all_drivers:
+        | { Args: never; Returns: undefined }
+        | { Args: { p_championship_id: string }; Returns: undefined }
       delete_standings_save_by_type: {
         Args: {
           p_championship_id: string
@@ -373,20 +372,21 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
-      has_role: {
-        Args:
-          | { _role: Database["public"]["Enums"]["app_role"]; _user_id: string }
-          | { role_name: string }
-        Returns: boolean
-      }
-      reset_drivers_evolution: {
-        Args: Record<PropertyKey, never> | { p_championship_id?: string }
-        Returns: undefined
-      }
-      restore_previous_standings: {
-        Args: Record<PropertyKey, never> | { p_championship_id?: string }
-        Returns: undefined
-      }
+      has_role:
+        | { Args: { role_name: string }; Returns: boolean }
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["app_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+      reset_drivers_evolution:
+        | { Args: { p_championship_id?: string }; Returns: undefined }
+        | { Args: never; Returns: undefined }
+      restore_previous_standings:
+        | { Args: never; Returns: undefined }
+        | { Args: { p_championship_id?: string }; Returns: undefined }
       restore_standings_by_type: {
         Args: {
           p_championship_id: string
@@ -395,10 +395,9 @@ export type Database = {
         }
         Returns: undefined
       }
-      save_current_standings_as_previous: {
-        Args: Record<PropertyKey, never> | { p_championship_id?: string }
-        Returns: undefined
-      }
+      save_current_standings_as_previous:
+        | { Args: { p_championship_id?: string }; Returns: undefined }
+        | { Args: never; Returns: undefined }
       save_standings_by_type: {
         Args: {
           p_championship_id: string

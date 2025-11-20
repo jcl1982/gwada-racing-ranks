@@ -3,6 +3,7 @@ import { ChampionshipStanding } from '@/types/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
+import { useExcelExport } from '@/hooks/useExcelExport';
 import GeneralStandingsHeader from '@/components/GeneralStandingsHeader';
 import GeneralStandingsTable from '@/components/GeneralStandingsTable';
 import GeneralStandingsStats from '@/components/GeneralStandingsStats';
@@ -17,6 +18,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
   const { exportGeneralStandings } = usePdfExport();
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
+  const { exportGeneralToExcel } = useExcelExport();
 
   console.log('🔍 [GeneralStandings] Données reçues:', {
     standings: standings.length,
@@ -79,6 +81,11 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     );
   };
 
+  const handleExportExcel = () => {
+    console.log('📊 Export Excel demandé - Classement général provisoire');
+    exportGeneralToExcel(sortedStandings, championshipTitle, championshipYear);
+  };
+
   return (
     <div className="space-y-6">
       <GeneralStandingsHeader 
@@ -94,6 +101,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
         onPrintImage={handlePrintImage}
         onPrintWeb={handlePrintWeb}
         onPrintUnicode={handlePrintUnicode}
+        onPrintExcel={handleExportExcel}
       />
 
       <GeneralStandingsStats standings={sortedStandings} />

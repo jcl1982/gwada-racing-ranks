@@ -7,6 +7,7 @@ import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
+import { useExcelExport } from '@/hooks/useExcelExport';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -42,6 +43,7 @@ const StandingsTable = ({
     printWebPage,
     printWithUnicodeSupport
   } = useWebPrint();
+  const { exportCategoryToExcel } = useExcelExport();
   const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
   const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
                        type === 'r2' ? 'from-orange-600 to-red-600' : 
@@ -105,6 +107,11 @@ const StandingsTable = ({
         }
       `);
   };
+
+  const handleExportExcel = () => {
+    console.log('📊 Export Excel demandé - Classement catégorie:', displayTitle);
+    exportCategoryToExcel(standings, races, displayTitle, type);
+  };
   return <Card className="card-glass overflow-hidden" id="category-standings-table">
       <div className={`bg-gradient-to-r ${gradientClass} p-6 text-white relative`}>
         {/* Logo de la ligue (haut gauche) */}
@@ -123,7 +130,7 @@ const StandingsTable = ({
         </div>
         
         <div className="absolute top-6 right-20">
-          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={handlePrintImage} onPrintWeb={handlePrintWeb} onPrintUnicode={handlePrintUnicode} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" adminOnly={true} />
+          <PrintButton onPrintPdf={onPrintPdf} onPrintImage={handlePrintImage} onPrintWeb={handlePrintWeb} onPrintUnicode={handlePrintUnicode} onPrintExcel={handleExportExcel} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print" adminOnly={true} />
         </div>
       </div>
 
