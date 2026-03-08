@@ -162,6 +162,38 @@ const ChampionshipSettings = ({
         </div>
       </Card>
 
+      {/* Mise à jour globale de l'année */}
+      <Card className="p-6 border-primary/20">
+        <div className="flex items-center gap-2 mb-4">
+          <RefreshCw className="text-primary" size={20} />
+          <h3 className="text-lg font-semibold">Mise à jour globale</h3>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4">
+          Mettre à jour l'année de <strong>tous les championnats</strong> en un seul clic (Rallye-Montagne, Accélération, Karting...).
+        </p>
+        <div className="flex items-end gap-3">
+          <div className="flex-1 max-w-xs">
+            <Label htmlFor="bulk-year">Nouvelle année pour tous</Label>
+            <Input
+              id="bulk-year"
+              type="text"
+              value={bulkYear}
+              onChange={(e) => setBulkYear(e.target.value)}
+              placeholder={`Ex: de Guadeloupe ${new Date().getFullYear()}`}
+              className="mt-1"
+            />
+          </div>
+          <Button
+            onClick={handleUpdateAllYears}
+            disabled={updatingAll}
+            variant="default"
+          >
+            {updatingAll ? <RefreshCw size={16} className="mr-2 animate-spin" /> : <RefreshCw size={16} className="mr-2" />}
+            Appliquer à tous les championnats
+          </Button>
+        </div>
+      </Card>
+
       {onStandingsTitlesChange && (
         <>
           {/* Titres des classements */}
