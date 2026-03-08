@@ -7,6 +7,7 @@ import KartingStandings from '@/components/KartingStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
+import AdminHub from '@/components/AdminHub';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
 import AdminAccessDenied from '@/components/AdminAccessDenied';
 import SeasonArchivesViewer from '@/components/SeasonArchivesViewer';

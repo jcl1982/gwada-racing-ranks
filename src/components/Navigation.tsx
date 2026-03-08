@@ -34,18 +34,10 @@ const Navigation = ({
     requiresAuth: false
   }];
 
-  // Filter nav items based on authentication and role
+  // Filter nav items based on authentication
   const visibleOtherItems = otherNavItems.filter(item => {
-    console.log(`🔍 Navigation - Item: ${item.id}`, {
-      requiresAuth: item.requiresAuth,
-      adminOnly: item.adminOnly,
-      isAuthenticated,
-      isAdmin,
-      willShow: !item.requiresAuth || isAuthenticated && (!item.adminOnly || isAdmin)
-    });
     if (!item.requiresAuth) return true;
     if (!isAuthenticated) return false;
-    if (item.adminOnly && !isAdmin) return false;
     return true;
   });
   console.log('📋 Navigation - Visible items:', visibleOtherItems.map(item => item.id));
