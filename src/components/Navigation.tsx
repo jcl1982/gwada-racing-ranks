@@ -107,6 +107,11 @@ const Navigation = ({
             <span className="sm:hidden">Karting</span>
           </button>
 
+          {/* Separator before admin */}
+          {isAuthenticated && isAdmin && (
+            <div className="hidden sm:block h-8 w-px bg-border mx-2" />
+          )}
+
           {/* Administration accordion menu */}
           {isAuthenticated && isAdmin && (
             <Accordion type="single" collapsible className="w-full sm:w-auto">
