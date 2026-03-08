@@ -3,7 +3,6 @@ import { Trophy, Home, Upload, Settings, Zap, Circle, Archive } from 'lucide-rea
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 interface NavigationProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
