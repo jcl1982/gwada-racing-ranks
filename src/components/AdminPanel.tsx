@@ -6,6 +6,7 @@ import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/champion
 import AdminHeader from './admin/AdminHeader';
 import AdminTabsList from './admin/AdminTabsList';
 import AdminTabsContent from './admin/AdminTabsContent';
+import { StandingsTitles } from '@/hooks/useChampionshipConfig';
 
 interface AdminPanelProps {
   drivers: Driver[];
@@ -17,10 +18,12 @@ interface AdminPanelProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
+  standingsTitles?: StandingsTitles;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onReset: () => void;
   onTitleChange: (title: string, year: string) => void;
+  onStandingsTitlesChange?: (titles: Record<string, string>) => Promise<void>;
   saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
   deleteDriver: (driverId: string) => Promise<void>;
   deleteAllDrivers: () => Promise<void>;
@@ -39,10 +42,12 @@ const AdminPanel = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  standingsTitles,
   onDriversChange,
   onRacesChange,
   onReset,
   onTitleChange,
+  onStandingsTitlesChange,
   saveDriver,
   deleteDriver,
   deleteAllDrivers,
@@ -53,7 +58,6 @@ const AdminPanel = ({
   const [activeTab, setActiveTab] = useState('drivers');
 
   const handleRaceUpdate = async (raceId: string, results: RaceResult[]) => {
-    // Trouver la course à mettre à jour
     const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
     const raceToUpdate = allRaces.find(race => race.id === raceId);
     
@@ -61,13 +65,11 @@ const AdminPanel = ({
       throw new Error('Course introuvable');
     }
 
-    // Créer une nouvelle course avec les résultats mis à jour
     const updatedRace: Race = {
       ...raceToUpdate,
       results
     };
 
-    // Sauvegarder la course mise à jour
     await saveRace(updatedRace);
   };
 
@@ -89,9 +91,11 @@ const AdminPanel = ({
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
             championshipId={championshipId}
+            standingsTitles={standingsTitles}
             onDriversChange={onDriversChange}
             onRacesChange={onRacesChange}
             onTitleChange={onTitleChange}
+            onStandingsTitlesChange={onStandingsTitlesChange}
             saveDriver={saveDriver}
             deleteDriver={deleteDriver}
             deleteAllDrivers={deleteAllDrivers}

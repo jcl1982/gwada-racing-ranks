@@ -35,6 +35,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     saveRace,
     deleteRace,
     updateChampionshipConfig,
+    updateStandingsTitles,
     resetAllData,
     refreshData,
     autoSaveStandingsForEvolution
@@ -87,6 +88,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     championshipTitle: championshipConfig?.title || championshipTitle,
     championshipYear: championshipConfig?.year || championshipYear,
     championshipId: championshipConfig?.id || championshipId,
+    standingsTitles: championshipConfig?.standingsTitles,
     loading: configLoading || dataLoading,
     handleImport,
     handleReset,
@@ -101,6 +103,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     deleteRace,
     refreshData,
     resetAllData,
+    updateStandingsTitles,
     // Exposer tous les classements calculés pour un accès direct
     standingsCalculation
   };

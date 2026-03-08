@@ -4,22 +4,36 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Settings, Save } from 'lucide-react';
+import { Settings, Save, Type } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
 
 interface ChampionshipSettingsProps {
   championshipTitle: string;
   championshipYear: string;
+  standingsTitles?: StandingsTitles;
   onTitleChange: (title: string, year: string) => void;
+  onStandingsTitlesChange?: (titles: StandingsTitles) => void;
 }
+
+const TITLE_LABELS: Record<string, string> = {
+  general: 'Classement Général',
+  montagne: 'Trophée Montagne',
+  rallye: 'Trophée Rallye',
+  r2: 'Trophée R2',
+  copilote: 'Trophée Copilote',
+};
 
 const ChampionshipSettings = ({ 
   championshipTitle, 
-  championshipYear, 
-  onTitleChange 
+  championshipYear,
+  standingsTitles,
+  onTitleChange,
+  onStandingsTitlesChange,
 }: ChampionshipSettingsProps) => {
   const [title, setTitle] = useState(championshipTitle);
   const [year, setYear] = useState(championshipYear);
+  const [titles, setTitles] = useState<StandingsTitles>(standingsTitles || DEFAULT_STANDINGS_TITLES);
   const { toast } = useToast();
 
   const handleSave = () => {
@@ -39,10 +53,20 @@ const ChampionshipSettings = ({
     });
   };
 
+  const handleSaveTitles = () => {
+    if (onStandingsTitlesChange) {
+      onStandingsTitlesChange(titles);
+    }
+  };
+
+  const handleTitleFieldChange = (key: string, value: string) => {
+    setTitles(prev => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Settings className="text-blue-600" size={24} />
+        <Settings className="text-primary" size={24} />
         <h2 className="text-xl font-semibold">Paramètres du Championnat</h2>
       </div>
 
@@ -82,13 +106,48 @@ const ChampionshipSettings = ({
         </div>
       </Card>
 
+      {onStandingsTitlesChange && (
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Type className="text-primary" size={20} />
+            <h3 className="text-lg font-semibold">Titres des Classements</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Personnalisez les titres affichés pour chaque type de classement.
+          </p>
+          <div className="space-y-4">
+            {Object.entries(TITLE_LABELS).map(([key, label]) => (
+              <div key={key}>
+                <Label htmlFor={`title-${key}`}>{label}</Label>
+                <Input
+                  id={`title-${key}`}
+                  type="text"
+                  value={titles[key] || ''}
+                  onChange={(e) => handleTitleFieldChange(key, e.target.value)}
+                  placeholder={DEFAULT_STANDINGS_TITLES[key]}
+                  className="mt-1"
+                />
+              </div>
+            ))}
+
+            <Button 
+              onClick={handleSaveTitles}
+              className="w-full sm:w-auto"
+            >
+              <Save size={16} className="mr-2" />
+              Sauvegarder les titres
+            </Button>
+          </div>
+        </Card>
+      )}
+
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Aperçu</h3>
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
+        <div className="text-center py-8 bg-muted/50 rounded-lg">
           <h1 className="text-3xl md:text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
             {title || championshipTitle}
           </h1>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
             {year || championshipYear}
           </h2>
         </div>

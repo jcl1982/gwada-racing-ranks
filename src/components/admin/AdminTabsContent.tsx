@@ -7,6 +7,7 @@ import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
 import ChampionshipSettings from '../ChampionshipSettings';
 import StandingsSavesManagement from '../StandingsSavesManagement';
+import { StandingsTitles } from '@/hooks/useChampionshipConfig';
 
 
 interface AdminTabsContentProps {
@@ -19,9 +20,11 @@ interface AdminTabsContentProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
+  standingsTitles?: StandingsTitles;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
   onTitleChange: (title: string, year: string) => void;
+  onStandingsTitlesChange?: (titles: Record<string, string>) => Promise<void>;
   saveDriver: (driver: Omit<Driver, 'id'> | Driver) => Promise<void>;
   deleteDriver: (driverId: string) => Promise<void>;
   deleteAllDrivers: () => Promise<void>;
@@ -41,9 +44,11 @@ const AdminTabsContent = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  standingsTitles,
   onDriversChange,
   onRacesChange,
   onTitleChange,
+  onStandingsTitlesChange,
   saveDriver,
   deleteDriver,
   deleteAllDrivers,
@@ -52,7 +57,6 @@ const AdminTabsContent = ({
   refreshData,
   onRaceUpdate
 }: AdminTabsContentProps) => {
-  // Détecter le type de championnat en fonction des courses
   const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
   const championshipType = kartingRaces.length > 0 && kartingRaces.length >= allRaces.length * 0.5
     ? 'karting'
@@ -115,7 +119,9 @@ const AdminTabsContent = ({
         <ChampionshipSettings
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
+          standingsTitles={standingsTitles}
           onTitleChange={onTitleChange}
+          onStandingsTitlesChange={onStandingsTitlesChange}
         />
       </TabsContent>
     </>
