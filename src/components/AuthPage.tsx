@@ -74,10 +74,10 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
               <UserPlus className="h-12 w-12 text-primary" />
             )}
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-foreground">
             {isLogin ? 'Connexion' : 'Inscription'}
           </h2>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             {isLogin 
               ? 'Connectez-vous à votre compte' 
               : 'Créez votre compte'
@@ -87,7 +87,7 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
             <Input
               type="email"
               placeholder="Email"
@@ -99,7 +99,7 @@ const AuthPage = ({ onClose }: AuthPageProps) => {
           </div>
 
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
             <Input
               type="password"
               placeholder="Mot de passe"

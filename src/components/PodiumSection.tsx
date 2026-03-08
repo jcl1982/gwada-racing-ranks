@@ -24,10 +24,10 @@ const PodiumSection = ({ standings }: PodiumSectionProps) => {
             {positions[index]}
           </div>
           <h3 className="text-lg font-bold mb-2">{standing.position}ᵉ Place</h3>
-          <p className="text-xl font-bold text-gray-800">
+          <p className="text-xl font-bold text-foreground">
             {standing.driver.name}
           </p>
-          <p className="text-gray-600">{standing.points} points</p>
+          <p className="text-muted-foreground">{standing.points} points</p>
         </Card>
       ))}
     </div>

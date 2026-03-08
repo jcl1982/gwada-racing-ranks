@@ -7,9 +7,9 @@ const AdminAccessDenied = () => {
   return (
     <Card className="card-glass p-8 text-center">
       <div className="flex flex-col items-center space-y-4">
-        <Shield className="h-12 w-12 text-red-400" />
-        <h3 className="text-lg font-semibold text-gray-700">Accès administrateur requis</h3>
-        <p className="text-gray-600 max-w-md">
+        <Shield className="h-12 w-12 text-destructive" />
+        <h3 className="text-lg font-semibold text-foreground">Accès administrateur requis</h3>
+        <p className="text-muted-foreground max-w-md">
           Cette section est réservée aux administrateurs. Veuillez contacter un administrateur 
           si vous pensez que vous devriez avoir accès à cette fonctionnalité.
         </p>
