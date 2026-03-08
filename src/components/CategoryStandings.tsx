@@ -10,6 +10,7 @@ import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import StandingsEvolutionChart from '@/components/StandingsEvolutionChart';
 import DriverAdvancedStats from '@/components/DriverAdvancedStats';
+import DriverComparator from '@/components/DriverComparator';
 
 interface CategoryStandingsProps {
   title: string;
@@ -99,6 +100,11 @@ const CategoryStandings = ({
         drivers={drivers}
         title={`Statistiques détaillées - ${displayTitle}`}
         type={type}
+      />
+      <DriverComparator
+        races={races}
+        drivers={drivers}
+        title={`Comparateur de pilotes - ${displayTitle}`}
       />
     </div>
   );
