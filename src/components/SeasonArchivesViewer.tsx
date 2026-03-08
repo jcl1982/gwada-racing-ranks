@@ -4,13 +4,17 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, Mountain, Car, Award, Medal } from 'lucide-react';
+import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, FileText, Mountain, Car, Award, Medal } from 'lucide-react';
 import { useSeasonArchives, SeasonArchive } from '@/hooks/useSeasonArchives';
 import { useUserRole } from '@/hooks/useUserRole';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { getPositionBadgeColor } from '@/utils/championship';
+import { addLogosToDoc, addTitleToDoc } from '@/utils/pdfLogos';
+import { PDF_STYLES, getPositionRowStyle } from '@/utils/pdfStyles';
 
 function parseLocalDate(dateString: string): Date {
   const [year, month, day] = dateString.split('-').map(Number);
