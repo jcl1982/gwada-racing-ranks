@@ -197,6 +197,12 @@ const RallyeMontagneTabs = ({
             title="Évolution des points - Classement Général"
             type="all"
           />
+          <DriverAdvancedStats
+            races={[...montagneRaces, ...rallyeRaces]}
+            drivers={drivers}
+            title="Statistiques détaillées - Classement Général"
+            type="all"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
