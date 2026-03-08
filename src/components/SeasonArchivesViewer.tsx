@@ -258,6 +258,130 @@ const SeasonArchivesViewer = () => {
     XLSX.writeFile(wb, `Archive_${archive.title}_${archive.year}.xlsx`);
   };
 
+  const exportArchiveToPdf = (archive: SeasonArchive, category: string) => {
+    const standingsData = archive.standings_data as Record<string, any[]>;
+    const standings = standingsData[category];
+    if (!standings || standings.length === 0) return;
+
+    const racesArr = Array.isArray(archive.races_data) ? archive.races_data : [];
+    const isGeneral = category === 'general';
+    const isCopilote = category === 'copilote';
+    const categoryLabel = CATEGORY_CONFIG[category]?.label || category;
+    const title = `${archive.title} - ${categoryLabel}`;
+    const subtitle = `Saison ${archive.year}`;
+
+    if (isGeneral) {
+      // General standings PDF (portrait)
+      const doc = new jsPDF();
+      addLogosToDoc(doc);
+      addTitleToDoc(doc, title, subtitle);
+
+      const tableData = standings.map((s: any, i: number) => {
+        const pos = s.position || i + 1;
+        const leaderPts = standings[0].totalPoints || 0;
+        const gap = leaderPts - (s.totalPoints || 0);
+        return [
+          pos.toString(),
+          s.driverName,
+          `${s.montagnePoints || 0}`,
+          `${s.rallyePoints || 0}`,
+          `${s.totalPoints || 0}`,
+          gap === 0 ? '—' : `-${gap}`,
+        ];
+      });
+
+      autoTable(doc, {
+        head: [['Pos', 'Pilote', 'Montagne', 'Rallye', 'Total', 'Écart']],
+        body: tableData,
+        startY: PDF_STYLES.positions.tableStart.y,
+        didParseCell: function (data) {
+          if (data.section === 'body') {
+            const pos = parseInt(tableData[data.row.index][0]);
+            const style = getPositionRowStyle(pos);
+            if (style) {
+              data.cell.styles.fillColor = style.fillColor;
+              data.cell.styles.textColor = style.textColor;
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        },
+      });
+
+      doc.save(`archive-${categoryLabel.toLowerCase()}-${archive.year}.pdf`);
+    } else {
+      // Category standings PDF (landscape) with per-race columns
+      const doc = new jsPDF('landscape');
+      addLogosToDoc(doc, true);
+      addTitleToDoc(doc, title, subtitle, 148);
+
+      // Get relevant races
+      const categoryRaces = category === 'montagne'
+        ? racesArr.filter((r: any) => r.type === 'montagne')
+        : category === 'rallye' || category === 'copilote'
+        ? racesArr.filter((r: any) => r.type === 'rallye')
+        : racesArr;
+
+      // Filter races that have points
+      const raceNamesSet = new Set<string>();
+      standings.forEach((s: any) => {
+        if (s.racePoints) Object.keys(s.racePoints).forEach(n => raceNamesSet.add(n));
+      });
+      const relevantRaces = categoryRaces
+        .filter((r: any) => raceNamesSet.has(r.name))
+        .sort((a: any, b: any) => a.date.localeCompare(b.date));
+
+      const headers = ['Pos', 'Pilote'];
+      if (!isCopilote) headers.push('Véhicule');
+      relevantRaces.forEach((r: any) => {
+        const dateStr = format(parseLocalDate(r.date), 'dd/MM', { locale: fr });
+        headers.push(`${r.name} (${dateStr})`);
+      });
+      headers.push('Total', 'Écart');
+
+      const tableData = standings.map((s: any, i: number) => {
+        const pos = s.position || i + 1;
+        const leaderPts = standings[0].totalPoints || 0;
+        const gap = leaderPts - (s.totalPoints || 0);
+        const row = [pos.toString(), s.driverName];
+        if (!isCopilote) row.push(s.driverCarModel || '-');
+        relevantRaces.forEach((r: any) => {
+          const pts = s.racePoints?.[r.name] || 0;
+          row.push(pts > 0 ? `${pts} pts` : '-');
+        });
+        row.push(`${s.totalPoints || 0}`);
+        row.push(gap === 0 ? '—' : `-${gap}`);
+        return row;
+      });
+
+      autoTable(doc, {
+        head: [headers],
+        body: tableData,
+        startY: PDF_STYLES.positions.tableStart.y,
+        didParseCell: function (data) {
+          if (data.section === 'body') {
+            const pos = parseInt(tableData[data.row.index][0]);
+            const style = getPositionRowStyle(pos);
+            if (style) {
+              data.cell.styles.fillColor = style.fillColor;
+              data.cell.styles.textColor = style.textColor;
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        },
+      });
+
+      doc.save(`archive-${categoryLabel.toLowerCase()}-${archive.year}.pdf`);
+    }
+  };
+
+  const exportAllArchivePdfs = (archive: SeasonArchive) => {
+    const standingsData = archive.standings_data as Record<string, any[]>;
+    const keys = Object.keys(standingsData).filter(
+      k => Array.isArray(standingsData[k]) && standingsData[k].length > 0
+    );
+    keys.forEach(key => exportArchiveToPdf(archive, key));
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
