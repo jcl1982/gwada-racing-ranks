@@ -18,6 +18,7 @@ const ChampionshipApp = () => {
     championshipTitle,
     championshipYear,
     championshipId,
+    standingsTitles,
     loading,
     handleImport,
     handleReset,
@@ -30,6 +31,7 @@ const ChampionshipApp = () => {
     saveRace,
     deleteRace,
     refreshData,
+    updateStandingsTitles,
     standingsCalculation
   } = useChampionshipData(currentView);
 
@@ -57,6 +59,7 @@ const ChampionshipApp = () => {
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId}
+          standingsTitles={standingsTitles}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           kartingRaces={kartingRaces}
@@ -75,6 +78,7 @@ const ChampionshipApp = () => {
           saveRace={saveRace}
           deleteRace={deleteRace}
           refreshData={refreshData}
+          updateStandingsTitles={updateStandingsTitles}
           montagneStandings={standingsCalculation.montagneStandings}
           rallyeStandings={standingsCalculation.rallyeStandings}
           r2Standings={standingsCalculation.r2Standings}
