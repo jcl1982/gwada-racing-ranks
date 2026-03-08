@@ -76,10 +76,10 @@ const HomePage = ({
         <h1 className="text-5xl md:text-6xl font-bold gradient-caribbean bg-clip-text text-transparent mb-4 py-[10px]">
           Championnats Automobiles
         </h1>
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 my-0">
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 my-0">
           de Guadeloupe {championshipYear}
         </h2>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Suivez les performances de nos pilotes à travers les différents championnats 
           de l'archipel guadeloupéen
         </p>
@@ -188,15 +188,15 @@ const HomePage = ({
                     <div className="gradient-caribbean w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
                       <Users className="text-white" size={20} />
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">{championship.drivers.filter(d => d.driverRole === 'pilote').length}</p>
-                    <p className="text-sm text-gray-600">Pilotes</p>
+                    <p className="text-2xl font-bold text-foreground">{championship.drivers.filter(d => d.driverRole === 'pilote').length}</p>
+                    <p className="text-sm text-muted-foreground">Pilotes</p>
                   </div>
                   <div className="text-center">
                     <div className="gradient-ocean w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
                       <Calendar className="text-white" size={20} />
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">{totalRaces}</p>
-                    <p className="text-sm text-gray-600">Courses</p>
+                    <p className="text-2xl font-bold text-foreground">{totalRaces}</p>
+                    <p className="text-sm text-muted-foreground">Courses</p>
                   </div>
                 </div>
 
@@ -206,9 +206,9 @@ const HomePage = ({
                       <Trophy size={20} className="text-yellow-500" />
                       <h4 className="font-semibold">Leader</h4>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="bg-muted rounded-lg p-3">
                       <p className="font-bold text-lg">{leader.driver.name}</p>
-                      <p className="text-sm text-gray-600">{leader.driver.team}</p>
+                      <p className="text-sm text-muted-foreground">{leader.driver.team}</p>
                       <div className="mt-2">
                         <Badge className={`bg-gradient-to-r ${colorClass} text-white font-bold`}>
                           {leader.totalPoints} points
@@ -216,20 +216,20 @@ const HomePage = ({
                       </div>
                       {championship.title === 'Championnat Rallye-Montagne' && <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
                           <div className="text-center">
-                            <span className="text-green-600 font-semibold">{leader.montagnePoints}</span>
-                            <span className="text-gray-500"> Montagne</span>
+                            <span className="text-emerald-500 dark:text-emerald-400 font-semibold">{leader.montagnePoints}</span>
+                            <span className="text-muted-foreground"> Montagne</span>
                           </div>
                           <div className="text-center">
-                            <span className="text-blue-600 font-semibold">{leader.rallyePoints}</span>
-                            <span className="text-gray-500"> Rallye</span>
+                            <span className="text-blue-500 dark:text-blue-400 font-semibold">{leader.rallyePoints}</span>
+                            <span className="text-muted-foreground"> Rallye</span>
                           </div>
                         </div>}
                       {isKarting && <div className="mt-3 text-xs text-center">
-                          <p className="text-gray-500">Points totaux (course + bonus)</p>
+                          <p className="text-muted-foreground">Points totaux (course + bonus)</p>
                         </div>}
                     </div>
                   </div> : <div className="border-t pt-4 mt-4">
-                    <p className="text-center text-gray-500 py-4">
+                    <p className="text-center text-muted-foreground py-4">
                       Aucun classement disponible
                     </p>
                   </div>}
@@ -244,75 +244,75 @@ const HomePage = ({
                     
                     {/* MINI 60 */}
                     <div className="mb-4">
-                      <h5 className="text-sm font-semibold text-purple-700 mb-2">MINI 60</h5>
+                      <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">MINI 60</h5>
                       <div className="space-y-1">
                         {kartingCategoryStandings.mini60.length > 0 ? (
                           kartingCategoryStandings.mini60.map((standing, index) => {
                             const positions = ['🥇', '🥈', '🥉'];
                             return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">{positions[index]}</span>
                                   <div>
                                     <p className="font-semibold text-xs">{standing.driver.name}</p>
-                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                    <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
                                   </div>
                                 </div>
                               </div>
                             );
                           })
                         ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                          <p className="text-xs text-muted-foreground text-center py-2">Aucun classement</p>
                         )}
                       </div>
                     </div>
                     
                     {/* SENIOR MASTER GENTLEMAN */}
                     <div className="mb-4">
-                      <h5 className="text-sm font-semibold text-purple-700 mb-2">SENIOR MASTER GENTLEMAN</h5>
+                      <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">SENIOR MASTER GENTLEMAN</h5>
                       <div className="space-y-1">
                         {kartingCategoryStandings.senior.length > 0 ? (
                           kartingCategoryStandings.senior.map((standing, index) => {
                             const positions = ['🥇', '🥈', '🥉'];
                             return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">{positions[index]}</span>
                                   <div>
                                     <p className="font-semibold text-xs">{standing.driver.name}</p>
-                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                    <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
                                   </div>
                                 </div>
                               </div>
                             );
                           })
                         ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                          <p className="text-xs text-muted-foreground text-center py-2">Aucun classement</p>
                         )}
                       </div>
                     </div>
                     
                     {/* KZ2 */}
                     <div>
-                      <h5 className="text-sm font-semibold text-purple-700 mb-2">KZ2</h5>
+                      <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">KZ2</h5>
                       <div className="space-y-1">
                         {kartingCategoryStandings.kz2.length > 0 ? (
                           kartingCategoryStandings.kz2.map((standing, index) => {
                             const positions = ['🥇', '🥈', '🥉'];
                             return (
-                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-50 rounded-lg p-2">
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">{positions[index]}</span>
                                   <div>
                                     <p className="font-semibold text-xs">{standing.driver.name}</p>
-                                    <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                    <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
                                   </div>
                                 </div>
                               </div>
                             );
                           })
                         ) : (
-                          <p className="text-xs text-gray-500 text-center py-2">Aucun classement</p>
+                          <p className="text-xs text-muted-foreground text-center py-2">Aucun classement</p>
                         )}
                       </div>
                     </div>
@@ -326,12 +326,12 @@ const HomePage = ({
                       {championship.standings.slice(0, 3).map((standing, index) => {
                         const positions = ['🥇', '🥈', '🥉'];
                         return (
-                          <div key={standing.driver.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                          <div key={standing.driver.id} className="flex items-center justify-between bg-muted rounded-lg p-2">
                             <div className="flex items-center gap-2">
                               <span className="text-xl">{positions[index]}</span>
                               <div>
                                 <p className="font-semibold text-sm">{standing.driver.name}</p>
-                                <p className="text-xs text-gray-600">{standing.totalPoints} pts</p>
+                                <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
                               </div>
                             </div>
                           </div>
@@ -370,14 +370,14 @@ const HomePage = ({
                 <div className="border border-t-0 rounded-b-lg p-4 space-y-4">
                   {/* Prochaines courses */}
                   {upcomingRaces.length > 0 && <div>
-                      <h5 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-1">
+                      <h5 className="font-semibold text-sm text-foreground mb-2 flex items-center gap-1">
                         <Calendar size={16} className="text-green-600" />
                         À venir
                       </h5>
                       <div className="space-y-2">
-                        {upcomingRaces.map(race => <div key={race.id} className="bg-green-50 rounded-lg p-2 border-l-4 border-green-500">
+                        {upcomingRaces.map(race => <div key={race.id} className="bg-emerald-500/10 dark:bg-emerald-500/15 rounded-lg p-2 border-l-4 border-emerald-500">
                             <p className="font-medium text-sm">{race.name}</p>
-                            <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
+                            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar size={12} />
                               {parseLocalDate(race.date).toLocaleDateString('fr-FR', {
                         day: 'numeric',
@@ -390,7 +390,7 @@ const HomePage = ({
 
                   {/* Dernières courses */}
                   {pastRaces.length > 0 && <div>
-                      <h5 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-1">
+                      <h5 className="font-semibold text-sm text-foreground mb-2 flex items-center gap-1">
                         <Trophy size={16} className="text-blue-600" />
                         Résultats récents
                       </h5>
@@ -398,16 +398,16 @@ const HomePage = ({
                         {pastRaces.map(race => {
                     const winner = race.results.sort((a, b) => a.position - b.position)[0];
                     const winnerDriver = winner ? championship.drivers.find(d => d.id === winner.driverId) : null;
-                    return <div key={race.id} className="bg-blue-50 rounded-lg p-2 border-l-4 border-blue-500">
+                    return <div key={race.id} className="bg-blue-500/10 dark:bg-blue-500/15 rounded-lg p-2 border-l-4 border-blue-500">
                               <p className="font-medium text-sm">{race.name}</p>
-                              <p className="text-xs text-gray-600 flex items-center gap-1 mt-1">
+                              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                                 <Calendar size={12} />
                                 {parseLocalDate(race.date).toLocaleDateString('fr-FR', {
                           day: 'numeric',
                           month: 'long'
                         })}
                               </p>
-                              {winnerDriver && <p className="text-xs text-gray-700 mt-1 flex items-center gap-1">
+                              {winnerDriver && <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                                   <Trophy size={12} className="text-yellow-500" />
                                   <span className="font-semibold">{winnerDriver.name}</span>
                                 </p>}
@@ -416,7 +416,7 @@ const HomePage = ({
                       </div>
                     </div>}
 
-                  {upcomingRaces.length === 0 && pastRaces.length === 0 && <p className="text-center text-gray-500 text-sm py-4">
+                  {upcomingRaces.length === 0 && pastRaces.length === 0 && <p className="text-center text-muted-foreground text-sm py-4">
                       Aucune actualité pour le moment
                     </p>}
                 </div>
