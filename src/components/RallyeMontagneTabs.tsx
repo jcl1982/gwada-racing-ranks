@@ -15,6 +15,7 @@ import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 import StandingsEvolutionChart from "@/components/StandingsEvolutionChart";
+import DriverAdvancedStats from "@/components/DriverAdvancedStats";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
 
