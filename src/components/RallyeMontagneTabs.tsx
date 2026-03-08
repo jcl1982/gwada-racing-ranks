@@ -235,6 +235,12 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.montagne}`}
             type="montagne"
           />
+          <DriverAdvancedStats
+            races={montagneRaces}
+            drivers={pilotes}
+            title={`Statistiques détaillées - ${titles.montagne}`}
+            type="montagne"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -267,6 +273,12 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.rallye}`}
             type="rallye"
           />
+          <DriverAdvancedStats
+            races={rallyeRaces}
+            drivers={pilotes}
+            title={`Statistiques détaillées - ${titles.rallye}`}
+            type="rallye"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -294,6 +306,12 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.r2}`}
             type="all"
           />
+          <DriverAdvancedStats
+            races={[...montagneRaces, ...rallyeRaces]}
+            drivers={pilotes}
+            title={`Statistiques détaillées - ${titles.r2}`}
+            type="all"
+          />
         </TabsContent>
 
         {/* Trophée Copilote */}
@@ -312,6 +330,12 @@ const RallyeMontagneTabs = ({
             races={rallyeRaces}
             drivers={copilotes}
             title={`Évolution des points - ${titles.copilote}`}
+            type="rallye"
+          />
+          <DriverAdvancedStats
+            races={rallyeRaces}
+            drivers={copilotes}
+            title={`Statistiques détaillées - ${titles.copilote}`}
             type="rallye"
           />
 
