@@ -4,13 +4,17 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, Mountain, Car, Award, Medal } from 'lucide-react';
+import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, FileText, Mountain, Car, Award, Medal } from 'lucide-react';
 import { useSeasonArchives, SeasonArchive } from '@/hooks/useSeasonArchives';
 import { useUserRole } from '@/hooks/useUserRole';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { getPositionBadgeColor } from '@/utils/championship';
+import { addLogosToDoc, addTitleToDoc } from '@/utils/pdfLogos';
+import { PDF_STYLES, getPositionRowStyle } from '@/utils/pdfStyles';
 
 function parseLocalDate(dateString: string): Date {
   const [year, month, day] = dateString.split('-').map(Number);
@@ -254,6 +258,130 @@ const SeasonArchivesViewer = () => {
     XLSX.writeFile(wb, `Archive_${archive.title}_${archive.year}.xlsx`);
   };
 
+  const exportArchiveToPdf = (archive: SeasonArchive, category: string) => {
+    const standingsData = archive.standings_data as Record<string, any[]>;
+    const standings = standingsData[category];
+    if (!standings || standings.length === 0) return;
+
+    const racesArr = Array.isArray(archive.races_data) ? archive.races_data : [];
+    const isGeneral = category === 'general';
+    const isCopilote = category === 'copilote';
+    const categoryLabel = CATEGORY_CONFIG[category]?.label || category;
+    const title = `${archive.title} - ${categoryLabel}`;
+    const subtitle = `Saison ${archive.year}`;
+
+    if (isGeneral) {
+      // General standings PDF (portrait)
+      const doc = new jsPDF();
+      addLogosToDoc(doc);
+      addTitleToDoc(doc, title, subtitle);
+
+      const tableData = standings.map((s: any, i: number) => {
+        const pos = s.position || i + 1;
+        const leaderPts = standings[0].totalPoints || 0;
+        const gap = leaderPts - (s.totalPoints || 0);
+        return [
+          pos.toString(),
+          s.driverName,
+          `${s.montagnePoints || 0}`,
+          `${s.rallyePoints || 0}`,
+          `${s.totalPoints || 0}`,
+          gap === 0 ? '—' : `-${gap}`,
+        ];
+      });
+
+      autoTable(doc, {
+        head: [['Pos', 'Pilote', 'Montagne', 'Rallye', 'Total', 'Écart']],
+        body: tableData,
+        startY: PDF_STYLES.positions.tableStart.y,
+        didParseCell: function (data) {
+          if (data.section === 'body') {
+            const pos = parseInt(tableData[data.row.index][0]);
+            const style = getPositionRowStyle(pos);
+            if (style) {
+              data.cell.styles.fillColor = style.fillColor;
+              data.cell.styles.textColor = style.textColor;
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        },
+      });
+
+      doc.save(`archive-${categoryLabel.toLowerCase()}-${archive.year}.pdf`);
+    } else {
+      // Category standings PDF (landscape) with per-race columns
+      const doc = new jsPDF('landscape');
+      addLogosToDoc(doc, true);
+      addTitleToDoc(doc, title, subtitle, 148);
+
+      // Get relevant races
+      const categoryRaces = category === 'montagne'
+        ? racesArr.filter((r: any) => r.type === 'montagne')
+        : category === 'rallye' || category === 'copilote'
+        ? racesArr.filter((r: any) => r.type === 'rallye')
+        : racesArr;
+
+      // Filter races that have points
+      const raceNamesSet = new Set<string>();
+      standings.forEach((s: any) => {
+        if (s.racePoints) Object.keys(s.racePoints).forEach(n => raceNamesSet.add(n));
+      });
+      const relevantRaces = categoryRaces
+        .filter((r: any) => raceNamesSet.has(r.name))
+        .sort((a: any, b: any) => a.date.localeCompare(b.date));
+
+      const headers = ['Pos', 'Pilote'];
+      if (!isCopilote) headers.push('Véhicule');
+      relevantRaces.forEach((r: any) => {
+        const dateStr = format(parseLocalDate(r.date), 'dd/MM', { locale: fr });
+        headers.push(`${r.name} (${dateStr})`);
+      });
+      headers.push('Total', 'Écart');
+
+      const tableData = standings.map((s: any, i: number) => {
+        const pos = s.position || i + 1;
+        const leaderPts = standings[0].totalPoints || 0;
+        const gap = leaderPts - (s.totalPoints || 0);
+        const row = [pos.toString(), s.driverName];
+        if (!isCopilote) row.push(s.driverCarModel || '-');
+        relevantRaces.forEach((r: any) => {
+          const pts = s.racePoints?.[r.name] || 0;
+          row.push(pts > 0 ? `${pts} pts` : '-');
+        });
+        row.push(`${s.totalPoints || 0}`);
+        row.push(gap === 0 ? '—' : `-${gap}`);
+        return row;
+      });
+
+      autoTable(doc, {
+        head: [headers],
+        body: tableData,
+        startY: PDF_STYLES.positions.tableStart.y,
+        didParseCell: function (data) {
+          if (data.section === 'body') {
+            const pos = parseInt(tableData[data.row.index][0]);
+            const style = getPositionRowStyle(pos);
+            if (style) {
+              data.cell.styles.fillColor = style.fillColor;
+              data.cell.styles.textColor = style.textColor;
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        },
+      });
+
+      doc.save(`archive-${categoryLabel.toLowerCase()}-${archive.year}.pdf`);
+    }
+  };
+
+  const exportAllArchivePdfs = (archive: SeasonArchive) => {
+    const standingsData = archive.standings_data as Record<string, any[]>;
+    const keys = Object.keys(standingsData).filter(
+      k => Array.isArray(standingsData[k]) && standingsData[k].length > 0
+    );
+    keys.forEach(key => exportArchiveToPdf(archive, key));
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -344,6 +472,24 @@ const SeasonArchivesViewer = () => {
                   >
                     <FileSpreadsheet size={16} /> Exporter Excel
                   </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => { e.stopPropagation(); exportAllArchivePdfs(archive); }}
+                    className="flex items-center gap-2"
+                  >
+                    <FileText size={16} /> Exporter tous les PDF
+                  </Button>
+                  {standingsData[activeTab] && Array.isArray(standingsData[activeTab]) && standingsData[activeTab].length > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => { e.stopPropagation(); exportArchiveToPdf(archive, activeTab); }}
+                      className="flex items-center gap-2"
+                    >
+                      <FileText size={16} /> PDF {CATEGORY_CONFIG[activeTab]?.label || activeTab}
+                    </Button>
+                  )}
                   {isAdmin && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
