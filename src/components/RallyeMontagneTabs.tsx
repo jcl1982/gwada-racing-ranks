@@ -301,6 +301,12 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleCopiPrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(copiloteStandings, "copilote")} />
+          <StandingsEvolutionChart
+            races={rallyeRaces}
+            drivers={copilotes}
+            title={`Évolution des points - ${titles.copilote}`}
+            type="rallye"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
