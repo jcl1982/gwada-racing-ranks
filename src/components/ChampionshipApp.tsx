@@ -79,6 +79,7 @@ const ChampionshipApp = () => {
           deleteRace={deleteRace}
           refreshData={refreshData}
           updateStandingsTitles={updateStandingsTitles}
+          onViewChange={setCurrentView}
           montagneStandings={standingsCalculation.montagneStandings}
           rallyeStandings={standingsCalculation.rallyeStandings}
           r2Standings={standingsCalculation.r2Standings}
