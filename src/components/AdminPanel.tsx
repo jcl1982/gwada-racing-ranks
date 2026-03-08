@@ -76,7 +76,18 @@ const AdminPanel = ({
   return (
     <div className="space-y-6">
       <Card className="card-glass p-6">
-        <AdminHeader onReset={onReset} />
+        <AdminHeader 
+          onReset={onReset}
+          championshipId={championshipId}
+          championshipTitle={championshipTitle}
+          championshipYear={championshipYear}
+          drivers={drivers}
+          races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
+          standings={{
+            general: standings,
+          }}
+          standingsTitles={standingsTitles}
+        />
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <AdminTabsList />
