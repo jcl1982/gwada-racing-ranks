@@ -64,7 +64,7 @@ const PrintButton = ({
           <ChevronDown size={14} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-white">
+      <DropdownMenuContent align="end" className="bg-popover">
         <DropdownMenuItem onClick={onPrintPdf}>
           <FileDown size={16} className="mr-2" />
           Exporter en PDF

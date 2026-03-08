@@ -39,16 +39,16 @@ const RaceCalendar = ({ races, driverIds }: RaceCalendarProps) => {
       </h3>
       <div className="grid md:grid-cols-2 gap-4">
         {relevantRaces.map(race => (
-          <div key={race.id} className="bg-white/70 rounded-lg p-4 border border-white/20">
+          <div key={race.id} className="bg-card/70 rounded-lg p-4 border border-border">
             <h4 className="font-semibold text-lg flex items-center gap-2">
               <MapPin size={16} />
               {race.name}
             </h4>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {formatDateRange(race.date, race.endDate)}
             </p>
             {race.organizer && (
-              <p className="text-sm text-gray-500 mt-1 italic">
+              <p className="text-sm text-muted-foreground mt-1 italic">
                 Organisateur : {race.organizer}
               </p>
             )}

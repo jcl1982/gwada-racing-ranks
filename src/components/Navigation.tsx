@@ -3,6 +3,7 @@ import { Trophy, Home, Settings, Zap, Circle, Archive } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
+import ThemeToggle from './ThemeToggle';
 interface NavigationProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
@@ -46,6 +47,9 @@ const Navigation = ({
   const isKartingView = ['karting', 'admin-karting'].includes(currentView);
   const isAdminView = ['admin', 'admin-acceleration', 'admin-karting', 'admin-hub', 'import'].includes(currentView);
 
+  const activeClass = 'gradient-caribbean text-white shadow-lg transform scale-105';
+  const inactiveClass = 'bg-card/70 text-foreground hover:bg-card/90 hover:shadow-md hover:scale-102';
+
   return <Card className="card-glass p-4 mb-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
         <nav className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
@@ -53,27 +57,27 @@ const Navigation = ({
           id,
           label,
           icon: Icon
-        }) => <button key={id} onClick={() => onViewChange(id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === id ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}>
+        }) => <button key={id} onClick={() => onViewChange(id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === id ? activeClass : inactiveClass}`}>
               <Icon size={18} />
               <span className="hidden sm:inline">{label}</span>
             </button>)}
 
           {/* Rallye-Montagne Championship button */}
-          <button onClick={() => onViewChange('general')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isRallyeMontagnView ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}>
+          <button onClick={() => onViewChange('general')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isRallyeMontagnView ? activeClass : inactiveClass}`}>
             <Trophy size={18} />
             <span className="hidden sm:inline">CHAMPIONNAT RALLYE - MONTAGNE</span>
             <span className="sm:hidden">Rallye-Montagne</span>
           </button>
 
           {/* Acceleration Championship menu */}
-          <button onClick={() => onViewChange('acceleration')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'acceleration' ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}>
+          <button onClick={() => onViewChange('acceleration')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'acceleration' ? activeClass : inactiveClass}`}>
             <Zap size={18} />
             <span className="hidden sm:inline">CHAMPIONNAT ACCELERATION</span>
             <span className="sm:hidden">Accélération</span>
           </button>
 
           {/* Karting Championship menu */}
-          <button onClick={() => onViewChange('karting')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'karting' ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}>
+          <button onClick={() => onViewChange('karting')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'karting' ? activeClass : inactiveClass}`}>
             <Circle size={18} />
             <span className="hidden sm:inline">CHAMPIONNAT KARTING</span>
             <span className="sm:hidden">Karting</span>
@@ -88,7 +92,7 @@ const Navigation = ({
           {isAuthenticated && isAdmin && (
             <button 
               onClick={() => onViewChange('admin-hub')} 
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isAdminView ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${isAdminView ? activeClass : inactiveClass}`}
             >
               <Settings size={18} />
               <span className="hidden sm:inline">Administration</span>
@@ -97,7 +101,10 @@ const Navigation = ({
           )}
         </nav>
         
-        {isAuthenticated && isAdmin && <AuthButton />}
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          {isAuthenticated && isAdmin && <AuthButton />}
+        </div>
       </div>
     </Card>;
 };

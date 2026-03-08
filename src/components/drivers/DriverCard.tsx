@@ -25,10 +25,10 @@ const DriverCard = ({ driver, onEdit, onDelete, isLoading, isDeleting = false }:
               {driver.driverRole === 'copilote' ? 'Copilote' : 'Pilote'}
             </Badge>
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Numéro: {driver.number || 'Non défini'}
           </p>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             ID: {driver.id.slice(0, 8)}...
           </p>
         </div>
