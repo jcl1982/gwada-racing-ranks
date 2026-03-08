@@ -315,6 +315,53 @@ export type Database = {
           },
         ]
       }
+      season_archives: {
+        Row: {
+          archived_at: string
+          championship_id: string | null
+          config_data: Json
+          created_at: string
+          drivers_data: Json
+          id: string
+          races_data: Json
+          standings_data: Json
+          title: string
+          year: string
+        }
+        Insert: {
+          archived_at?: string
+          championship_id?: string | null
+          config_data?: Json
+          created_at?: string
+          drivers_data?: Json
+          id?: string
+          races_data?: Json
+          standings_data?: Json
+          title: string
+          year: string
+        }
+        Update: {
+          archived_at?: string
+          championship_id?: string | null
+          config_data?: Json
+          created_at?: string
+          drivers_data?: Json
+          id?: string
+          races_data?: Json
+          standings_data?: Json
+          title?: string
+          year?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "season_archives_championship_id_fkey"
+            columns: ["championship_id"]
+            isOneToOne: false
+            referencedRelation: "championship_config"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
