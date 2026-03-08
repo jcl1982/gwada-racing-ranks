@@ -136,7 +136,7 @@ const StandingsTable = ({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-muted">
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
@@ -145,11 +145,11 @@ const StandingsTable = ({
                   <div className="text-xs">
                     {race.name}
                   </div>
-                  <div className="text-[10px] text-gray-500 font-normal">
+                  <div className="text-[10px] text-muted-foreground font-normal">
                     {formatDateRange(race.date, race.endDate)}
                   </div>
                   {race.organizer && (
-                    <div className="text-[10px] text-gray-500 font-normal italic">
+                    <div className="text-[10px] text-muted-foreground font-normal italic">
                       {race.organizer}
                     </div>
                   )}
@@ -161,20 +161,20 @@ const StandingsTable = ({
           <tbody>
             {standings.map((standing, index) => {
             const gap = standings[0].points - standing.points;
-            return <tr key={standing.driver.id} className={`border-b transition-colors hover:bg-blue-50/50 ${index % 2 === 0 ? 'bg-white/50' : 'bg-white/30'}`}>
+            return <tr key={standing.driver.id} className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? 'table-row-even' : 'table-row-odd'}`}>
                   <td className="py-1 px-1">
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
                     </Badge>
                   </td>
                   <td className="py-1 px-1">
-                    <div className="font-semibold text-gray-900 unicode-enhanced">
+                    <div className="font-semibold text-foreground unicode-enhanced">
                       {standing.driver.name}
                     </div>
                   </td>
                   {type !== 'karting' && !isCopiloteStandings && (
                     <td className="py-1 px-1">
-                      <div className="text-sm text-gray-600 unicode-enhanced">
+                      <div className="text-sm text-muted-foreground unicode-enhanced">
                         {standing.driver.carModel || '-'}
                       </div>
                     </td>
@@ -186,7 +186,7 @@ const StandingsTable = ({
                 return <td key={race.id} className="py-1 px-1 text-center">
                         {points > 0 ? <Badge variant="outline" className={`text-xs ${!isValid ? 'bg-destructive/10 text-destructive border-destructive/30' : ''}`}>
                             {points} pts
-                          </Badge> : <span className="text-gray-400 text-xs">-</span>}
+                          </Badge> : <span className="text-muted-foreground text-xs">-</span>}
                       </td>;
               })}
                   <td className="py-1 px-1 text-center">
@@ -206,8 +206,8 @@ const StandingsTable = ({
       </div>
 
       {/* Pied de page avec texte d'affiliation */}
-      <div className="bg-gray-50 px-4 py-3 border-t">
-        <div className="text-center text-xs text-gray-600 leading-relaxed">
+      <div className="bg-muted px-4 py-3 border-t">
+        <div className="text-center text-xs text-muted-foreground leading-relaxed">
           <div className="font-semibold">Affilié à la Fédération Française du Sport Automobile sous le code 21</div>
           <div>Déclaré au J.O N°Y0046 DU 15/11/2014 sous le n°01987</div>
           <div>Agréée par le Ministère de la Ville, de la Jeunesse et des Sports sous Je N° RNA: W9G2003313</div>

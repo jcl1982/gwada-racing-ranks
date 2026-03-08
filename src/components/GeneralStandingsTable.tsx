@@ -67,7 +67,7 @@ const GeneralStandingsTable = ({
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-muted">
             <tr>
               <th className="text-left py-1 px-1 font-semibold">Position</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
@@ -94,13 +94,13 @@ const GeneralStandingsTable = ({
               return (
               <tr
                 key={standing.driver.id}
-                className={`border-b transition-colors hover:bg-blue-50/50 ${index % 2 === 0 ? "bg-white/50" : "bg-white/30"} ${standing.position === 1 ? "champion-row" : ""}`}
+                className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? "table-row-even" : "table-row-odd"} ${standing.position === 1 ? "champion-row" : ""}`}
               >
                 <td className="py-1 px-1">
                   <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>{standing.position}</Badge>
                 </td>
                 <td className="py-1 px-1">
-                  <div className="font-semibold text-gray-900 unicode-enhanced">{standing.driver.name}</div>
+                  <div className="font-semibold text-foreground unicode-enhanced">{standing.driver.name}</div>
                 </td>
                 <td className="py-1 px-1 text-center">
                   <Badge variant="outline" className="bg-green-50 border-green-200">
@@ -130,8 +130,8 @@ const GeneralStandingsTable = ({
       </div>
 
       {/* Pied de page avec texte d'affiliation */}
-      <div className="bg-gray-50 px-4 py-3 border-t">
-        <div className="text-center text-xs text-gray-600 leading-relaxed">
+      <div className="bg-muted px-4 py-3 border-t">
+        <div className="text-center text-xs text-muted-foreground leading-relaxed">
           <div className="font-semibold">Affilié à la Fédération Française du Sport Automobile sous le code 21</div>
           <div>Déclaré au J.O N°Y0046 DU 15/11/2014 sous le n°01987</div>
           <div>Agréée par le Ministère de la Ville, de la Jeunesse et des Sports sous Je N° RNA: W9G2003313</div>
