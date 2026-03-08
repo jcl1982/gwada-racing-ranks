@@ -15,6 +15,7 @@ import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 import { useUserRole } from "@/hooks/useUserRole";
+import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
 
 interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
@@ -25,6 +26,7 @@ interface RallyeMontagneTabsProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
+  standingsTitles?: StandingsTitles;
   montagneRaces: Race[];
   rallyeRaces: Race[];
   drivers: Driver[];
@@ -40,6 +42,7 @@ const RallyeMontagneTabs = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  standingsTitles,
   montagneRaces,
   rallyeRaces,
   drivers,
@@ -51,7 +54,8 @@ const RallyeMontagneTabs = ({
   const { exportGeneralToExcel, exportCategoryToExcel } = useExcelExport();
   const { isAdmin } = useUserRole();
 
-  // Séparer les pilotes et copilotes
+  const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
+
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
   const piloteIds = pilotes.map((d) => d.id);
@@ -62,7 +66,7 @@ const RallyeMontagneTabs = ({
     exportGeneralStandings(
       generalStandings,
       championshipTitle,
-      "Classement Général Provisoire de la LSAG",
+      `${titles.general} de la LSAG`,
       championshipYear,
     );
   };
@@ -71,18 +75,18 @@ const RallyeMontagneTabs = ({
     exportToImage(
       "general-standings-table",
       `classement-general-provisoire-${championshipYear}`,
-      `${championshipTitle} - Classement Général Provisoire ${championshipYear}`,
+      `${championshipTitle} - ${titles.general} ${championshipYear}`,
     );
   };
 
   const handleGeneralPrintWeb = () => {
-    printWebPage("general-standings-table", `${championshipTitle} - Classement Général Provisoire ${championshipYear}`);
+    printWebPage("general-standings-table", `${championshipTitle} - ${titles.general} ${championshipYear}`);
   };
 
   const handleGeneralPrintUnicode = () => {
     printWithUnicodeSupport(
       "general-standings-table",
-      `${championshipTitle} • Classement Général Provisoire ${championshipYear} ★`,
+      `${championshipTitle} • ${titles.general} ${championshipYear} ★`,
       `
         .unicode-enhanced {
           font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1;
@@ -104,45 +108,45 @@ const RallyeMontagneTabs = ({
   // Handlers pour les catégories
   const handleMontagnePrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(montagneStandings, "montagne");
-    exportCategoryStandings("Trophée de la Montagne", montagneRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.montagne, montagneRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleRallyePrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(rallyeStandings, "rallye");
-    exportCategoryStandings("Trophée des Rallyes", rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.rallye, rallyeRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleR2PrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(r2Standings, "r2");
     const allRaces = [...montagneRaces, ...rallyeRaces];
-    exportCategoryStandings("Trophée R2", allRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.r2, allRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleCopiPrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(copiloteStandings, "copilote");
-    exportCategoryStandings("Trophée Copilote", rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.copilote, rallyeRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   // Handlers Excel pour les catégories
   const handleMontagneExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(montagneStandings, "montagne");
-    exportCategoryToExcel(simplifiedStandings, montagneRaces, "Trophée de la Montagne", "montagne");
+    exportCategoryToExcel(simplifiedStandings, montagneRaces, titles.montagne, "montagne");
   };
 
   const handleRallyeExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(rallyeStandings, "rallye");
-    exportCategoryToExcel(simplifiedStandings, rallyeRaces, "Trophée des Rallyes", "rallye");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.rallye, "rallye");
   };
 
   const handleR2ExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(r2Standings, "r2");
     const allRaces = [...montagneRaces, ...rallyeRaces];
-    exportCategoryToExcel(simplifiedStandings, allRaces, "Trophée R2", "r2");
+    exportCategoryToExcel(simplifiedStandings, allRaces, titles.r2, "r2");
   };
 
   const handleCopiExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(copiloteStandings, "copilote");
-    exportCategoryToExcel(simplifiedStandings, rallyeRaces, "Trophée Copilote", "rallye");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.copilote, "rallye");
   };
 
   return (
@@ -201,10 +205,10 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée de la Montagne */}
         <TabsContent value="montagne" className="space-y-6">
-          <CategoryHeader displayTitle="Trophée de la Montagne" championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.montagne} championshipYear={championshipYear} />
           <RaceCalendar races={montagneRaces} driverIds={piloteIds} />
           <StandingsTable
-            displayTitle="Trophée de la Montagne"
+            displayTitle={titles.montagne}
             races={montagneRaces}
             type="montagne"
             standings={toSimplifiedStandings(montagneStandings, "montagne")}
@@ -227,10 +231,10 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée des Rallyes */}
         <TabsContent value="rallye" className="space-y-6">
-          <CategoryHeader displayTitle="Trophée des Rallyes" championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.rallye} championshipYear={championshipYear} />
           <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
           <StandingsTable
-            displayTitle="Trophée des Rallyes"
+            displayTitle={titles.rallye}
             races={rallyeRaces}
             type="rallye"
             standings={toSimplifiedStandings(rallyeStandings, "rallye")}
@@ -248,10 +252,10 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée R2 */}
         <TabsContent value="r2" className="space-y-6">
-          <CategoryHeader displayTitle="Trophée R2" championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.r2} championshipYear={championshipYear} />
           <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} driverIds={piloteIds} />
           <StandingsTable
-            displayTitle="Trophée R2"
+            displayTitle={titles.r2}
             races={[...montagneRaces, ...rallyeRaces]}
             type="r2"
             standings={toSimplifiedStandings(r2Standings, "r2")}
@@ -262,10 +266,10 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée Copilote */}
         <TabsContent value="copilote" className="space-y-6">
-          <CategoryHeader displayTitle="Trophée Copilote" championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.copilote} championshipYear={championshipYear} />
           <RaceCalendar races={rallyeRaces} driverIds={copiloteIds} />
           <StandingsTable
-            displayTitle="Trophée Copilote"
+            displayTitle={titles.copilote}
             races={rallyeRaces}
             type="rallye"
             standings={toSimplifiedStandings(copiloteStandings, "copilote")}
