@@ -4,9 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Settings, Save, Type, Tag, LayoutList } from 'lucide-react';
+import { Settings, Save, Type, Tag, LayoutList, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChampionshipSettingsProps {
   championshipTitle: string;
