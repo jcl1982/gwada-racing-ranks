@@ -53,6 +53,9 @@ const ChampionshipSettings = ({
   const [titles, setTitles] = useState<StandingsTitles>(standingsTitles || DEFAULT_STANDINGS_TITLES);
   const { toast } = useToast();
 
+  const [bulkYear, setBulkYear] = useState('');
+  const [updatingAll, setUpdatingAll] = useState(false);
+
   const handleSave = () => {
     if (!title.trim() || !year.trim()) {
       toast({
@@ -68,6 +71,42 @@ const ChampionshipSettings = ({
       title: "Paramètres sauvegardés",
       description: "Le titre du championnat a été mis à jour avec succès",
     });
+  };
+
+  const handleUpdateAllYears = async () => {
+    if (!bulkYear.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez saisir la nouvelle année",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUpdatingAll(true);
+    try {
+      const { error } = await supabase
+        .from('championship_config')
+        .update({ year: bulkYear.trim(), updated_at: new Date().toISOString() })
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // update all rows
+
+      if (error) throw error;
+
+      setYear(bulkYear.trim());
+      toast({
+        title: "Tous les championnats mis à jour",
+        description: `L'année de tous les championnats a été changée en "${bulkYear.trim()}"`,
+      });
+    } catch (error) {
+      console.error('Error updating all championships:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour tous les championnats",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingAll(false);
+    }
   };
 
   const handleSaveTitles = () => {
