@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Upload, Settings, Zap, Circle } from 'lucide-react';
+import { Trophy, Home, Upload, Settings, Zap, Circle, Archive } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -40,6 +40,11 @@ const Navigation = ({
     id: 'home' as const,
     label: 'Accueil',
     icon: Home,
+    requiresAuth: false
+  }, {
+    id: 'archives' as const,
+    label: 'Archives',
+    icon: Archive,
     requiresAuth: false
   }, {
     id: 'import' as const,
