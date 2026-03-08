@@ -8,6 +8,18 @@ export interface StandingsTitles {
   rallye: string;
   r2: string;
   copilote: string;
+  // Sous-titres
+  general_subtitle: string;
+  montagne_subtitle: string;
+  rallye_subtitle: string;
+  r2_subtitle: string;
+  copilote_subtitle: string;
+  // Libellés d'onglets
+  general_tab: string;
+  montagne_tab: string;
+  rallye_tab: string;
+  r2_tab: string;
+  copilote_tab: string;
   [key: string]: string;
 }
 
@@ -17,6 +29,16 @@ export const DEFAULT_STANDINGS_TITLES: StandingsTitles = {
   rallye: 'Trophée des Rallyes',
   r2: 'Trophée R2',
   copilote: 'Trophée Copilote',
+  general_subtitle: '',
+  montagne_subtitle: '',
+  rallye_subtitle: '',
+  r2_subtitle: '',
+  copilote_subtitle: '',
+  general_tab: 'Général',
+  montagne_tab: 'Montagne',
+  rallye_tab: 'Rallye',
+  r2_tab: 'R2',
+  copilote_tab: 'Copilote',
 };
 
 export interface ChampionshipConfig {
