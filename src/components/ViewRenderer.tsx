@@ -169,8 +169,11 @@ const ViewRenderer = ({
         <RoleProtectedComponent 
           requiredRole="admin" 
           fallback={<AdminAccessDenied />}
+        >
           <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
+            drivers={drivers}
+            montagneRaces={montagneRaces}
             rallyeRaces={rallyeRaces}
             kartingRaces={kartingRaces}
             accelerationRaces={accelerationRaces}
