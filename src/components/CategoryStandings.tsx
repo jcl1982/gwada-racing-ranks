@@ -9,6 +9,7 @@ import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import StandingsEvolutionChart from '@/components/StandingsEvolutionChart';
+import DriverAdvancedStats from '@/components/DriverAdvancedStats';
 
 interface CategoryStandingsProps {
   title: string;
@@ -91,6 +92,12 @@ const CategoryStandings = ({
         races={races}
         drivers={drivers}
         title={`Évolution des points - ${displayTitle}`}
+        type={type}
+      />
+      <DriverAdvancedStats
+        races={races}
+        drivers={drivers}
+        title={`Statistiques détaillées - ${displayTitle}`}
         type={type}
       />
     </div>
