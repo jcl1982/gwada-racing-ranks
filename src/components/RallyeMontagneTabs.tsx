@@ -222,6 +222,12 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleMontagnePrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(montagneStandings, "montagne")} />
+          <StandingsEvolutionChart
+            races={montagneRaces}
+            drivers={drivers}
+            title={`Évolution des points - ${titles.montagne}`}
+            type="montagne"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -248,6 +254,12 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleRallyePrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(rallyeStandings, "rallye")} />
+          <StandingsEvolutionChart
+            races={rallyeRaces}
+            drivers={drivers}
+            title={`Évolution des points - ${titles.rallye}`}
+            type="rallye"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -269,6 +281,12 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleR2PrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(r2Standings, "r2")} />
+          <StandingsEvolutionChart
+            races={[...montagneRaces, ...rallyeRaces]}
+            drivers={drivers}
+            title={`Évolution des points - ${titles.r2}`}
+            type="all"
+          />
         </TabsContent>
 
         {/* Trophée Copilote */}
