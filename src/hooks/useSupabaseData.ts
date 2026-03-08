@@ -117,7 +117,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     return baseSaveRace(raceWithChampionship);
   };
   
-  const { updateChampionshipConfig, resetAllData, saveStandingsForEvolution } = createConfigOperations(toast, championshipId);
+  const { updateChampionshipConfig, resetAllData, saveStandingsForEvolution, updateStandingsTitles } = createConfigOperations(toast, championshipId);
 
   // Enhanced reset function that reloads data after reset
   const handleResetAllData = async () => {
@@ -186,6 +186,7 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     saveRace,
     deleteRace,
     updateChampionshipConfig: handleUpdateChampionshipConfig,
+    updateStandingsTitles,
     resetAllData: handleResetAllData,
     refreshData: forceRefreshData,
     autoSaveStandingsForEvolution,
