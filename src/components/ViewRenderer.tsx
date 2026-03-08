@@ -169,10 +169,8 @@ const ViewRenderer = ({
         <RoleProtectedComponent 
           requiredRole="admin" 
           fallback={<AdminAccessDenied />}
-        >
+          <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
-            drivers={drivers}
-            montagneRaces={montagneRaces}
             rallyeRaces={rallyeRaces}
             kartingRaces={kartingRaces}
             accelerationRaces={accelerationRaces}
@@ -205,9 +203,8 @@ const ViewRenderer = ({
           requiredRole="admin" 
           fallback={<AdminAccessDenied />}
         >
+          <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
-            drivers={drivers}
-            montagneRaces={[]}
             rallyeRaces={[]}
             kartingRaces={[]}
             accelerationRaces={accelerationRaces}
@@ -234,9 +231,8 @@ const ViewRenderer = ({
           requiredRole="admin" 
           fallback={<AdminAccessDenied />}
         >
+          <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
-            drivers={drivers}
-            montagneRaces={[]}
             rallyeRaces={[]}
             kartingRaces={kartingRaces}
             accelerationRaces={[]}
