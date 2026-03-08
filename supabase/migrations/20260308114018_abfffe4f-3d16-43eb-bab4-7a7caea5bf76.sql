@@ -1,0 +1,2 @@
+UPDATE championship_config SET standings_titles = '{"general": "Classement Accélération"}'::jsonb WHERE type = 'acceleration';
+UPDATE championship_config SET standings_titles = '{"general": "Classement Karting"}'::jsonb WHERE type = 'karting';
