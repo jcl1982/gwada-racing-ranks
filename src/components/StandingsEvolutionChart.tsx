@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Race, Driver } from '@/types/championship';
 import {
