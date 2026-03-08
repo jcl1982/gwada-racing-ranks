@@ -112,7 +112,7 @@ const ViewRenderer = ({
     case 'acceleration':
       return (
         <CategoryStandings
-          title="Championnat Accélération"
+          title={titles.general || "Classement Accélération"}
           races={accelerationRaces}
           drivers={drivers}
           type="acceleration"
