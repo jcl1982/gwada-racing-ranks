@@ -155,6 +155,7 @@ const ViewRenderer = ({
           requiredRole="admin" 
           fallback={<AdminAccessDenied />}
         >
+          <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <ExcelImport
             drivers={drivers}
             races={races}
