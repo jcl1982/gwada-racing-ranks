@@ -11,6 +11,7 @@ import RoleProtectedComponent from '@/components/RoleProtectedComponent';
 import AdminAccessDenied from '@/components/AdminAccessDenied';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
+import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
 
 interface ViewRendererProps {
   currentView: ViewType;
@@ -18,6 +19,7 @@ interface ViewRendererProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
+  standingsTitles?: StandingsTitles;
   montagneRaces: Race[];
   rallyeRaces: Race[];
   kartingRaces: Race[];
@@ -36,7 +38,7 @@ interface ViewRendererProps {
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>;
   deleteRace: (raceId: string) => Promise<void>;
   refreshData: () => Promise<void>;
-  // Ajout des standings par catégorie
+  updateStandingsTitles?: (titles: Record<string, string>) => Promise<void>;
   montagneStandings?: ChampionshipStanding[];
   rallyeStandings?: ChampionshipStanding[];
   r2Standings?: ChampionshipStanding[];
@@ -49,6 +51,7 @@ const ViewRenderer = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  standingsTitles,
   montagneRaces,
   rallyeRaces,
   kartingRaces,
@@ -67,11 +70,14 @@ const ViewRenderer = ({
   saveRace,
   deleteRace,
   refreshData,
+  updateStandingsTitles,
   montagneStandings = [],
   rallyeStandings = [],
   r2Standings = [],
   copiloteStandings = []
 }: ViewRendererProps) => {
+  const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
+
   switch (currentView) {
     case 'home':
       return (
@@ -84,7 +90,6 @@ const ViewRenderer = ({
     case 'montagne':
     case 'rallye':
     case 'r2':
-      // Utiliser RallyeMontagneTabs pour toutes les vues Rallye-Montagne
       return (
         <RallyeMontagneTabs
           generalStandings={standings}
@@ -95,11 +100,11 @@ const ViewRenderer = ({
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}
+          standingsTitles={titles}
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           drivers={drivers}
           onRaceUpdate={async (raceId, results) => {
-            // À implémenter si nécessaire
             await refreshData();
           }}
         />
@@ -124,7 +129,6 @@ const ViewRenderer = ({
           championshipYear={championshipYear}
           previousStandings={previousStandings.karting || []}
           onRaceUpdate={async (raceId, results) => {
-            // Implementation will be handled by parent
             console.log('Race update:', raceId, results);
           }}
         />
@@ -140,7 +144,6 @@ const ViewRenderer = ({
             races={races}
             onImport={handleImport}
             championshipId={championshipId}
-            
           />
         </RoleProtectedComponent>
       );
@@ -160,10 +163,12 @@ const ViewRenderer = ({
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
             championshipId={championshipId}
+            standingsTitles={titles}
             onDriversChange={handleDriversChange}
             onRacesChange={handleRacesChange}
             onReset={handleReset}
             onTitleChange={handleTitleChange}
+            onStandingsTitlesChange={updateStandingsTitles}
             saveDriver={saveDriver}
             deleteDriver={deleteDriver}
             deleteAllDrivers={deleteAllDrivers}
