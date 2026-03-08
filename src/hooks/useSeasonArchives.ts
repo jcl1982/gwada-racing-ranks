@@ -80,8 +80,21 @@ export const useSeasonArchives = () => {
         });
 
       const standingsData: Record<string, any> = {};
+      // Build race lists per category for per-race point tracking
+      const montagneRaces = races.filter(r => r.type === 'montagne');
+      const rallyeRaces = races.filter(r => r.type === 'rallye');
+      const allRaces = races;
+
+      const racesByCategory: Record<string, Race[]> = {
+        general: allRaces,
+        montagne: montagneRaces,
+        rallye: rallyeRaces,
+        r2: allRaces,
+        copilote: rallyeRaces,
+      };
+
       for (const [key, value] of Object.entries(standings)) {
-        standingsData[key] = serializeStandings(value);
+        standingsData[key] = serializeStandings(value, racesByCategory[key] || allRaces);
       }
 
       const driversData = drivers.map(d => ({
@@ -99,15 +112,19 @@ export const useSeasonArchives = () => {
         type: r.type,
         organizer: r.organizer,
         resultsCount: r.results.length,
-        results: r.results.map(res => ({
-          position: res.position,
-          points: res.points,
-          time: res.time,
-          dnf: res.dnf,
-          carModel: res.carModel,
-          category: res.category,
-          bonus: res.bonus,
-        })),
+        results: r.results.map(res => {
+          const driver = drivers.find(d => d.id === res.driverId);
+          return {
+            driverName: driver?.name || 'Inconnu',
+            position: res.position,
+            points: res.points,
+            time: res.time,
+            dnf: res.dnf,
+            carModel: res.carModel,
+            category: res.category,
+            bonus: res.bonus,
+          };
+        }),
       }));
 
       const { error } = await supabase
