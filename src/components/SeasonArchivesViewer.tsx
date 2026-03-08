@@ -4,12 +4,194 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, FileText } from 'lucide-react';
+import { Archive, Calendar, Users, Trophy, Trash2, ChevronDown, ChevronUp, FileSpreadsheet, Mountain, Car, Award, Medal } from 'lucide-react';
 import { useSeasonArchives, SeasonArchive } from '@/hooks/useSeasonArchives';
 import { useUserRole } from '@/hooks/useUserRole';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
+import { getPositionBadgeColor } from '@/utils/championship';
+
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+const CATEGORY_CONFIG: Record<string, { label: string; icon: any; gradient: string }> = {
+  general: { label: 'Général', icon: Trophy, gradient: 'from-yellow-400 to-yellow-600' },
+  montagne: { label: 'Montagne', icon: Mountain, gradient: 'from-green-600 to-emerald-600' },
+  rallye: { label: 'Rallye', icon: Car, gradient: 'from-blue-600 to-cyan-600' },
+  r2: { label: 'R2', icon: Award, gradient: 'from-orange-600 to-red-600' },
+  copilote: { label: 'Copilote', icon: Users, gradient: 'from-purple-600 to-pink-600' },
+};
+
+const ArchiveStandingsTable = ({ standings, activeTab, races }: { standings: any[]; activeTab: string; races: any[] }) => {
+  if (!standings || standings.length === 0) return null;
+
+  const isCopilote = activeTab === 'copilote';
+  const isGeneral = activeTab === 'general';
+
+  // Collect all race names from standings racePoints to know which columns to show
+  const raceNamesSet = new Set<string>();
+  standings.forEach((s: any) => {
+    if (s.racePoints) {
+      Object.keys(s.racePoints).forEach(name => raceNamesSet.add(name));
+    }
+  });
+
+  // Get race details for the relevant races (match by name)
+  const relevantRaces = races
+    .filter((r: any) => raceNamesSet.has(r.name))
+    .sort((a: any, b: any) => a.date.localeCompare(b.date));
+
+  const config = CATEGORY_CONFIG[activeTab] || CATEGORY_CONFIG.general;
+  const Icon = config.icon;
+
+  return (
+    <Card className="card-glass overflow-hidden">
+      <div className={`bg-gradient-to-r ${config.gradient} p-4 text-white`}>
+        <div className="flex items-center justify-center gap-3">
+          <Icon size={24} />
+          <h3 className="font-bold text-xl">{config.label}</h3>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="text-left py-2 px-2 font-semibold">Pos</th>
+              <th className="text-left py-2 px-2 font-semibold">Pilote</th>
+              {!isCopilote && <th className="text-left py-2 px-2 font-semibold">Véhicule</th>}
+              {isGeneral && (
+                <>
+                  <th className="text-center py-2 px-2 font-semibold">Montagne</th>
+                  <th className="text-center py-2 px-2 font-semibold">Rallye</th>
+                </>
+              )}
+              {!isGeneral && relevantRaces.map((race: any, i: number) => (
+                <th key={i} className="text-center py-1 px-1 font-semibold min-w-[80px]">
+                  <div className="text-xs">{race.name}</div>
+                  <div className="text-[10px] text-muted-foreground font-normal">
+                    {format(parseLocalDate(race.date), 'dd/MM/yy', { locale: fr })}
+                    {race.endDate && `-${format(parseLocalDate(race.endDate), 'dd/MM/yy', { locale: fr })}`}
+                  </div>
+                  {race.organizer && (
+                    <div className="text-[10px] text-muted-foreground font-normal italic">{race.organizer}</div>
+                  )}
+                </th>
+              ))}
+              <th className="text-center py-2 px-2 font-semibold">Total</th>
+              <th className="text-center py-2 px-2 font-semibold">Écart</th>
+            </tr>
+          </thead>
+          <tbody>
+            {standings.map((s: any, i: number) => {
+              const gap = standings[0].totalPoints - s.totalPoints;
+              return (
+                <tr key={i} className={`border-b transition-colors hover:bg-muted/30 ${i % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}>
+                  <td className="py-1 px-2">
+                    <Badge className={`${getPositionBadgeColor(s.position || i + 1)} font-bold`}>
+                      {s.position || i + 1}
+                    </Badge>
+                  </td>
+                  <td className="py-1 px-2 font-medium">{s.driverName}</td>
+                  {!isCopilote && (
+                    <td className="py-1 px-2 text-muted-foreground text-sm">{s.driverCarModel || '—'}</td>
+                  )}
+                  {isGeneral && (
+                    <>
+                      <td className="py-1 px-2 text-center">{s.montagnePoints || 0}</td>
+                      <td className="py-1 px-2 text-center">{s.rallyePoints || 0}</td>
+                    </>
+                  )}
+                  {!isGeneral && relevantRaces.map((race: any, ri: number) => {
+                    const pts = s.racePoints?.[race.name] || 0;
+                    return (
+                      <td key={ri} className="py-1 px-1 text-center">
+                        {pts > 0 ? (
+                          <Badge variant="outline" className="text-xs">{pts} pts</Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">-</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                  <td className="py-1 px-2 text-center">
+                    <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
+                      {s.totalPoints || 0} pts
+                    </Badge>
+                  </td>
+                  <td className="py-1 px-2 text-center">
+                    <Badge variant="outline" className={gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'}>
+                      {gap === 0 ? '—' : `-${gap}`}
+                    </Badge>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+};
+
+const ArchivePodium = ({ standings }: { standings: any[] }) => {
+  const top3 = standings.slice(0, 3);
+  if (top3.length === 0) return null;
+
+  const medals = ['🥇', '🥈', '🥉'];
+  const colors = [
+    'from-yellow-400 to-amber-500',
+    'from-gray-300 to-gray-400',
+    'from-orange-400 to-orange-500',
+  ];
+
+  return (
+    <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+      {[1, 0, 2].map(idx => {
+        const s = top3[idx];
+        if (!s) return <div key={idx} />;
+        return (
+          <Card key={idx} className={`card-glass p-4 text-center ${idx === 0 ? 'mt-0' : 'mt-4'}`}>
+            <div className="text-3xl mb-2">{medals[idx]}</div>
+            <div className="font-bold text-sm">{s.driverName}</div>
+            {s.driverTeam && <div className="text-xs text-muted-foreground">{s.driverTeam}</div>}
+            <Badge className={`mt-2 bg-gradient-to-r ${colors[idx]} text-white`}>
+              {s.totalPoints} pts
+            </Badge>
+          </Card>
+        );
+      })}
+    </div>
+  );
+};
+
+const ArchiveRaceCalendar = ({ races }: { races: any[] }) => {
+  if (!races || races.length === 0) return null;
+
+  return (
+    <Card className="card-glass p-4">
+      <h4 className="font-semibold mb-3 flex items-center gap-2">
+        <Calendar size={18} /> Calendrier des courses
+      </h4>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {races.map((race: any, i: number) => (
+          <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-muted/30">
+            <div className="text-xs font-mono text-muted-foreground">
+              {format(parseLocalDate(race.date), 'dd MMM', { locale: fr })}
+            </div>
+            <div>
+              <div className="text-sm font-medium">{race.name}</div>
+              <div className="text-xs text-muted-foreground capitalize">{race.type}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+};
 
 const SeasonArchivesViewer = () => {
   const { archives, loading, deleteArchive } = useSeasonArchives();
@@ -24,41 +206,42 @@ const SeasonArchivesViewer = () => {
 
   const exportArchiveToExcel = (archive: SeasonArchive) => {
     const wb = XLSX.utils.book_new();
-
-    // Export each standings type
     const standingsData = archive.standings_data as Record<string, any[]>;
+    const racesArr = Array.isArray(archive.races_data) ? archive.races_data : [];
+
     for (const [key, standings] of Object.entries(standingsData)) {
       if (!Array.isArray(standings) || standings.length === 0) continue;
-      
-      const rows = standings.map((s: any, i: number) => ({
-        Position: s.position || i + 1,
-        Pilote: s.driverName,
-        Équipe: s.driverTeam || '',
-        'Points Montagne': s.montagnePoints || 0,
-        'Points Rallye': s.rallyePoints || 0,
-        'Total Points': s.totalPoints || 0,
-      }));
+
+      const rows = standings.map((s: any, i: number) => {
+        const row: Record<string, any> = {
+          Position: s.position || i + 1,
+          Pilote: s.driverName,
+          Équipe: s.driverTeam || '',
+          Véhicule: s.driverCarModel || '',
+        };
+
+        // Add per-race columns
+        if (s.racePoints) {
+          for (const [raceName, pts] of Object.entries(s.racePoints)) {
+            row[raceName] = pts;
+          }
+        }
+
+        if (key === 'general') {
+          row['Points Montagne'] = s.montagnePoints || 0;
+          row['Points Rallye'] = s.rallyePoints || 0;
+        }
+        row['Total Points'] = s.totalPoints || 0;
+        return row;
+      });
 
       const ws = XLSX.utils.json_to_sheet(rows);
-      const tabName = key.charAt(0).toUpperCase() + key.slice(1);
-      XLSX.utils.book_append_sheet(wb, ws, tabName.substring(0, 31));
+      const tabName = (CATEGORY_CONFIG[key]?.label || key).substring(0, 31);
+      XLSX.utils.book_append_sheet(wb, ws, tabName);
     }
 
-    // Export drivers
-    if (Array.isArray(archive.drivers_data) && archive.drivers_data.length > 0) {
-      const driversRows = archive.drivers_data.map((d: any) => ({
-        Nom: d.name,
-        Équipe: d.team || '',
-        Numéro: d.number || '',
-        Voiture: d.carModel || '',
-        Rôle: d.driverRole || 'pilote',
-      }));
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(driversRows), 'Pilotes');
-    }
-
-    // Export races
-    if (Array.isArray(archive.races_data) && archive.races_data.length > 0) {
-      const racesRows = archive.races_data.map((r: any) => ({
+    if (racesArr.length > 0) {
+      const racesRows = racesArr.map((r: any) => ({
         Course: r.name,
         Date: r.date,
         Type: r.type,
@@ -105,7 +288,17 @@ const SeasonArchivesViewer = () => {
           k => Array.isArray(standingsData[k]) && standingsData[k].length > 0
         );
         const driversCount = Array.isArray(archive.drivers_data) ? archive.drivers_data.length : 0;
-        const racesCount = Array.isArray(archive.races_data) ? archive.races_data.length : 0;
+        const racesArr = Array.isArray(archive.races_data) ? archive.races_data : [];
+        const racesCount = racesArr.length;
+
+        // Get races for the active tab
+        const activeRaces = activeTab === 'general'
+          ? racesArr
+          : activeTab === 'montagne'
+          ? racesArr.filter((r: any) => r.type === 'montagne')
+          : activeTab === 'rallye' || activeTab === 'copilote'
+          ? racesArr.filter((r: any) => r.type === 'rallye')
+          : racesArr; // r2 uses all races
 
         return (
           <Card key={archive.id} className="card-glass overflow-hidden">
@@ -114,13 +307,13 @@ const SeasonArchivesViewer = () => {
               className="p-4 cursor-pointer hover:bg-muted/30 transition-colors flex items-center justify-between"
               onClick={() => toggleExpanded(archive.id)}
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 <Trophy size={24} className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">{archive.title}</h3>
                   <p className="text-sm text-muted-foreground">{archive.year}</p>
                 </div>
-                <div className="flex gap-2 ml-4">
+                <div className="flex gap-2 ml-4 flex-wrap">
                   <Badge variant="outline" className="flex items-center gap-1">
                     <Users size={12} /> {driversCount} pilotes
                   </Badge>
@@ -140,7 +333,7 @@ const SeasonArchivesViewer = () => {
 
             {/* Expanded content */}
             {isExpanded && (
-              <div className="border-t p-4 space-y-4">
+              <div className="border-t p-4 space-y-6">
                 {/* Actions */}
                 <div className="flex gap-2 flex-wrap">
                   <Button
@@ -179,67 +372,43 @@ const SeasonArchivesViewer = () => {
                   )}
                 </div>
 
-                {/* Standings tabs */}
+                {/* Race calendar */}
+                <ArchiveRaceCalendar races={activeRaces} />
+
+                {/* Category tabs */}
                 {standingsKeys.length > 0 && (
-                  <div>
-                    <div className="flex gap-2 mb-3 flex-wrap">
-                      {standingsKeys.map(key => (
-                        <Button
-                          key={key}
-                          variant={activeTab === key ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setActiveTab(key)}
-                        >
-                          {key === 'general' ? 'Général' :
-                           key === 'montagne' ? 'Montagne' :
-                           key === 'rallye' ? 'Rallye' :
-                           key === 'r2' ? 'R2' :
-                           key === 'copilote' ? 'Copilote' :
-                           key.charAt(0).toUpperCase() + key.slice(1)}
-                        </Button>
-                      ))}
+                  <div className="space-y-4">
+                    <div className="flex gap-2 flex-wrap">
+                      {standingsKeys.map(key => {
+                        const cfg = CATEGORY_CONFIG[key];
+                        const Icon = cfg?.icon || Trophy;
+                        return (
+                          <Button
+                            key={key}
+                            variant={activeTab === key ? 'default' : 'outline'}
+                            size="sm"
+                            onClick={() => setActiveTab(key)}
+                            className="flex items-center gap-1"
+                          >
+                            <Icon size={14} />
+                            {cfg?.label || key}
+                          </Button>
+                        );
+                      })}
                     </div>
 
-                    {/* Standings table */}
-                    {standingsData[activeTab] && Array.isArray(standingsData[activeTab]) && (
-                      <div className="overflow-x-auto rounded-lg border">
-                        <table className="w-full text-sm">
-                          <thead className="bg-muted/50">
-                            <tr>
-                              <th className="text-left py-2 px-3 font-semibold">Pos</th>
-                              <th className="text-left py-2 px-3 font-semibold">Pilote</th>
-                              <th className="text-left py-2 px-3 font-semibold">Équipe</th>
-                              {activeTab === 'general' && (
-                                <>
-                                  <th className="text-center py-2 px-3 font-semibold">Montagne</th>
-                                  <th className="text-center py-2 px-3 font-semibold">Rallye</th>
-                                </>
-                              )}
-                              <th className="text-center py-2 px-3 font-semibold">Total</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {standingsData[activeTab].map((s: any, i: number) => (
-                              <tr key={i} className={`border-b ${i % 2 === 0 ? 'bg-background' : 'bg-muted/20'}`}>
-                                <td className="py-2 px-3">
-                                  <Badge variant={s.position <= 3 ? 'default' : 'outline'} className="font-bold">
-                                    {s.position || i + 1}
-                                  </Badge>
-                                </td>
-                                <td className="py-2 px-3 font-medium">{s.driverName}</td>
-                                <td className="py-2 px-3 text-muted-foreground">{s.driverTeam || '—'}</td>
-                                {activeTab === 'general' && (
-                                  <>
-                                    <td className="py-2 px-3 text-center">{s.montagnePoints || 0}</td>
-                                    <td className="py-2 px-3 text-center">{s.rallyePoints || 0}</td>
-                                  </>
-                                )}
-                                <td className="py-2 px-3 text-center font-bold">{s.totalPoints || 0}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                    {/* Podium */}
+                    {standingsData[activeTab] && (
+                      <ArchivePodium standings={standingsData[activeTab]} />
+                    )}
+
+                    {/* Detailed standings table */}
+                    {standingsData[activeTab] && (
+                      <ArchiveStandingsTable
+                        standings={standingsData[activeTab]}
+                        activeTab={activeTab}
+                        races={activeRaces}
+                      />
                     )}
                   </div>
                 )}
