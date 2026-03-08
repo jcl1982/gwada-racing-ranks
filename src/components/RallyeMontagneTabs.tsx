@@ -155,29 +155,29 @@ const RallyeMontagneTabs = ({
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
-            <span className="hidden sm:inline">Général</span>
+            <span className="hidden sm:inline">{titles.general_tab || 'Général'}</span>
           </TabsTrigger>
           <TabsTrigger value="montagne" className="flex items-center gap-2">
             <Mountain className="w-4 h-4" />
-            <span className="hidden sm:inline">Montagne</span>
+            <span className="hidden sm:inline">{titles.montagne_tab || 'Montagne'}</span>
           </TabsTrigger>
           <TabsTrigger value="rallye" className="flex items-center gap-2">
             <Car className="w-4 h-4" />
-            <span className="hidden sm:inline">Rallye</span>
+            <span className="hidden sm:inline">{titles.rallye_tab || 'Rallye'}</span>
           </TabsTrigger>
           <TabsTrigger value="r2" className="flex items-center gap-2">
             <Award className="w-4 h-4" />
-            <span className="hidden sm:inline">R2</span>
+            <span className="hidden sm:inline">{titles.r2_tab || 'R2'}</span>
           </TabsTrigger>
           <TabsTrigger value="copilote" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
-            <span className="hidden sm:inline">Copilote</span>
+            <span className="hidden sm:inline">{titles.copilote_tab || 'Copilote'}</span>
           </TabsTrigger>
         </TabsList>
 
         {/* Classement Général */}
         <TabsContent value="general" className="space-y-6">
-          <GeneralStandingsHeader championshipTitle={championshipTitle} championshipYear={championshipYear} />
+          <GeneralStandingsHeader championshipTitle={championshipTitle} championshipYear={championshipYear} subtitle={titles.general_subtitle || undefined} />
           <GeneralStandingsTable
             standings={generalStandings}
             championshipTitle={championshipTitle}
@@ -205,7 +205,7 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée de la Montagne */}
         <TabsContent value="montagne" className="space-y-6">
-          <CategoryHeader displayTitle={titles.montagne} championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.montagne} championshipYear={championshipYear} subtitle={titles.montagne_subtitle || undefined} />
           <RaceCalendar races={montagneRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle={titles.montagne}
@@ -231,7 +231,7 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée des Rallyes */}
         <TabsContent value="rallye" className="space-y-6">
-          <CategoryHeader displayTitle={titles.rallye} championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.rallye} championshipYear={championshipYear} subtitle={titles.rallye_subtitle || undefined} />
           <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
           <StandingsTable
             displayTitle={titles.rallye}
@@ -252,7 +252,7 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée R2 */}
         <TabsContent value="r2" className="space-y-6">
-          <CategoryHeader displayTitle={titles.r2} championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.r2} championshipYear={championshipYear} subtitle={titles.r2_subtitle || undefined} />
           <RaceCalendar races={[...montagneRaces, ...rallyeRaces]} driverIds={piloteIds} />
           <StandingsTable
             displayTitle={titles.r2}
@@ -266,7 +266,7 @@ const RallyeMontagneTabs = ({
 
         {/* Trophée Copilote */}
         <TabsContent value="copilote" className="space-y-6">
-          <CategoryHeader displayTitle={titles.copilote} championshipYear={championshipYear} />
+          <CategoryHeader displayTitle={titles.copilote} championshipYear={championshipYear} subtitle={titles.copilote_subtitle || undefined} />
           <RaceCalendar races={rallyeRaces} driverIds={copiloteIds} />
           <StandingsTable
             displayTitle={titles.copilote}
