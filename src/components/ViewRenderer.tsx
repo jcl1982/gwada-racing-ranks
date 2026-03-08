@@ -208,6 +208,8 @@ const ViewRenderer = ({
         >
           <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
+            drivers={drivers}
+            montagneRaces={[]}
             rallyeRaces={[]}
             kartingRaces={[]}
             accelerationRaces={accelerationRaces}
@@ -236,6 +238,8 @@ const ViewRenderer = ({
         >
           <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
           <AdminPanel
+            drivers={drivers}
+            montagneRaces={[]}
             rallyeRaces={[]}
             kartingRaces={kartingRaces}
             accelerationRaces={[]}
