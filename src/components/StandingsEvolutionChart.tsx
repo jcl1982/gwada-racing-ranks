@@ -26,7 +26,6 @@ const StandingsEvolutionChart = ({
   type = 'all',
 }: StandingsEvolutionChartProps) => {
   const [visibleDrivers, setVisibleDrivers] = useState<Set<string>>(new Set());
-  const [initialized, setInitialized] = useState(false);
 
   // Filter and sort races by date
   const sortedRaces = useMemo(() => {
@@ -77,12 +76,11 @@ const StandingsEvolutionChart = ({
   }, [sortedRaces, drivers]);
 
   // Initialize visible drivers to top 5
-  useMemo(() => {
-    if (!initialized && activeDrivers.length > 0) {
+  useEffect(() => {
+    if (activeDrivers.length > 0) {
       setVisibleDrivers(new Set(activeDrivers.slice(0, 5).map(d => d.id)));
-      setInitialized(true);
     }
-  }, [activeDrivers, initialized]);
+  }, [activeDrivers]);
 
   if (sortedRaces.length === 0) {
     return null;
