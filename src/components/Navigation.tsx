@@ -106,37 +106,20 @@ const Navigation = ({
             <span className="sm:hidden">Karting</span>
           </button>
 
-          {/* Administration accordion menu */}
-          {isAuthenticated && isAdmin && (
-            <Accordion type="single" collapsible className="w-full sm:w-auto">
-              <AccordionItem value="admin" className="border-none">
-                <AccordionTrigger 
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:no-underline ${isAdminView ? 'gradient-caribbean text-white shadow-lg' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md'}`}
-                >
-                  <Settings size={18} />
-                  <span className="hidden sm:inline">Administration</span>
-                </AccordionTrigger>
-                <AccordionContent className="pb-2 pt-2">
-                  <div className="flex flex-row gap-4 justify-center items-center px-4">
-                    {adminMenuItems.map(({
-                      id,
-                      label,
-                      icon: Icon
-                    }) => (
-                      <button 
-                        key={id} 
-                        onClick={() => onViewChange(id)} 
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded font-medium transition-all duration-300 text-sm ${currentView === id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
-                      >
-                        <Icon size={16} />
-                        <span>{label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
+          {isAuthenticated && isAdmin && adminMenuItems.map(({
+            id,
+            label,
+            icon: Icon
+          }) => (
+            <button 
+              key={id} 
+              onClick={() => onViewChange(id)} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === id ? 'gradient-caribbean text-white shadow-lg transform scale-105' : 'bg-white/70 text-gray-700 hover:bg-white/90 hover:shadow-md hover:scale-102'}`}
+            >
+              <Icon size={18} />
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
         </nav>
         
         {isAuthenticated && isAdmin && <AuthButton />}
