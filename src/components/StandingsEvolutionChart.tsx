@@ -10,7 +10,7 @@ interface StandingsEvolutionChartProps {
   races: Race[];
   drivers: Driver[];
   title?: string;
-  type?: 'montagne' | 'rallye' | 'karting' | 'acceleration' | 'all';
+  type?: 'montagne' | 'rallye' | 'karting' | 'acceleration' | 'r2' | 'all';
 }
 
 const COLORS = [
