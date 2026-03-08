@@ -16,6 +16,7 @@ import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 import StandingsEvolutionChart from "@/components/StandingsEvolutionChart";
 import DriverAdvancedStats from "@/components/DriverAdvancedStats";
+import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
 
@@ -202,6 +203,11 @@ const RallyeMontagneTabs = ({
             drivers={drivers}
             title="Statistiques détaillées - Classement Général"
             type="all"
+          />
+          <DriverComparator
+            races={[...montagneRaces, ...rallyeRaces]}
+            drivers={pilotes}
+            title="Comparateur de pilotes - Général"
           />
 
           {onRaceUpdate && isAdmin && (
