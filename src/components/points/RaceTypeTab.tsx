@@ -26,7 +26,7 @@ const RaceTypeTab = ({ races, drivers, raceType, onRaceUpdate, driverLabel, sele
   if (races.length === 0) {
     return (
       <Card className="p-8 text-center">
-        <p className="text-gray-500">{emptyMessage}</p>
+        <p className="text-muted-foreground">{emptyMessage}</p>
       </Card>
     );
   }

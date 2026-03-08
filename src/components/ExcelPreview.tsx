@@ -20,7 +20,7 @@ const ExcelPreview = ({ previewData, onImport, onCancel }: ExcelPreviewProps) =>
         {previewData.map((race, index) => (
           <div key={index} className="space-y-2">
             <h3 className="font-semibold text-lg">{race.raceName}</h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Date: {race.raceDate} | Type: {
                 race.raceType === 'montagne' ? 'Course de Côte' : 
                 race.raceType === 'karting' ? `Karting${race.kartingCategory ? ` (${race.kartingCategory})` : ''}` :
