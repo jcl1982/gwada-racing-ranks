@@ -162,5 +162,42 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, resetAllData, saveStandingsForEvolution };
+  const updateStandingsTitles = async (titles: Record<string, string>) => {
+    try {
+      console.log('⚙️ Updating standings titles:', { titles, championshipId });
+
+      if (!championshipId) {
+        throw new Error('Championship ID is required');
+      }
+
+      const { error } = await supabase
+        .from('championship_config')
+        .update({
+          standings_titles: titles as any,
+          updated_at: new Date().toISOString()
+        } as any)
+        .eq('id', championshipId);
+
+      if (error) {
+        console.error('❌ Update standings titles error:', error);
+        throw error;
+      }
+
+      console.log('✅ Standings titles updated successfully');
+      toast({
+        title: "Titres mis à jour",
+        description: "Les titres des classements ont été mis à jour.",
+      });
+    } catch (error) {
+      console.error('❌ Error updating standings titles:', error);
+      toast({
+        title: "Erreur de mise à jour",
+        description: "Impossible de mettre à jour les titres.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+
+  return { updateChampionshipConfig, resetAllData, saveStandingsForEvolution, updateStandingsTitles };
 };
