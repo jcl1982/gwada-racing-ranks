@@ -9,6 +9,7 @@ import ExcelImport from '@/components/ExcelImport';
 import AdminPanel from '@/components/AdminPanel';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
 import AdminAccessDenied from '@/components/AdminAccessDenied';
+import SeasonArchivesViewer from '@/components/SeasonArchivesViewer';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
@@ -133,6 +134,8 @@ const ViewRenderer = ({
           }}
         />
       );
+    case 'archives':
+      return <SeasonArchivesViewer />;
     case 'import':
       return (
         <RoleProtectedComponent 
