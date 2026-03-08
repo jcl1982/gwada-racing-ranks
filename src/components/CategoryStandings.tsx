@@ -8,6 +8,7 @@ import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
+import StandingsEvolutionChart from '@/components/StandingsEvolutionChart';
 
 interface CategoryStandingsProps {
   title: string;
@@ -86,6 +87,12 @@ const CategoryStandings = ({
         onPrintPdf={handlePrintPdf}
       />
       <PodiumSection standings={standings} />
+      <StandingsEvolutionChart
+        races={races}
+        drivers={drivers}
+        title={`Évolution des points - ${displayTitle}`}
+        type={type}
+      />
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { useWebPrint } from "@/hooks/useWebPrint";
 import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
+import StandingsEvolutionChart from "@/components/StandingsEvolutionChart";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
 
@@ -189,6 +190,12 @@ const RallyeMontagneTabs = ({
             onPrintExcel={handleGeneralExportExcel}
           />
           <GeneralStandingsStats standings={generalStandings} />
+          <StandingsEvolutionChart
+            races={[...montagneRaces, ...rallyeRaces]}
+            drivers={drivers}
+            title="Évolution des points - Classement Général"
+            type="all"
+          />
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
