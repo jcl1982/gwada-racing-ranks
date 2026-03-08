@@ -63,10 +63,11 @@ const CategoryStandings = ({
     return [];
   }, [type, montagneStandings, rallyeStandings]);
 
-  // Remplacer les titres pour les catégories
-  const displayTitle = type === 'montagne' ? 'Trophée de la Montagne' : 
+  // Utiliser le titre passé en prop, ou fallback selon le type
+  const displayTitle = title || (type === 'montagne' ? 'Trophée de la Montagne' : 
                       type === 'r2' ? 'Trophée R2' : 
-                      'Trophée des Rallyes';
+                      type === 'acceleration' ? 'Classement Accélération' :
+                      'Trophée des Rallyes');
 
   const handlePrintPdf = () => {
     // Passe les classements déjà calculés au PDF pour garantir la cohérence
