@@ -15,6 +15,10 @@ interface AdminPanelProps {
   kartingRaces: Race[];
   accelerationRaces: Race[];
   standings: ChampionshipStanding[];
+  montagneStandings?: ChampionshipStanding[];
+  rallyeStandings?: ChampionshipStanding[];
+  r2Standings?: ChampionshipStanding[];
+  copiloteStandings?: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
@@ -39,6 +43,10 @@ const AdminPanel = ({
   kartingRaces,
   accelerationRaces,
   standings,
+  montagneStandings = [],
+  rallyeStandings = [],
+  r2Standings = [],
+  copiloteStandings = [],
   championshipTitle,
   championshipYear,
   championshipId,
@@ -85,6 +93,10 @@ const AdminPanel = ({
           races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
           standings={{
             general: standings,
+            montagne: montagneStandings,
+            rallye: rallyeStandings,
+            r2: r2Standings,
+            copilote: copiloteStandings,
           }}
           standingsTitles={standingsTitles}
         />
