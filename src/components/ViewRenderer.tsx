@@ -10,6 +10,7 @@ import AdminPanel from '@/components/AdminPanel';
 import AdminHub from '@/components/AdminHub';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
 import AdminAccessDenied from '@/components/AdminAccessDenied';
+import AdminBreadcrumb from '@/components/AdminBreadcrumb';
 import SeasonArchivesViewer from '@/components/SeasonArchivesViewer';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
