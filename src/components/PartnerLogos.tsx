@@ -1,6 +1,6 @@
 import asaArchipelLogo from '@/assets/asaarchipel.jpg';
 import asaCaraibLogo from '@/assets/asacaraib.jpg';
-import asagLogo from '@/assets/asag-logo.png';
+import asagLogo from '@/assets/lsag-logo.jpg';
 import kartingLogo from '@/assets/karting.png';
 import Logo from './Logo';
 
