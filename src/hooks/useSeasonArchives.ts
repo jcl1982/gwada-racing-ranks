@@ -81,9 +81,13 @@ export const useSeasonArchives = () => {
 
       const standingsData: Record<string, any> = {};
       // Build race lists per category for per-race point tracking
-      const montagneRaces = races.filter(r => r.type === 'montagne');
-      const rallyeRaces = races.filter(r => r.type === 'rallye');
-      const allRaces = races;
+      // Dédupliquer les courses par ID
+      const uniqueRacesForStandings = races.filter((race, index, self) =>
+        index === self.findIndex(r => r.id === race.id)
+      );
+      const montagneRaces = uniqueRacesForStandings.filter(r => r.type === 'montagne');
+      const rallyeRaces = uniqueRacesForStandings.filter(r => r.type === 'rallye');
+      const allRaces = uniqueRacesForStandings;
 
       const racesByCategory: Record<string, Race[]> = {
         general: allRaces,
@@ -97,6 +101,11 @@ export const useSeasonArchives = () => {
         standingsData[key] = serializeStandings(value, racesByCategory[key] || allRaces);
       }
 
+      // Dédupliquer les courses par ID pour éviter les doublons dans l'archive
+      const uniqueRaces = races.filter((race, index, self) =>
+        index === self.findIndex(r => r.id === race.id)
+      );
+
       const driversData = drivers.map(d => ({
         name: d.name,
         team: d.team,
@@ -105,7 +114,7 @@ export const useSeasonArchives = () => {
         driverRole: d.driverRole,
       }));
 
-      const racesData = races.map(r => ({
+      const racesData = uniqueRaces.map(r => ({
         name: r.name,
         date: r.date,
         endDate: r.endDate,
