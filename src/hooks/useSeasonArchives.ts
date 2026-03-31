@@ -81,9 +81,13 @@ export const useSeasonArchives = () => {
 
       const standingsData: Record<string, any> = {};
       // Build race lists per category for per-race point tracking
-      const montagneRaces = races.filter(r => r.type === 'montagne');
-      const rallyeRaces = races.filter(r => r.type === 'rallye');
-      const allRaces = races;
+      // Dédupliquer les courses par ID
+      const uniqueRacesForStandings = races.filter((race, index, self) =>
+        index === self.findIndex(r => r.id === race.id)
+      );
+      const montagneRaces = uniqueRacesForStandings.filter(r => r.type === 'montagne');
+      const rallyeRaces = uniqueRacesForStandings.filter(r => r.type === 'rallye');
+      const allRaces = uniqueRacesForStandings;
 
       const racesByCategory: Record<string, Race[]> = {
         general: allRaces,
