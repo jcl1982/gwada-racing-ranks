@@ -4,7 +4,7 @@ import { PDF_STYLES } from './pdfStyles';
 
 export const addLogosToDoc = (doc: jsPDF, isLandscape: boolean = false) => {
   // Logo de la ligue (haut gauche)
-  const ligueLogoUrl = '/lovable-uploads/9fcde9f0-2732-40e7-a37d-2bf3981cefaf.png';
+  const ligueLogoUrl = '/images/lsag-logo.jpg';
   doc.addImage(
     ligueLogoUrl, 
     'PNG', 
