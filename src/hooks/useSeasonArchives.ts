@@ -110,7 +110,7 @@ export const useSeasonArchives = () => {
         driverRole: d.driverRole,
       }));
 
-      const racesData = races.map(r => ({
+      const racesData = uniqueRaces.map(r => ({
         name: r.name,
         date: r.date,
         endDate: r.endDate,
