@@ -97,6 +97,11 @@ export const useSeasonArchives = () => {
         standingsData[key] = serializeStandings(value, racesByCategory[key] || allRaces);
       }
 
+      // Dédupliquer les courses par ID pour éviter les doublons dans l'archive
+      const uniqueRaces = races.filter((race, index, self) =>
+        index === self.findIndex(r => r.id === race.id)
+      );
+
       const driversData = drivers.map(d => ({
         name: d.name,
         team: d.team,
