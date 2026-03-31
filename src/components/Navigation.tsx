@@ -28,11 +28,6 @@ const Navigation = ({
     label: 'Accueil',
     icon: Home,
     requiresAuth: false
-  }, {
-    id: 'archives' as const,
-    label: 'Archives',
-    icon: Archive,
-    requiresAuth: false
   }];
 
   // Filter nav items based on authentication
