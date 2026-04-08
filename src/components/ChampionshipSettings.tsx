@@ -23,6 +23,7 @@ const TITLE_LABELS: Record<string, string> = {
   rallye: 'Trophée Rallye',
   r2: 'Trophée R2',
   copilote: 'Trophée Copilote',
+  vmrs: 'Trophée VMRS',
 };
 
 const SUBTITLE_LABELS: Record<string, string> = {
@@ -31,6 +32,7 @@ const SUBTITLE_LABELS: Record<string, string> = {
   rallye_subtitle: 'Sous-titre Rallye',
   r2_subtitle: 'Sous-titre R2',
   copilote_subtitle: 'Sous-titre Copilote',
+  vmrs_subtitle: 'Sous-titre VMRS',
 };
 
 const TAB_LABELS: Record<string, string> = {
@@ -39,6 +41,7 @@ const TAB_LABELS: Record<string, string> = {
   rallye_tab: 'Onglet Rallye',
   r2_tab: 'Onglet R2',
   copilote_tab: 'Onglet Copilote',
+  vmrs_tab: 'Onglet VMRS',
 };
 
 const ChampionshipSettings = ({ 
