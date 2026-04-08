@@ -1,6 +1,6 @@
 import { ChampionshipStanding, Race, Driver } from "@/types/championship";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Mountain, Car, Award, Users } from "lucide-react";
+import { Trophy, Mountain, Car, Award, Users, Gauge } from "lucide-react";
 import GeneralStandingsHeader from "@/components/GeneralStandingsHeader";
 import GeneralStandingsTable from "@/components/GeneralStandingsTable";
 import GeneralStandingsStats from "@/components/GeneralStandingsStats";
@@ -26,6 +26,8 @@ interface RallyeMontagneTabsProps {
   rallyeStandings: ChampionshipStanding[];
   r2Standings: ChampionshipStanding[];
   copiloteStandings: ChampionshipStanding[];
+  vmrsStandings: ChampionshipStanding[];
+  vmrsCopiloteStandings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
@@ -42,6 +44,8 @@ const RallyeMontagneTabs = ({
   rallyeStandings,
   r2Standings,
   copiloteStandings,
+  vmrsStandings,
+  vmrsCopiloteStandings,
   championshipTitle,
   championshipYear,
   championshipId,
