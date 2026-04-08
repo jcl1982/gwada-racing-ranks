@@ -9,6 +9,17 @@ import {
   type StandingType
 } from './championshipEvolution';
 
+// Barème de points VMRS - Classement (Article 7.3)
+const VMRS_CLASSEMENT_POINTS: Record<number, number> = {
+  1: 15, 2: 12, 3: 10, 4: 9, 5: 8,
+  6: 7, 7: 6, 8: 5, 9: 4, 10: 3, 11: 2,
+};
+
+// Points VMRS pour une position (12e et au-delà = 1 point)
+const getVmrsClassementPoints = (position: number): number => {
+  return VMRS_CLASSEMENT_POINTS[position] ?? (position >= 12 ? 1 : 0);
+};
+
 export const calculateDriverPoints = (driverId: string, races: Race[]): number => {
   return races.reduce((total, race) => {
     const result = race.results.find(r => r.driverId === driverId);
