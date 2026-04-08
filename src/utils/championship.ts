@@ -257,6 +257,55 @@ export const calculateCopiloteStandings = (
   return standings;
 };
 
+// Calculer le classement VMRS (Véhicules de Moyenne Régularité Sportive)
+// Article 7 : ouvert aux pilotes et copilotes participant aux épreuves de régularité
+export const calculateVmrsStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  console.log('🚗 [VMRS] ===== CALCUL DU CLASSEMENT VMRS =====');
+
+  // Filtrer uniquement les pilotes
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+
+  const standings = pilotes
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
+
+  sortRallyeStandingsByPoints(standings);
+  calculatePositionsAndEvolution(standings, 'rallye');
+
+  console.log('🚗 [VMRS] Classement VMRS calculé:', standings.length, 'pilotes');
+  return standings;
+};
+
+// Calculer le classement VMRS Copilotes
+export const calculateVmrsCopiloteStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
+
+  const standings = copilotes
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
+
+  sortRallyeStandingsByPoints(standings);
+  calculatePositionsAndEvolution(standings, 'rallye');
+
+  return standings;
+};
+
 export const getPositionBadgeColor = (position: number): string => {
   if (position === 1) return 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-white';
   if (position === 2) return 'bg-gradient-to-r from-gray-300 to-gray-500 text-white';
