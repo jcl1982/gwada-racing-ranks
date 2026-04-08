@@ -397,6 +397,66 @@ const RallyeMontagneTabs = ({
             </div>
           )}
         </TabsContent>
+
+        {/* Trophée VMRS */}
+        <TabsContent value="vmrs" className="space-y-6">
+          <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
+          <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
+          <StandingsTable
+            displayTitle={`${titles.vmrs} - Pilotes`}
+            races={rallyeRaces}
+            type="rallye"
+            standings={toSimplifiedStandings(vmrsStandings, "rallye")}
+            onPrintPdf={handleVmrsPrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(vmrsStandings, "rallye")} />
+
+          {vmrsCopiloteStandings.length > 0 && (
+            <>
+              <StandingsTable
+                displayTitle={`${titles.vmrs} - Copilotes`}
+                races={rallyeRaces}
+                type="rallye"
+                standings={toSimplifiedStandings(vmrsCopiloteStandings, "copilote")}
+                onPrintPdf={() => {
+                  const simplifiedStandings = toSimplifiedStandings(vmrsCopiloteStandings, "copilote");
+                  exportCategoryStandings(`${titles.vmrs} - Copilotes`, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+                }}
+              />
+              <PodiumSection standings={toSimplifiedStandings(vmrsCopiloteStandings, "copilote")} />
+            </>
+          )}
+
+          <StandingsEvolutionChart
+            races={rallyeRaces}
+            drivers={drivers}
+            title={`Évolution des points - ${titles.vmrs}`}
+            type="rallye"
+          />
+          <DriverAdvancedStats
+            races={rallyeRaces}
+            drivers={pilotes}
+            title={`Statistiques détaillées - ${titles.vmrs}`}
+            type="rallye"
+          />
+          <DriverComparator
+            races={rallyeRaces}
+            drivers={pilotes}
+            title={`Comparateur de pilotes - ${titles.vmrs}`}
+          />
+
+          {onRaceUpdate && isAdmin && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course VMRS</h2>
+              <PointsEditor
+                races={rallyeRaces}
+                drivers={drivers}
+                onRaceUpdate={onRaceUpdate}
+                showRoleSelector={true}
+              />
+            </div>
+          )}
+        </TabsContent>
       </Tabs>
     </div>
   );
