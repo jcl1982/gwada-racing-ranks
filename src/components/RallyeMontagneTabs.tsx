@@ -156,6 +156,17 @@ const RallyeMontagneTabs = ({
     exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.copilote, "rallye");
   };
 
+  // VMRS handlers
+  const handleVmrsPrintPdf = () => {
+    const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
+    exportCategoryStandings(titles.vmrs, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+  };
+
+  const handleVmrsExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.vmrs, "rallye");
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general" className="w-full">
