@@ -159,7 +159,7 @@ const RallyeMontagneTabs = ({
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
             <span className="hidden sm:inline">{titles.general_tab || 'Général'}</span>
@@ -179,6 +179,10 @@ const RallyeMontagneTabs = ({
           <TabsTrigger value="copilote" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
             <span className="hidden sm:inline">{titles.copilote_tab || 'Copilote'}</span>
+          </TabsTrigger>
+          <TabsTrigger value="vmrs" className="flex items-center gap-2">
+            <Gauge className="w-4 h-4" />
+            <span className="hidden sm:inline">{titles.vmrs_tab || 'VMRS'}</span>
           </TabsTrigger>
         </TabsList>
 
