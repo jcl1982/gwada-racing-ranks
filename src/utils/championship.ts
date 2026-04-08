@@ -312,23 +312,23 @@ export const calculateCopiloteStandings = (
   return standings;
 };
 
-// Calculer le classement VMRS (Véhicules de Moyenne Régularité Sportive)
-// Article 7 : ouvert aux pilotes et copilotes participant aux épreuves de régularité
+// Calculer le classement VMRS Pilotes (Article 7)
+// Utilise le barème spécifique VMRS : participation + classement + bonus
 export const calculateVmrsStandings = (
   drivers: Driver[],
   rallyeRaces: Race[],
   previousStandings?: ChampionshipStanding[]
 ): ChampionshipStanding[] => {
-  console.log('🚗 [VMRS] ===== CALCUL DU CLASSEMENT VMRS =====');
+  console.log('🚗 [VMRS] ===== CALCUL DU CLASSEMENT VMRS (Article 7.3) =====');
 
-  // Filtrer uniquement les pilotes
   const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
 
   const standings = pilotes
     .map(driver => {
-      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const vmrsPoints = calculateVmrsDriverPoints(driver.id, rallyeRaces);
+      console.log(`🚗 [VMRS] ${driver.name}: ${vmrsPoints} pts VMRS`);
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+      return createBaseStanding(driver, 0, vmrsPoints, previousStanding);
     })
     .filter(standing => standing.rallyePoints > 0);
 
@@ -339,7 +339,7 @@ export const calculateVmrsStandings = (
   return standings;
 };
 
-// Calculer le classement VMRS Copilotes
+// Calculer le classement VMRS Copilotes (Article 7)
 export const calculateVmrsCopiloteStandings = (
   drivers: Driver[],
   rallyeRaces: Race[],
@@ -349,9 +349,9 @@ export const calculateVmrsCopiloteStandings = (
 
   const standings = copilotes
     .map(driver => {
-      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const vmrsPoints = calculateVmrsDriverPoints(driver.id, rallyeRaces);
       const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+      return createBaseStanding(driver, 0, vmrsPoints, previousStanding);
     })
     .filter(standing => standing.rallyePoints > 0);
 
