@@ -84,6 +84,8 @@ const ChampionshipApp = () => {
           rallyeStandings={standingsCalculation.rallyeStandings}
           r2Standings={standingsCalculation.r2Standings}
           copiloteStandings={standingsCalculation.copiloteStandings}
+          vmrsStandings={standingsCalculation.vmrsStandings}
+          vmrsCopiloteStandings={standingsCalculation.vmrsCopiloteStandings}
         />
       </div>
     </div>
