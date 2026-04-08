@@ -47,6 +47,8 @@ interface ViewRendererProps {
   rallyeStandings?: ChampionshipStanding[];
   r2Standings?: ChampionshipStanding[];
   copiloteStandings?: ChampionshipStanding[];
+  vmrsStandings?: ChampionshipStanding[];
+  vmrsCopiloteStandings?: ChampionshipStanding[];
 }
 
 const ViewRenderer = ({
@@ -79,7 +81,9 @@ const ViewRenderer = ({
   montagneStandings = [],
   rallyeStandings = [],
   r2Standings = [],
-  copiloteStandings = []
+  copiloteStandings = [],
+  vmrsStandings = [],
+  vmrsCopiloteStandings = []
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
@@ -102,6 +106,8 @@ const ViewRenderer = ({
           rallyeStandings={rallyeStandings}
           r2Standings={r2Standings}
           copiloteStandings={copiloteStandings}
+          vmrsStandings={vmrsStandings}
+          vmrsCopiloteStandings={vmrsCopiloteStandings}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}

@@ -9,6 +9,17 @@ import {
   type StandingType
 } from './championshipEvolution';
 
+// Barème de points VMRS - Classement (Article 7.3)
+const VMRS_CLASSEMENT_POINTS: Record<number, number> = {
+  1: 15, 2: 12, 3: 10, 4: 9, 5: 8,
+  6: 7, 7: 6, 8: 5, 9: 4, 10: 3, 11: 2,
+};
+
+// Points VMRS pour une position (12e et au-delà = 1 point)
+const getVmrsClassementPoints = (position: number): number => {
+  return VMRS_CLASSEMENT_POINTS[position] ?? (position >= 12 ? 1 : 0);
+};
+
 export const calculateDriverPoints = (driverId: string, races: Race[]): number => {
   return races.reduce((total, race) => {
     const result = race.results.find(r => r.driverId === driverId);
@@ -242,6 +253,55 @@ export const calculateCopiloteStandings = (
     console.log(`  ${idx + 1}. ${standing.driver.name}: ${standing.rallyePoints} points (Position: ${standing.position})`);
   });
   console.log('👥 [COPILOTE] =====================================');
+
+  return standings;
+};
+
+// Calculer le classement VMRS (Véhicules de Moyenne Régularité Sportive)
+// Article 7 : ouvert aux pilotes et copilotes participant aux épreuves de régularité
+export const calculateVmrsStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  console.log('🚗 [VMRS] ===== CALCUL DU CLASSEMENT VMRS =====');
+
+  // Filtrer uniquement les pilotes
+  const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
+
+  const standings = pilotes
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
+
+  sortRallyeStandingsByPoints(standings);
+  calculatePositionsAndEvolution(standings, 'rallye');
+
+  console.log('🚗 [VMRS] Classement VMRS calculé:', standings.length, 'pilotes');
+  return standings;
+};
+
+// Calculer le classement VMRS Copilotes
+export const calculateVmrsCopiloteStandings = (
+  drivers: Driver[],
+  rallyeRaces: Race[],
+  previousStandings?: ChampionshipStanding[]
+): ChampionshipStanding[] => {
+  const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
+
+  const standings = copilotes
+    .map(driver => {
+      const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
+      const previousStanding = findPreviousStanding(driver.id, previousStandings);
+      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+    })
+    .filter(standing => standing.rallyePoints > 0);
+
+  sortRallyeStandingsByPoints(standings);
+  calculatePositionsAndEvolution(standings, 'rallye');
 
   return standings;
 };

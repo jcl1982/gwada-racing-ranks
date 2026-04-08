@@ -1,6 +1,6 @@
 import { ChampionshipStanding, Race, Driver } from "@/types/championship";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Mountain, Car, Award, Users } from "lucide-react";
+import { Trophy, Mountain, Car, Award, Users, Gauge } from "lucide-react";
 import GeneralStandingsHeader from "@/components/GeneralStandingsHeader";
 import GeneralStandingsTable from "@/components/GeneralStandingsTable";
 import GeneralStandingsStats from "@/components/GeneralStandingsStats";
@@ -26,6 +26,8 @@ interface RallyeMontagneTabsProps {
   rallyeStandings: ChampionshipStanding[];
   r2Standings: ChampionshipStanding[];
   copiloteStandings: ChampionshipStanding[];
+  vmrsStandings: ChampionshipStanding[];
+  vmrsCopiloteStandings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
@@ -42,6 +44,8 @@ const RallyeMontagneTabs = ({
   rallyeStandings,
   r2Standings,
   copiloteStandings,
+  vmrsStandings,
+  vmrsCopiloteStandings,
   championshipTitle,
   championshipYear,
   championshipId,
@@ -152,10 +156,21 @@ const RallyeMontagneTabs = ({
     exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.copilote, "rallye");
   };
 
+  // VMRS handlers
+  const handleVmrsPrintPdf = () => {
+    const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
+    exportCategoryStandings(titles.vmrs, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+  };
+
+  const handleVmrsExportExcel = () => {
+    const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
+    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.vmrs, "rallye");
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
             <span className="hidden sm:inline">{titles.general_tab || 'Général'}</span>
@@ -175,6 +190,10 @@ const RallyeMontagneTabs = ({
           <TabsTrigger value="copilote" className="flex items-center gap-2">
             <Users className="w-4 h-4" />
             <span className="hidden sm:inline">{titles.copilote_tab || 'Copilote'}</span>
+          </TabsTrigger>
+          <TabsTrigger value="vmrs" className="flex items-center gap-2">
+            <Gauge className="w-4 h-4" />
+            <span className="hidden sm:inline">{titles.vmrs_tab || 'VMRS'}</span>
           </TabsTrigger>
         </TabsList>
 
@@ -374,6 +393,66 @@ const RallyeMontagneTabs = ({
                 onRaceUpdate={onRaceUpdate}
                 showRoleSelector={false}
                 defaultRole="copilote"
+              />
+            </div>
+          )}
+        </TabsContent>
+
+        {/* Trophée VMRS */}
+        <TabsContent value="vmrs" className="space-y-6">
+          <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
+          <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
+          <StandingsTable
+            displayTitle={`${titles.vmrs} - Pilotes`}
+            races={rallyeRaces}
+            type="rallye"
+            standings={toSimplifiedStandings(vmrsStandings, "rallye")}
+            onPrintPdf={handleVmrsPrintPdf}
+          />
+          <PodiumSection standings={toSimplifiedStandings(vmrsStandings, "rallye")} />
+
+          {vmrsCopiloteStandings.length > 0 && (
+            <>
+              <StandingsTable
+                displayTitle={`${titles.vmrs} - Copilotes`}
+                races={rallyeRaces}
+                type="rallye"
+                standings={toSimplifiedStandings(vmrsCopiloteStandings, "copilote")}
+                onPrintPdf={() => {
+                  const simplifiedStandings = toSimplifiedStandings(vmrsCopiloteStandings, "copilote");
+                  exportCategoryStandings(`${titles.vmrs} - Copilotes`, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+                }}
+              />
+              <PodiumSection standings={toSimplifiedStandings(vmrsCopiloteStandings, "copilote")} />
+            </>
+          )}
+
+          <StandingsEvolutionChart
+            races={rallyeRaces}
+            drivers={drivers}
+            title={`Évolution des points - ${titles.vmrs}`}
+            type="rallye"
+          />
+          <DriverAdvancedStats
+            races={rallyeRaces}
+            drivers={pilotes}
+            title={`Statistiques détaillées - ${titles.vmrs}`}
+            type="rallye"
+          />
+          <DriverComparator
+            races={rallyeRaces}
+            drivers={pilotes}
+            title={`Comparateur de pilotes - ${titles.vmrs}`}
+          />
+
+          {onRaceUpdate && isAdmin && (
+            <div className="mt-8">
+              <h2 className="text-xl font-bold mb-4">Résultats par Course VMRS</h2>
+              <PointsEditor
+                races={rallyeRaces}
+                drivers={drivers}
+                onRaceUpdate={onRaceUpdate}
+                showRoleSelector={true}
               />
             </div>
           )}
