@@ -78,6 +78,7 @@ export const createRaceInDatabase = async (race: Omit<Race, 'id' | 'results'>, c
     end_date: race.endDate || null,
     organizer: race.organizer || null,
     type: race.type,
+    race_level: race.raceLevel || 'regional',
     championship_id: finalChampionshipId
   };
   
@@ -116,6 +117,7 @@ export const updateRaceInDatabase = async (race: Race, championshipId?: string):
     end_date: race.endDate || null,
     organizer: race.organizer || null,
     type: race.type,
+    race_level: race.raceLevel || 'regional',
     updated_at: new Date().toISOString()
   };
   

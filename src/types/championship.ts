@@ -22,6 +22,8 @@ export interface RaceResult {
   bonus?: number;
 }
 
+export type RaceLevel = 'national' | 'regional';
+
 export interface Race {
   id: string;
   name: string;
@@ -29,6 +31,7 @@ export interface Race {
   endDate?: string;
   type: 'montagne' | 'rallye' | 'karting' | 'acceleration';
   organizer?: string;
+  raceLevel?: RaceLevel;
   results: RaceResult[];
   championshipId?: string;
 }
