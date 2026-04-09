@@ -46,7 +46,7 @@ const calculateVmrsDriverRacePoints = (
   if (!result) return 0;
 
   // 1. Points de participation (toujours attribués, même en cas d'abandon)
-  const participationPoints = getVmrsParticipationPoints(race.type, race.name);
+  const participationPoints = getVmrsParticipationPoints(race.type, race.raceLevel);
 
   // 2. Si abandon (DNF), seuls les points de participation + bonus spéciale
   if (result.dnf) {
