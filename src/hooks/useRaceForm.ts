@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Race } from '@/types/championship';
+import { Race, RaceLevel } from '@/types/championship';
 
 interface RaceFormData {
   name: string;
@@ -8,6 +8,7 @@ interface RaceFormData {
   endDate: string;
   organizer?: string;
   type: 'montagne' | 'rallye' | 'karting' | 'acceleration';
+  raceLevel: RaceLevel;
 }
 
 export const useRaceForm = () => {
@@ -16,7 +17,8 @@ export const useRaceForm = () => {
     date: '',
     endDate: '',
     organizer: '',
-    type: 'montagne'
+    type: 'montagne',
+    raceLevel: 'regional'
   });
 
   const updateFormData = (updates: Partial<RaceFormData>) => {
@@ -24,7 +26,7 @@ export const useRaceForm = () => {
   };
 
   const resetForm = () => {
-    setFormData({ name: '', date: '', endDate: '', organizer: '', type: 'montagne' });
+    setFormData({ name: '', date: '', endDate: '', organizer: '', type: 'montagne', raceLevel: 'regional' });
   };
 
   const loadRaceData = (race: Race) => {
@@ -33,7 +35,8 @@ export const useRaceForm = () => {
       date: race.date,
       endDate: race.endDate || '',
       organizer: race.organizer || '',
-      type: race.type
+      type: race.type,
+      raceLevel: race.raceLevel || 'regional'
     });
   };
 
