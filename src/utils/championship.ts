@@ -12,11 +12,10 @@ import {
 // ===== Barème VMRS - Article 7.3 =====
 
 // Points de participation selon le type de course
-const getVmrsParticipationPoints = (raceType: string, raceName: string): number => {
+const getVmrsParticipationPoints = (raceType: string, raceLevel?: string): number => {
   if (raceType === 'montagne') return 2; // Course de côte : 2 points
-  // Pour les rallyes, distinguer national/régional via le nom
-  const isNational = raceName.toLowerCase().includes('national');
-  return isNational ? 20 : 10; // National: 20, Régional: 10
+  // Pour les rallyes, utiliser le champ race_level
+  return raceLevel === 'national' ? 20 : 10; // National: 20, Régional: 10
 };
 
 // Points de classement VMRS
@@ -47,7 +46,7 @@ const calculateVmrsDriverRacePoints = (
   if (!result) return 0;
 
   // 1. Points de participation (toujours attribués, même en cas d'abandon)
-  const participationPoints = getVmrsParticipationPoints(race.type, race.name);
+  const participationPoints = getVmrsParticipationPoints(race.type, race.raceLevel);
 
   // 2. Si abandon (DNF), seuls les points de participation + bonus spéciale
   if (result.dnf) {

@@ -25,7 +25,8 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
       date: formData.date,
       endDate: formData.endDate || undefined,
       organizer: formData.organizer?.trim() || undefined,
-      type: formData.type
+      type: formData.type,
+      raceLevel: formData.raceLevel
     });
     
     resetForm();
@@ -108,6 +109,21 @@ const RaceFormDialog = ({ isOpen, onOpenChange, onAddRace }: RaceFormDialogProps
                 <SelectItem value="rallye">Rallye</SelectItem>
                 <SelectItem value="karting">Karting</SelectItem>
                 <SelectItem value="acceleration">Accélération</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="race-level">Niveau de l'épreuve</Label>
+            <Select 
+              value={formData.raceLevel} 
+              onValueChange={(value: 'national' | 'regional') => updateFormData({ raceLevel: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="regional">Régional</SelectItem>
+                <SelectItem value="national">National</SelectItem>
               </SelectContent>
             </Select>
           </div>

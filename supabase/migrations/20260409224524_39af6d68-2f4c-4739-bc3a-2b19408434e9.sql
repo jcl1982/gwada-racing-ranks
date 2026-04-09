@@ -1,0 +1,1 @@
+ALTER TABLE public.races ADD COLUMN race_level text DEFAULT 'regional';

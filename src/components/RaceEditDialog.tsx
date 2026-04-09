@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DatePicker } from '@/components/ui/date-picker';
-import { Race } from '@/types/championship';
+import { Race, RaceLevel } from '@/types/championship';
 import { useState, useEffect } from 'react';
 
 interface RaceEditDialogProps {
@@ -20,6 +20,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
   const [endDate, setEndDate] = useState('');
   const [organizer, setOrganizer] = useState('');
   const [type, setType] = useState<'montagne' | 'rallye' | 'karting' | 'acceleration'>('montagne');
+  const [raceLevel, setRaceLevel] = useState<RaceLevel>('regional');
 
   // Charger les données de la course quand le dialog s'ouvre
   useEffect(() => {
@@ -30,6 +31,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       setEndDate(editingRace.endDate || '');
       setOrganizer(editingRace.organizer || '');
       setType(editingRace.type);
+      setRaceLevel(editingRace.raceLevel || 'regional');
     }
   }, [editingRace, isOpen]);
 
@@ -56,7 +58,8 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
       date: date,
       endDate: endDate || undefined,
       organizer: organizer.trim() || undefined,
-      type: type
+      type: type,
+      raceLevel: raceLevel
     };
 
     console.log('📦 Race mise à jour:', updatedRace);
@@ -71,6 +74,7 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
     setEndDate('');
     setOrganizer('');
     setType('montagne');
+    setRaceLevel('regional');
     onOpenChange(false);
   };
 
@@ -152,6 +156,24 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
                 <SelectItem value="rallye">Rallye</SelectItem>
                 <SelectItem value="karting">Karting</SelectItem>
                 <SelectItem value="acceleration">Accélération</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="edit-race-level">Niveau de l'épreuve</Label>
+            <Select 
+              value={raceLevel} 
+              onValueChange={(value: 'national' | 'regional') => {
+                console.log('🏆 Changement niveau:', value);
+                setRaceLevel(value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="regional">Régional</SelectItem>
+                <SelectItem value="national">National</SelectItem>
               </SelectContent>
             </Select>
           </div>
