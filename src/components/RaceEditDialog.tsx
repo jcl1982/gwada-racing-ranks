@@ -159,6 +159,24 @@ const RaceEditDialog = ({ isOpen, onOpenChange, editingRace, onUpdateRace }: Rac
               </SelectContent>
             </Select>
           </div>
+          <div>
+            <Label htmlFor="edit-race-level">Niveau de l'épreuve</Label>
+            <Select 
+              value={raceLevel} 
+              onValueChange={(value: 'national' | 'regional') => {
+                console.log('🏆 Changement niveau:', value);
+                setRaceLevel(value);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="regional">Régional</SelectItem>
+                <SelectItem value="national">National</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex gap-2">
             <Button onClick={handleSubmit} className="flex-1">
               Mettre à jour
