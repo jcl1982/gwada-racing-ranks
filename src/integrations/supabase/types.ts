@@ -280,6 +280,7 @@ export type Database = {
           id: string
           name: string
           organizer: string | null
+          race_level: string | null
           type: string
           updated_at: string
         }
@@ -291,6 +292,7 @@ export type Database = {
           id?: string
           name: string
           organizer?: string | null
+          race_level?: string | null
           type: string
           updated_at?: string
         }
@@ -302,6 +304,7 @@ export type Database = {
           id?: string
           name?: string
           organizer?: string | null
+          race_level?: string | null
           type?: string
           updated_at?: string
         }
