@@ -1,0 +1,1 @@
+UPDATE public.races SET race_level = 'national' WHERE name = 'Course de Côte de Dolé';
