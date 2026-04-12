@@ -386,6 +386,70 @@ export type Database = {
         }
         Relationships: []
       }
+      vmrs_results: {
+        Row: {
+          bonus_points: number
+          championship_id: string
+          classification_points: number
+          created_at: string
+          dnf: boolean
+          driver_id: string
+          id: string
+          participation_points: number
+          position: number
+          race_id: string
+          updated_at: string
+        }
+        Insert: {
+          bonus_points?: number
+          championship_id: string
+          classification_points?: number
+          created_at?: string
+          dnf?: boolean
+          driver_id: string
+          id?: string
+          participation_points?: number
+          position?: number
+          race_id: string
+          updated_at?: string
+        }
+        Update: {
+          bonus_points?: number
+          championship_id?: string
+          classification_points?: number
+          created_at?: string
+          dnf?: boolean
+          driver_id?: string
+          id?: string
+          participation_points?: number
+          position?: number
+          race_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vmrs_results_championship_id_fkey"
+            columns: ["championship_id"]
+            isOneToOne: false
+            referencedRelation: "championship_config"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vmrs_results_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vmrs_results_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
