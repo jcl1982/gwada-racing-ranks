@@ -134,8 +134,3 @@ const AdminTabsContent = ({
 };
 
 export default AdminTabsContent;
-    </>
-  );
-};
-
-export default AdminTabsContent;
