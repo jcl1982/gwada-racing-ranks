@@ -1,10 +1,10 @@
 
 import { TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Trophy, BarChart3, Edit, Settings, History } from 'lucide-react';
+import { Users, Trophy, BarChart3, Edit, Settings, History, Award } from 'lucide-react';
 
 const AdminTabsList = () => {
   return (
-    <TabsList className="grid w-full grid-cols-6">
+    <TabsList className="grid w-full grid-cols-7">
       <TabsTrigger value="drivers" className="flex items-center gap-2">
         <Users size={16} />
         Pilotes
