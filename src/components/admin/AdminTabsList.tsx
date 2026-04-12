@@ -29,6 +29,10 @@ const AdminTabsList = () => {
         <Settings size={16} />
         Paramètres
       </TabsTrigger>
+      <TabsTrigger value="vmrs" className="flex items-center gap-2">
+        <Award size={16} />
+        VMRS
+      </TabsTrigger>
     </TabsList>
   );
 };
