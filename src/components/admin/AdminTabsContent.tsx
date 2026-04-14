@@ -127,7 +127,7 @@ const AdminTabsContent = ({
       </TabsContent>
 
       <TabsContent value="vmrs" className="mt-6">
-        <VmrsImport />
+        <VmrsTab />
       </TabsContent>
     </>
   );
