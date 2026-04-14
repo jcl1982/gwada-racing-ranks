@@ -7,7 +7,6 @@ import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
 import ChampionshipSettings from '../ChampionshipSettings';
 import StandingsSavesManagement from '../StandingsSavesManagement';
-import VmrsTab from '../VmrsTab';
 import { StandingsTitles } from '@/hooks/useChampionshipConfig';
 
 
