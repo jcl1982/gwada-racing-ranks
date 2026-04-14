@@ -6,6 +6,7 @@ import R2Standings from '@/components/R2Standings';
 import KartingStandings from '@/components/KartingStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
+import VmrsTab from '@/components/VmrsTab';
 import AdminPanel from '@/components/AdminPanel';
 import AdminHub from '@/components/AdminHub';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
@@ -168,6 +169,9 @@ const ViewRenderer = ({
             onImport={handleImport}
             championshipId={championshipId}
           />
+          <div className="mt-6">
+            <VmrsTab />
+          </div>
         </RoleProtectedComponent>
       );
     case 'admin':
