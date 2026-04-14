@@ -6,9 +6,8 @@ import {
   calculateRallyeStandings,
   calculateR2Standings,
   calculateCopiloteStandings,
-  calculateVmrsStandings,
-  calculateVmrsCopiloteStandings
 } from '@/utils/championship';
+import { useVmrsStandings, VmrsStanding } from '@/hooks/useVmrsStandings';
 
 export type StandingsType = 'general' | 'montagne' | 'rallye' | 'r2' | 'copilote' | 'vmrs' | 'vmrs_copilote';
 
@@ -19,6 +18,23 @@ interface UseStandingsCalculationParams {
   previousStandings?: ChampionshipStanding[];
   championshipId: string;
 }
+
+const convertVmrsToChampionshipStandings = (
+  vmrsStandings: VmrsStanding[],
+  drivers: Driver[]
+): ChampionshipStanding[] => {
+  return vmrsStandings.map(vs => {
+    const driver = drivers.find(d => d.id === vs.driverId);
+    return {
+      driver: driver || { id: vs.driverId, name: vs.driverName },
+      montagnePoints: 0,
+      rallyePoints: vs.totalPoints,
+      totalPoints: vs.totalPoints,
+      position: vs.position,
+      positionChange: 0,
+    };
+  });
+};
 
 /**
  * Hook centralisé pour calculer tous les types de classements
@@ -94,23 +110,18 @@ export const useStandingsCalculation = ({
     );
   }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
 
-  // Classement VMRS Pilotes
-  const vmrsStandings = useMemo(() => {
-    return calculateVmrsStandings(
-      championshipDrivers,
-      championshipRallyeRaces,
-      championshipPreviousStandings
-    );
-  }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
+  // VMRS standings from dedicated vmrs_results table
+  const { piloteStandings: vmrsPiloteData, copiloteStandings: vmrsCopiloteData } = useVmrsStandings(championshipId || undefined);
 
-  // Classement VMRS Copilotes
-  const vmrsCopiloteStandings = useMemo(() => {
-    return calculateVmrsCopiloteStandings(
-      championshipDrivers,
-      championshipRallyeRaces,
-      championshipPreviousStandings
-    );
-  }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
+  const vmrsStandings = useMemo(() => 
+    convertVmrsToChampionshipStandings(vmrsPiloteData, championshipDrivers),
+    [vmrsPiloteData, championshipDrivers]
+  );
+
+  const vmrsCopiloteStandings = useMemo(() => 
+    convertVmrsToChampionshipStandings(vmrsCopiloteData, championshipDrivers),
+    [vmrsCopiloteData, championshipDrivers]
+  );
 
   return {
     generalStandings,

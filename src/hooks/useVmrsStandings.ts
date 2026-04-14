@@ -27,7 +27,7 @@ export const useVmrsStandings = (championshipId?: string) => {
     try {
       // Load vmrs_results with driver info
       const { data: results, error } = await supabase
-        .from('vmrs_results' as any)
+        .from('vmrs_results')
         .select('*')
         .eq('championship_id', championshipId);
 

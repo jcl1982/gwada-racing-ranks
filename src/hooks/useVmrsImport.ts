@@ -156,7 +156,7 @@ export const useVmrsImport = () => {
 
           // Upsert vmrs_results
           const { error: vmrsError } = await supabase
-            .from('vmrs_results' as any)
+            .from('vmrs_results')
             .upsert({
               race_id: raceId,
               driver_id: driver.id,
