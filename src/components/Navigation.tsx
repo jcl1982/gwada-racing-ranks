@@ -81,7 +81,7 @@ const Navigation = ({
           {/* Règlement menu */}
           <button onClick={() => onViewChange('reglement')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'reglement' ? activeClass : inactiveClass}`}>
             <FileText size={18} />
-            <span className="hidden sm:inline text-center leading-tight">RÈGLEMENT DU<br />CHAMPIONNAT</span>
+            <span className="hidden sm:inline text-center leading-tight">RÈGLEMENT<br />CHAMPIONNAT</span>
             <span className="sm:hidden">Règlement</span>
           </button>
 
