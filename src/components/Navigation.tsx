@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Settings, Zap, Circle, Archive } from 'lucide-react';
+import { Trophy, Home, Settings, Zap, Circle, Archive, FileText } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -76,6 +76,13 @@ const Navigation = ({
             <Circle size={18} />
             <span className="hidden sm:inline">CHAMPIONNAT KARTING</span>
             <span className="sm:hidden">Karting</span>
+          </button>
+
+          {/* Règlement menu */}
+          <button onClick={() => onViewChange('reglement')} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${currentView === 'reglement' ? activeClass : inactiveClass}`}>
+            <FileText size={18} />
+            <span className="hidden sm:inline">RÈGLEMENT</span>
+            <span className="sm:hidden">Règlement</span>
           </button>
 
           {/* Separator before admin */}
