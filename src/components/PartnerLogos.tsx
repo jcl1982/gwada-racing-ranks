@@ -3,6 +3,7 @@ import asaCaraibLogo from '@/assets/asacaraib.jpg';
 import asagLogo from '@/assets/asag-logo.png';
 import kartingLogo from '@/assets/karting.png';
 import lsagLogo from '@/assets/lsag-logo.png';
+import ffsaLogo from '@/assets/ffsa-logo.png';
 import Logo from './Logo';
 
 const PartnerLogos = () => {
@@ -35,6 +36,12 @@ const PartnerLogos = () => {
       <Logo 
         src={kartingLogo} 
         alt="ASK - Guadeloup' Kart" 
+        className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
+      />
+      <Logo 
+        src={ffsaLogo} 
+        alt="FFSA - Fédération Française du Sport Automobile" 
         className="h-16 md:h-20 w-auto object-contain"
         removeBackground={false}
       />
