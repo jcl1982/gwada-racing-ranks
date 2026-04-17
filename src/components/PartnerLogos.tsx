@@ -39,6 +39,12 @@ const PartnerLogos = () => {
         className="h-16 md:h-20 w-auto object-contain"
         removeBackground={false}
       />
+      <Logo 
+        src={ffsaLogo} 
+        alt="FFSA - Fédération Française du Sport Automobile" 
+        className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
+      />
     </div>
   );
 };
