@@ -3,6 +3,7 @@ import asaCaraibLogo from '@/assets/asacaraib.jpg';
 import asagLogo from '@/assets/asag-logo.png';
 import kartingLogo from '@/assets/karting.png';
 import lsagLogo from '@/assets/lsag-logo.png';
+import ffsaLogo from '@/assets/ffsa-logo.png';
 import Logo from './Logo';
 
 const PartnerLogos = () => {
