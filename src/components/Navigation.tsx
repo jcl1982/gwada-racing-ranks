@@ -48,7 +48,10 @@ const Navigation = ({
 
   return <Card className="card-glass p-4 mb-8">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <nav className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-3 shrink-0">
+          <img src={lsagLogo} alt="Logo LSAG - Ligue du Sport Automobile de Guadeloupe" className="h-14 w-auto object-contain" />
+        </div>
+        <nav className="flex flex-wrap justify-center items-center gap-2 md:gap-4 flex-1">
           {visibleOtherItems.map(({
           id,
           label,
