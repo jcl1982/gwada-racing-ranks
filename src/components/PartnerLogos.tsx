@@ -2,11 +2,18 @@ import asaArchipelLogo from '@/assets/asaarchipel.jpg';
 import asaCaraibLogo from '@/assets/asacaraib.jpg';
 import asagLogo from '@/assets/asag-logo.png';
 import kartingLogo from '@/assets/karting.png';
+import lsagLogo from '@/assets/lsag-logo.png';
 import Logo from './Logo';
 
 const PartnerLogos = () => {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 mb-8 px-4 md:px-8 max-w-6xl mx-auto">
+      <Logo 
+        src={lsagLogo} 
+        alt="LSAG - Ligue du Sport Automobile de Guadeloupe" 
+        className="h-16 md:h-20 w-auto object-contain"
+        removeBackground={false}
+      />
       <Logo 
         src={asagLogo} 
         alt="ASAG - Association Sportive Automobile Guadeloupe" 
