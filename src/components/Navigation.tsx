@@ -4,6 +4,7 @@ import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
 import ThemeToggle from './ThemeToggle';
+import lsagLogo from '@/assets/lsag-logo.png';
 interface NavigationProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
