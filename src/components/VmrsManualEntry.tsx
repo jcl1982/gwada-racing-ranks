@@ -205,6 +205,7 @@ const VmrsManualEntry = () => {
                     <tr className="border-b">
                       <th className="text-left p-2 w-12">Pos</th>
                       <th className="text-left p-2">Pilote/Copilote</th>
+                      <th className="text-left p-2 w-36">Moyenne</th>
                       <th className="text-right p-2 w-24">Particip.</th>
                       <th className="text-right p-2 w-24">Classmt.</th>
                       <th className="text-right p-2 w-20">Bonus</th>
