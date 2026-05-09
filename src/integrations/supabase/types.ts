@@ -395,6 +395,7 @@ export type Database = {
           dnf: boolean
           driver_id: string
           id: string
+          moyenne: string
           participation_points: number
           position: number
           race_id: string
@@ -408,6 +409,7 @@ export type Database = {
           dnf?: boolean
           driver_id: string
           id?: string
+          moyenne?: string
           participation_points?: number
           position?: number
           race_id: string
@@ -421,6 +423,7 @@ export type Database = {
           dnf?: boolean
           driver_id?: string
           id?: string
+          moyenne?: string
           participation_points?: number
           position?: number
           race_id?: string

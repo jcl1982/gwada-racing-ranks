@@ -2,10 +2,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+export type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
+
 export interface VmrsStanding {
   driverId: string;
   driverName: string;
   driverRole: 'pilote' | 'copilote';
+  moyenne: VmrsMoyenne;
   totalPoints: number;
   participationTotal: number;
   classificationTotal: number;
@@ -14,10 +17,18 @@ export interface VmrsStanding {
   position: number;
 }
 
+const EMPTY_BY_MOYENNE = {
+  haute: [] as VmrsStanding[],
+  intermediaire: [] as VmrsStanding[],
+  basse: [] as VmrsStanding[],
+};
+
 export const useVmrsStandings = (championshipId?: string) => {
   const [standings, setStandings] = useState<VmrsStanding[]>([]);
   const [piloteStandings, setPiloteStandings] = useState<VmrsStanding[]>([]);
   const [copiloteStandings, setCopiloteStandings] = useState<VmrsStanding[]>([]);
+  const [piloteByMoyenne, setPiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
+  const [copiloteByMoyenne, setCopiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
   const [isLoading, setIsLoading] = useState(false);
 
   const loadStandings = useCallback(async () => {
@@ -25,7 +36,6 @@ export const useVmrsStandings = (championshipId?: string) => {
     setIsLoading(true);
 
     try {
-      // Load vmrs_results with driver info
       const { data: results, error } = await supabase
         .from('vmrs_results')
         .select('*')
@@ -33,7 +43,6 @@ export const useVmrsStandings = (championshipId?: string) => {
 
       if (error) throw error;
 
-      // Load drivers
       const { data: drivers } = await supabase
         .from('drivers')
         .select('id, name, driver_role')
@@ -43,15 +52,19 @@ export const useVmrsStandings = (championshipId?: string) => {
         setStandings([]);
         setPiloteStandings([]);
         setCopiloteStandings([]);
+        setPiloteByMoyenne(EMPTY_BY_MOYENNE);
+        setCopiloteByMoyenne(EMPTY_BY_MOYENNE);
         return;
       }
 
       const driverMap = new Map(drivers.map((d: any) => [d.id, { name: d.name, role: d.driver_role }]));
 
-      // Aggregate by driver
+      // Aggregate by (driver_id, moyenne)
       const aggregated = new Map<string, {
+        driverId: string;
         driverName: string;
         driverRole: 'pilote' | 'copilote';
+        moyenne: VmrsMoyenne;
         participationTotal: number;
         classificationTotal: number;
         bonusTotal: number;
@@ -61,10 +74,14 @@ export const useVmrsStandings = (championshipId?: string) => {
       (results as any[]).forEach((r: any) => {
         const driver = driverMap.get(r.driver_id);
         if (!driver) return;
+        const moyenne = (r.moyenne as VmrsMoyenne) || 'haute';
+        const key = `${r.driver_id}::${moyenne}`;
 
-        const existing = aggregated.get(r.driver_id) || {
+        const existing = aggregated.get(key) || {
+          driverId: r.driver_id,
           driverName: driver.name,
           driverRole: driver.role as 'pilote' | 'copilote',
+          moyenne,
           participationTotal: 0,
           classificationTotal: 0,
           bonusTotal: 0,
@@ -75,29 +92,38 @@ export const useVmrsStandings = (championshipId?: string) => {
         existing.classificationTotal += r.dnf ? 0 : (r.classification_points || 0);
         existing.bonusTotal += r.bonus_points || 0;
         existing.racesCount += 1;
-        aggregated.set(r.driver_id, existing);
+        aggregated.set(key, existing);
       });
 
-      // Build standings
-      const allStandings: VmrsStanding[] = Array.from(aggregated.entries())
-        .map(([driverId, data]) => ({
-          driverId,
-          ...data,
-          totalPoints: data.participationTotal + data.classificationTotal + data.bonusTotal,
+      const allStandings: VmrsStanding[] = Array.from(aggregated.values())
+        .map(d => ({
+          ...d,
+          totalPoints: d.participationTotal + d.classificationTotal + d.bonusTotal,
           position: 0,
-        }))
-        .sort((a, b) => b.totalPoints - a.totalPoints)
-        .map((s, i) => ({ ...s, position: i + 1 }));
+        }));
 
-      setStandings(allStandings);
+      // Helper to rank a list
+      const rank = (list: VmrsStanding[]) =>
+        [...list]
+          .sort((a, b) => b.totalPoints - a.totalPoints)
+          .map((s, i) => ({ ...s, position: i + 1 }));
 
-      const pilotes = allStandings.filter(s => s.driverRole === 'pilote')
-        .map((s, i) => ({ ...s, position: i + 1 }));
-      const copilotes = allStandings.filter(s => s.driverRole === 'copilote')
-        .map((s, i) => ({ ...s, position: i + 1 }));
+      const moyennes: VmrsMoyenne[] = ['haute', 'intermediaire', 'basse'];
+      const pByM = { haute: [], intermediaire: [], basse: [] } as Record<VmrsMoyenne, VmrsStanding[]>;
+      const cByM = { haute: [], intermediaire: [], basse: [] } as Record<VmrsMoyenne, VmrsStanding[]>;
 
-      setPiloteStandings(pilotes);
-      setCopiloteStandings(copilotes);
+      moyennes.forEach(m => {
+        pByM[m] = rank(allStandings.filter(s => s.driverRole === 'pilote' && s.moyenne === m));
+        cByM[m] = rank(allStandings.filter(s => s.driverRole === 'copilote' && s.moyenne === m));
+      });
+
+      setPiloteByMoyenne(pByM);
+      setCopiloteByMoyenne(cByM);
+
+      // Backward-compatible union (all moyennes combined, ranked globally)
+      setStandings(rank(allStandings));
+      setPiloteStandings(rank(allStandings.filter(s => s.driverRole === 'pilote')));
+      setCopiloteStandings(rank(allStandings.filter(s => s.driverRole === 'copilote')));
     } catch (err) {
       console.error('Erreur chargement classement VMRS:', err);
     } finally {
@@ -109,5 +135,13 @@ export const useVmrsStandings = (championshipId?: string) => {
     loadStandings();
   }, [loadStandings]);
 
-  return { standings, piloteStandings, copiloteStandings, isLoading, refreshStandings: loadStandings };
+  return {
+    standings,
+    piloteStandings,
+    copiloteStandings,
+    piloteByMoyenne,
+    copiloteByMoyenne,
+    isLoading,
+    refreshStandings: loadStandings,
+  };
 };

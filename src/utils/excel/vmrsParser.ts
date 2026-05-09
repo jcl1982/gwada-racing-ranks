@@ -1,6 +1,8 @@
 
 import * as XLSX from 'xlsx';
 
+export type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
+
 export interface VmrsExcelData {
   raceName: string;
   raceDate: string;
@@ -8,6 +10,7 @@ export interface VmrsExcelData {
     position: number;
     driverName: string;
     driverRole: 'pilote' | 'copilote';
+    moyenne: VmrsMoyenne;
     participationPoints: number;
     classificationPoints: number;
     bonusPoints: number;
@@ -78,8 +81,9 @@ export const parseVmrsExcelFile = async (file: File): Promise<VmrsExcelData[]> =
             const classificationPoints = indices.classification !== -1 ? parseNum(row[indices.classification]) : 0;
             const bonusPoints = indices.bonus !== -1 ? parseNum(row[indices.bonus]) : 0;
             const dnf = indices.dnf !== -1 ? parseDnfValue(row[indices.dnf]) : false;
-            
-            results.push({ position, driverName: name, driverRole, participationPoints, classificationPoints, bonusPoints, dnf });
+            const moyenne: VmrsMoyenne = indices.moyenne !== -1 ? parseMoyenne(row[indices.moyenne]) : 'haute';
+
+            results.push({ position, driverName: name, driverRole, moyenne, participationPoints, classificationPoints, bonusPoints, dnf });
           }
           
           if (results.length === 0) return;
@@ -104,20 +108,30 @@ export const parseVmrsExcelFile = async (file: File): Promise<VmrsExcelData[]> =
 };
 
 const findVmrsColumnIndices = (headers: string[]) => {
-  const indices = { position: -1, name: -1, role: -1, participation: -1, classification: -1, bonus: -1, dnf: -1 };
-  
+  const indices = { position: -1, name: -1, role: -1, moyenne: -1, participation: -1, classification: -1, bonus: -1, dnf: -1 };
+
   headers.forEach((header, index) => {
     const h = header.toLowerCase().trim();
     if (indices.position === -1 && (h.includes('position') || h.includes('pos') || h === '#')) indices.position = index;
     if (indices.name === -1 && (h.includes('nom') || h.includes('pilote') || h.includes('name'))) indices.name = index;
     if (indices.role === -1 && (h.includes('rôle') || h.includes('role'))) indices.role = index;
+    if (indices.moyenne === -1 && h.includes('moyenne')) indices.moyenne = index;
     if (indices.participation === -1 && h.includes('participation')) indices.participation = index;
     if (indices.classification === -1 && (h.includes('classement') || h.includes('classification'))) indices.classification = index;
     if (indices.bonus === -1 && h.includes('bonus')) indices.bonus = index;
     if (indices.dnf === -1 && (h.includes('dnf') || h.includes('abandon'))) indices.dnf = index;
   });
-  
+
   return indices;
+};
+
+const parseMoyenne = (value: any): VmrsMoyenne => {
+  if (!value) return 'haute';
+  const s = String(value).toLowerCase().trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (s.startsWith('inter') || s === 'i' || s.includes('moyen')) return 'intermediaire';
+  if (s.startsWith('bas') || s === 'b' || s.startsWith('low')) return 'basse';
+  return 'haute';
 };
 
 const parseNum = (value: any): number => {

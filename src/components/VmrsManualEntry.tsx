@@ -12,9 +12,12 @@ import { convertSupabaseDriver } from '@/hooks/supabase/converters';
 import { Driver } from '@/types/championship';
 import { generateValidUUID } from '@/utils/excel/uuidUtils';
 
+type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
+
 interface VmrsResultRow {
   driverId: string;
   position: number;
+  moyenne: VmrsMoyenne;
   participationPoints: number;
   classificationPoints: number;
   bonusPoints: number;
@@ -75,6 +78,7 @@ const VmrsManualEntry = () => {
         setRows(data.map((r: any) => ({
           driverId: r.driver_id,
           position: r.position,
+          moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
           participationPoints: r.participation_points,
           classificationPoints: r.classification_points,
           bonusPoints: r.bonus_points,
@@ -93,6 +97,7 @@ const VmrsManualEntry = () => {
     setRows([...rows, {
       driverId: '',
       position: nextPos,
+      moyenne: 'haute',
       participationPoints: 0,
       classificationPoints: 0,
       bonusPoints: 0,
@@ -142,6 +147,7 @@ const VmrsManualEntry = () => {
         driver_id: r.driverId,
         championship_id: championshipId,
         position: r.position,
+        moyenne: r.moyenne,
         participation_points: r.participationPoints,
         classification_points: r.classificationPoints,
         bonus_points: r.bonusPoints,
@@ -199,6 +205,7 @@ const VmrsManualEntry = () => {
                     <tr className="border-b">
                       <th className="text-left p-2 w-12">Pos</th>
                       <th className="text-left p-2">Pilote/Copilote</th>
+                      <th className="text-left p-2 w-36">Moyenne</th>
                       <th className="text-right p-2 w-24">Particip.</th>
                       <th className="text-right p-2 w-24">Classmt.</th>
                       <th className="text-right p-2 w-20">Bonus</th>
@@ -232,6 +239,18 @@ const VmrsManualEntry = () => {
                                     {d.name} ({d.driverRole})
                                   </SelectItem>
                                 ))}
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="p-2">
+                          <Select value={row.moyenne} onValueChange={v => updateRow(index, 'moyenne', v as VmrsMoyenne)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="haute">Haute</SelectItem>
+                              <SelectItem value="intermediaire">Intermédiaire</SelectItem>
+                              <SelectItem value="basse">Basse</SelectItem>
                             </SelectContent>
                           </Select>
                         </td>

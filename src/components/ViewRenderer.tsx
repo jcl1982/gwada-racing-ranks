@@ -51,6 +51,12 @@ interface ViewRendererProps {
   copiloteStandings?: ChampionshipStanding[];
   vmrsStandings?: ChampionshipStanding[];
   vmrsCopiloteStandings?: ChampionshipStanding[];
+  vmrsPiloteHaute?: ChampionshipStanding[];
+  vmrsPiloteIntermediaire?: ChampionshipStanding[];
+  vmrsPiloteBasse?: ChampionshipStanding[];
+  vmrsCopiloteHaute?: ChampionshipStanding[];
+  vmrsCopiloteIntermediaire?: ChampionshipStanding[];
+  vmrsCopiloteBasse?: ChampionshipStanding[];
 }
 
 const ViewRenderer = ({
@@ -85,7 +91,13 @@ const ViewRenderer = ({
   r2Standings = [],
   copiloteStandings = [],
   vmrsStandings = [],
-  vmrsCopiloteStandings = []
+  vmrsCopiloteStandings = [],
+  vmrsPiloteHaute = [],
+  vmrsPiloteIntermediaire = [],
+  vmrsPiloteBasse = [],
+  vmrsCopiloteHaute = [],
+  vmrsCopiloteIntermediaire = [],
+  vmrsCopiloteBasse = []
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
@@ -110,6 +122,12 @@ const ViewRenderer = ({
           copiloteStandings={copiloteStandings}
           vmrsStandings={vmrsStandings}
           vmrsCopiloteStandings={vmrsCopiloteStandings}
+          vmrsPiloteHaute={vmrsPiloteHaute}
+          vmrsPiloteIntermediaire={vmrsPiloteIntermediaire}
+          vmrsPiloteBasse={vmrsPiloteBasse}
+          vmrsCopiloteHaute={vmrsCopiloteHaute}
+          vmrsCopiloteIntermediaire={vmrsCopiloteIntermediaire}
+          vmrsCopiloteBasse={vmrsCopiloteBasse}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}
