@@ -9,30 +9,30 @@ const VmrsTemplateDownload = () => {
 
     const course1 = [
       ['Course de Côte de Bouillante', '2024-12-15'],
-      ['Position', 'Nom', 'Rôle', 'Pts Participation', 'Pts Classement', 'Bonus', 'Abandon'],
-      [1, 'Jean Dupont', 'Pilote', 2, 15, 5, ''],
-      [2, 'Marie Martin', 'Pilote', 2, 12, 5, ''],
-      [3, 'Pierre Durand', 'Copilote', 2, 10, 4, ''],
-      [4, 'Sophie Moreau', 'Pilote', 2, 8, 4, ''],
-      [5, 'Michel Leroy', 'Copilote', 2, 6, 3, ''],
-      [6, 'Claude Petit', 'Pilote', 2, 0, 3, 'Oui'],
+      ['Position', 'Nom', 'Rôle', 'Moyenne', 'Pts Participation', 'Pts Classement', 'Bonus', 'Abandon'],
+      [1, 'Jean Dupont', 'Pilote', 'Haute', 2, 15, 5, ''],
+      [2, 'Marie Martin', 'Pilote', 'Haute', 2, 12, 5, ''],
+      [3, 'Pierre Durand', 'Copilote', 'Intermédiaire', 2, 10, 4, ''],
+      [4, 'Sophie Moreau', 'Pilote', 'Intermédiaire', 2, 8, 4, ''],
+      [5, 'Michel Leroy', 'Copilote', 'Basse', 2, 6, 3, ''],
+      [6, 'Claude Petit', 'Pilote', 'Basse', 2, 0, 3, 'Oui'],
     ];
 
     const course2 = [
       ['Rallye de Basse-Terre', '2024-12-22'],
-      ['Position', 'Nom', 'Rôle', 'Pts Participation', 'Pts Classement', 'Bonus', 'Abandon'],
-      [1, 'Marie Martin', 'Pilote', 10, 15, 6, ''],
-      [2, 'Jean Dupont', 'Pilote', 10, 12, 6, ''],
-      [3, 'Pierre Durand', 'Copilote', 10, 10, 5, ''],
-      [4, 'Sophie Moreau', 'Pilote', 10, 8, 5, ''],
-      [5, 'Michel Leroy', 'Copilote', 10, 6, 4, ''],
+      ['Position', 'Nom', 'Rôle', 'Moyenne', 'Pts Participation', 'Pts Classement', 'Bonus', 'Abandon'],
+      [1, 'Marie Martin', 'Pilote', 'Haute', 10, 15, 6, ''],
+      [2, 'Jean Dupont', 'Pilote', 'Haute', 10, 12, 6, ''],
+      [3, 'Pierre Durand', 'Copilote', 'Intermédiaire', 10, 10, 5, ''],
+      [4, 'Sophie Moreau', 'Pilote', 'Intermédiaire', 10, 8, 5, ''],
+      [5, 'Michel Leroy', 'Copilote', 'Basse', 10, 6, 4, ''],
     ];
 
     const sheet1 = XLSX.utils.aoa_to_sheet(course1);
     const sheet2 = XLSX.utils.aoa_to_sheet(course2);
 
     const cols = [
-      { width: 12 }, { width: 25 }, { width: 12 },
+      { width: 12 }, { width: 25 }, { width: 12 }, { width: 16 },
       { width: 18 }, { width: 18 }, { width: 10 }, { width: 12 },
     ];
     sheet1['!cols'] = cols;
