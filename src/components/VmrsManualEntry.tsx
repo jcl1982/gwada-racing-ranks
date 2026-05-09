@@ -243,6 +243,18 @@ const VmrsManualEntry = () => {
                           </Select>
                         </td>
                         <td className="p-2">
+                          <Select value={row.moyenne} onValueChange={v => updateRow(index, 'moyenne', v as VmrsMoyenne)}>
+                            <SelectTrigger className="h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="haute">Haute</SelectItem>
+                              <SelectItem value="intermediaire">Intermédiaire</SelectItem>
+                              <SelectItem value="basse">Basse</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="p-2">
                           <Input
                             type="number"
                             min={0}
