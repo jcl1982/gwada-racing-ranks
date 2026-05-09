@@ -81,8 +81,9 @@ export const parseVmrsExcelFile = async (file: File): Promise<VmrsExcelData[]> =
             const classificationPoints = indices.classification !== -1 ? parseNum(row[indices.classification]) : 0;
             const bonusPoints = indices.bonus !== -1 ? parseNum(row[indices.bonus]) : 0;
             const dnf = indices.dnf !== -1 ? parseDnfValue(row[indices.dnf]) : false;
-            
-            results.push({ position, driverName: name, driverRole, participationPoints, classificationPoints, bonusPoints, dnf });
+            const moyenne: VmrsMoyenne = indices.moyenne !== -1 ? parseMoyenne(row[indices.moyenne]) : 'haute';
+
+            results.push({ position, driverName: name, driverRole, moyenne, participationPoints, classificationPoints, bonusPoints, dnf });
           }
           
           if (results.length === 0) return;
