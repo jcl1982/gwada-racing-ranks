@@ -93,6 +93,7 @@ const VmrsImport = () => {
                             <td className="p-2">{r.position}</td>
                             <td className="p-2">{r.driverName}</td>
                             <td className="p-2 capitalize">{r.driverRole}</td>
+                            <td className="p-2 capitalize">{r.moyenne}</td>
                             <td className="p-2 text-right">{r.participationPoints}</td>
                             <td className="p-2 text-right">{r.dnf ? '-' : r.classificationPoints}</td>
                             <td className="p-2 text-right">{r.bonusPoints}</td>
