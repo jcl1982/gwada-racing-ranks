@@ -1,6 +1,8 @@
 
 import * as XLSX from 'xlsx';
 
+export type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
+
 export interface VmrsExcelData {
   raceName: string;
   raceDate: string;
@@ -8,6 +10,7 @@ export interface VmrsExcelData {
     position: number;
     driverName: string;
     driverRole: 'pilote' | 'copilote';
+    moyenne: VmrsMoyenne;
     participationPoints: number;
     classificationPoints: number;
     bonusPoints: number;
