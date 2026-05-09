@@ -97,6 +97,7 @@ const VmrsManualEntry = () => {
     setRows([...rows, {
       driverId: '',
       position: nextPos,
+      moyenne: 'haute',
       participationPoints: 0,
       classificationPoints: 0,
       bonusPoints: 0,
