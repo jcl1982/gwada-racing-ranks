@@ -86,6 +86,12 @@ const ChampionshipApp = () => {
           copiloteStandings={standingsCalculation.copiloteStandings}
           vmrsStandings={standingsCalculation.vmrsStandings}
           vmrsCopiloteStandings={standingsCalculation.vmrsCopiloteStandings}
+          vmrsPiloteHaute={standingsCalculation.vmrsPiloteHaute}
+          vmrsPiloteIntermediaire={standingsCalculation.vmrsPiloteIntermediaire}
+          vmrsPiloteBasse={standingsCalculation.vmrsPiloteBasse}
+          vmrsCopiloteHaute={standingsCalculation.vmrsCopiloteHaute}
+          vmrsCopiloteIntermediaire={standingsCalculation.vmrsCopiloteIntermediaire}
+          vmrsCopiloteBasse={standingsCalculation.vmrsCopiloteBasse}
         />
       </div>
     </div>
