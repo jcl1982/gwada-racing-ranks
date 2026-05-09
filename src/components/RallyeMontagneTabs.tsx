@@ -28,6 +28,12 @@ interface RallyeMontagneTabsProps {
   copiloteStandings: ChampionshipStanding[];
   vmrsStandings: ChampionshipStanding[];
   vmrsCopiloteStandings: ChampionshipStanding[];
+  vmrsPiloteHaute?: ChampionshipStanding[];
+  vmrsPiloteIntermediaire?: ChampionshipStanding[];
+  vmrsPiloteBasse?: ChampionshipStanding[];
+  vmrsCopiloteHaute?: ChampionshipStanding[];
+  vmrsCopiloteIntermediaire?: ChampionshipStanding[];
+  vmrsCopiloteBasse?: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
