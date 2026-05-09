@@ -39,7 +39,8 @@ const VmrsImport = () => {
             <ul className="list-disc list-inside space-y-1 text-amber-800 dark:text-amber-200">
               <li>Chaque feuille = une course</li>
               <li>Ligne 1 : Nom de la course, Date (AAAA-MM-JJ)</li>
-              <li><strong>En-têtes :</strong> Position, Nom, Rôle, Pts Participation, Pts Classement, Bonus, Abandon</li>
+              <li><strong>En-têtes :</strong> Position, Nom, Rôle, Moyenne, Pts Participation, Pts Classement, Bonus, Abandon</li>
+              <li><strong>Moyenne :</strong> Haute, Intermédiaire ou Basse (selon art. 7.2 du règlement)</li>
               <li>Les points de participation dépendent du niveau (Côte: 2, Régional: 10, National: 20)</li>
               <li>Points de classement : 15 à 1 selon la position</li>
               <li>Bonus partants : 3 à 6 pts</li>
