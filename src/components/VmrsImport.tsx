@@ -75,6 +75,7 @@ const VmrsImport = () => {
                         <th className="text-left p-2">Pos</th>
                         <th className="text-left p-2">Nom</th>
                         <th className="text-left p-2">Rôle</th>
+                        <th className="text-left p-2">Moyenne</th>
                         <th className="text-right p-2">Participation</th>
                         <th className="text-right p-2">Classement</th>
                         <th className="text-right p-2">Bonus</th>
