@@ -162,6 +162,7 @@ export const useVmrsImport = () => {
               driver_id: driver.id,
               championship_id: championshipId,
               position: result.position,
+              moyenne: result.moyenne,
               participation_points: result.participationPoints,
               classification_points: result.classificationPoints,
               bonus_points: result.bonusPoints,
