@@ -78,6 +78,7 @@ const VmrsManualEntry = () => {
         setRows(data.map((r: any) => ({
           driverId: r.driver_id,
           position: r.position,
+          moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
           participationPoints: r.participation_points,
           classificationPoints: r.classification_points,
           bonusPoints: r.bonus_points,
