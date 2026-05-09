@@ -111,17 +111,29 @@ export const useStandingsCalculation = ({
   }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
 
   // VMRS standings from dedicated vmrs_results table
-  const { piloteStandings: vmrsPiloteData, copiloteStandings: vmrsCopiloteData } = useVmrsStandings(championshipId || undefined);
+  const {
+    piloteStandings: vmrsPiloteData,
+    copiloteStandings: vmrsCopiloteData,
+    piloteByMoyenne,
+    copiloteByMoyenne,
+  } = useVmrsStandings(championshipId || undefined);
 
-  const vmrsStandings = useMemo(() => 
+  const vmrsStandings = useMemo(() =>
     convertVmrsToChampionshipStandings(vmrsPiloteData, championshipDrivers),
     [vmrsPiloteData, championshipDrivers]
   );
 
-  const vmrsCopiloteStandings = useMemo(() => 
+  const vmrsCopiloteStandings = useMemo(() =>
     convertVmrsToChampionshipStandings(vmrsCopiloteData, championshipDrivers),
     [vmrsCopiloteData, championshipDrivers]
   );
+
+  const vmrsPiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.haute, championshipDrivers), [piloteByMoyenne.haute, championshipDrivers]);
+  const vmrsPiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.intermediaire, championshipDrivers), [piloteByMoyenne.intermediaire, championshipDrivers]);
+  const vmrsPiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.basse, championshipDrivers), [piloteByMoyenne.basse, championshipDrivers]);
+  const vmrsCopiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.haute, championshipDrivers), [copiloteByMoyenne.haute, championshipDrivers]);
+  const vmrsCopiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.intermediaire, championshipDrivers), [copiloteByMoyenne.intermediaire, championshipDrivers]);
+  const vmrsCopiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.basse, championshipDrivers), [copiloteByMoyenne.basse, championshipDrivers]);
 
   return {
     generalStandings,
@@ -130,6 +142,12 @@ export const useStandingsCalculation = ({
     r2Standings,
     copiloteStandings,
     vmrsStandings,
-    vmrsCopiloteStandings
+    vmrsCopiloteStandings,
+    vmrsPiloteHaute,
+    vmrsPiloteIntermediaire,
+    vmrsPiloteBasse,
+    vmrsCopiloteHaute,
+    vmrsCopiloteIntermediaire,
+    vmrsCopiloteBasse,
   };
 };
