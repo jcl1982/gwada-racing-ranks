@@ -12,9 +12,12 @@ import { convertSupabaseDriver } from '@/hooks/supabase/converters';
 import { Driver } from '@/types/championship';
 import { generateValidUUID } from '@/utils/excel/uuidUtils';
 
+type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
+
 interface VmrsResultRow {
   driverId: string;
   position: number;
+  moyenne: VmrsMoyenne;
   participationPoints: number;
   classificationPoints: number;
   bonusPoints: number;
