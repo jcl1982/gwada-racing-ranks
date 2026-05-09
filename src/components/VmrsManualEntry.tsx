@@ -147,6 +147,7 @@ const VmrsManualEntry = () => {
         driver_id: r.driverId,
         championship_id: championshipId,
         position: r.position,
+        moyenne: r.moyenne,
         participation_points: r.participationPoints,
         classification_points: r.classificationPoints,
         bonus_points: r.bonusPoints,
