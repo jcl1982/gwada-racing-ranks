@@ -91,7 +91,13 @@ const ViewRenderer = ({
   r2Standings = [],
   copiloteStandings = [],
   vmrsStandings = [],
-  vmrsCopiloteStandings = []
+  vmrsCopiloteStandings = [],
+  vmrsPiloteHaute = [],
+  vmrsPiloteIntermediaire = [],
+  vmrsPiloteBasse = [],
+  vmrsCopiloteHaute = [],
+  vmrsCopiloteIntermediaire = [],
+  vmrsCopiloteBasse = []
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
