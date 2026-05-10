@@ -56,36 +56,30 @@ function computeStats(driver: Driver, races: Race[]): ComparedDriverStats {
     .forEach(race => {
       raceNames.push(race.name);
 
-      // Rang dans la course basé sur les points (robuste aux imports avec
-      // colonne "position" contenant des numéros de course).
-      const ranked = race.results
-        .filter(r => !r.dnf)
-        .map(r => ({ driverId: r.driverId, pts: (r.points || 0) + (r.bonus || 0), rawPos: r.position }))
-        .sort((a, b) => b.pts - a.pts)
-        .map((r, idx) => ({ ...r, rank: idx + 1 }));
-
-      const entry = ranked.find(r => r.driverId === driver.id);
-      if (!entry) {
+      const result = race.results.find(r => r.driverId === driver.id);
+      if (!result || result.dnf) {
         pointsPerRace.push(0);
         currentStreak = 0;
         return;
       }
 
-      racesCount++;
-      totalPoints += entry.pts;
-      pointsPerRace.push(entry.pts);
+      const pts = (result.points || 0) + (result.bonus || 0);
+      const position = result.position;
 
-      if (entry.rank === 1 && entry.pts > 0) victories++;
-      if (entry.rank <= 3 && entry.pts > 0) {
+      racesCount++;
+      totalPoints += pts;
+      pointsPerRace.push(pts);
+
+      if (position === 1) victories++;
+      if (position >= 1 && position <= 3) {
         podiums++;
         currentStreak++;
         if (currentStreak > bestStreak) bestStreak = currentStreak;
       } else {
         currentStreak = 0;
       }
-      if (entry.rank <= 5 && entry.pts > 0) topFiveFinishes++;
-      const effectivePos = entry.rawPos && entry.rawPos > 0 && entry.rawPos < 50 ? entry.rawPos : entry.rank;
-      if (effectivePos < bestPosition) bestPosition = effectivePos;
+      if (position >= 1 && position <= 5) topFiveFinishes++;
+      if (position > 0 && position < bestPosition) bestPosition = position;
     });
 
   return {
