@@ -67,28 +67,49 @@ const DriverAdvancedStats = ({
     const currentStreak = new Map<string, number>();
 
     sortedRaces.forEach((race) => {
-      const participatingDrivers = new Set<string>();
+      // Filtrer les résultats valides (driver connu, non-DNF) et calculer un rang
+      // basé sur les points (le plus de points = 1er) afin d'être robuste aux
+      // imports où la colonne "position" contient des numéros de course.
+      const valid = race.results
+        .filter((r) => statsMap.has(r.driverId) && !r.dnf)
+        .map((r) => ({
+          driverId: r.driverId,
+          totalPoints: (r.points || 0) + (r.bonus || 0),
+          rawPosition: r.position,
+        }))
+        .sort((a, b) => b.totalPoints - a.totalPoints);
 
-      race.results.forEach((result) => {
-        const stats = statsMap.get(result.driverId);
+      const ranked = valid.map((r, idx) => ({ ...r, rank: idx + 1 }));
+      const participantsThisRace = new Set<string>();
+
+      ranked.forEach(({ driverId, totalPoints, rank, rawPosition }) => {
+        const stats = statsMap.get(driverId);
         if (!stats) return;
 
-        participatingDrivers.add(result.driverId);
+        participantsThisRace.add(driverId);
         stats.racesCount++;
-        stats.totalPoints += result.points + (result.bonus || 0);
+        stats.totalPoints += totalPoints;
 
-        if (result.position === 1) stats.victories++;
-        if (result.position <= 3) {
+        if (rank === 1 && totalPoints > 0) stats.victories++;
+        if (rank <= 3 && totalPoints > 0) {
           stats.podiums++;
-          const streak = (currentStreak.get(result.driverId) || 0) + 1;
-          currentStreak.set(result.driverId, streak);
+          const streak = (currentStreak.get(driverId) || 0) + 1;
+          currentStreak.set(driverId, streak);
           if (streak > stats.bestStreak) stats.bestStreak = streak;
         } else {
-          currentStreak.set(result.driverId, 0);
+          currentStreak.set(driverId, 0);
         }
 
-        if (result.position < stats.bestPosition) {
-          stats.bestPosition = result.position;
+        const effectivePos = rawPosition && rawPosition > 0 && rawPosition < 50 ? rawPosition : rank;
+        if (effectivePos < stats.bestPosition) {
+          stats.bestPosition = effectivePos;
+        }
+      });
+
+      // Pilotes connus n'ayant pas couru: réinitialise leur série
+      drivers.forEach((d) => {
+        if (!participantsThisRace.has(d.id)) {
+          currentStreak.set(d.id, 0);
         }
       });
     });
