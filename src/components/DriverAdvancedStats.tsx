@@ -67,42 +67,35 @@ const DriverAdvancedStats = ({
     const currentStreak = new Map<string, number>();
 
     sortedRaces.forEach((race) => {
-      // Filtrer les résultats valides (driver connu, non-DNF) et calculer un rang
-      // basé sur les points (le plus de points = 1er) afin d'être robuste aux
-      // imports où la colonne "position" contient des numéros de course.
-      const valid = race.results
-        .filter((r) => statsMap.has(r.driverId) && !r.dnf)
-        .map((r) => ({
-          driverId: r.driverId,
-          totalPoints: (r.points || 0) + (r.bonus || 0),
-          rawPosition: r.position,
-        }))
-        .sort((a, b) => b.totalPoints - a.totalPoints);
-
-      const ranked = valid.map((r, idx) => ({ ...r, rank: idx + 1 }));
       const participantsThisRace = new Set<string>();
 
-      ranked.forEach(({ driverId, totalPoints, rank, rawPosition }) => {
-        const stats = statsMap.get(driverId);
+      race.results.forEach((r) => {
+        const stats = statsMap.get(r.driverId);
         if (!stats) return;
+        if (r.dnf) {
+          currentStreak.set(r.driverId, 0);
+          return;
+        }
 
-        participantsThisRace.add(driverId);
+        const totalPoints = (r.points || 0) + (r.bonus || 0);
+        const position = r.position;
+
+        participantsThisRace.add(r.driverId);
         stats.racesCount++;
         stats.totalPoints += totalPoints;
 
-        if (rank === 1 && totalPoints > 0) stats.victories++;
-        if (rank <= 3 && totalPoints > 0) {
+        if (position === 1) stats.victories++;
+        if (position >= 1 && position <= 3) {
           stats.podiums++;
-          const streak = (currentStreak.get(driverId) || 0) + 1;
-          currentStreak.set(driverId, streak);
+          const streak = (currentStreak.get(r.driverId) || 0) + 1;
+          currentStreak.set(r.driverId, streak);
           if (streak > stats.bestStreak) stats.bestStreak = streak;
         } else {
-          currentStreak.set(driverId, 0);
+          currentStreak.set(r.driverId, 0);
         }
 
-        const effectivePos = rawPosition && rawPosition > 0 && rawPosition < 50 ? rawPosition : rank;
-        if (effectivePos < stats.bestPosition) {
-          stats.bestPosition = effectivePos;
+        if (position > 0 && position < stats.bestPosition) {
+          stats.bestPosition = position;
         }
       });
 
