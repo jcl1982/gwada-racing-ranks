@@ -2,12 +2,17 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Race, Driver } from '@/types/championship';
 import { Trophy, Medal, Target, TrendingUp, Award, BarChart3 } from 'lucide-react';
+import { useDriverStatsOverrides, StatsStandingType } from '@/hooks/useDriverStatsOverrides';
+import { useUserRole } from '@/hooks/useUserRole';
+import DriverStatsOverrideDialog from '@/components/DriverStatsOverrideDialog';
 
 interface DriverAdvancedStatsProps {
   races: Race[];
   drivers: Driver[];
   title?: string;
   type?: 'montagne' | 'rallye' | 'karting' | 'acceleration' | 'r2' | 'all';
+  championshipId?: string;
+  overrideStandingType?: StatsStandingType;
 }
 
 interface DriverStats {
