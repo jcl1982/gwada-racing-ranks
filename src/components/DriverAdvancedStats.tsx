@@ -116,17 +116,26 @@ const DriverAdvancedStats = ({
       });
     });
 
-    // Compute derived stats
+    // Compute derived stats + apply manual overrides
     const results: DriverStats[] = [];
     statsMap.forEach((stats) => {
       if (stats.racesCount === 0) return;
       stats.participationRate = Math.round((stats.racesCount / totalRaces) * 100);
       stats.avgPointsPerRace = Math.round((stats.totalPoints / stats.racesCount) * 10) / 10;
+      const ov = overrides.get(stats.id);
+      if (ov?.victories != null) stats.victories = ov.victories;
+      if (ov?.podiums != null) stats.podiums = ov.podiums;
       results.push(stats);
     });
 
     return results.sort((a, b) => b.totalPoints - a.totalPoints);
-  }, [sortedRaces, drivers]);
+  }, [sortedRaces, drivers, overrides]);
+
+  const computedMap = useMemo(() => {
+    const m = new Map<string, { victories: number; podiums: number }>();
+    driverStats.forEach((s) => m.set(s.id, { victories: s.victories, podiums: s.podiums }));
+    return m;
+  }, [driverStats]);
 
   if (driverStats.length === 0) return null;
 
