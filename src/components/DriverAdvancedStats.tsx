@@ -34,7 +34,11 @@ const DriverAdvancedStats = ({
   drivers,
   title = "Statistiques détaillées",
   type = 'all',
+  championshipId,
+  overrideStandingType,
 }: DriverAdvancedStatsProps) => {
+  const { isAdmin } = useUserRole();
+  const { overrides } = useDriverStatsOverrides(championshipId, overrideStandingType);
 
   const sortedRaces = useMemo(() => {
     const filtered = type === 'all'
