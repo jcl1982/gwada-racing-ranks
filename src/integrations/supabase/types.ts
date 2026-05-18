@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      driver_stats_overrides: {
+        Row: {
+          championship_id: string
+          created_at: string
+          driver_id: string
+          id: string
+          podiums: number | null
+          standing_type: string
+          updated_at: string
+          victories: number | null
+        }
+        Insert: {
+          championship_id: string
+          created_at?: string
+          driver_id: string
+          id?: string
+          podiums?: number | null
+          standing_type: string
+          updated_at?: string
+          victories?: number | null
+        }
+        Update: {
+          championship_id?: string
+          created_at?: string
+          driver_id?: string
+          id?: string
+          podiums?: number | null
+          standing_type?: string
+          updated_at?: string
+          victories?: number | null
+        }
+        Relationships: []
+      }
       drivers: {
         Row: {
           car_model: string | null

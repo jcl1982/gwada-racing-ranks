@@ -2,12 +2,17 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Race, Driver } from '@/types/championship';
 import { Trophy, Medal, Target, TrendingUp, Award, BarChart3 } from 'lucide-react';
+import { useDriverStatsOverrides, StatsStandingType } from '@/hooks/useDriverStatsOverrides';
+import { useUserRole } from '@/hooks/useUserRole';
+import DriverStatsOverrideDialog from '@/components/DriverStatsOverrideDialog';
 
 interface DriverAdvancedStatsProps {
   races: Race[];
   drivers: Driver[];
   title?: string;
   type?: 'montagne' | 'rallye' | 'karting' | 'acceleration' | 'r2' | 'all';
+  championshipId?: string;
+  overrideStandingType?: StatsStandingType;
 }
 
 interface DriverStats {
@@ -29,7 +34,11 @@ const DriverAdvancedStats = ({
   drivers,
   title = "Statistiques détaillées",
   type = 'all',
+  championshipId,
+  overrideStandingType,
 }: DriverAdvancedStatsProps) => {
+  const { isAdmin } = useUserRole();
+  const { overrides } = useDriverStatsOverrides(championshipId, overrideStandingType);
 
   const sortedRaces = useMemo(() => {
     const filtered = type === 'all'
@@ -107,17 +116,26 @@ const DriverAdvancedStats = ({
       });
     });
 
-    // Compute derived stats
+    // Compute derived stats + apply manual overrides
     const results: DriverStats[] = [];
     statsMap.forEach((stats) => {
       if (stats.racesCount === 0) return;
       stats.participationRate = Math.round((stats.racesCount / totalRaces) * 100);
       stats.avgPointsPerRace = Math.round((stats.totalPoints / stats.racesCount) * 10) / 10;
+      const ov = overrides.get(stats.id);
+      if (ov?.victories != null) stats.victories = ov.victories;
+      if (ov?.podiums != null) stats.podiums = ov.podiums;
       results.push(stats);
     });
 
     return results.sort((a, b) => b.totalPoints - a.totalPoints);
-  }, [sortedRaces, drivers]);
+  }, [sortedRaces, drivers, overrides]);
+
+  const computedMap = useMemo(() => {
+    const m = new Map<string, { victories: number; podiums: number }>();
+    driverStats.forEach((s) => m.set(s.id, { victories: s.victories, podiums: s.podiums }));
+    return m;
+  }, [driverStats]);
 
   if (driverStats.length === 0) return null;
 
@@ -164,10 +182,21 @@ const DriverAdvancedStats = ({
 
   return (
     <Card className="card-glass p-6 mt-6">
-      <div className="flex items-center gap-2 mb-6">
-        <BarChart3 className="text-primary" size={22} />
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="text-primary" size={22} />
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        </div>
+        {isAdmin && championshipId && overrideStandingType && (
+          <DriverStatsOverrideDialog
+            championshipId={championshipId}
+            standingType={overrideStandingType}
+            drivers={drivers}
+            computed={computedMap}
+          />
+        )}
       </div>
+
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
