@@ -182,10 +182,21 @@ const DriverAdvancedStats = ({
 
   return (
     <Card className="card-glass p-6 mt-6">
-      <div className="flex items-center gap-2 mb-6">
-        <BarChart3 className="text-primary" size={22} />
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="text-primary" size={22} />
+          <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        </div>
+        {isAdmin && championshipId && overrideStandingType && (
+          <DriverStatsOverrideDialog
+            championshipId={championshipId}
+            standingType={overrideStandingType}
+            drivers={drivers}
+            computed={computedMap}
+          />
+        )}
       </div>
+
 
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
