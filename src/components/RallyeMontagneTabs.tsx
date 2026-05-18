@@ -322,6 +322,8 @@ const RallyeMontagneTabs = ({
             drivers={pilotes}
             title={`Statistiques détaillées - ${titles.rallye}`}
             type="rallye"
+            championshipId={championshipId}
+            overrideStandingType="rallye"
           />
           <DriverComparator
             races={rallyeRaces}
