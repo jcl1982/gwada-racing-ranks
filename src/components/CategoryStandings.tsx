@@ -4,6 +4,7 @@ import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
 import { useStandingsCalculation } from '@/hooks/useStandingsCalculation';
 import { toSimplifiedStandings } from '@/utils/standingsConverter';
+import { useUserRole } from '@/hooks/useUserRole';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
@@ -31,6 +32,7 @@ const CategoryStandings = ({
   championshipId,
   previousStandings 
 }: CategoryStandingsProps) => {
+  const { isAdmin } = useUserRole();
   const { exportCategoryStandings } = usePdfExport();
 
   // Séparer les courses par type pour le calcul centralisé
@@ -95,17 +97,21 @@ const CategoryStandings = ({
         title={`Évolution des points - ${displayTitle}`}
         type={type}
       />
-      <DriverAdvancedStats
-        races={races}
-        drivers={drivers}
-        title={`Statistiques détaillées - ${displayTitle}`}
-        type={type}
-      />
-      <DriverComparator
-        races={races}
-        drivers={drivers}
-        title={`Comparateur de pilotes - ${displayTitle}`}
-      />
+      {isAdmin && (
+        <DriverAdvancedStats
+          races={races}
+          drivers={drivers}
+          title={`Statistiques détaillées - ${displayTitle}`}
+          type={type}
+        />
+      )}
+      {isAdmin && (
+        <DriverComparator
+          races={races}
+          drivers={drivers}
+          title={`Comparateur de pilotes - ${displayTitle}`}
+        />
+      )}
     </div>
   );
 };
