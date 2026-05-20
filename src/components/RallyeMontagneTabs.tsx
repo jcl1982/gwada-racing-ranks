@@ -229,17 +229,21 @@ const RallyeMontagneTabs = ({
             title="Évolution des points - Classement Général"
             type="all"
           />
-          <DriverAdvancedStats
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={drivers}
-            title="Statistiques détaillées - Classement Général"
-            type="all"
-          />
-          <DriverComparator
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={pilotes}
-            title="Comparateur de pilotes - Général"
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={[...montagneRaces, ...rallyeRaces]}
+              drivers={drivers}
+              title="Statistiques détaillées - Classement Général"
+              type="all"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={[...montagneRaces, ...rallyeRaces]}
+              drivers={pilotes}
+              title="Comparateur de pilotes - Général"
+            />
+          )}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -272,19 +276,23 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.montagne}`}
             type="montagne"
           />
-          <DriverAdvancedStats
-            races={montagneRaces}
-            drivers={pilotes}
-            title={`Statistiques détaillées - ${titles.montagne}`}
-            type="montagne"
-            championshipId={championshipId}
-            overrideStandingType="montagne"
-          />
-          <DriverComparator
-            races={montagneRaces}
-            drivers={pilotes}
-            title={`Comparateur de pilotes - ${titles.montagne}`}
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={montagneRaces}
+              drivers={pilotes}
+              title={`Statistiques détaillées - ${titles.montagne}`}
+              type="montagne"
+              championshipId={championshipId}
+              overrideStandingType="montagne"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={montagneRaces}
+              drivers={pilotes}
+              title={`Comparateur de pilotes - ${titles.montagne}`}
+            />
+          )}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -317,19 +325,23 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.rallye}`}
             type="rallye"
           />
-          <DriverAdvancedStats
-            races={rallyeRaces}
-            drivers={pilotes}
-            title={`Statistiques détaillées - ${titles.rallye}`}
-            type="rallye"
-            championshipId={championshipId}
-            overrideStandingType="rallye"
-          />
-          <DriverComparator
-            races={rallyeRaces}
-            drivers={pilotes}
-            title={`Comparateur de pilotes - ${titles.rallye}`}
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={rallyeRaces}
+              drivers={pilotes}
+              title={`Statistiques détaillées - ${titles.rallye}`}
+              type="rallye"
+              championshipId={championshipId}
+              overrideStandingType="rallye"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={rallyeRaces}
+              drivers={pilotes}
+              title={`Comparateur de pilotes - ${titles.rallye}`}
+            />
+          )}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -357,17 +369,21 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.r2}`}
             type="all"
           />
-          <DriverAdvancedStats
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={pilotes}
-            title={`Statistiques détaillées - ${titles.r2}`}
-            type="all"
-          />
-          <DriverComparator
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={pilotes}
-            title={`Comparateur de pilotes - ${titles.r2}`}
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={[...montagneRaces, ...rallyeRaces]}
+              drivers={pilotes}
+              title={`Statistiques détaillées - ${titles.r2}`}
+              type="all"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={[...montagneRaces, ...rallyeRaces]}
+              drivers={pilotes}
+              title={`Comparateur de pilotes - ${titles.r2}`}
+            />
+          )}
         </TabsContent>
 
         {/* Trophée Copilote */}
@@ -388,17 +404,21 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.copilote}`}
             type="rallye"
           />
-          <DriverAdvancedStats
-            races={rallyeRaces}
-            drivers={copilotes}
-            title={`Statistiques détaillées - ${titles.copilote}`}
-            type="rallye"
-          />
-          <DriverComparator
-            races={rallyeRaces}
-            drivers={copilotes}
-            title={`Comparateur de copilotes - ${titles.copilote}`}
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={rallyeRaces}
+              drivers={copilotes}
+              title={`Statistiques détaillées - ${titles.copilote}`}
+              type="rallye"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={rallyeRaces}
+              drivers={copilotes}
+              title={`Comparateur de copilotes - ${titles.copilote}`}
+            />
+          )}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
@@ -475,17 +495,21 @@ const RallyeMontagneTabs = ({
             title={`Évolution des points - ${titles.vmrs}`}
             type="rallye"
           />
-          <DriverAdvancedStats
-            races={rallyeRaces}
-            drivers={pilotes}
-            title={`Statistiques détaillées - ${titles.vmrs}`}
-            type="rallye"
-          />
-          <DriverComparator
-            races={rallyeRaces}
-            drivers={pilotes}
-            title={`Comparateur de pilotes - ${titles.vmrs}`}
-          />
+          {isAdmin && (
+            <DriverAdvancedStats
+              races={rallyeRaces}
+              drivers={pilotes}
+              title={`Statistiques détaillées - ${titles.vmrs}`}
+              type="rallye"
+            />
+          )}
+          {isAdmin && (
+            <DriverComparator
+              races={rallyeRaces}
+              drivers={pilotes}
+              title={`Comparateur de pilotes - ${titles.vmrs}`}
+            />
+          )}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
