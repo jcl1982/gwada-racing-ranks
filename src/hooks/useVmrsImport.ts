@@ -31,6 +31,7 @@ export const useVmrsImport = () => {
           .from('drivers')
           .select('*')
           .eq('championship_id', data.id)
+          .eq('scope', 'vmrs')
           .order('name');
         setChampionshipDrivers(drivers?.map(convertSupabaseDriver) || []);
       }
