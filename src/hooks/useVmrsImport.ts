@@ -75,6 +75,7 @@ export const useVmrsImport = () => {
         .from('drivers')
         .select('*')
         .eq('championship_id', championshipId)
+        .eq('scope', 'vmrs')
         .order('name');
       const currentDrivers = freshDrivers?.map(convertSupabaseDriver) || [];
 
