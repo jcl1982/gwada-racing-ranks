@@ -142,7 +142,8 @@ export const useVmrsImport = () => {
                 championship_id: championshipId,
                 driver_role: result.driverRole,
                 number: maxNum + 1,
-              });
+                scope: 'vmrs',
+              } as any);
             
             if (driverError) throw new Error(`Erreur création pilote: ${driverError.message}`);
             
