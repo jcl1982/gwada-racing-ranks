@@ -86,6 +86,7 @@ export type Database = {
           id: string
           name: string
           number: number | null
+          scope: string
           team: string | null
           updated_at: string
         }
@@ -97,6 +98,7 @@ export type Database = {
           id?: string
           name: string
           number?: number | null
+          scope?: string
           team?: string | null
           updated_at?: string
         }
@@ -108,6 +110,7 @@ export type Database = {
           id?: string
           name?: string
           number?: number | null
+          scope?: string
           team?: string | null
           updated_at?: string
         }
