@@ -31,6 +31,7 @@ export const useVmrsImport = () => {
           .from('drivers')
           .select('*')
           .eq('championship_id', data.id)
+          .eq('scope', 'vmrs')
           .order('name');
         setChampionshipDrivers(drivers?.map(convertSupabaseDriver) || []);
       }
@@ -74,6 +75,7 @@ export const useVmrsImport = () => {
         .from('drivers')
         .select('*')
         .eq('championship_id', championshipId)
+        .eq('scope', 'vmrs')
         .order('name');
       const currentDrivers = freshDrivers?.map(convertSupabaseDriver) || [];
 
@@ -140,7 +142,8 @@ export const useVmrsImport = () => {
                 championship_id: championshipId,
                 driver_role: result.driverRole,
                 number: maxNum + 1,
-              });
+                scope: 'vmrs',
+              } as any);
             
             if (driverError) throw new Error(`Erreur création pilote: ${driverError.message}`);
             

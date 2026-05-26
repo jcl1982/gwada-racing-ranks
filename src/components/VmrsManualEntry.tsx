@@ -47,7 +47,7 @@ const VmrsManualEntry = () => {
       setChampionshipId(config.id);
 
       const [driversRes, racesRes] = await Promise.all([
-        supabase.from('drivers').select('*').eq('championship_id', config.id).order('name'),
+        supabase.from('drivers').select('*').eq('championship_id', config.id).eq('scope', 'vmrs').order('name'),
         supabase.from('races').select('id, name, date').eq('championship_id', config.id).order('date'),
       ]);
 

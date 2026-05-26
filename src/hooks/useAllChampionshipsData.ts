@@ -35,7 +35,8 @@ export const useAllChampionshipsData = () => {
             const { data: driversData } = await supabase
               .from('drivers')
               .select('*')
-              .eq('championship_id', config.id);
+              .eq('championship_id', config.id)
+              .neq('scope', 'vmrs');
 
             const drivers = (driversData || []).map(convertSupabaseDriver);
 
