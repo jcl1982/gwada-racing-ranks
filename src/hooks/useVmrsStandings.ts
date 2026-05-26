@@ -46,7 +46,8 @@ export const useVmrsStandings = (championshipId?: string) => {
       const { data: drivers } = await supabase
         .from('drivers')
         .select('id, name, driver_role')
-        .eq('championship_id', championshipId);
+        .eq('championship_id', championshipId)
+        .eq('scope', 'vmrs');
 
       if (!results || !drivers) {
         setStandings([]);
