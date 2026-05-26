@@ -55,6 +55,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
     const driversQuery = supabase
       .from('drivers')
       .select('*')
+      .neq('scope', 'vmrs')
       .order('name');
     
     // Filter by championship if we have one
