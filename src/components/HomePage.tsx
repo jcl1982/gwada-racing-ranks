@@ -396,7 +396,12 @@ const HomePage = ({
                       </h5>
                       <div className="space-y-2">
                         {pastRaces.map(race => {
-                    const winner = race.results.sort((a, b) => a.position - b.position)[0];
+                    // Exclure les copilotes du gagnant affiché (classement général = pilotes uniquement)
+                    const piloteResults = race.results.filter(r => {
+                      const d = championship.drivers.find(dr => dr.id === r.driverId);
+                      return d?.driverRole !== 'copilote';
+                    });
+                    const winner = piloteResults.sort((a, b) => a.position - b.position)[0];
                     const winnerDriver = winner ? championship.drivers.find(d => d.id === winner.driverId) : null;
                     return <div key={race.id} className="bg-blue-500/10 dark:bg-blue-500/15 rounded-lg p-2 border-l-4 border-blue-500">
                               <p className="font-medium text-sm">{race.name}</p>
