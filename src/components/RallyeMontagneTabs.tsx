@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useState } from "react";
 import { ChampionshipStanding, Race, Driver } from "@/types/championship";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Mountain, Car, Award, Users, Gauge } from "lucide-react";
 import GeneralStandingsHeader from "@/components/GeneralStandingsHeader";
 import GeneralStandingsTable from "@/components/GeneralStandingsTable";
