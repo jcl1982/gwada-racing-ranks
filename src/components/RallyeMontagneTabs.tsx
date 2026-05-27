@@ -489,22 +489,10 @@ const RallyeMontagneTabs = ({
             ))}
           </Tabs>
 
-          {/* Analytics retirées du Trophée VMRS : le scoring VMRS est indépendant
-              des résultats de course classiques (vmrs_results vs race_results).
-              Les graphiques basés sur race_results introduisaient des pilotes
-              du championnat dans les classements VMRS. */}
-
-          {onRaceUpdate && isAdmin && (
-            <div className="mt-8">
-              <h2 className="text-xl font-bold mb-4">Résultats par Course VMRS</h2>
-              <PointsEditor
-                races={rallyeRaces}
-                drivers={drivers}
-                onRaceUpdate={onRaceUpdate}
-                showRoleSelector={true}
-              />
-            </div>
-          )}
+          {/* Le PointsEditor classique a été retiré du Trophée VMRS :
+              il affichait les pilotes du championnat et les résultats race_results,
+              ce qui n'a rien à voir avec le scoring VMRS (vmrs_results + pilotes scope='vmrs').
+              La saisie des points VMRS se fait via l'onglet Admin → VMRS (Import / Saisie manuelle). */}
         </TabsContent>
       </Tabs>
     </div>
