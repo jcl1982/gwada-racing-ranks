@@ -190,12 +190,12 @@ const RallyeMontagneTabs = ({
   // VMRS handlers
   const handleVmrsPrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
-    exportCategoryStandings(titles.vmrs, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.vmrs, vmrsRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleVmrsExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
-    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.vmrs, "rallye");
+    exportCategoryToExcel(simplifiedStandings, vmrsRaces, titles.vmrs, "rallye");
   };
 
   return (
