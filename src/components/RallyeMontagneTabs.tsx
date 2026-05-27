@@ -489,27 +489,10 @@ const RallyeMontagneTabs = ({
             ))}
           </Tabs>
 
-          <StandingsEvolutionChart
-            races={rallyeRaces}
-            drivers={drivers}
-            title={`Évolution des points - ${titles.vmrs}`}
-            type="rallye"
-          />
-          {isAdmin && (
-            <DriverAdvancedStats
-              races={rallyeRaces}
-              drivers={pilotes}
-              title={`Statistiques détaillées - ${titles.vmrs}`}
-              type="rallye"
-            />
-          )}
-          {isAdmin && (
-            <DriverComparator
-              races={rallyeRaces}
-              drivers={pilotes}
-              title={`Comparateur de pilotes - ${titles.vmrs}`}
-            />
-          )}
+          {/* Analytics retirées du Trophée VMRS : le scoring VMRS est indépendant
+              des résultats de course classiques (vmrs_results vs race_results).
+              Les graphiques basés sur race_results introduisaient des pilotes
+              du championnat dans les classements VMRS. */}
 
           {onRaceUpdate && isAdmin && (
             <div className="mt-8">
