@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useState } from "react";
 import { ChampionshipStanding, Race, Driver } from "@/types/championship";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
 import { Trophy, Mountain, Car, Award, Users, Gauge } from "lucide-react";
 import GeneralStandingsHeader from "@/components/GeneralStandingsHeader";
 import GeneralStandingsTable from "@/components/GeneralStandingsTable";
@@ -74,6 +76,23 @@ const RallyeMontagneTabs = ({
   const { isAdmin } = useUserRole();
 
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
+
+  // VMRS : ne garder que les courses ayant au moins un résultat VMRS
+  const [vmrsRaceIds, setVmrsRaceIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!championshipId) return;
+    supabase
+      .from("vmrs_results")
+      .select("race_id")
+      .eq("championship_id", championshipId)
+      .then(({ data }) => {
+        setVmrsRaceIds(new Set((data || []).map((r: any) => r.race_id)));
+      });
+  }, [championshipId]);
+  const vmrsRaces = useMemo(
+    () => rallyeRaces.filter((r) => vmrsRaceIds.has(r.id)),
+    [rallyeRaces, vmrsRaceIds]
+  );
 
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
@@ -171,12 +190,12 @@ const RallyeMontagneTabs = ({
   // VMRS handlers
   const handleVmrsPrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
-    exportCategoryStandings(titles.vmrs, rallyeRaces, drivers, championshipYear, simplifiedStandings);
+    exportCategoryStandings(titles.vmrs, vmrsRaces, drivers, championshipYear, simplifiedStandings);
   };
 
   const handleVmrsExportExcel = () => {
     const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
-    exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.vmrs, "rallye");
+    exportCategoryToExcel(simplifiedStandings, vmrsRaces, titles.vmrs, "rallye");
   };
 
   return (
@@ -437,7 +456,7 @@ const RallyeMontagneTabs = ({
         {/* Trophée VMRS - 6 classements (art. 7.2 du règlement) */}
         <TabsContent value="vmrs" className="space-y-6">
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
-          <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
+          <RaceCalendar races={vmrsRaces} driverIds={piloteIds} />
 
           <Tabs defaultValue="haute" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
@@ -456,12 +475,12 @@ const RallyeMontagneTabs = ({
                   <>
                     <StandingsTable
                       displayTitle={`${titles.vmrs} - Moyenne ${label} - Pilotes`}
-                      races={rallyeRaces}
+                      races={vmrsRaces}
                       type="rallye"
                       standings={toSimplifiedStandings(piloteList, "rallye")}
                       onPrintPdf={() => {
                         const s = toSimplifiedStandings(piloteList, "rallye");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Pilotes`, rallyeRaces, drivers, championshipYear, s);
+                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Pilotes`, vmrsRaces, drivers, championshipYear, s);
                       }}
                     />
                     <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
@@ -474,12 +493,12 @@ const RallyeMontagneTabs = ({
                   <>
                     <StandingsTable
                       displayTitle={`${titles.vmrs} - Moyenne ${label} - Copilotes`}
-                      races={rallyeRaces}
+                      races={vmrsRaces}
                       type="rallye"
                       standings={toSimplifiedStandings(copiloteList, "copilote")}
                       onPrintPdf={() => {
                         const s = toSimplifiedStandings(copiloteList, "copilote");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Copilotes`, rallyeRaces, drivers, championshipYear, s);
+                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Copilotes`, vmrsRaces, drivers, championshipYear, s);
                       }}
                     />
                     <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
