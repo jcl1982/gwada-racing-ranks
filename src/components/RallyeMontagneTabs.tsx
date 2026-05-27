@@ -456,7 +456,7 @@ const RallyeMontagneTabs = ({
         {/* Trophée VMRS - 6 classements (art. 7.2 du règlement) */}
         <TabsContent value="vmrs" className="space-y-6">
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
-          <RaceCalendar races={rallyeRaces} driverIds={piloteIds} />
+          <RaceCalendar races={vmrsRaces} driverIds={piloteIds} />
 
           <Tabs defaultValue="haute" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
@@ -475,12 +475,12 @@ const RallyeMontagneTabs = ({
                   <>
                     <StandingsTable
                       displayTitle={`${titles.vmrs} - Moyenne ${label} - Pilotes`}
-                      races={rallyeRaces}
+                      races={vmrsRaces}
                       type="rallye"
                       standings={toSimplifiedStandings(piloteList, "rallye")}
                       onPrintPdf={() => {
                         const s = toSimplifiedStandings(piloteList, "rallye");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Pilotes`, rallyeRaces, drivers, championshipYear, s);
+                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Pilotes`, vmrsRaces, drivers, championshipYear, s);
                       }}
                     />
                     <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
@@ -493,12 +493,12 @@ const RallyeMontagneTabs = ({
                   <>
                     <StandingsTable
                       displayTitle={`${titles.vmrs} - Moyenne ${label} - Copilotes`}
-                      races={rallyeRaces}
+                      races={vmrsRaces}
                       type="rallye"
                       standings={toSimplifiedStandings(copiloteList, "copilote")}
                       onPrintPdf={() => {
                         const s = toSimplifiedStandings(copiloteList, "copilote");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Copilotes`, rallyeRaces, drivers, championshipYear, s);
+                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Copilotes`, vmrsRaces, drivers, championshipYear, s);
                       }}
                     />
                     <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
