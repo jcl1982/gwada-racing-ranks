@@ -77,6 +77,23 @@ const RallyeMontagneTabs = ({
 
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
+  // VMRS : ne garder que les courses ayant au moins un résultat VMRS
+  const [vmrsRaceIds, setVmrsRaceIds] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    if (!championshipId) return;
+    supabase
+      .from("vmrs_results")
+      .select("race_id")
+      .eq("championship_id", championshipId)
+      .then(({ data }) => {
+        setVmrsRaceIds(new Set((data || []).map((r: any) => r.race_id)));
+      });
+  }, [championshipId]);
+  const vmrsRaces = useMemo(
+    () => rallyeRaces.filter((r) => vmrsRaceIds.has(r.id)),
+    [rallyeRaces, vmrsRaceIds]
+  );
+
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
   const piloteIds = pilotes.map((d) => d.id);
