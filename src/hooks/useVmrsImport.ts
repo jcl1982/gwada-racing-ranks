@@ -80,44 +80,44 @@ export const useVmrsImport = () => {
         .order('name');
       const currentDrivers = freshDrivers?.map(convertSupabaseDriver) || [];
 
+      // Helper: normalize race names for fuzzy matching
+      const normalizeName = (s: string) => s.toLowerCase().trim().replace(/\s+/g, ' ')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      // Pre-fetch all races to match by normalized name
+      const { data: allRaces } = await supabase
+        .from('races')
+        .select('id, name, championship_id');
+
       for (const raceData of previewData) {
-        // Find or create the race
-        const { data: existingRace } = await supabase
-          .from('races')
-          .select('id')
-          .eq('name', raceData.raceName)
-          .eq('championship_id', championshipId)
-          .maybeSingle();
+        const targetName = normalizeName(raceData.raceName);
+
+        // Find existing race by normalized name (prefer same championship)
+        const sameChamp = (allRaces || []).find(
+          (r: any) => normalizeName(r.name) === targetName && r.championship_id === championshipId
+        );
+        const anyChamp = sameChamp || (allRaces || []).find(
+          (r: any) => normalizeName(r.name) === targetName
+        );
 
         let raceId: string;
-        if (existingRace) {
-          raceId = existingRace.id;
+        if (anyChamp) {
+          raceId = anyChamp.id;
         } else {
-          // Get race level from races table if it exists
-          const { data: raceInfo } = await supabase
+          // Create the race only if no existing match
+          const { data: newRace, error: raceError } = await supabase
             .from('races')
-            .select('id, race_level')
-            .eq('name', raceData.raceName)
-            .maybeSingle();
-          
-          if (raceInfo) {
-            raceId = raceInfo.id;
-          } else {
-            // Create the race
-            const { data: newRace, error: raceError } = await supabase
-              .from('races')
-              .insert({
-                name: raceData.raceName,
-                date: raceData.raceDate,
-                type: selectedRaceType,
-                championship_id: championshipId,
-              })
-              .select('id')
-              .single();
-            
-            if (raceError || !newRace) throw new Error(`Erreur création course: ${raceError?.message}`);
-            raceId = newRace.id;
-          }
+            .insert({
+              name: raceData.raceName,
+              date: raceData.raceDate,
+              type: selectedRaceType,
+              championship_id: championshipId,
+            })
+            .select('id')
+            .single();
+
+          if (raceError || !newRace) throw new Error(`Erreur création course: ${raceError?.message}`);
+          raceId = newRace.id;
         }
 
         // Process each result
