@@ -36,6 +36,18 @@ interface RallyeMontagneTabsProps {
   vmrsCopiloteHaute?: ChampionshipStanding[];
   vmrsCopiloteIntermediaire?: ChampionshipStanding[];
   vmrsCopiloteBasse?: ChampionshipStanding[];
+  vmrsByType?: {
+    montagne: {
+      piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      raceIds: Set<string>;
+    };
+    rallye: {
+      piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      raceIds: Set<string>;
+    };
+  };
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
