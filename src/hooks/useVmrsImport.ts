@@ -84,27 +84,28 @@ export const useVmrsImport = () => {
       const normalizeName = (s: string) => s.toLowerCase().trim().replace(/\s+/g, ' ')
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-      // Pre-fetch all races to match by normalized name
+      // Pre-fetch races of the VMRS championship only to avoid cross-championship matching
       const { data: allRaces } = await supabase
         .from('races')
-        .select('id, name, championship_id');
+        .select('id, name, date, championship_id')
+        .eq('championship_id', championshipId);
+
+      const racesCache: any[] = allRaces || [];
 
       for (const raceData of previewData) {
         const targetName = normalizeName(raceData.raceName);
 
-        // Find existing race by normalized name (prefer same championship)
-        const sameChamp = (allRaces || []).find(
-          (r: any) => normalizeName(r.name) === targetName && r.championship_id === championshipId
-        );
-        const anyChamp = sameChamp || (allRaces || []).find(
+        // Match by normalized name + date in the VMRS championship; fallback by name only
+        const existing = racesCache.find(
+          (r: any) => normalizeName(r.name) === targetName && r.date === raceData.raceDate
+        ) || racesCache.find(
           (r: any) => normalizeName(r.name) === targetName
         );
 
         let raceId: string;
-        if (anyChamp) {
-          raceId = anyChamp.id;
+        if (existing) {
+          raceId = existing.id;
         } else {
-          // Create the race only if no existing match
           const { data: newRace, error: raceError } = await supabase
             .from('races')
             .insert({
@@ -118,6 +119,7 @@ export const useVmrsImport = () => {
 
           if (raceError || !newRace) throw new Error(`Erreur création course: ${raceError?.message}`);
           raceId = newRace.id;
+          racesCache.push({ id: raceId, name: raceData.raceName, date: raceData.raceDate, championship_id: championshipId });
         }
 
         // Process each result
