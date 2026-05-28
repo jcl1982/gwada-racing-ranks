@@ -173,13 +173,14 @@ const StandingsTable = ({
                     </div>
                   </td>
                    {type !== 'karting' && !isCopiloteStandings && (() => {
-                    // Récupérer les modèles de voiture utilisés dans les courses (par ordre chronologique)
+                    // Modèles utilisés à chaque course (chronologique). Fallback sur le profil pilote si le résultat n'a pas de modèle enregistré.
                     const usedModels: string[] = [];
                     [...races]
                       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                       .forEach(race => {
                         const r = race.results.find(x => x.driverId === standing.driver.id);
-                        const m = r?.carModel?.trim();
+                        if (!r) return;
+                        const m = (r.carModel?.trim()) || standing.driver.carModel?.trim();
                         if (m && !usedModels.includes(m)) usedModels.push(m);
                       });
                     const display = usedModels.length > 0
