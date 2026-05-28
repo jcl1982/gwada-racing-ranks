@@ -57,6 +57,7 @@ interface ViewRendererProps {
   vmrsCopiloteHaute?: ChampionshipStanding[];
   vmrsCopiloteIntermediaire?: ChampionshipStanding[];
   vmrsCopiloteBasse?: ChampionshipStanding[];
+  vmrsByType?: any;
 }
 
 const ViewRenderer = ({
