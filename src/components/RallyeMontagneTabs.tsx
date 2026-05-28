@@ -495,7 +495,7 @@ const RallyeMontagneTabs = ({
         <TabsContent value="vmrs" className="space-y-6">
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
 
-          <Tabs defaultValue="general" className="w-full">
+          <Tabs value={vmrsTab} onValueChange={setVmrsTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 h-auto gap-1 p-1">
               <TabsTrigger value="general" className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2 text-[10px] sm:text-sm leading-tight whitespace-normal text-center">
                 <Trophy className="w-4 h-4 shrink-0" />
