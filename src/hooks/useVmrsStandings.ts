@@ -73,16 +73,22 @@ export const useVmrsStandings = (championshipId?: string) => {
 
       if (error) throw error;
 
+      // Collect race IDs referenced by results so we can fetch race details
+      // regardless of which championship the race was originally created in.
+      const resultRaceIds = Array.from(new Set((results || []).map((r: any) => r.race_id).filter(Boolean)));
+
       const [{ data: drivers }, { data: races }] = await Promise.all([
         supabase
           .from('drivers')
           .select('id, name, driver_role')
           .eq('championship_id', championshipId)
           .eq('scope', 'vmrs'),
-        supabase
-          .from('races')
-          .select('id, type')
-          .eq('championship_id', championshipId),
+        resultRaceIds.length > 0
+          ? supabase
+              .from('races')
+              .select('id, name, date, end_date, type, organizer, race_level')
+              .in('id', resultRaceIds)
+          : Promise.resolve({ data: [] as any[] }),
       ]);
 
       if (!results || !drivers) {
@@ -100,6 +106,20 @@ export const useVmrsStandings = (championshipId?: string) => {
         (races || [])
           .filter((r: any) => r.type === 'montagne' || r.type === 'rallye')
           .map((r: any) => [r.id, r.type as VmrsRaceType])
+      );
+      const raceInfoMap = new Map<string, VmrsRaceInfo>(
+        (races || [])
+          .filter((r: any) => r.type === 'montagne' || r.type === 'rallye')
+          .map((r: any) => [r.id, {
+            id: r.id,
+            name: r.name,
+            date: r.date,
+            endDate: r.end_date || undefined,
+            type: r.type as VmrsRaceType,
+            organizer: r.organizer || undefined,
+            raceLevel: r.race_level || undefined,
+            results: [],
+          }])
       );
 
       // Helper: aggregate a set of results by (driver_id, moyenne)
