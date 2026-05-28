@@ -128,6 +128,8 @@ const KartingStandings = ({
     [drivers, races]
   );
 
+  const [kartingTab, setKartingTab] = useUrlTab('karting', 'mini60');
+
   return (
     <div className="space-y-6">
       <CategoryHeader 
