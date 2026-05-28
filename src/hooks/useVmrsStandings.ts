@@ -49,12 +49,22 @@ const emptyBucket = (): VmrsByTypeBucket => ({
   races: [],
 });
 
+export interface VmrsDriverInfo {
+  id: string;
+  name: string;
+  number?: number;
+  carModel?: string;
+  driverRole: 'pilote' | 'copilote';
+  championshipId?: string;
+}
+
 export const useVmrsStandings = (championshipId?: string) => {
   const [standings, setStandings] = useState<VmrsStanding[]>([]);
   const [piloteStandings, setPiloteStandings] = useState<VmrsStanding[]>([]);
   const [copiloteStandings, setCopiloteStandings] = useState<VmrsStanding[]>([]);
   const [piloteByMoyenne, setPiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
   const [copiloteByMoyenne, setCopiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
+  const [vmrsDrivers, setVmrsDrivers] = useState<VmrsDriverInfo[]>([]);
   const [byType, setByType] = useState<Record<VmrsRaceType, VmrsByTypeBucket>>({
     montagne: emptyBucket(),
     rallye: emptyBucket(),
@@ -80,7 +90,7 @@ export const useVmrsStandings = (championshipId?: string) => {
       const [{ data: drivers }, { data: races }] = await Promise.all([
         supabase
           .from('drivers')
-          .select('id, name, driver_role')
+          .select('id, name, driver_role, number, car_model, championship_id')
           .eq('championship_id', championshipId)
           .eq('scope', 'vmrs'),
         resultRaceIds.length > 0
@@ -97,9 +107,19 @@ export const useVmrsStandings = (championshipId?: string) => {
         setCopiloteStandings([]);
         setPiloteByMoyenne(EMPTY_BY_MOYENNE);
         setCopiloteByMoyenne(EMPTY_BY_MOYENNE);
+        setVmrsDrivers([]);
         setByType({ montagne: emptyBucket(), rallye: emptyBucket() });
         return;
       }
+
+      setVmrsDrivers((drivers as any[]).map(d => ({
+        id: d.id,
+        name: d.name,
+        number: d.number ?? undefined,
+        carModel: d.car_model ?? undefined,
+        driverRole: (d.driver_role || 'pilote') as 'pilote' | 'copilote',
+        championshipId: d.championship_id,
+      })));
 
       const driverMap = new Map(drivers.map((d: any) => [d.id, { name: d.name, role: d.driver_role }]));
       const raceTypeMap = new Map<string, VmrsRaceType>(
@@ -224,6 +244,11 @@ export const useVmrsStandings = (championshipId?: string) => {
         { event: '*', schema: 'public', table: 'races', filter: `championship_id=eq.${championshipId}` },
         () => loadStandings()
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'drivers', filter: `championship_id=eq.${championshipId}` },
+        () => loadStandings()
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
@@ -237,6 +262,7 @@ export const useVmrsStandings = (championshipId?: string) => {
     piloteByMoyenne,
     copiloteByMoyenne,
     byType,
+    vmrsDrivers,
     isLoading,
     refreshStandings: loadStandings,
   };

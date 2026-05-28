@@ -7,7 +7,7 @@ import {
   calculateR2Standings,
   calculateCopiloteStandings,
 } from '@/utils/championship';
-import { useVmrsStandings, VmrsStanding } from '@/hooks/useVmrsStandings';
+import { useVmrsStandings, VmrsStanding, VmrsDriverInfo } from '@/hooks/useVmrsStandings';
 
 export type StandingsType = 'general' | 'montagne' | 'rallye' | 'r2' | 'copilote' | 'vmrs' | 'vmrs_copilote';
 
@@ -21,12 +21,24 @@ interface UseStandingsCalculationParams {
 
 const convertVmrsToChampionshipStandings = (
   vmrsStandings: VmrsStanding[],
-  drivers: Driver[]
+  drivers: Driver[],
+  vmrsDrivers: VmrsDriverInfo[] = []
 ): ChampionshipStanding[] => {
   return vmrsStandings.map(vs => {
     const driver = drivers.find(d => d.id === vs.driverId);
+    const vmrsDriver = vmrsDrivers.find(d => d.id === vs.driverId);
+    const merged: Driver = driver
+      ? { ...driver, carModel: driver.carModel || vmrsDriver?.carModel, number: driver.number ?? vmrsDriver?.number }
+      : {
+          id: vs.driverId,
+          name: vmrsDriver?.name || vs.driverName,
+          number: vmrsDriver?.number,
+          carModel: vmrsDriver?.carModel,
+          driverRole: vmrsDriver?.driverRole || vs.driverRole,
+          championshipId: vmrsDriver?.championshipId,
+        } as Driver;
     return {
-      driver: driver || { id: vs.driverId, name: vs.driverName },
+      driver: merged,
       montagnePoints: 0,
       rallyePoints: vs.totalPoints,
       totalPoints: vs.totalPoints,
@@ -117,37 +129,38 @@ export const useStandingsCalculation = ({
     piloteByMoyenne,
     copiloteByMoyenne,
     byType: vmrsByTypeRaw,
+    vmrsDrivers,
   } = useVmrsStandings(championshipId || undefined);
 
   const vmrsStandings = useMemo(() =>
-    convertVmrsToChampionshipStandings(vmrsPiloteData, championshipDrivers),
-    [vmrsPiloteData, championshipDrivers]
+    convertVmrsToChampionshipStandings(vmrsPiloteData, championshipDrivers, vmrsDrivers),
+    [vmrsPiloteData, championshipDrivers, vmrsDrivers]
   );
 
   const vmrsCopiloteStandings = useMemo(() =>
-    convertVmrsToChampionshipStandings(vmrsCopiloteData, championshipDrivers),
-    [vmrsCopiloteData, championshipDrivers]
+    convertVmrsToChampionshipStandings(vmrsCopiloteData, championshipDrivers, vmrsDrivers),
+    [vmrsCopiloteData, championshipDrivers, vmrsDrivers]
   );
 
-  const vmrsPiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.haute, championshipDrivers), [piloteByMoyenne.haute, championshipDrivers]);
-  const vmrsPiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.intermediaire, championshipDrivers), [piloteByMoyenne.intermediaire, championshipDrivers]);
-  const vmrsPiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.basse, championshipDrivers), [piloteByMoyenne.basse, championshipDrivers]);
-  const vmrsCopiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.haute, championshipDrivers), [copiloteByMoyenne.haute, championshipDrivers]);
-  const vmrsCopiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.intermediaire, championshipDrivers), [copiloteByMoyenne.intermediaire, championshipDrivers]);
-  const vmrsCopiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.basse, championshipDrivers), [copiloteByMoyenne.basse, championshipDrivers]);
+  const vmrsPiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.haute, championshipDrivers, vmrsDrivers), [piloteByMoyenne.haute, championshipDrivers, vmrsDrivers]);
+  const vmrsPiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers), [piloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers]);
+  const vmrsPiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(piloteByMoyenne.basse, championshipDrivers, vmrsDrivers), [piloteByMoyenne.basse, championshipDrivers, vmrsDrivers]);
+  const vmrsCopiloteHaute = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.haute, championshipDrivers, vmrsDrivers), [copiloteByMoyenne.haute, championshipDrivers, vmrsDrivers]);
+  const vmrsCopiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers), [copiloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers]);
+  const vmrsCopiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.basse, championshipDrivers, vmrsDrivers), [copiloteByMoyenne.basse, championshipDrivers, vmrsDrivers]);
 
   // Per-race-type (montagne / rallye) converted standings
   const vmrsByType = useMemo(() => {
     const buildBucket = (bucket: typeof vmrsByTypeRaw.montagne) => ({
       piloteByMoyenne: {
-        haute: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.haute, championshipDrivers),
-        intermediaire: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.intermediaire, championshipDrivers),
-        basse: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.basse, championshipDrivers),
+        haute: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.haute, championshipDrivers, vmrsDrivers),
+        intermediaire: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers),
+        basse: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.basse, championshipDrivers, vmrsDrivers),
       },
       copiloteByMoyenne: {
-        haute: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.haute, championshipDrivers),
-        intermediaire: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.intermediaire, championshipDrivers),
-        basse: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.basse, championshipDrivers),
+        haute: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.haute, championshipDrivers, vmrsDrivers),
+        intermediaire: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.intermediaire, championshipDrivers, vmrsDrivers),
+        basse: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.basse, championshipDrivers, vmrsDrivers),
       },
       raceIds: bucket.raceIds,
       races: bucket.races,
@@ -156,7 +169,7 @@ export const useStandingsCalculation = ({
       montagne: buildBucket(vmrsByTypeRaw.montagne),
       rallye: buildBucket(vmrsByTypeRaw.rallye),
     };
-  }, [vmrsByTypeRaw, championshipDrivers]);
+  }, [vmrsByTypeRaw, championshipDrivers, vmrsDrivers]);
 
   return {
     generalStandings,
