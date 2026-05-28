@@ -174,7 +174,24 @@ export const useVmrsStandings = (championshipId?: string) => {
 
   useEffect(() => {
     loadStandings();
-  }, [loadStandings]);
+    if (!championshipId) return;
+    const channel = supabase
+      .channel(`vmrs_results_${championshipId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'vmrs_results', filter: `championship_id=eq.${championshipId}` },
+        () => loadStandings()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'races', filter: `championship_id=eq.${championshipId}` },
+        () => loadStandings()
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadStandings, championshipId]);
 
   return {
     standings,
