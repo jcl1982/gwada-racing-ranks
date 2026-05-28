@@ -55,34 +55,34 @@ const Navigation = ({
           label,
           icon: Icon
         }) => <button key={id} onClick={() => onViewChange(id)} aria-label={label} className={`${btnBase} ${currentView === id ? activeClass : inactiveClass}`}>
-              <Icon size={18} />
+              <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               <span className="hidden md:inline">{label}</span>
             </button>)}
 
           {/* Rallye-Montagne Championship button */}
           <button onClick={() => onViewChange('general')} aria-label="Championnat Rallye - Montagne" className={`${btnBase} ${isRallyeMontagnView ? activeClass : inactiveClass}`}>
-            <Trophy size={18} />
+            <Trophy className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             <span className="hidden lg:inline">CHAMPIONNAT RALLYE - MONTAGNE</span>
             <span className="hidden sm:inline lg:hidden">Rallye-Montagne</span>
           </button>
 
           {/* Acceleration Championship menu */}
           <button onClick={() => onViewChange('acceleration')} aria-label="Championnat Accélération" className={`${btnBase} ${currentView === 'acceleration' ? activeClass : inactiveClass}`}>
-            <Zap size={18} />
+            <Zap className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             <span className="hidden lg:inline">CHAMPIONNAT ACCELERATION</span>
             <span className="hidden sm:inline lg:hidden">Accélération</span>
           </button>
 
           {/* Karting Championship menu */}
           <button onClick={() => onViewChange('karting')} aria-label="Championnat Karting" className={`${btnBase} ${currentView === 'karting' ? activeClass : inactiveClass}`}>
-            <Circle size={18} />
+            <Circle className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             <span className="hidden lg:inline">CHAMPIONNAT KARTING</span>
             <span className="hidden sm:inline lg:hidden">Karting</span>
           </button>
 
           {/* Règlement menu */}
           <button onClick={() => onViewChange('reglement')} aria-label="Règlement Championnat" className={`${btnBase} ${currentView === 'reglement' ? activeClass : inactiveClass}`}>
-            <FileText size={18} />
+            <FileText className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             <span className="hidden lg:inline">RÈGLEMENT CHAMPIONNAT</span>
             <span className="hidden sm:inline lg:hidden">Règlement</span>
           </button>
@@ -99,7 +99,7 @@ const Navigation = ({
               aria-label="Administration"
               className={`${btnBase} ${isAdminView ? activeClass : inactiveClass}`}
             >
-              <Settings size={18} />
+              <Settings className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
               <span className="hidden sm:inline">Admin</span>
             </button>
           )}
