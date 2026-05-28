@@ -5,10 +5,12 @@ import { FileSpreadsheet, Upload, X, CheckCircle, AlertCircle } from 'lucide-rea
 import { useVmrsImport } from '@/hooks/useVmrsImport';
 import ExcelFileUpload from '@/components/ExcelFileUpload';
 import VmrsTemplateDownload from '@/components/VmrsTemplateDownload';
+import VmrsRaceTypeSelector from '@/components/VmrsRaceTypeSelector';
 
 const VmrsImport = () => {
   const {
     isLoading, error, previewData, success,
+    selectedRaceType, setSelectedRaceType,
     handleFileUpload, proceedWithImport, resetForm,
   } = useVmrsImport();
 
