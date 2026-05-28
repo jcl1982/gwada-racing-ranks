@@ -511,10 +511,10 @@ const RallyeMontagneTabs = ({
                 </p>
               ) : (
                 <Tabs defaultValue="haute" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="haute">Moyenne Haute</TabsTrigger>
-                    <TabsTrigger value="intermediaire">Moyenne Intermédiaire</TabsTrigger>
-                    <TabsTrigger value="basse">Moyenne Basse</TabsTrigger>
+                  <TabsList className="grid w-full grid-cols-3 h-auto">
+                    <TabsTrigger value="haute" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Haute</TabsTrigger>
+                    <TabsTrigger value="intermediaire" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Intermédiaire</TabsTrigger>
+                    <TabsTrigger value="basse" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Basse</TabsTrigger>
                   </TabsList>
 
                   {([
