@@ -90,7 +90,7 @@ export const useVmrsStandings = (championshipId?: string) => {
       const [{ data: drivers }, { data: races }] = await Promise.all([
         supabase
           .from('drivers')
-          .select('id, name, driver_role')
+          .select('id, name, driver_role, number, car_model, championship_id')
           .eq('championship_id', championshipId)
           .eq('scope', 'vmrs'),
         resultRaceIds.length > 0
