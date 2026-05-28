@@ -94,13 +94,27 @@ const RallyeMontagneTabs = ({
   const [vmrsRaceIds, setVmrsRaceIds] = useState<Set<string>>(new Set());
   useEffect(() => {
     if (!championshipId) return;
-    supabase
-      .from("vmrs_results")
-      .select("race_id")
-      .eq("championship_id", championshipId)
-      .then(({ data }) => {
-        setVmrsRaceIds(new Set((data || []).map((r: any) => r.race_id)));
-      });
+    const fetchIds = () => {
+      supabase
+        .from("vmrs_results")
+        .select("race_id")
+        .eq("championship_id", championshipId)
+        .then(({ data }) => {
+          setVmrsRaceIds(new Set((data || []).map((r: any) => r.race_id)));
+        });
+    };
+    fetchIds();
+    const channel = supabase
+      .channel(`vmrs_race_ids_${championshipId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'vmrs_results', filter: `championship_id=eq.${championshipId}` },
+        fetchIds
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [championshipId]);
   const vmrsRaces = useMemo(
     () => rallyeRaces.filter((r) => vmrsRaceIds.has(r.id)),
