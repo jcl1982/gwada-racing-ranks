@@ -14,6 +14,7 @@ export const useVmrsImport = () => {
   const [success, setSuccess] = useState(false);
   const [championshipId, setChampionshipId] = useState<string | undefined>();
   const [championshipDrivers, setChampionshipDrivers] = useState<Driver[]>([]);
+  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye'>('montagne');
   const { toast } = useToast();
 
   // Load rallye-montagne championship
