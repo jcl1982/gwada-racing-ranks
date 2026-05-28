@@ -49,12 +49,22 @@ const emptyBucket = (): VmrsByTypeBucket => ({
   races: [],
 });
 
+export interface VmrsDriverInfo {
+  id: string;
+  name: string;
+  number?: number;
+  carModel?: string;
+  driverRole: 'pilote' | 'copilote';
+  championshipId?: string;
+}
+
 export const useVmrsStandings = (championshipId?: string) => {
   const [standings, setStandings] = useState<VmrsStanding[]>([]);
   const [piloteStandings, setPiloteStandings] = useState<VmrsStanding[]>([]);
   const [copiloteStandings, setCopiloteStandings] = useState<VmrsStanding[]>([]);
   const [piloteByMoyenne, setPiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
   const [copiloteByMoyenne, setCopiloteByMoyenne] = useState<Record<VmrsMoyenne, VmrsStanding[]>>(EMPTY_BY_MOYENNE);
+  const [vmrsDrivers, setVmrsDrivers] = useState<VmrsDriverInfo[]>([]);
   const [byType, setByType] = useState<Record<VmrsRaceType, VmrsByTypeBucket>>({
     montagne: emptyBucket(),
     rallye: emptyBucket(),
