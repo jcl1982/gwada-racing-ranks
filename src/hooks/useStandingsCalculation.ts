@@ -116,6 +116,7 @@ export const useStandingsCalculation = ({
     copiloteStandings: vmrsCopiloteData,
     piloteByMoyenne,
     copiloteByMoyenne,
+    byType: vmrsByTypeRaw,
   } = useVmrsStandings(championshipId || undefined);
 
   const vmrsStandings = useMemo(() =>
@@ -135,6 +136,27 @@ export const useStandingsCalculation = ({
   const vmrsCopiloteIntermediaire = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.intermediaire, championshipDrivers), [copiloteByMoyenne.intermediaire, championshipDrivers]);
   const vmrsCopiloteBasse = useMemo(() => convertVmrsToChampionshipStandings(copiloteByMoyenne.basse, championshipDrivers), [copiloteByMoyenne.basse, championshipDrivers]);
 
+  // Per-race-type (montagne / rallye) converted standings
+  const vmrsByType = useMemo(() => {
+    const buildBucket = (bucket: typeof vmrsByTypeRaw.montagne) => ({
+      piloteByMoyenne: {
+        haute: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.haute, championshipDrivers),
+        intermediaire: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.intermediaire, championshipDrivers),
+        basse: convertVmrsToChampionshipStandings(bucket.piloteByMoyenne.basse, championshipDrivers),
+      },
+      copiloteByMoyenne: {
+        haute: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.haute, championshipDrivers),
+        intermediaire: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.intermediaire, championshipDrivers),
+        basse: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.basse, championshipDrivers),
+      },
+      raceIds: bucket.raceIds,
+    });
+    return {
+      montagne: buildBucket(vmrsByTypeRaw.montagne),
+      rallye: buildBucket(vmrsByTypeRaw.rallye),
+    };
+  }, [vmrsByTypeRaw, championshipDrivers]);
+
   return {
     generalStandings,
     montagneStandings,
@@ -149,5 +171,6 @@ export const useStandingsCalculation = ({
     vmrsCopiloteHaute,
     vmrsCopiloteIntermediaire,
     vmrsCopiloteBasse,
+    vmrsByType,
   };
 };
