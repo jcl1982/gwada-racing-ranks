@@ -175,6 +175,49 @@ const VmrsManualEntry = () => {
 
   const usedDriverIds = rows.map(r => r.driverId).filter(Boolean);
 
+  const handleDeleteRaceResults = async () => {
+    if (!selectedRaceId || !championshipId) return;
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('vmrs_results')
+        .delete()
+        .eq('race_id', selectedRaceId)
+        .eq('championship_id', championshipId);
+      if (error) throw error;
+      setRows([]);
+      setExistingResults([]);
+      toast({ title: 'Supprimé', description: 'Résultats VMRS de cette course supprimés.' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erreur';
+      toast({ variant: 'destructive', title: 'Erreur', description: msg });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAllResults = async () => {
+    if (!championshipId) return;
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('vmrs_results')
+        .delete()
+        .eq('championship_id', championshipId);
+      if (error) throw error;
+      setRows([]);
+      setExistingResults([]);
+      toast({ title: 'Supprimé', description: 'Tous les résultats VMRS ont été supprimés.' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erreur';
+      toast({ variant: 'destructive', title: 'Erreur', description: msg });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
   return (
     <Card className="card-glass">
       <CardHeader>
