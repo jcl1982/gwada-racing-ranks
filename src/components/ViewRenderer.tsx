@@ -190,15 +190,36 @@ const ViewRenderer = ({
           fallback={<AdminAccessDenied />}
         >
           <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
-          <ExcelImport
-            drivers={drivers}
-            races={races}
-            onImport={handleImport}
-            championshipId={championshipId}
-          />
-          <div className="mt-6">
-            <VmrsTab />
-          </div>
+          <Tabs defaultValue="classic" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsTrigger value="classic" className="flex items-center gap-2">
+                <FileSpreadsheet size={16} />
+                Import Classic
+              </TabsTrigger>
+              <TabsTrigger value="vmrs" className="flex items-center gap-2">
+                <Trophy size={16} />
+                Import VMRS
+              </TabsTrigger>
+              <TabsTrigger value="vmrs-manual" className="flex items-center gap-2">
+                <UserPlus size={16} />
+                Saisie manuelle VMRS
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="classic">
+              <ExcelImport
+                drivers={drivers}
+                races={races}
+                onImport={handleImport}
+                championshipId={championshipId}
+              />
+            </TabsContent>
+            <TabsContent value="vmrs">
+              <VmrsImport />
+            </TabsContent>
+            <TabsContent value="vmrs-manual">
+              <VmrsManualEntry />
+            </TabsContent>
+          </Tabs>
         </RoleProtectedComponent>
       );
     case 'admin':
