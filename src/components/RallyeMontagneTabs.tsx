@@ -487,18 +487,18 @@ const RallyeMontagneTabs = ({
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
 
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="general" className="flex items-center gap-2">
-                <Trophy className="w-4 h-4" />
+            <TabsList className="grid w-full grid-cols-3 h-auto gap-1 p-1">
+              <TabsTrigger value="general" className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2 text-[10px] sm:text-sm leading-tight whitespace-normal text-center">
+                <Trophy className="w-4 h-4 shrink-0" />
                 <span>Général VMRS</span>
               </TabsTrigger>
-              <TabsTrigger value="montagne" className="flex items-center gap-2">
-                <Mountain className="w-4 h-4" />
-                <span>Trophée Montagne VMRS</span>
+              <TabsTrigger value="montagne" className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2 text-[10px] sm:text-sm leading-tight whitespace-normal text-center">
+                <Mountain className="w-4 h-4 shrink-0" />
+                <span><span className="hidden sm:inline">Trophée </span>Montagne VMRS</span>
               </TabsTrigger>
-              <TabsTrigger value="rallye" className="flex items-center gap-2">
-                <Car className="w-4 h-4" />
-                <span>Trophée Rallye VMRS</span>
+              <TabsTrigger value="rallye" className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2 text-[10px] sm:text-sm leading-tight whitespace-normal text-center">
+                <Car className="w-4 h-4 shrink-0" />
+                <span><span className="hidden sm:inline">Trophée </span>Rallye VMRS</span>
               </TabsTrigger>
             </TabsList>
 
