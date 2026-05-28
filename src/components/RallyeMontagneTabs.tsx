@@ -21,6 +21,7 @@ import DriverAdvancedStats from "@/components/DriverAdvancedStats";
 import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
+import { useUrlTab } from "@/hooks/useUrlTab";
 
 interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
