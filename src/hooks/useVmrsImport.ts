@@ -14,6 +14,7 @@ export const useVmrsImport = () => {
   const [success, setSuccess] = useState(false);
   const [championshipId, setChampionshipId] = useState<string | undefined>();
   const [championshipDrivers, setChampionshipDrivers] = useState<Driver[]>([]);
+  const [selectedRaceType, setSelectedRaceType] = useState<'montagne' | 'rallye'>('montagne');
   const { toast } = useToast();
 
   // Load rallye-montagne championship
@@ -108,7 +109,7 @@ export const useVmrsImport = () => {
               .insert({
                 name: raceData.raceName,
                 date: raceData.raceDate,
-                type: 'montagne', // Default, can be adjusted
+                type: selectedRaceType,
                 championship_id: championshipId,
               })
               .select('id')
@@ -196,6 +197,7 @@ export const useVmrsImport = () => {
 
   return {
     isLoading, error, previewData, success,
+    selectedRaceType, setSelectedRaceType,
     handleFileUpload, proceedWithImport, resetForm,
   };
 };
