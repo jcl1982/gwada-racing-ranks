@@ -172,13 +172,27 @@ const StandingsTable = ({
                       {standing.driver.name}
                     </div>
                   </td>
-                  {type !== 'karting' && !isCopiloteStandings && (
-                    <td className="py-1 px-1">
-                      <div className="text-sm text-muted-foreground unicode-enhanced">
-                        {standing.driver.carModel || '-'}
-                      </div>
-                    </td>
-                  )}
+                   {type !== 'karting' && !isCopiloteStandings && (() => {
+                    // Récupérer les modèles de voiture utilisés dans les courses (par ordre chronologique)
+                    const usedModels: string[] = [];
+                    [...races]
+                      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .forEach(race => {
+                        const r = race.results.find(x => x.driverId === standing.driver.id);
+                        const m = r?.carModel?.trim();
+                        if (m && !usedModels.includes(m)) usedModels.push(m);
+                      });
+                    const display = usedModels.length > 0
+                      ? usedModels.join(' / ')
+                      : (standing.driver.carModel || '-');
+                    return (
+                      <td className="py-1 px-1">
+                        <div className="text-sm text-muted-foreground unicode-enhanced">
+                          {display}
+                        </div>
+                      </td>
+                    );
+                  })()}
                   {relevantRaces.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
