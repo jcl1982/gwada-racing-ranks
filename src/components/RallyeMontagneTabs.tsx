@@ -119,8 +119,8 @@ const RallyeMontagneTabs = ({
     };
   }, [championshipId]);
   const vmrsRaces = useMemo(
-    () => rallyeRaces.filter((r) => vmrsRaceIds.has(r.id)),
-    [rallyeRaces, vmrsRaceIds]
+    () => [...montagneRaces, ...rallyeRaces].filter((r) => vmrsRaceIds.has(r.id)),
+    [montagneRaces, rallyeRaces, vmrsRaceIds]
   );
 
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
