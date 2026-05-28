@@ -130,6 +130,7 @@ const ViewRenderer = ({
           vmrsCopiloteHaute={vmrsCopiloteHaute}
           vmrsCopiloteIntermediaire={vmrsCopiloteIntermediaire}
           vmrsCopiloteBasse={vmrsCopiloteBasse}
+          vmrsByType={vmrsByType}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}
