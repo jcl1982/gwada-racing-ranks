@@ -5,6 +5,7 @@ import DriversManagement from '../DriversManagement';
 import VmrsDriversManagement from '../VmrsDriversManagement';
 import RacesManagement from '../RacesManagement';
 import PointsEditor from '../PointsEditor';
+import VmrsManualEntry from '../VmrsManualEntry';
 import AdminStats from '../AdminStats';
 import ChampionshipSettings from '../ChampionshipSettings';
 import StandingsSavesManagement from '../StandingsSavesManagement';
