@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { PlusCircle, Save, Trash2, UserPlus } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { PlusCircle, Save, Trash2, UserPlus, Eraser } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { convertSupabaseDriver } from '@/hooks/supabase/converters';
@@ -171,6 +175,49 @@ const VmrsManualEntry = () => {
 
   const usedDriverIds = rows.map(r => r.driverId).filter(Boolean);
 
+  const handleDeleteRaceResults = async () => {
+    if (!selectedRaceId || !championshipId) return;
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('vmrs_results')
+        .delete()
+        .eq('race_id', selectedRaceId)
+        .eq('championship_id', championshipId);
+      if (error) throw error;
+      setRows([]);
+      setExistingResults([]);
+      toast({ title: 'Supprimé', description: 'Résultats VMRS de cette course supprimés.' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erreur';
+      toast({ variant: 'destructive', title: 'Erreur', description: msg });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAllResults = async () => {
+    if (!championshipId) return;
+    setIsLoading(true);
+    try {
+      const { error } = await supabase
+        .from('vmrs_results')
+        .delete()
+        .eq('championship_id', championshipId);
+      if (error) throw error;
+      setRows([]);
+      setExistingResults([]);
+      toast({ title: 'Supprimé', description: 'Tous les résultats VMRS ont été supprimés.' });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Erreur';
+      toast({ variant: 'destructive', title: 'Erreur', description: msg });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
   return (
     <Card className="card-glass">
       <CardHeader>
@@ -180,6 +227,29 @@ const VmrsManualEntry = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex justify-end">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" disabled={isLoading}>
+                <Eraser className="w-4 h-4 mr-2" />
+                Supprimer tous les résultats VMRS
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Supprimer tous les résultats VMRS ?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Cette action supprime définitivement tous les résultats VMRS de toutes les courses. Action irréversible.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAllResults}>Supprimer tout</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
         <div>
           <label className="text-sm font-medium mb-1 block">Course</label>
           <Select value={selectedRaceId} onValueChange={setSelectedRaceId}>
@@ -313,6 +383,28 @@ const VmrsManualEntry = () => {
                   <Save className="w-4 h-4 mr-2" />
                   {isLoading ? 'Enregistrement...' : 'Enregistrer les résultats'}
                 </Button>
+              )}
+              {existingResults.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={isLoading}>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Supprimer les résultats de cette course
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Supprimer les résultats de cette course ?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tous les résultats VMRS enregistrés pour cette course seront supprimés. Action irréversible.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteRaceResults}>Supprimer</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
           </>
