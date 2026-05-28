@@ -150,6 +150,7 @@ export const useStandingsCalculation = ({
         basse: convertVmrsToChampionshipStandings(bucket.copiloteByMoyenne.basse, championshipDrivers),
       },
       raceIds: bucket.raceIds,
+      races: bucket.races,
     });
     return {
       montagne: buildBucket(vmrsByTypeRaw.montagne),
