@@ -262,6 +262,7 @@ export const useVmrsStandings = (championshipId?: string) => {
     piloteByMoyenne,
     copiloteByMoyenne,
     byType,
+    vmrsDrivers,
     isLoading,
     refreshStandings: loadStandings,
   };
