@@ -24,16 +24,29 @@ const EMPTY_BY_MOYENNE = {
   basse: [] as VmrsStanding[],
 };
 
+export interface VmrsRaceInfo {
+  id: string;
+  name: string;
+  date: string;
+  endDate?: string;
+  type: VmrsRaceType;
+  organizer?: string;
+  raceLevel?: 'national' | 'regional';
+  results: any[];
+}
+
 export interface VmrsByTypeBucket {
   piloteByMoyenne: Record<VmrsMoyenne, VmrsStanding[]>;
   copiloteByMoyenne: Record<VmrsMoyenne, VmrsStanding[]>;
   raceIds: Set<string>;
+  races: VmrsRaceInfo[];
 }
 
 const emptyBucket = (): VmrsByTypeBucket => ({
   piloteByMoyenne: { ...EMPTY_BY_MOYENNE },
   copiloteByMoyenne: { ...EMPTY_BY_MOYENNE },
   raceIds: new Set<string>(),
+  races: [],
 });
 
 export const useVmrsStandings = (championshipId?: string) => {
