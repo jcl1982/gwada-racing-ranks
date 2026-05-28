@@ -519,7 +519,7 @@ const RallyeMontagneTabs = ({
                   Aucune course avec résultats VMRS pour le moment.
                 </p>
               ) : (
-                <Tabs defaultValue="haute" className="w-full">
+                <Tabs value={moyGeneral} onValueChange={setMoyGeneral} className="w-full">
                   <TabsList className="grid w-full grid-cols-3 h-auto">
                     <TabsTrigger value="haute" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Haute</TabsTrigger>
                     <TabsTrigger value="intermediaire" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Intermédiaire</TabsTrigger>
