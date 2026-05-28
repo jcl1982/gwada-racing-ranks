@@ -72,6 +72,7 @@ const RallyeMontagneTabs = ({
   vmrsCopiloteHaute = [],
   vmrsCopiloteIntermediaire = [],
   vmrsCopiloteBasse = [],
+  vmrsByType,
   championshipTitle,
   championshipYear,
   championshipId,
