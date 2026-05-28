@@ -92,6 +92,7 @@ const ChampionshipApp = () => {
           vmrsCopiloteHaute={standingsCalculation.vmrsCopiloteHaute}
           vmrsCopiloteIntermediaire={standingsCalculation.vmrsCopiloteIntermediaire}
           vmrsCopiloteBasse={standingsCalculation.vmrsCopiloteBasse}
+          vmrsByType={standingsCalculation.vmrsByType}
         />
       </div>
     </div>
