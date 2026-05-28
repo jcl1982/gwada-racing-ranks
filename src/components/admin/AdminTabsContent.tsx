@@ -2,6 +2,7 @@
 import { TabsContent } from '@/components/ui/tabs';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import DriversManagement from '../DriversManagement';
+import VmrsDriversManagement from '../VmrsDriversManagement';
 import RacesManagement from '../RacesManagement';
 import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
@@ -66,7 +67,7 @@ const AdminTabsContent = ({
 
   return (
     <>
-      <TabsContent value="drivers" className="mt-6">
+      <TabsContent value="drivers" className="mt-6 space-y-8">
         <DriversManagement
           drivers={drivers}
           onDriversChange={onDriversChange}
@@ -75,6 +76,7 @@ const AdminTabsContent = ({
           deleteAllDrivers={deleteAllDrivers}
           championshipId={championshipId}
         />
+        <VmrsDriversManagement />
       </TabsContent>
 
       <TabsContent value="races" className="mt-6">
