@@ -6,7 +6,10 @@ import R2Standings from '@/components/R2Standings';
 import KartingStandings from '@/components/KartingStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
-import VmrsTab from '@/components/VmrsTab';
+import VmrsImport from '@/components/VmrsImport';
+import VmrsManualEntry from '@/components/VmrsManualEntry';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { FileSpreadsheet, Trophy, UserPlus } from 'lucide-react';
 import AdminPanel from '@/components/AdminPanel';
 import AdminHub from '@/components/AdminHub';
 import RoleProtectedComponent from '@/components/RoleProtectedComponent';
@@ -187,15 +190,36 @@ const ViewRenderer = ({
           fallback={<AdminAccessDenied />}
         >
           <AdminBreadcrumb currentView={currentView} onViewChange={onViewChange} />
-          <ExcelImport
-            drivers={drivers}
-            races={races}
-            onImport={handleImport}
-            championshipId={championshipId}
-          />
-          <div className="mt-6">
-            <VmrsTab />
-          </div>
+          <Tabs defaultValue="classic" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-4">
+              <TabsTrigger value="classic" className="flex items-center gap-2">
+                <FileSpreadsheet size={16} />
+                Import Classic
+              </TabsTrigger>
+              <TabsTrigger value="vmrs" className="flex items-center gap-2">
+                <Trophy size={16} />
+                Import VMRS
+              </TabsTrigger>
+              <TabsTrigger value="vmrs-manual" className="flex items-center gap-2">
+                <UserPlus size={16} />
+                Saisie manuelle VMRS
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="classic">
+              <ExcelImport
+                drivers={drivers}
+                races={races}
+                onImport={handleImport}
+                championshipId={championshipId}
+              />
+            </TabsContent>
+            <TabsContent value="vmrs">
+              <VmrsImport />
+            </TabsContent>
+            <TabsContent value="vmrs-manual">
+              <VmrsManualEntry />
+            </TabsContent>
+          </Tabs>
         </RoleProtectedComponent>
       );
     case 'admin':
