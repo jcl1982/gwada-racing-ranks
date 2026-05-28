@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { loadSupabaseData } from './supabase/dataLoader';
 import { createDriverOperations } from './supabase/driver';
 import { createRaceOperations } from './supabase/raceOperations';
