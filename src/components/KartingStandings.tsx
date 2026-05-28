@@ -6,6 +6,7 @@ import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import KartingRaceResults from '@/components/points/KartingRaceResults';
+import { useUrlTab } from '@/hooks/useUrlTab';
 
 interface KartingStandingsProps {
   races: Race[];
@@ -127,6 +128,8 @@ const KartingStandings = ({
     [drivers, races]
   );
 
+  const [kartingTab, setKartingTab] = useUrlTab('karting', 'mini60');
+
   return (
     <div className="space-y-6">
       <CategoryHeader 
@@ -142,7 +145,7 @@ const KartingStandings = ({
         </p>
       </div>
 
-      <Tabs defaultValue="mini60" className="w-full">
+      <Tabs value={kartingTab} onValueChange={setKartingTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="mini60">MINI 60</TabsTrigger>
           <TabsTrigger value="senior">SENIOR MASTER GENTLEMAN</TabsTrigger>

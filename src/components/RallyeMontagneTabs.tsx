@@ -21,6 +21,7 @@ import DriverAdvancedStats from "@/components/DriverAdvancedStats";
 import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
+import { useUrlTab } from "@/hooks/useUrlTab";
 
 interface RallyeMontagneTabsProps {
   generalStandings: ChampionshipStanding[];
@@ -91,6 +92,14 @@ const RallyeMontagneTabs = ({
   const { isAdmin } = useUserRole();
 
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
+
+  // URL-synced tab state (shareable links)
+  const [mainTab, setMainTab] = useUrlTab('tab', 'general');
+  const [vmrsTab, setVmrsTab] = useUrlTab('vmrs', 'general');
+  const [moyGeneral, setMoyGeneral] = useUrlTab('moy_general', 'haute');
+  const [moyMontagne, setMoyMontagne] = useUrlTab('moy_montagne', 'haute');
+  const [moyRallye, setMoyRallye] = useUrlTab('moy_rallye', 'haute');
+
 
   // VMRS : ne garder que les courses ayant au moins un résultat VMRS
   const [vmrsRaceIds, setVmrsRaceIds] = useState<Set<string>>(new Set());
@@ -229,7 +238,7 @@ const RallyeMontagneTabs = ({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="general" className="w-full">
+      <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
@@ -486,7 +495,7 @@ const RallyeMontagneTabs = ({
         <TabsContent value="vmrs" className="space-y-6">
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
 
-          <Tabs defaultValue="general" className="w-full">
+          <Tabs value={vmrsTab} onValueChange={setVmrsTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 h-auto gap-1 p-1">
               <TabsTrigger value="general" className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2 text-[10px] sm:text-sm leading-tight whitespace-normal text-center">
                 <Trophy className="w-4 h-4 shrink-0" />
@@ -510,7 +519,7 @@ const RallyeMontagneTabs = ({
                   Aucune course avec résultats VMRS pour le moment.
                 </p>
               ) : (
-                <Tabs defaultValue="haute" className="w-full">
+                <Tabs value={moyGeneral} onValueChange={setMoyGeneral} className="w-full">
                   <TabsList className="grid w-full grid-cols-3 h-auto">
                     <TabsTrigger value="haute" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Haute</TabsTrigger>
                     <TabsTrigger value="intermediaire" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Intermédiaire</TabsTrigger>
@@ -584,7 +593,7 @@ const RallyeMontagneTabs = ({
                       Aucune course {typeLabel.toLowerCase()} avec résultats VMRS pour le moment.
                     </p>
                   ) : (
-                    <Tabs defaultValue="haute" className="w-full">
+                    <Tabs value={raceType === 'montagne' ? moyMontagne : moyRallye} onValueChange={raceType === 'montagne' ? setMoyMontagne : setMoyRallye} className="w-full">
                       <TabsList className="grid w-full grid-cols-3 h-auto">
                         <TabsTrigger value="haute" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Haute</TabsTrigger>
                         <TabsTrigger value="intermediaire" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Intermédiaire</TabsTrigger>
