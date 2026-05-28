@@ -238,7 +238,7 @@ const RallyeMontagneTabs = ({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="general" className="w-full">
+      <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Trophy className="w-4 h-4" />
