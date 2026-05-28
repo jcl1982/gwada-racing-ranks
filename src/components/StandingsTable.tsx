@@ -187,7 +187,7 @@ const StandingsTable = ({
                       ? usedModels.join(' / ')
                       : (standing.driver.carModel || '-');
                     return (
-                      <td className="py-1 px-1">
+                      <td className="py-1 px-1 hidden sm:table-cell">
                         <div className="text-sm text-muted-foreground unicode-enhanced">
                           {display}
                         </div>
