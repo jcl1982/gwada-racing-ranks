@@ -135,21 +135,21 @@ const StandingsTable = ({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full text-[11px] sm:text-sm">
           <thead className="bg-muted">
             <tr>
-              <th className="text-left py-1 px-1 font-semibold">Position</th>
+              <th className="text-left py-1 px-1 font-semibold">Pos</th>
               <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold">Véhicule</th>}
-              {relevantRaces.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[80px]">
-                  <div className="text-xs">
+              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold hidden sm:table-cell">Véhicule</th>}
+              {relevantRaces.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[60px] sm:min-w-[80px]">
+                  <div className="text-[10px] sm:text-xs leading-tight">
                     {race.name}
                   </div>
-                  <div className="text-[10px] text-muted-foreground font-normal">
+                  <div className="text-[9px] sm:text-[10px] text-muted-foreground font-normal">
                     {formatDateRange(race.date, race.endDate)}
                   </div>
                   {race.organizer && (
-                    <div className="text-[10px] text-muted-foreground font-normal italic">
+                    <div className="text-[9px] sm:text-[10px] text-muted-foreground font-normal italic hidden sm:block">
                       {race.organizer}
                     </div>
                   )}
