@@ -6,6 +6,7 @@ import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import KartingRaceResults from '@/components/points/KartingRaceResults';
+import { useUrlTab } from '@/hooks/useUrlTab';
 
 interface KartingStandingsProps {
   races: Race[];
