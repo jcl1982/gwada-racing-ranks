@@ -227,6 +227,29 @@ const VmrsManualEntry = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex justify-end">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm" disabled={isLoading}>
+                <Eraser className="w-4 h-4 mr-2" />
+                Supprimer tous les résultats VMRS
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Supprimer tous les résultats VMRS ?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Cette action supprime définitivement tous les résultats VMRS de toutes les courses. Action irréversible.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAllResults}>Supprimer tout</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
         <div>
           <label className="text-sm font-medium mb-1 block">Course</label>
           <Select value={selectedRaceId} onValueChange={setSelectedRaceId}>
