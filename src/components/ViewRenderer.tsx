@@ -57,6 +57,7 @@ interface ViewRendererProps {
   vmrsCopiloteHaute?: ChampionshipStanding[];
   vmrsCopiloteIntermediaire?: ChampionshipStanding[];
   vmrsCopiloteBasse?: ChampionshipStanding[];
+  vmrsByType?: any;
 }
 
 const ViewRenderer = ({
@@ -97,7 +98,8 @@ const ViewRenderer = ({
   vmrsPiloteBasse = [],
   vmrsCopiloteHaute = [],
   vmrsCopiloteIntermediaire = [],
-  vmrsCopiloteBasse = []
+  vmrsCopiloteBasse = [],
+  vmrsByType
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
@@ -128,6 +130,7 @@ const ViewRenderer = ({
           vmrsCopiloteHaute={vmrsCopiloteHaute}
           vmrsCopiloteIntermediaire={vmrsCopiloteIntermediaire}
           vmrsCopiloteBasse={vmrsCopiloteBasse}
+          vmrsByType={vmrsByType}
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
           championshipId={championshipId || ''}

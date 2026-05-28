@@ -36,6 +36,18 @@ interface RallyeMontagneTabsProps {
   vmrsCopiloteHaute?: ChampionshipStanding[];
   vmrsCopiloteIntermediaire?: ChampionshipStanding[];
   vmrsCopiloteBasse?: ChampionshipStanding[];
+  vmrsByType?: {
+    montagne: {
+      piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      raceIds: Set<string>;
+    };
+    rallye: {
+      piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
+      raceIds: Set<string>;
+    };
+  };
   championshipTitle: string;
   championshipYear: string;
   championshipId: string;
@@ -60,6 +72,7 @@ const RallyeMontagneTabs = ({
   vmrsCopiloteHaute = [],
   vmrsCopiloteIntermediaire = [],
   vmrsCopiloteBasse = [],
+  vmrsByType,
   championshipTitle,
   championshipYear,
   championshipId,
@@ -453,65 +466,94 @@ const RallyeMontagneTabs = ({
           )}
         </TabsContent>
 
-        {/* Trophée VMRS - 6 classements (art. 7.2 du règlement) */}
+        {/* Trophée VMRS - séparé en Montagne / Rallye, chacun avec 3 moyennes (art. 7.2) */}
         <TabsContent value="vmrs" className="space-y-6">
           <CategoryHeader displayTitle={titles.vmrs} championshipYear={championshipYear} subtitle={titles.vmrs_subtitle || undefined} />
-          <RaceCalendar races={vmrsRaces} driverIds={piloteIds} />
 
-          <Tabs defaultValue="haute" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="haute">Moyenne Haute</TabsTrigger>
-              <TabsTrigger value="intermediaire">Moyenne Intermédiaire</TabsTrigger>
-              <TabsTrigger value="basse">Moyenne Basse</TabsTrigger>
+          <Tabs defaultValue="montagne" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="montagne" className="flex items-center gap-2">
+                <Mountain className="w-4 h-4" />
+                <span>Trophée Montagne VMRS</span>
+              </TabsTrigger>
+              <TabsTrigger value="rallye" className="flex items-center gap-2">
+                <Car className="w-4 h-4" />
+                <span>Trophée Rallye VMRS</span>
+              </TabsTrigger>
             </TabsList>
 
-            {([
-              { key: 'haute', label: 'Haute', pilotes: vmrsPiloteHaute, copilotes: vmrsCopiloteHaute },
-              { key: 'intermediaire', label: 'Intermédiaire', pilotes: vmrsPiloteIntermediaire, copilotes: vmrsCopiloteIntermediaire },
-              { key: 'basse', label: 'Basse', pilotes: vmrsPiloteBasse, copilotes: vmrsCopiloteBasse },
-            ] as const).map(({ key, label, pilotes: piloteList, copilotes: copiloteList }) => (
-              <TabsContent key={key} value={key} className="space-y-6 mt-6">
-                {piloteList.length > 0 ? (
-                  <>
-                    <StandingsTable
-                      displayTitle={`${titles.vmrs} - Moyenne ${label} - Pilotes`}
-                      races={vmrsRaces}
-                      type="rallye"
-                      standings={toSimplifiedStandings(piloteList, "rallye")}
-                      onPrintPdf={() => {
-                        const s = toSimplifiedStandings(piloteList, "rallye");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Pilotes`, vmrsRaces, drivers, championshipYear, s);
-                      }}
-                    />
-                    <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
-                  </>
-                ) : (
-                  <p className="text-muted-foreground text-center py-8">Aucun pilote en moyenne {label.toLowerCase()} pour le moment.</p>
-                )}
+            {(['montagne', 'rallye'] as const).map((raceType) => {
+              const bucket = vmrsByType?.[raceType];
+              const piloteByM = bucket?.piloteByMoyenne || { haute: [], intermediaire: [], basse: [] };
+              const copiloteByM = bucket?.copiloteByMoyenne || { haute: [], intermediaire: [], basse: [] };
+              const raceIdsForType = bucket?.raceIds || new Set<string>();
+              const sourceRaces = raceType === 'montagne' ? montagneRaces : rallyeRaces;
+              const filteredRaces = sourceRaces.filter((r) => raceIdsForType.has(r.id));
+              const typeLabel = raceType === 'montagne' ? 'Montagne' : 'Rallye';
 
-                {copiloteList.length > 0 && (
-                  <>
-                    <StandingsTable
-                      displayTitle={`${titles.vmrs} - Moyenne ${label} - Copilotes`}
-                      races={vmrsRaces}
-                      type="rallye"
-                      standings={toSimplifiedStandings(copiloteList, "copilote")}
-                      onPrintPdf={() => {
-                        const s = toSimplifiedStandings(copiloteList, "copilote");
-                        exportCategoryStandings(`${titles.vmrs} - Moyenne ${label} - Copilotes`, vmrsRaces, drivers, championshipYear, s);
-                      }}
-                    />
-                    <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
-                  </>
-                )}
-              </TabsContent>
-            ))}
+              return (
+                <TabsContent key={raceType} value={raceType} className="space-y-6 mt-6">
+                  <RaceCalendar races={filteredRaces} driverIds={piloteIds} />
+
+                  {filteredRaces.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      Aucune course {typeLabel.toLowerCase()} avec résultats VMRS pour le moment.
+                    </p>
+                  ) : (
+                    <Tabs defaultValue="haute" className="w-full">
+                      <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="haute">Moyenne Haute</TabsTrigger>
+                        <TabsTrigger value="intermediaire">Moyenne Intermédiaire</TabsTrigger>
+                        <TabsTrigger value="basse">Moyenne Basse</TabsTrigger>
+                      </TabsList>
+
+                      {([
+                        { key: 'haute', label: 'Haute', pilotes: piloteByM.haute, copilotes: copiloteByM.haute },
+                        { key: 'intermediaire', label: 'Intermédiaire', pilotes: piloteByM.intermediaire, copilotes: copiloteByM.intermediaire },
+                        { key: 'basse', label: 'Basse', pilotes: piloteByM.basse, copilotes: copiloteByM.basse },
+                      ] as const).map(({ key, label, pilotes: piloteList, copilotes: copiloteList }) => (
+                        <TabsContent key={key} value={key} className="space-y-6 mt-6">
+                          {piloteList.length > 0 ? (
+                            <>
+                              <StandingsTable
+                                displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`}
+                                races={filteredRaces}
+                                type="rallye"
+                                standings={toSimplifiedStandings(piloteList, "rallye")}
+                                onPrintPdf={() => {
+                                  const s = toSimplifiedStandings(piloteList, "rallye");
+                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`, filteredRaces, drivers, championshipYear, s);
+                                }}
+                              />
+                              <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
+                            </>
+                          ) : (
+                            <p className="text-muted-foreground text-center py-8">Aucun pilote en moyenne {label.toLowerCase()} pour le moment.</p>
+                          )}
+
+                          {copiloteList.length > 0 && (
+                            <>
+                              <StandingsTable
+                                displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`}
+                                races={filteredRaces}
+                                type="rallye"
+                                standings={toSimplifiedStandings(copiloteList, "copilote")}
+                                onPrintPdf={() => {
+                                  const s = toSimplifiedStandings(copiloteList, "copilote");
+                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`, filteredRaces, drivers, championshipYear, s);
+                                }}
+                              />
+                              <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
+                            </>
+                          )}
+                        </TabsContent>
+                      ))}
+                    </Tabs>
+                  )}
+                </TabsContent>
+              );
+            })}
           </Tabs>
-
-          {/* Le PointsEditor classique a été retiré du Trophée VMRS :
-              il affichait les pilotes du championnat et les résultats race_results,
-              ce qui n'a rien à voir avec le scoring VMRS (vmrs_results + pilotes scope='vmrs').
-              La saisie des points VMRS se fait via l'onglet Admin → VMRS (Import / Saisie manuelle). */}
         </TabsContent>
       </Tabs>
     </div>
