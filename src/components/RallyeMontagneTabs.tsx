@@ -41,11 +41,13 @@ interface RallyeMontagneTabsProps {
       piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
       copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
       raceIds: Set<string>;
+      races: Race[];
     };
     rallye: {
       piloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
       copiloteByMoyenne: { haute: ChampionshipStanding[]; intermediaire: ChampionshipStanding[]; basse: ChampionshipStanding[] };
       raceIds: Set<string>;
+      races: Race[];
     };
   };
   championshipTitle: string;
