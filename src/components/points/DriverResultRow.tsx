@@ -100,25 +100,20 @@ const DriverResultRow = ({
         <TableCell className="text-center">
           {isEditing ? (
             <div className="flex flex-col gap-1">
-              <Select
+              <Input
+                type="text"
                 value={result?.carModel || driver.carModel || ''}
-                onValueChange={(value) => onCarModelChange(driver.id, value)}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Modèle de voiture" />
-                </SelectTrigger>
-                <SelectContent>
-                  {driver.carModel && (
-                    <SelectItem value={driver.carModel}>
-                      {driver.carModel} (Habituel)
-                    </SelectItem>
-                  )}
-                  <SelectItem value="Citroën C2 R2">Citroën C2 R2</SelectItem>
-                  <SelectItem value="Peugeot 106">Peugeot 106</SelectItem>
-                  <SelectItem value="Renault Clio">Renault Clio</SelectItem>
-                  <SelectItem value="Autre">Autre</SelectItem>
-                </SelectContent>
-              </Select>
+                onChange={(e) => onCarModelChange(driver.id, e.target.value)}
+                className="w-[200px] text-center"
+                placeholder="Modèle de voiture"
+                list={`car-models-${driver.id}`}
+              />
+              <datalist id={`car-models-${driver.id}`}>
+                {driver.carModel && <option value={driver.carModel} />}
+                <option value="Citroën C2 R2" />
+                <option value="Peugeot 106" />
+                <option value="Renault Clio" />
+              </datalist>
               {result?.carModel && result.carModel !== driver.carModel && (
                 <Badge variant="outline" className="text-xs w-fit">
                   ⚠️ Modèle différent
