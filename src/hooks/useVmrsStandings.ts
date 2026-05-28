@@ -107,9 +107,19 @@ export const useVmrsStandings = (championshipId?: string) => {
         setCopiloteStandings([]);
         setPiloteByMoyenne(EMPTY_BY_MOYENNE);
         setCopiloteByMoyenne(EMPTY_BY_MOYENNE);
+        setVmrsDrivers([]);
         setByType({ montagne: emptyBucket(), rallye: emptyBucket() });
         return;
       }
+
+      setVmrsDrivers((drivers as any[]).map(d => ({
+        id: d.id,
+        name: d.name,
+        number: d.number ?? undefined,
+        carModel: d.car_model ?? undefined,
+        driverRole: (d.driver_role || 'pilote') as 'pilote' | 'copilote',
+        championshipId: d.championship_id,
+      })));
 
       const driverMap = new Map(drivers.map((d: any) => [d.id, { name: d.name, role: d.driver_role }]));
       const raceTypeMap = new Map<string, VmrsRaceType>(
