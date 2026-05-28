@@ -109,7 +109,7 @@ export const useVmrsImport = () => {
               .insert({
                 name: raceData.raceName,
                 date: raceData.raceDate,
-                type: 'montagne', // Default, can be adjusted
+                type: selectedRaceType,
                 championship_id: championshipId,
               })
               .select('id')
