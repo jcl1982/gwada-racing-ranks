@@ -67,7 +67,7 @@ const AdminTabsContent = ({
 
   return (
     <>
-      <TabsContent value="drivers" className="mt-6">
+      <TabsContent value="drivers" className="mt-6 space-y-8">
         <DriversManagement
           drivers={drivers}
           onDriversChange={onDriversChange}
@@ -76,6 +76,7 @@ const AdminTabsContent = ({
           deleteAllDrivers={deleteAllDrivers}
           championshipId={championshipId}
         />
+        <VmrsDriversManagement />
       </TabsContent>
 
       <TabsContent value="races" className="mt-6">
