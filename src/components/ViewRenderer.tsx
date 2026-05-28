@@ -98,7 +98,8 @@ const ViewRenderer = ({
   vmrsPiloteBasse = [],
   vmrsCopiloteHaute = [],
   vmrsCopiloteIntermediaire = [],
-  vmrsCopiloteBasse = []
+  vmrsCopiloteBasse = [],
+  vmrsByType
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
