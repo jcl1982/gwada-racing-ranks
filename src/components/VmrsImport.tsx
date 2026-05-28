@@ -36,6 +36,11 @@ const VmrsImport = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <VmrsRaceTypeSelector
+            selectedType={selectedRaceType}
+            onTypeChange={setSelectedRaceType}
+          />
+
           <div className="text-sm text-muted-foreground bg-amber-50 dark:bg-amber-950/20 p-3 rounded-lg border border-amber-200 dark:border-amber-800">
             <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">Format du fichier VMRS :</h4>
             <ul className="list-disc list-inside space-y-1 text-amber-800 dark:text-amber-200">
