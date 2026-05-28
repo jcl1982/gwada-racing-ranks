@@ -7,7 +7,7 @@ import {
   calculateR2Standings,
   calculateCopiloteStandings,
 } from '@/utils/championship';
-import { useVmrsStandings, VmrsStanding } from '@/hooks/useVmrsStandings';
+import { useVmrsStandings, VmrsStanding, VmrsDriverInfo } from '@/hooks/useVmrsStandings';
 
 export type StandingsType = 'general' | 'montagne' | 'rallye' | 'r2' | 'copilote' | 'vmrs' | 'vmrs_copilote';
 
@@ -21,12 +21,24 @@ interface UseStandingsCalculationParams {
 
 const convertVmrsToChampionshipStandings = (
   vmrsStandings: VmrsStanding[],
-  drivers: Driver[]
+  drivers: Driver[],
+  vmrsDrivers: VmrsDriverInfo[] = []
 ): ChampionshipStanding[] => {
   return vmrsStandings.map(vs => {
     const driver = drivers.find(d => d.id === vs.driverId);
+    const vmrsDriver = vmrsDrivers.find(d => d.id === vs.driverId);
+    const merged: Driver = driver
+      ? { ...driver, carModel: driver.carModel || vmrsDriver?.carModel, number: driver.number ?? vmrsDriver?.number }
+      : {
+          id: vs.driverId,
+          name: vmrsDriver?.name || vs.driverName,
+          number: vmrsDriver?.number,
+          carModel: vmrsDriver?.carModel,
+          driverRole: vmrsDriver?.driverRole || vs.driverRole,
+          championshipId: vmrsDriver?.championshipId,
+        } as Driver;
     return {
-      driver: driver || { id: vs.driverId, name: vs.driverName },
+      driver: merged,
       montagnePoints: 0,
       rallyePoints: vs.totalPoints,
       totalPoints: vs.totalPoints,
