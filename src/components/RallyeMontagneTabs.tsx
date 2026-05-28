@@ -593,7 +593,7 @@ const RallyeMontagneTabs = ({
                       Aucune course {typeLabel.toLowerCase()} avec résultats VMRS pour le moment.
                     </p>
                   ) : (
-                    <Tabs defaultValue="haute" className="w-full">
+                    <Tabs value={raceType === 'montagne' ? moyMontagne : moyRallye} onValueChange={raceType === 'montagne' ? setMoyMontagne : setMoyRallye} className="w-full">
                       <TabsList className="grid w-full grid-cols-3 h-auto">
                         <TabsTrigger value="haute" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Haute</TabsTrigger>
                         <TabsTrigger value="intermediaire" className="text-[11px] sm:text-sm px-1 py-1.5 whitespace-normal leading-tight">Moyenne Intermédiaire</TabsTrigger>
