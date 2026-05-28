@@ -13,7 +13,8 @@ const AuthButton = () => {
 
   const handleSignOut = async () => {
     const { error } = await signOut();
-    if (error) {
+    const isSessionMissing = error?.message?.toLowerCase().includes('session');
+    if (error && !isSessionMissing) {
       toast({
         title: "Erreur",
         description: error.message,
