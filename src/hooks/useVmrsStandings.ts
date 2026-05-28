@@ -191,6 +191,10 @@ export const useVmrsStandings = (championshipId?: string) => {
       (['montagne', 'rallye'] as VmrsRaceType[]).forEach(type => {
         const typeResults = (results as any[]).filter(r => raceTypeMap.get(r.race_id) === type);
         typeResults.forEach(r => newByType[type].raceIds.add(r.race_id));
+        newByType[type].races = Array.from(newByType[type].raceIds)
+          .map(id => raceInfoMap.get(id))
+          .filter((r): r is VmrsRaceInfo => !!r)
+          .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
         const agg = aggregate(typeResults);
         moyennes.forEach(m => {
           newByType[type].piloteByMoyenne[m] = rank(agg.filter(s => s.driverRole === 'pilote' && s.moyenne === m));
