@@ -244,6 +244,11 @@ export const useVmrsStandings = (championshipId?: string) => {
         { event: '*', schema: 'public', table: 'races', filter: `championship_id=eq.${championshipId}` },
         () => loadStandings()
       )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'drivers', filter: `championship_id=eq.${championshipId}` },
+        () => loadStandings()
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
