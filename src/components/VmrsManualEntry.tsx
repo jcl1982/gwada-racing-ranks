@@ -384,6 +384,28 @@ const VmrsManualEntry = () => {
                   {isLoading ? 'Enregistrement...' : 'Enregistrer les résultats'}
                 </Button>
               )}
+              {existingResults.length > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" disabled={isLoading}>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Supprimer les résultats de cette course
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Supprimer les résultats de cette course ?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tous les résultats VMRS enregistrés pour cette course seront supprimés. Action irréversible.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDeleteRaceResults}>Supprimer</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </>
         )}
