@@ -93,6 +93,14 @@ const RallyeMontagneTabs = ({
 
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
+  // URL-synced tab state (shareable links)
+  const [mainTab, setMainTab] = useUrlTab('tab', 'general');
+  const [vmrsTab, setVmrsTab] = useUrlTab('vmrs', 'general');
+  const [moyGeneral, setMoyGeneral] = useUrlTab('moy_general', 'haute');
+  const [moyMontagne, setMoyMontagne] = useUrlTab('moy_montagne', 'haute');
+  const [moyRallye, setMoyRallye] = useUrlTab('moy_rallye', 'haute');
+
+
   // VMRS : ne garder que les courses ayant au moins un résultat VMRS
   const [vmrsRaceIds, setVmrsRaceIds] = useState<Set<string>>(new Set());
   useEffect(() => {
