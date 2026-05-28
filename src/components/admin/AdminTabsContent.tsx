@@ -2,6 +2,7 @@
 import { TabsContent } from '@/components/ui/tabs';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import DriversManagement from '../DriversManagement';
+import VmrsDriversManagement from '../VmrsDriversManagement';
 import RacesManagement from '../RacesManagement';
 import PointsEditor from '../PointsEditor';
 import AdminStats from '../AdminStats';
