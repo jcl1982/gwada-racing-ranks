@@ -145,7 +145,7 @@ const KartingStandings = ({
         </p>
       </div>
 
-      <Tabs defaultValue="mini60" className="w-full">
+      <Tabs value={kartingTab} onValueChange={setKartingTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="mini60">MINI 60</TabsTrigger>
           <TabsTrigger value="senior">SENIOR MASTER GENTLEMAN</TabsTrigger>
