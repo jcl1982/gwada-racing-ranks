@@ -67,7 +67,9 @@ export const parseExcelFile = async (
               const hasPosition = rowStr.some(cell => 
                 cell.includes('position') || 
                 cell.includes('pos') || 
+                cell.includes('sition') || // tolère les fautes de frappe type "Pisition"
                 cell.includes('classement') ||
+                cell.includes('rang') ||
                 cell === 'p' ||
                 cell === '#'
               );
