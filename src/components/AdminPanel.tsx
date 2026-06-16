@@ -22,6 +22,7 @@ interface AdminPanelProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
+  championshipType?: 'montagne' | 'rallye' | 'karting' | 'acceleration';
   standingsTitles?: StandingsTitles;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
