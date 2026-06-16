@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
 import {
   Select,
