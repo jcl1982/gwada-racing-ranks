@@ -77,7 +77,7 @@ const AdminTabsContent = ({
           deleteAllDrivers={deleteAllDrivers}
           championshipId={championshipId}
         />
-        <VmrsDriversManagement />
+        {(championshipType === 'montagne' || championshipType === 'rallye') && <VmrsDriversManagement />}
       </TabsContent>
 
       <TabsContent value="races" className="mt-6">
@@ -100,7 +100,7 @@ const AdminTabsContent = ({
           races={[...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces]}
           onRaceUpdate={onRaceUpdate}
         />
-        <VmrsManualEntry />
+        {(championshipType === 'montagne' || championshipType === 'rallye') && <VmrsManualEntry />}
       </TabsContent>
 
       <TabsContent value="stats" className="mt-6">
