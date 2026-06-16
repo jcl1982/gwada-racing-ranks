@@ -268,6 +268,7 @@ const ViewRenderer = ({
             championshipTitle="Championnat Accélération"
             championshipYear={championshipYear}
             championshipId={championshipId}
+            championshipType="acceleration"
             onDriversChange={handleDriversChange}
             onRacesChange={handleRacesChange}
             onReset={handleReset}
