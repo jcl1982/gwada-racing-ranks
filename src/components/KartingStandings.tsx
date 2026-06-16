@@ -1,6 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Driver, Race, ChampionshipStanding, RaceResult } from '@/types/championship';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
@@ -21,7 +27,7 @@ const KARTING_CATEGORIES = [
   { id: 'mini60', label: 'MINI 60', displayName: 'MINI 60' },
   { id: 'senior', label: 'SENIOR MASTER GENTLEMAN', displayName: 'SENIOR MASTER GENTLEMAN' },
   { id: 'kz2', label: 'KZ2', displayName: 'KZ2' }
-];
+] as const;
 
 const KartingStandings = ({ 
   races, 
@@ -130,6 +136,21 @@ const KartingStandings = ({
 
   const [kartingTab, setKartingTab] = useUrlTab('karting', 'mini60');
 
+  const getCategoryLabel = (id: string) => {
+    return KARTING_CATEGORIES.find(cat => cat.id === id)?.label ?? id;
+  };
+
+  const currentStandings = kartingTab === 'mini60' ? mini60Standings :
+                           kartingTab === 'senior' ? seniorStandings : kz2Standings;
+
+  const currentDisplayTitle = kartingTab === 'mini60' ? 'Classement Général MINI 60' :
+                               kartingTab === 'senior' ? 'Classement Général SENIOR MASTER GENTLEMAN' :
+                               'Classement Général KZ2';
+
+  const currentRaceTitle = kartingTab === 'mini60' ? 'Résultats par Course MINI 60' :
+                            kartingTab === 'senior' ? 'Résultats par Course SENIOR MASTER GENTLEMAN' :
+                            'Résultats par Course KZ2';
+
   return (
     <div className="space-y-6">
       <CategoryHeader 
@@ -145,82 +166,43 @@ const KartingStandings = ({
         </p>
       </div>
 
-      <Tabs value={kartingTab} onValueChange={setKartingTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="mini60">MINI 60</TabsTrigger>
-          <TabsTrigger value="senior">SENIOR MASTER GENTLEMAN</TabsTrigger>
-          <TabsTrigger value="kz2">KZ2</TabsTrigger>
-        </TabsList>
+      {/* Sélecteur de catégorie */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <label className="text-sm font-medium shrink-0">Catégorie :</label>
+        <Select value={kartingTab} onValueChange={setKartingTab}>
+          <SelectTrigger className="w-full sm:w-72">
+            <SelectValue placeholder="Sélectionner une catégorie" />
+          </SelectTrigger>
+          <SelectContent>
+            {KARTING_CATEGORIES.map((cat) => (
+              <SelectItem key={cat.id} value={cat.id}>
+                {cat.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
-        <TabsContent value="mini60" className="space-y-6">
-          <div className="space-y-6">
-            <StandingsTable
-              displayTitle="Classement Général MINI 60"
-              races={races}
-              type="karting"
-              standings={mini60Standings}
-              onPrintPdf={() => {}}
-            />
-            <PodiumSection standings={mini60Standings} />
-          </div>
-          
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">Résultats par Course MINI 60</h3>
-            <KartingRaceResults
-              races={races}
-              drivers={drivers}
-              category="mini60"
-              onRaceUpdate={onRaceUpdate}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="senior" className="space-y-6">
-          <div className="space-y-6">
-            <StandingsTable
-              displayTitle="Classement Général SENIOR MASTER GENTLEMAN"
-              races={races}
-              type="karting"
-              standings={seniorStandings}
-              onPrintPdf={() => {}}
-            />
-            <PodiumSection standings={seniorStandings} />
-          </div>
-          
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">Résultats par Course SENIOR MASTER GENTLEMAN</h3>
-            <KartingRaceResults
-              races={races}
-              drivers={drivers}
-              category="senior"
-              onRaceUpdate={onRaceUpdate}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="kz2" className="space-y-6">
-          <div className="space-y-6">
-            <StandingsTable
-              displayTitle="Classement Général KZ2"
-              races={races}
-              type="karting"
-              standings={kz2Standings}
-              onPrintPdf={() => {}}
-            />
-            <PodiumSection standings={kz2Standings} />
-          </div>
-          
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-4">Résultats par Course KZ2</h3>
-            <KartingRaceResults
-              races={races}
-              drivers={drivers}
-              category="kz2"
-              onRaceUpdate={onRaceUpdate}
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div className="space-y-6">
+        <StandingsTable
+          displayTitle={currentDisplayTitle}
+          races={races}
+          type="karting"
+          standings={currentStandings}
+          onPrintPdf={() => {}}
+        />
+        <PodiumSection standings={currentStandings} />
+      </div>
+      
+      <div className="mt-8">
+        <h3 className="text-xl font-bold mb-4">{currentRaceTitle}</h3>
+        <KartingRaceResults
+          races={races}
+          drivers={drivers}
+          category={kartingTab}
+          onRaceUpdate={onRaceUpdate}
+        />
+      </div>
     </div>
   );
 };
