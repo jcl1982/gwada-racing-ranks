@@ -299,6 +299,7 @@ const ViewRenderer = ({
             championshipTitle="Championnat Karting"
             championshipYear={championshipYear}
             championshipId={championshipId}
+            championshipType="karting"
             onDriversChange={handleDriversChange}
             onRacesChange={handleRacesChange}
             onReset={handleReset}
