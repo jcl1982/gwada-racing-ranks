@@ -22,6 +22,7 @@ interface AdminTabsContentProps {
   championshipTitle: string;
   championshipYear: string;
   championshipId?: string;
+  championshipType?: 'montagne' | 'rallye' | 'karting' | 'acceleration';
   standingsTitles?: StandingsTitles;
   onDriversChange: (drivers: Driver[]) => void;
   onRacesChange: (montagneRaces: Race[], rallyeRaces: Race[]) => void;
@@ -46,6 +47,7 @@ const AdminTabsContent = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  championshipType: championshipTypeProp,
   standingsTitles,
   onDriversChange,
   onRacesChange,
@@ -60,11 +62,14 @@ const AdminTabsContent = ({
   onRaceUpdate
 }: AdminTabsContentProps) => {
   const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
-  const championshipType = kartingRaces.length > 0 && kartingRaces.length >= allRaces.length * 0.5
-    ? 'karting'
-    : montagneRaces.length > rallyeRaces.length
-    ? 'montagne'
-    : 'rallye';
+  const championshipType = championshipTypeProp ?? (
+    kartingRaces.length > 0 && kartingRaces.length >= allRaces.length * 0.5
+      ? 'karting'
+      : montagneRaces.length > rallyeRaces.length
+      ? 'montagne'
+      : 'rallye'
+  );
+
 
   return (
     <>
