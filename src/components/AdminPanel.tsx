@@ -116,6 +116,7 @@ const AdminPanel = ({
             championshipTitle={championshipTitle}
             championshipYear={championshipYear}
             championshipId={championshipId}
+            championshipType={championshipType}
             standingsTitles={standingsTitles}
             onDriversChange={onDriversChange}
             onRacesChange={onRacesChange}
