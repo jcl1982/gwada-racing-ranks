@@ -51,6 +51,7 @@ const AdminPanel = ({
   championshipTitle,
   championshipYear,
   championshipId,
+  championshipType,
   standingsTitles,
   onDriversChange,
   onRacesChange,
