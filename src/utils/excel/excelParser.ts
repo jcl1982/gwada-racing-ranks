@@ -245,6 +245,7 @@ const findColumnIndices = (headers: string[]) => {
     if (indices.position === -1 && (
       headerLower.includes('position') ||
       headerLower.includes('pos') ||
+      headerLower.includes('sition') || // tolère "Pisition" et autres fautes
       headerLower.includes('classement') ||
       headerLower === 'p' ||
       headerLower === '#' ||
