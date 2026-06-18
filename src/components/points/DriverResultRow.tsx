@@ -51,13 +51,19 @@ const DriverResultRow = ({
       {showCategory && (
         <TableCell className="text-center">
           {isEditing && onCategoryChange ? (
-            <Input
-              type="text"
+            <Select
               value={result?.category || ''}
-              onChange={(e) => onCategoryChange(driver.id, e.target.value)}
-              className="w-32 text-center"
-              placeholder="Catégorie"
-            />
+              onValueChange={(value) => onCategoryChange(driver.id, value)}
+            >
+              <SelectTrigger className="w-40 text-center">
+                <SelectValue placeholder="Catégorie" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="MINI 60">MINI 60</SelectItem>
+                <SelectItem value="SENIOR MASTER GENTLEMAN">SENIOR MASTER GENTLEMAN</SelectItem>
+                <SelectItem value="KZ2">KZ2</SelectItem>
+              </SelectContent>
+            </Select>
           ) : (
             <Badge variant="outline" className="text-xs">
               {result?.category || '-'}
