@@ -163,7 +163,7 @@ export const saveRaceResults = async (raceId: string, results: RaceResult[]): Pr
 
   const { data: insertedData, error: resultError } = await supabase
     .from('race_results')
-    .insert(resultsToInsert)
+    .upsert(resultsToInsert, { onConflict: 'race_id,driver_id' })
     .select();
 
   if (resultError) {
