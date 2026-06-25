@@ -142,6 +142,35 @@ export const useVmrsStandings = (championshipId?: string) => {
           }])
       );
 
+      // Aggregate VMRS points per (race, driver) so StandingsTable can render per-race columns
+      const perRaceDriverPoints = new Map<string, Map<string, { points: number; carModel?: string }>>();
+      (results as any[]).forEach((r: any) => {
+        if (!r.race_id || !r.driver_id) return;
+        const pts =
+          (r.participation_points || 0) +
+          (r.dnf ? 0 : (r.classification_points || 0)) +
+          (r.bonus_points || 0);
+        let perDriver = perRaceDriverPoints.get(r.race_id);
+        if (!perDriver) {
+          perDriver = new Map();
+          perRaceDriverPoints.set(r.race_id, perDriver);
+        }
+        const existing = perDriver.get(r.driver_id);
+        perDriver.set(r.driver_id, {
+          points: (existing?.points || 0) + pts,
+          carModel: existing?.carModel || r.car_model || undefined,
+        });
+      });
+      perRaceDriverPoints.forEach((perDriver, raceId) => {
+        const info = raceInfoMap.get(raceId);
+        if (!info) return;
+        info.results = Array.from(perDriver.entries()).map(([driverId, v]) => ({
+          driverId,
+          points: v.points,
+          carModel: v.carModel,
+        }));
+      });
+
       // Helper: aggregate a set of results by (driver_id, moyenne)
       const aggregate = (rows: any[]) => {
         const map = new Map<string, {
