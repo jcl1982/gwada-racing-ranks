@@ -582,13 +582,11 @@ const RallyeMontagneTabs = ({
               const bucket = vmrsByType?.[raceType];
               const piloteByM = bucket?.piloteByMoyenne || { haute: [], intermediaire: [], basse: [] };
               const copiloteByM = bucket?.copiloteByMoyenne || { haute: [], intermediaire: [], basse: [] };
-              const raceIdsForType = bucket?.raceIds || new Set<string>();
-              const sourceRaces = raceType === 'montagne' ? montagneRaces : rallyeRaces;
-              const sourceFiltered = sourceRaces.filter((r) => raceIdsForType.has(r.id));
-              // Use races from VMRS bucket (fetched without championship filter) if local list is missing entries
-              const filteredRaces: Race[] = sourceFiltered.length >= (bucket?.races.length || 0)
-                ? sourceFiltered
-                : (bucket?.races as any as Race[]) || sourceFiltered;
+              // Toujours utiliser les courses enrichies par le bucket VMRS
+              // (elles contiennent results[] avec les points VMRS par pilote).
+              // Les courses "sources" classiques contiennent race_results et n'ont pas
+              // les points VMRS, donc les colonnes par course afficheraient 0.
+              const filteredRaces: Race[] = ((bucket?.races as any as Race[]) || []);
               const typeLabel = raceType === 'montagne' ? 'Montagne' : 'Rallye';
 
               return (
