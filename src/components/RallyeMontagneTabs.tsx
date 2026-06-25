@@ -127,10 +127,17 @@ const RallyeMontagneTabs = ({
       supabase.removeChannel(channel);
     };
   }, [championshipId]);
-  const vmrsRaces = useMemo(
-    () => [...montagneRaces, ...rallyeRaces].filter((r) => vmrsRaceIds.has(r.id)),
-    [montagneRaces, rallyeRaces, vmrsRaceIds]
-  );
+  const vmrsRaces = useMemo(() => {
+    // Préférer les courses enrichies (avec results VMRS) fournies par vmrsByType
+    const enriched = [
+      ...((vmrsByType?.montagne.races as any as Race[]) || []),
+      ...((vmrsByType?.rallye.races as any as Race[]) || []),
+    ];
+    if (enriched.length > 0) {
+      return enriched.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    }
+    return [...montagneRaces, ...rallyeRaces].filter((r) => vmrsRaceIds.has(r.id));
+  }, [vmrsByType, montagneRaces, rallyeRaces, vmrsRaceIds]);
 
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
