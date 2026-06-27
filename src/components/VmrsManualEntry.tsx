@@ -138,15 +138,8 @@ const VmrsManualEntry = () => {
 
     setIsLoading(true);
     try {
-      // Delete existing results for this race
-      await supabase
-        .from('vmrs_results')
-        .delete()
-        .eq('race_id', selectedRaceId)
-        .eq('championship_id', championshipId);
-
-      // Insert new results
-      const inserts = rows.map(r => ({
+      // Upsert ciblé : n'écrase QUE les pilotes affichés (par couple race_id + driver_id).
+      const upserts = rows.map(r => ({
         race_id: selectedRaceId,
         driver_id: r.driverId,
         championship_id: championshipId,
@@ -158,11 +151,46 @@ const VmrsManualEntry = () => {
         dnf: r.dnf,
       }));
 
-      const { error } = await supabase
+      const { error: upsertError } = await supabase
         .from('vmrs_results')
-        .insert(inserts);
+        .upsert(upserts, { onConflict: 'race_id,driver_id' });
+      if (upsertError) throw upsertError;
 
-      if (error) throw error;
+      // Supprime UNIQUEMENT les pilotes que l'utilisateur a explicitement retirés du tableau.
+      const currentDriverIds = new Set(rows.map(r => r.driverId));
+      const removedDriverIds = existingResults
+        .map((r: any) => r.driver_id)
+        .filter((id: string) => !currentDriverIds.has(id));
+
+      if (removedDriverIds.length > 0) {
+        const { error: delError } = await supabase
+          .from('vmrs_results')
+          .delete()
+          .eq('race_id', selectedRaceId)
+          .eq('championship_id', championshipId)
+          .in('driver_id', removedDriverIds);
+        if (delError) throw delError;
+      }
+
+      // Recharge l'état pour refléter la base.
+      const { data: refreshed } = await supabase
+        .from('vmrs_results')
+        .select('*')
+        .eq('race_id', selectedRaceId)
+        .eq('championship_id', championshipId)
+        .order('position');
+      setExistingResults(refreshed || []);
+      if (refreshed) {
+        setRows(refreshed.map((r: any) => ({
+          driverId: r.driver_id,
+          position: r.position,
+          moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
+          participationPoints: r.participation_points,
+          classificationPoints: r.classification_points,
+          bonusPoints: r.bonus_points,
+          dnf: r.dnf,
+        })));
+      }
 
       toast({ title: 'Sauvegardé !', description: `${rows.length} résultat(s) VMRS enregistré(s).` });
     } catch (err) {
