@@ -19,7 +19,9 @@ import { generateValidUUID } from '@/utils/excel/uuidUtils';
 type VmrsMoyenne = 'haute' | 'intermediaire' | 'basse';
 
 interface VmrsResultRow {
+  localId: string;
   driverId: string;
+  originalDriverId?: string;
   position: number;
   moyenne: VmrsMoyenne;
   participationPoints: number;
@@ -36,7 +38,20 @@ const VmrsManualEntry = () => {
   const [rows, setRows] = useState<VmrsResultRow[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [existingResults, setExistingResults] = useState<any[]>([]);
+  const [deletedDriverIds, setDeletedDriverIds] = useState<string[]>([]);
   const { toast } = useToast();
+
+  const mapDbResultToRow = (r: any): VmrsResultRow => ({
+    localId: r.id || generateValidUUID(),
+    driverId: r.driver_id,
+    originalDriverId: r.driver_id,
+    position: r.position,
+    moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
+    participationPoints: r.participation_points,
+    classificationPoints: r.classification_points,
+    bonusPoints: r.bonus_points,
+    dnf: r.dnf,
+  });
 
   // Load championship, drivers and races
   useEffect(() => {
@@ -66,6 +81,7 @@ const VmrsManualEntry = () => {
     if (!selectedRaceId || !championshipId) {
       setRows([]);
       setExistingResults([]);
+      setDeletedDriverIds([]);
       return;
     }
 
@@ -79,19 +95,12 @@ const VmrsManualEntry = () => {
 
       if (data && data.length > 0) {
         setExistingResults(data);
-        setRows(data.map((r: any) => ({
-          driverId: r.driver_id,
-          position: r.position,
-          moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
-          participationPoints: r.participation_points,
-          classificationPoints: r.classification_points,
-          bonusPoints: r.bonus_points,
-          dnf: r.dnf,
-        })));
+        setRows(data.map(mapDbResultToRow));
       } else {
         setExistingResults([]);
         setRows([]);
       }
+      setDeletedDriverIds([]);
     };
     loadExisting();
   }, [selectedRaceId, championshipId]);
@@ -99,6 +108,7 @@ const VmrsManualEntry = () => {
   const addRow = () => {
     const nextPos = rows.length + 1;
     setRows([...rows, {
+      localId: generateValidUUID(),
       driverId: '',
       position: nextPos,
       moyenne: 'haute',
@@ -110,6 +120,10 @@ const VmrsManualEntry = () => {
   };
 
   const removeRow = (index: number) => {
+    const row = rows[index];
+    if (row?.originalDriverId) {
+      setDeletedDriverIds(prev => prev.includes(row.originalDriverId!) ? prev : [...prev, row.originalDriverId!]);
+    }
     setRows(rows.filter((_, i) => i !== index));
   };
 
@@ -136,6 +150,14 @@ const VmrsManualEntry = () => {
       return;
     }
 
+    const duplicateDriverIds = rows
+      .map(r => r.driverId)
+      .filter((driverId, index, allDriverIds) => allDriverIds.indexOf(driverId) !== index);
+    if (duplicateDriverIds.length > 0) {
+      toast({ variant: 'destructive', title: 'Erreur', description: 'Un même pilote ne peut pas être saisi deux fois sur la même course.' });
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Upsert ciblé : n'écrase QUE les pilotes affichés (par couple race_id + driver_id).
@@ -149,6 +171,7 @@ const VmrsManualEntry = () => {
         classification_points: r.classificationPoints,
         bonus_points: r.bonusPoints,
         dnf: r.dnf,
+        updated_at: new Date().toISOString(),
       }));
 
       const { error: upsertError } = await supabase
@@ -156,11 +179,9 @@ const VmrsManualEntry = () => {
         .upsert(upserts, { onConflict: 'race_id,driver_id' });
       if (upsertError) throw upsertError;
 
-      // Supprime UNIQUEMENT les pilotes que l'utilisateur a explicitement retirés du tableau.
+      // Supprime UNIQUEMENT les lignes retirées via l'icône corbeille.
       const currentDriverIds = new Set(rows.map(r => r.driverId));
-      const removedDriverIds = existingResults
-        .map((r: any) => r.driver_id)
-        .filter((id: string) => !currentDriverIds.has(id));
+      const removedDriverIds = deletedDriverIds.filter(id => !currentDriverIds.has(id));
 
       if (removedDriverIds.length > 0) {
         const { error: delError } = await supabase
@@ -181,16 +202,9 @@ const VmrsManualEntry = () => {
         .order('position');
       setExistingResults(refreshed || []);
       if (refreshed) {
-        setRows(refreshed.map((r: any) => ({
-          driverId: r.driver_id,
-          position: r.position,
-          moyenne: (r.moyenne as VmrsMoyenne) || 'haute',
-          participationPoints: r.participation_points,
-          classificationPoints: r.classification_points,
-          bonusPoints: r.bonus_points,
-          dnf: r.dnf,
-        })));
+        setRows(refreshed.map(mapDbResultToRow));
       }
+      setDeletedDriverIds([]);
 
       toast({ title: 'Sauvegardé !', description: `${rows.length} résultat(s) VMRS enregistré(s).` });
     } catch (err) {
@@ -215,6 +229,7 @@ const VmrsManualEntry = () => {
       if (error) throw error;
       setRows([]);
       setExistingResults([]);
+      setDeletedDriverIds([]);
       toast({ title: 'Supprimé', description: 'Résultats VMRS de cette course supprimés.' });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur';
@@ -235,6 +250,7 @@ const VmrsManualEntry = () => {
       if (error) throw error;
       setRows([]);
       setExistingResults([]);
+      setDeletedDriverIds([]);
       toast({ title: 'Supprimé', description: 'Tous les résultats VMRS ont été supprimés.' });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur';
@@ -314,7 +330,7 @@ const VmrsManualEntry = () => {
                   </thead>
                   <tbody>
                     {rows.map((row, index) => (
-                      <tr key={index} className="border-b last:border-0">
+                      <tr key={row.localId} className="border-b last:border-0">
                         <td className="p-2">
                           <Input
                             type="number"
@@ -325,7 +341,7 @@ const VmrsManualEntry = () => {
                           />
                         </td>
                         <td className="p-2">
-                          <Select value={row.driverId} onValueChange={v => updateRow(index, 'driverId', v)}>
+                          <Select value={row.driverId} onValueChange={v => updateRow(index, 'driverId', v)} disabled={!!row.originalDriverId}>
                             <SelectTrigger className="h-8">
                               <SelectValue placeholder="Choisir..." />
                             </SelectTrigger>
