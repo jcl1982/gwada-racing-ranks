@@ -28,6 +28,7 @@ interface VmrsResultRow {
   classificationPoints: number;
   bonusPoints: number;
   dnf: boolean;
+  dirty?: boolean;
 }
 
 const VmrsManualEntry = () => {
@@ -130,6 +131,7 @@ const VmrsManualEntry = () => {
   const updateRow = (index: number, field: keyof VmrsResultRow, value: any) => {
     const updated = [...rows];
     (updated[index] as any)[field] = value;
+    updated[index].dirty = true;
     setRows(updated);
   };
 
@@ -138,51 +140,98 @@ const VmrsManualEntry = () => {
     return row.participationPoints + row.classificationPoints + row.bonusPoints;
   };
 
+  // Sauvegarde ATOMIQUE d'une seule ligne : ne touche QUE le couple (race_id, driver_id) ciblé.
+  // Refuse toute écriture multiple ou implicite sur d'autres pilotes.
+  const saveSingleRow = async (row: VmrsResultRow): Promise<boolean> => {
+    if (!selectedRaceId || !championshipId) {
+      toast({ variant: 'destructive', title: 'Erreur', description: 'Sélectionnez une course.' });
+      return false;
+    }
+    if (!row.driverId) {
+      toast({ variant: 'destructive', title: 'Erreur', description: 'Pilote manquant.' });
+      return false;
+    }
+    // Vérifie qu'aucun autre row affiché n'utilise déjà ce driver_id (anti-doublon local).
+    const dupLocal = rows.some(r => r.localId !== row.localId && r.driverId === row.driverId);
+    if (dupLocal) {
+      toast({ variant: 'destructive', title: 'Erreur', description: 'Ce pilote est déjà saisi sur cette course.' });
+      return false;
+    }
+
+    const payload = {
+      race_id: selectedRaceId,
+      driver_id: row.driverId,
+      championship_id: championshipId,
+      position: row.position,
+      moyenne: row.moyenne,
+      participation_points: row.participationPoints,
+      classification_points: row.classificationPoints,
+      bonus_points: row.bonusPoints,
+      dnf: row.dnf,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('vmrs_results')
+      .upsert(payload, { onConflict: 'race_id,driver_id' });
+    if (error) {
+      toast({ variant: 'destructive', title: 'Erreur', description: error.message });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSaveRow = async (index: number) => {
+    const row = rows[index];
+    setIsLoading(true);
+    try {
+      const ok = await saveSingleRow(row);
+      if (!ok) return;
+      const updated = [...rows];
+      updated[index] = { ...row, dirty: false, originalDriverId: row.driverId };
+      setRows(updated);
+      toast({ title: 'Sauvegardé', description: `Résultat enregistré pour ce pilote.` });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!selectedRaceId || !championshipId) {
       toast({ variant: 'destructive', title: 'Erreur', description: 'Sélectionnez une course.' });
       return;
     }
 
-    const invalidRows = rows.filter(r => !r.driverId);
-    if (invalidRows.length > 0) {
+    const dirtyRows = rows.filter(r => r.dirty || !r.originalDriverId);
+    if (dirtyRows.length === 0 && deletedDriverIds.length === 0) {
+      toast({ title: 'Aucun changement', description: 'Rien à sauvegarder.' });
+      return;
+    }
+
+    if (dirtyRows.some(r => !r.driverId)) {
       toast({ variant: 'destructive', title: 'Erreur', description: 'Tous les pilotes doivent être sélectionnés.' });
       return;
     }
 
-    const duplicateDriverIds = rows
-      .map(r => r.driverId)
-      .filter((driverId, index, allDriverIds) => allDriverIds.indexOf(driverId) !== index);
-    if (duplicateDriverIds.length > 0) {
+    const allIds = rows.map(r => r.driverId).filter(Boolean);
+    if (new Set(allIds).size !== allIds.length) {
       toast({ variant: 'destructive', title: 'Erreur', description: 'Un même pilote ne peut pas être saisi deux fois sur la même course.' });
       return;
     }
 
     setIsLoading(true);
     try {
-      // Upsert ciblé : n'écrase QUE les pilotes affichés (par couple race_id + driver_id).
-      const upserts = rows.map(r => ({
-        race_id: selectedRaceId,
-        driver_id: r.driverId,
-        championship_id: championshipId,
-        position: r.position,
-        moyenne: r.moyenne,
-        participation_points: r.participationPoints,
-        classification_points: r.classificationPoints,
-        bonus_points: r.bonusPoints,
-        dnf: r.dnf,
-        updated_at: new Date().toISOString(),
-      }));
+      // Sauvegarde ligne par ligne : chaque appel ne cible QUE son (race_id, driver_id).
+      let savedCount = 0;
+      for (const r of dirtyRows) {
+        const ok = await saveSingleRow(r);
+        if (!ok) throw new Error('Échec sur une ligne, arrêt.');
+        savedCount++;
+      }
 
-      const { error: upsertError } = await supabase
-        .from('vmrs_results')
-        .upsert(upserts, { onConflict: 'race_id,driver_id' });
-      if (upsertError) throw upsertError;
-
-      // Supprime UNIQUEMENT les lignes retirées via l'icône corbeille.
+      // Suppression UNIQUEMENT des pilotes explicitement retirés via la corbeille.
       const currentDriverIds = new Set(rows.map(r => r.driverId));
       const removedDriverIds = deletedDriverIds.filter(id => !currentDriverIds.has(id));
-
       if (removedDriverIds.length > 0) {
         const { error: delError } = await supabase
           .from('vmrs_results')
@@ -193,7 +242,7 @@ const VmrsManualEntry = () => {
         if (delError) throw delError;
       }
 
-      // Recharge l'état pour refléter la base.
+      // Recharge l'état depuis la base.
       const { data: refreshed } = await supabase
         .from('vmrs_results')
         .select('*')
@@ -201,12 +250,10 @@ const VmrsManualEntry = () => {
         .eq('championship_id', championshipId)
         .order('position');
       setExistingResults(refreshed || []);
-      if (refreshed) {
-        setRows(refreshed.map(mapDbResultToRow));
-      }
+      if (refreshed) setRows(refreshed.map(mapDbResultToRow));
       setDeletedDriverIds([]);
 
-      toast({ title: 'Sauvegardé !', description: `${rows.length} résultat(s) VMRS enregistré(s).` });
+      toast({ title: 'Sauvegardé !', description: `${savedCount} ligne(s) mises à jour.` });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur lors de la sauvegarde';
       toast({ variant: 'destructive', title: 'Erreur', description: msg });
@@ -214,6 +261,7 @@ const VmrsManualEntry = () => {
       setIsLoading(false);
     }
   };
+
 
   const usedDriverIds = rows.map(r => r.driverId).filter(Boolean);
 
@@ -406,10 +454,23 @@ const VmrsManualEntry = () => {
                           {getTotal(row)}
                         </td>
                         <td className="p-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeRow(index)}>
-                            <Trash2 className="w-4 h-4 text-destructive" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleSaveRow(index)}
+                              disabled={isLoading || !row.driverId || (!row.dirty && !!row.originalDriverId)}
+                              title="Enregistrer cette ligne uniquement"
+                            >
+                              <Save className={`w-4 h-4 ${row.dirty || !row.originalDriverId ? 'text-primary' : 'text-muted-foreground'}`} />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeRow(index)}>
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </div>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
