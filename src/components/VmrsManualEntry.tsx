@@ -454,10 +454,23 @@ const VmrsManualEntry = () => {
                           {getTotal(row)}
                         </td>
                         <td className="p-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeRow(index)}>
-                            <Trash2 className="w-4 h-4 text-destructive" />
-                          </Button>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => handleSaveRow(index)}
+                              disabled={isLoading || !row.driverId || (!row.dirty && !!row.originalDriverId)}
+                              title="Enregistrer cette ligne uniquement"
+                            >
+                              <Save className={`w-4 h-4 ${row.dirty || !row.originalDriverId ? 'text-primary' : 'text-muted-foreground'}`} />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeRow(index)}>
+                              <Trash2 className="w-4 h-4 text-destructive" />
+                            </Button>
+                          </div>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
