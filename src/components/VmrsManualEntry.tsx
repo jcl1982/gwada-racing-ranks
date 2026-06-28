@@ -28,6 +28,7 @@ interface VmrsResultRow {
   classificationPoints: number;
   bonusPoints: number;
   dnf: boolean;
+  dirty?: boolean;
 }
 
 const VmrsManualEntry = () => {
