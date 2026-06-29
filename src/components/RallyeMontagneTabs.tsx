@@ -520,7 +520,7 @@ const RallyeMontagneTabs = ({
 
             {/* Général VMRS = Montagne + Rallye agrégés par moyenne */}
             <TabsContent value="general" className="space-y-6 mt-6">
-              <RaceCalendar races={vmrsRaces} driverIds={piloteIds} />
+              <RaceCalendar races={vmrsRaces} />
               {vmrsRaces.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">
                   Aucune course avec résultats VMRS pour le moment.
@@ -591,7 +591,7 @@ const RallyeMontagneTabs = ({
 
               return (
                 <TabsContent key={raceType} value={raceType} className="space-y-6 mt-6">
-                  <RaceCalendar races={filteredRaces} driverIds={piloteIds} />
+                  <RaceCalendar races={filteredRaces} />
 
                   {filteredRaces.length === 0 ? (
                     <p className="text-muted-foreground text-center py-8">
