@@ -591,7 +591,7 @@ const RallyeMontagneTabs = ({
 
               return (
                 <TabsContent key={raceType} value={raceType} className="space-y-6 mt-6">
-                  <RaceCalendar races={filteredRaces} driverIds={piloteIds} />
+                  <RaceCalendar races={filteredRaces} />
 
                   {filteredRaces.length === 0 ? (
                     <p className="text-muted-foreground text-center py-8">
