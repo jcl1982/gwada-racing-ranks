@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,15 +21,18 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  // Guard against stale responses: only apply the latest loadData result
+  const loadRequestIdRef = useRef(0);
+  const latestChampionshipIdRef = useRef<string | undefined>(initialChampionshipId);
 
   // Load all data from Supabase
   const loadData = async (specificChampionshipId?: string) => {
+    const requestId = ++loadRequestIdRef.current;
+    const idToUse = specificChampionshipId || championshipId;
+    latestChampionshipIdRef.current = idToUse;
     try {
-      console.log('🔄 Début du chargement des données...', { specificChampionshipId, currentChampionshipId: championshipId });
+      console.log('🔄 Début du chargement des données...', { specificChampionshipId, currentChampionshipId: championshipId, requestId });
       setLoading(true);
-
-      // Utiliser le championshipId spécifique si fourni, sinon utiliser celui en état
-      const idToUse = specificChampionshipId || championshipId;
 
       const {
         drivers: appDrivers,
@@ -40,6 +43,13 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
         championshipId: id
       } = await loadSupabaseData(idToUse);
 
+      // Discard stale response if a newer load has been started, or if the
+      // championship the user is looking at has changed since we started.
+      if (requestId !== loadRequestIdRef.current || (idToUse && latestChampionshipIdRef.current !== idToUse)) {
+        console.log('⏭️ Réponse obsolète ignorée', { requestId, latest: loadRequestIdRef.current, idToUse, latestId: latestChampionshipIdRef.current });
+        return;
+      }
+
       console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
         races: appRaces.length,
@@ -49,11 +59,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
         standingsR2: appPreviousStandings.r2.length
       });
 
-      // Log détaillé avant mise à jour
-      const cafeiereBefore = races.find(r => r.name.includes('Caféière'));
-      console.log('📅 AVANT mise à jour état - Course de Côte de Caféière:', cafeiereBefore?.date);
-      
-      // Forcer la mise à jour des états
       setDrivers([...appDrivers]);
       setRaces([...appRaces]);
       setPreviousStandings({
@@ -65,23 +70,24 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
       setChampionshipTitle(title);
       setChampionshipYear(year);
       setChampionshipId(id);
-
-      // Log détaillé après mise à jour
-      const cafeiereAfter = appRaces.find(r => r.name.includes('Caféière'));
-      console.log('📅 APRÈS mise à jour état - Course de Côte de Caféière:', cafeiereAfter?.date);
       console.log('✅ États mis à jour avec succès');
 
     } catch (error) {
       console.error('❌ Error loading data from Supabase:', error);
-      toast({
-        title: "Erreur de chargement",
-        description: "Impossible de charger les données depuis la base de données.",
-        variant: "destructive"
-      });
+      if (requestId === loadRequestIdRef.current) {
+        toast({
+          title: "Erreur de chargement",
+          description: "Impossible de charger les données depuis la base de données.",
+          variant: "destructive"
+        });
+      }
     } finally {
-      setLoading(false);
+      if (requestId === loadRequestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
+
 
   // Create operation handlers with improved refresh
   const { saveDriver: baseSaveDriver, deleteDriver, deleteAllDrivers } = createDriverOperations(toast, loadData, championshipId || '');
