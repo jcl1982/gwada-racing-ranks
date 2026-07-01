@@ -201,7 +201,7 @@ const HomePage = ({
                 </div>
 
                 {/* Leader */}
-                {leader ? <div className="border-t pt-4 mt-4">
+                {!isKarting && (leader ? <div className="border-t pt-4 mt-4">
                     <div className="flex items-center gap-3 mb-2">
                       <Trophy size={20} className="text-yellow-500" />
                       <h4 className="font-semibold">Leader</h4>
@@ -224,15 +224,12 @@ const HomePage = ({
                             <span className="text-muted-foreground"> Rallye</span>
                           </div>
                         </div>}
-                      {isKarting && <div className="mt-3 text-xs text-center">
-                          <p className="text-muted-foreground">Points totaux (course + bonus)</p>
-                        </div>}
                     </div>
                   </div> : <div className="border-t pt-4 mt-4">
                     <p className="text-center text-muted-foreground py-4">
                       Aucun classement disponible
                     </p>
-                  </div>}
+                  </div>)}
 
                 {/* Top 3 */}
                 {isKarting && kartingCategoryStandings ? (
