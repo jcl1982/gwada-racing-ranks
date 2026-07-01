@@ -21,6 +21,9 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
   const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  // Guard against stale responses: only apply the latest loadData result
+  const loadRequestIdRef = useRef(0);
+  const latestChampionshipIdRef = useRef<string | undefined>(initialChampionshipId);
 
   // Load all data from Supabase
   const loadData = async (specificChampionshipId?: string) => {
