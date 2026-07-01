@@ -51,6 +51,8 @@ export const useAllChampionshipsData = () => {
                   driver_id,
                   position,
                   points,
+                  bonus,
+                  category,
                   dnf,
                   car_model,
                   time,
