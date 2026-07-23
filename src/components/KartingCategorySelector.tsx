@@ -2,9 +2,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
+export type KartingCategory = 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2' | 'NATIONALE';
+
 interface KartingCategorySelectorProps {
-  selectedCategory: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2';
-  onCategoryChange: (category: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2') => void;
+  selectedCategory: KartingCategory;
+  onCategoryChange: (category: KartingCategory) => void;
 }
 
 const KartingCategorySelector = ({ selectedCategory, onCategoryChange }: KartingCategorySelectorProps) => {
@@ -14,7 +16,7 @@ const KartingCategorySelector = ({ selectedCategory, onCategoryChange }: Karting
         <h3 className="font-semibold mb-3">Catégorie Karting</h3>
         <RadioGroup
           value={selectedCategory}
-          onValueChange={(value) => onCategoryChange(value as 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2')}
+          onValueChange={(value) => onCategoryChange(value as KartingCategory)}
           className="flex gap-4 flex-wrap"
         >
           <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-purple-50 transition-colors">
@@ -33,6 +35,12 @@ const KartingCategorySelector = ({ selectedCategory, onCategoryChange }: Karting
             <RadioGroupItem value="KZ2" id="kz2" />
             <Label htmlFor="kz2" className="cursor-pointer">
               KZ2
+            </Label>
+          </div>
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-green-50 transition-colors">
+            <RadioGroupItem value="NATIONALE" id="nationale" />
+            <Label htmlFor="nationale" className="cursor-pointer">
+              NATIONALE
             </Label>
           </div>
         </RadioGroup>
