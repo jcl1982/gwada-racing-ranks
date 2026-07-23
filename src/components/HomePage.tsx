@@ -293,11 +293,36 @@ const HomePage = ({
                     </div>
                     
                     {/* KZ2 */}
-                    <div>
+                    <div className="mb-4">
                       <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">KZ2</h5>
                       <div className="space-y-1">
                         {kartingCategoryStandings.kz2.length > 0 ? (
                           kartingCategoryStandings.kz2.map((standing, index) => {
+                            const positions = ['🥇', '🥈', '🥉'];
+                            return (
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">{positions[index]}</span>
+                                  <div>
+                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
+                                    <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-muted-foreground text-center py-2">Aucun classement</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* NATIONALE */}
+                    <div>
+                      <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">NATIONALE</h5>
+                      <div className="space-y-1">
+                        {kartingCategoryStandings.nationale.length > 0 ? (
+                          kartingCategoryStandings.nationale.map((standing, index) => {
                             const positions = ['🥇', '🥈', '🥉'];
                             return (
                               <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
