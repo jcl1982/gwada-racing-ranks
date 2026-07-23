@@ -26,7 +26,8 @@ interface KartingStandingsProps {
 const KARTING_CATEGORIES = [
   { id: 'mini60', label: 'MINI 60', displayName: 'MINI 60' },
   { id: 'senior', label: 'SENIOR MASTER GENTLEMAN', displayName: 'SENIOR MASTER GENTLEMAN' },
-  { id: 'kz2', label: 'KZ2', displayName: 'KZ2' }
+  { id: 'kz2', label: 'KZ2', displayName: 'KZ2' },
+  { id: 'nationale', label: 'NATIONALE', displayName: 'NATIONALE' }
 ] as const;
 
 const KartingStandings = ({ 
@@ -67,6 +68,8 @@ const KartingStandings = ({
                              resultCategory.includes('gentleman');
         } else if (searchCategory === 'kz2') {
           isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+        } else if (searchCategory === 'nationale') {
+          isMatchingCategory = resultCategory.includes('national');
         }
         
         // Si le résultat correspond, accumuler les points et bonus
