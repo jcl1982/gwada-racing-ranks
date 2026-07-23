@@ -62,6 +62,7 @@ const DriverResultRow = ({
                 <SelectItem value="MINI 60">MINI 60</SelectItem>
                 <SelectItem value="SENIOR MASTER GENTLEMAN">SENIOR MASTER GENTLEMAN</SelectItem>
                 <SelectItem value="KZ2">KZ2</SelectItem>
+                <SelectItem value="NATIONALE">NATIONALE</SelectItem>
               </SelectContent>
             </Select>
           ) : (
