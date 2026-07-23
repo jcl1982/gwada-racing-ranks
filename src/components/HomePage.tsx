@@ -110,6 +110,8 @@ const HomePage = ({
                                    resultCategory.includes('gentleman');
               } else if (searchCategory === 'kz2') {
                 isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+              } else if (searchCategory === 'nationale') {
+                isMatchingCategory = resultCategory.includes('national');
               }
               
               if (isMatchingCategory) {
@@ -139,14 +141,15 @@ const HomePage = ({
         
         // Pour le karting, calculer les points avec bonus
         let leader = championship.standings[0];
-        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[] } | null = null;
+        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[], nationale: any[] } | null = null;
         
         if (isKarting && championship.drivers.length > 0) {
           // Calculer les classements par catégorie
           kartingCategoryStandings = {
             mini60: calculateKartingCategoryStandings('mini60').slice(0, 3),
             senior: calculateKartingCategoryStandings('senior').slice(0, 3),
-            kz2: calculateKartingCategoryStandings('kz2').slice(0, 3)
+            kz2: calculateKartingCategoryStandings('kz2').slice(0, 3),
+            nationale: calculateKartingCategoryStandings('nationale').slice(0, 3)
           };
           
           // Calculer le leader global

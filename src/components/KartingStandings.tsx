@@ -137,6 +137,11 @@ const KartingStandings = ({
     [drivers, races]
   );
 
+  const nationaleStandings = useMemo(
+    () => calculateCategoryStandings('nationale'),
+    [drivers, races]
+  );
+
   const [kartingTab, setKartingTab] = useUrlTab('karting', 'mini60');
 
   const getCategoryLabel = (id: string) => {
@@ -144,14 +149,18 @@ const KartingStandings = ({
   };
 
   const currentStandings = kartingTab === 'mini60' ? mini60Standings :
-                           kartingTab === 'senior' ? seniorStandings : kz2Standings;
+                           kartingTab === 'senior' ? seniorStandings :
+                           kartingTab === 'nationale' ? nationaleStandings :
+                           kz2Standings;
 
   const currentDisplayTitle = kartingTab === 'mini60' ? 'Classement Général MINI 60' :
                                kartingTab === 'senior' ? 'Classement Général SENIOR MASTER GENTLEMAN' :
+                               kartingTab === 'nationale' ? 'Classement Général NATIONALE' :
                                'Classement Général KZ2';
 
   const currentRaceTitle = kartingTab === 'mini60' ? 'Résultats par Course MINI 60' :
                             kartingTab === 'senior' ? 'Résultats par Course SENIOR MASTER GENTLEMAN' :
+                            kartingTab === 'nationale' ? 'Résultats par Course NATIONALE' :
                             'Résultats par Course KZ2';
 
   return (

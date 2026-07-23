@@ -28,6 +28,8 @@ const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingR
                              resultCategory.includes('gentleman');
         } else if (searchCategory === 'kz2') {
           isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+        } else if (searchCategory === 'nationale') {
+          isMatchingCategory = resultCategory.includes('national');
         }
         
         if (isMatchingCategory) {
@@ -45,6 +47,8 @@ const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingR
     ? "Aucune course MINI 60 disponible"
     : category === 'senior'
     ? "Aucune course SENIOR MASTER GENTLEMAN disponible"
+    : category === 'nationale'
+    ? "Aucune course NATIONALE disponible"
     : "Aucune course KZ2 disponible";
 
   if (races.length === 0) {
