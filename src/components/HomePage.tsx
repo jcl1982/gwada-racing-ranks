@@ -110,6 +110,8 @@ const HomePage = ({
                                    resultCategory.includes('gentleman');
               } else if (searchCategory === 'kz2') {
                 isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+              } else if (searchCategory === 'nationale') {
+                isMatchingCategory = resultCategory.includes('national');
               }
               
               if (isMatchingCategory) {
@@ -139,14 +141,15 @@ const HomePage = ({
         
         // Pour le karting, calculer les points avec bonus
         let leader = championship.standings[0];
-        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[] } | null = null;
+        let kartingCategoryStandings: { mini60: any[], senior: any[], kz2: any[], nationale: any[] } | null = null;
         
         if (isKarting && championship.drivers.length > 0) {
           // Calculer les classements par catégorie
           kartingCategoryStandings = {
             mini60: calculateKartingCategoryStandings('mini60').slice(0, 3),
             senior: calculateKartingCategoryStandings('senior').slice(0, 3),
-            kz2: calculateKartingCategoryStandings('kz2').slice(0, 3)
+            kz2: calculateKartingCategoryStandings('kz2').slice(0, 3),
+            nationale: calculateKartingCategoryStandings('nationale').slice(0, 3)
           };
           
           // Calculer le leader global
@@ -290,11 +293,36 @@ const HomePage = ({
                     </div>
                     
                     {/* KZ2 */}
-                    <div>
+                    <div className="mb-4">
                       <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">KZ2</h5>
                       <div className="space-y-1">
                         {kartingCategoryStandings.kz2.length > 0 ? (
                           kartingCategoryStandings.kz2.map((standing, index) => {
+                            const positions = ['🥇', '🥈', '🥉'];
+                            return (
+                              <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">{positions[index]}</span>
+                                  <div>
+                                    <p className="font-semibold text-xs">{standing.driver.name}</p>
+                                    <p className="text-xs text-muted-foreground">{standing.totalPoints} pts</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <p className="text-xs text-muted-foreground text-center py-2">Aucun classement</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* NATIONALE */}
+                    <div>
+                      <h5 className="text-sm font-semibold text-purple-500 dark:text-purple-400 mb-2">NATIONALE</h5>
+                      <div className="space-y-1">
+                        {kartingCategoryStandings.nationale.length > 0 ? (
+                          kartingCategoryStandings.nationale.map((standing, index) => {
                             const positions = ['🥇', '🥈', '🥉'];
                             return (
                               <div key={standing.driver.id} className="flex items-center justify-between bg-purple-500/10 dark:bg-purple-500/15 rounded-lg p-2">

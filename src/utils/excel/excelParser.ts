@@ -6,7 +6,7 @@ export interface ExcelRaceData {
   raceName: string;
   raceDate: string;
   raceType: 'montagne' | 'rallye' | 'karting';
-  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2';
+  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2' | 'NATIONALE';
   results: Array<{
     position: number;
     driverName: string;
@@ -23,7 +23,7 @@ export interface ExcelRaceData {
 export const parseExcelFile = async (
   file: File, 
   raceType: 'montagne' | 'rallye' | 'karting',
-  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2',
+  kartingCategory?: 'MINI 60' | 'SENIOR MASTER GENTLEMAN' | 'KZ2' | 'NATIONALE',
   forceDriverRole?: 'pilote' | 'copilote'
 ): Promise<ExcelRaceData[]> => {
   console.log('📊 Début de l\'analyse du fichier Excel...');

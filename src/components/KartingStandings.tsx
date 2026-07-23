@@ -26,7 +26,8 @@ interface KartingStandingsProps {
 const KARTING_CATEGORIES = [
   { id: 'mini60', label: 'MINI 60', displayName: 'MINI 60' },
   { id: 'senior', label: 'SENIOR MASTER GENTLEMAN', displayName: 'SENIOR MASTER GENTLEMAN' },
-  { id: 'kz2', label: 'KZ2', displayName: 'KZ2' }
+  { id: 'kz2', label: 'KZ2', displayName: 'KZ2' },
+  { id: 'nationale', label: 'NATIONALE', displayName: 'NATIONALE' }
 ] as const;
 
 const KartingStandings = ({ 
@@ -67,6 +68,8 @@ const KartingStandings = ({
                              resultCategory.includes('gentleman');
         } else if (searchCategory === 'kz2') {
           isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+        } else if (searchCategory === 'nationale') {
+          isMatchingCategory = resultCategory.includes('national');
         }
         
         // Si le résultat correspond, accumuler les points et bonus
@@ -134,6 +137,11 @@ const KartingStandings = ({
     [drivers, races]
   );
 
+  const nationaleStandings = useMemo(
+    () => calculateCategoryStandings('nationale'),
+    [drivers, races]
+  );
+
   const [kartingTab, setKartingTab] = useUrlTab('karting', 'mini60');
 
   const getCategoryLabel = (id: string) => {
@@ -141,14 +149,18 @@ const KartingStandings = ({
   };
 
   const currentStandings = kartingTab === 'mini60' ? mini60Standings :
-                           kartingTab === 'senior' ? seniorStandings : kz2Standings;
+                           kartingTab === 'senior' ? seniorStandings :
+                           kartingTab === 'nationale' ? nationaleStandings :
+                           kz2Standings;
 
   const currentDisplayTitle = kartingTab === 'mini60' ? 'Classement Général MINI 60' :
                                kartingTab === 'senior' ? 'Classement Général SENIOR MASTER GENTLEMAN' :
+                               kartingTab === 'nationale' ? 'Classement Général NATIONALE' :
                                'Classement Général KZ2';
 
   const currentRaceTitle = kartingTab === 'mini60' ? 'Résultats par Course MINI 60' :
                             kartingTab === 'senior' ? 'Résultats par Course SENIOR MASTER GENTLEMAN' :
+                            kartingTab === 'nationale' ? 'Résultats par Course NATIONALE' :
                             'Résultats par Course KZ2';
 
   return (

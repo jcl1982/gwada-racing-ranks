@@ -25,7 +25,7 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
   const getKartingTopDrivers = () => {
     if (!isKarting) return [];
     
-    const categories = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2'];
+    const categories = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE'];
     return categories.map(category => {
       const categoryRaces = races.filter(r => r.type === 'karting');
       const driverPoints = new Map<string, number>();
@@ -44,6 +44,8 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
                                resultCategory.includes('gentleman');
           } else if (searchCategory.includes('kz2')) {
             isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+          } else if (searchCategory.includes('national')) {
+            isMatchingCategory = resultCategory.includes('national');
           }
           
           if (isMatchingCategory) {
