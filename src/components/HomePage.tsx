@@ -176,7 +176,9 @@ const HomePage = ({
         
         const montagneRaces = championship.races.filter(r => r.type === 'montagne');
         const rallyeRaces = championship.races.filter(r => r.type === 'rallye');
-        const totalRaces = championship.races.length;
+        const normalizeName = (s: string) => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+        const uniqueRaceKeys = new Set(championship.races.map(r => `${r.type}|${r.date}|${normalizeName(r.name).replace(/^(rallye|course de cote|course de côte|slalom)\s+(des?\s+|du\s+|de la\s+|de l['’]?\s*)?/i, '')}`));
+        const totalRaces = uniqueRaceKeys.size;
         return <Card key={championship.id} className="card-glass overflow-hidden">
               {/* Header */}
               <div className={`bg-gradient-to-r ${colorClass} p-6 text-white text-center`}>
