@@ -14,7 +14,6 @@ const ChampionshipApp = () => {
     kartingRaces,
     accelerationRaces,
     standings,
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
