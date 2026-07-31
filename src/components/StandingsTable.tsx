@@ -112,7 +112,7 @@ const StandingsTable = ({
     exportCategoryToExcel(standings, races, displayTitle, type);
   };
   return <Card className="card-glass overflow-hidden" id="category-standings-table">
-      <div className={`bg-gradient-to-r ${gradientClass} p-3 sm:p-6 text-white relative`}>
+      <div className={`bg-gradient-to-r ${gradientClass} p-3 sm:p-6 text-white relative carbon-texture`}>
         {/* Logo de la ligue (haut gauche) */}
         <Logo src="/images/lsag-logo.jpg" alt="Logo Ligue Sport Automobile Guadeloupe" className="absolute top-2 left-2 sm:top-4 sm:left-4 w-8 h-8 sm:w-12 sm:h-12 object-contain" removeBackground={false} />
         
@@ -133,6 +133,10 @@ const StandingsTable = ({
           <PrintButton onPrintPdf={onPrintPdf} onPrintImage={handlePrintImage} onPrintWeb={handlePrintWeb} onPrintUnicode={handlePrintUnicode} onPrintExcel={handleExportExcel} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print h-7 sm:h-9 text-[10px] sm:text-sm px-2 sm:px-3" adminOnly={true} />
         </div>
       </div>
+
+      {/* Liseré pit-wall */}
+      <div className="pit-wall-stripe" />
+
 
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
