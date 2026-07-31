@@ -287,12 +287,6 @@ const RallyeMontagneTabs = ({
             onPrintExcel={handleGeneralExportExcel}
           />
           <GeneralStandingsStats standings={generalStandings} />
-          <StandingsEvolutionChart
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={drivers}
-            title="Évolution des points - Classement Général"
-            type="all"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={[...montagneRaces, ...rallyeRaces]}
