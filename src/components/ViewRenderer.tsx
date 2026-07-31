@@ -75,7 +75,6 @@ const ViewRenderer = ({
   accelerationRaces,
   races,
   drivers,
-  previousStandings,
   handleImport,
   handleReset,
   handleRacesChange,
