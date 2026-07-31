@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { usePdfExport } from '@/hooks/usePdfExport';
@@ -9,7 +8,6 @@ import CategoryHeader from '@/components/CategoryHeader';
 import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
-import StandingsEvolutionChart from '@/components/StandingsEvolutionChart';
 import DriverAdvancedStats from '@/components/DriverAdvancedStats';
 import DriverComparator from '@/components/DriverComparator';
 
@@ -20,7 +18,6 @@ interface CategoryStandingsProps {
   type: 'montagne' | 'rallye' | 'r2' | 'acceleration' | 'karting';
   championshipYear: string;
   championshipId: string;
-  previousStandings?: ChampionshipStanding[];
 }
 
 const CategoryStandings = ({ 
