@@ -155,7 +155,6 @@ const ViewRenderer = ({
           type="acceleration"
           championshipYear={championshipYear}
           championshipId={championshipId || ''}
-          previousStandings={[]}
         />
       );
     case 'karting':
