@@ -149,11 +149,6 @@ export const exportAllStandingsToExcel = (
       });
 
       row['Total Points'] = standing.points;
-      
-      if (standing.positionChange !== undefined) {
-        row['Évolution'] = standing.positionChange > 0 ? `+${standing.positionChange}` : 
-                           standing.positionChange < 0 ? standing.positionChange : '-';
-      }
 
       return row;
     });
