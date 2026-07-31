@@ -16,7 +16,7 @@ import { useWebPrint } from "@/hooks/useWebPrint";
 import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
-import StandingsEvolutionChart from "@/components/StandingsEvolutionChart";
+
 import DriverAdvancedStats from "@/components/DriverAdvancedStats";
 import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
