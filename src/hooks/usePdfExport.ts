@@ -111,9 +111,7 @@ export const usePdfExport = () => {
             }, 0);
             return { 
               driver, 
-              points, 
-              positionChange: 0, 
-              previousPosition: undefined 
+              points
             };
           })
           .sort((a, b) => b.points - a.points)
