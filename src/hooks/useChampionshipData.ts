@@ -80,7 +80,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     kartingRaces,
     accelerationRaces,
     standings,
-    previousStandings,
     championshipTitle: championshipConfig?.title || championshipTitle,
     championshipYear: championshipConfig?.year || championshipYear,
     championshipId: championshipConfig?.id || championshipId,
