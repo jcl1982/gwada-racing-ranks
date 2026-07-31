@@ -50,7 +50,7 @@ const HomePage = ({
   const getChampionshipColor = (title: string) => {
     if (title.includes('Accélération')) return 'from-primary to-secondary';
     if (title.includes('Karting')) return 'from-secondary to-primary';
-    return 'from-primary via-secondary to-racing-carbon';
+    return 'from-primary via-secondary to-black';
   };
 
 
