@@ -26,8 +26,7 @@ const CategoryStandings = ({
   drivers, 
   type, 
   championshipYear, 
-  championshipId,
-  previousStandings 
+  championshipId
 }: CategoryStandingsProps) => {
   const { isAdmin } = useUserRole();
   const { exportCategoryStandings } = usePdfExport();
@@ -48,7 +47,6 @@ const CategoryStandings = ({
     drivers,
     montagneRaces,
     rallyeRaces,
-    previousStandings,
     championshipId
   });
 
@@ -88,12 +86,6 @@ const CategoryStandings = ({
         onPrintPdf={handlePrintPdf}
       />
       <PodiumSection standings={standings} />
-      <StandingsEvolutionChart
-        races={races}
-        drivers={drivers}
-        title={`Évolution des points - ${displayTitle}`}
-        type={type}
-      />
       {isAdmin && (
         <DriverAdvancedStats
           races={races}
