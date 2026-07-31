@@ -7,8 +7,6 @@ interface PodiumSectionProps {
     driver: Driver;
     points: number;
     position: number;
-    positionChange?: number;
-    previousPosition?: number;
   }>;
 }
 
