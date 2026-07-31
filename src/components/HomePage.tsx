@@ -48,9 +48,9 @@ const HomePage = ({
   };
 
   const getChampionshipColor = (title: string) => {
-    if (title.includes('Accélération')) return 'from-yellow-500 to-amber-500';
-    if (title.includes('Karting')) return 'from-blue-600 to-indigo-500';
-    return 'from-blue-700 to-blue-500';
+    if (title.includes('Accélération')) return 'from-primary to-accent';
+    if (title.includes('Karting')) return 'from-secondary to-accent';
+    return 'from-secondary to-primary';
   };
 
 
