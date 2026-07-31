@@ -149,7 +149,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
 
   const resultsToShow = isEditing ? editingResults : race.results;
   const Icon = race.type === 'montagne' ? Mountain : Car;
-  const colorClass = race.type === 'montagne' ? 'text-green-600' : 'text-blue-600';
+  const colorClass = race.type === 'montagne' ? 'text-primary' : 'text-foreground';
   const isKarting = race.type === 'karting';
 
   // Filtrer les pilotes selon le type de course
