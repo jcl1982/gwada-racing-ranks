@@ -253,11 +253,11 @@ const HomePage = ({
                       {championship.title === 'Championnat Rallye-Montagne' && (
                         <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
                           <div className="text-center p-2 rounded bg-background/50">
-                            <span className="text-emerald-500 dark:text-emerald-400 font-semibold">{leader.montagnePoints}</span>
+                            <span className="text-primary font-semibold">{leader.montagnePoints}</span>
                             <span className="text-muted-foreground"> Montagne</span>
                           </div>
                           <div className="text-center p-2 rounded bg-background/50">
-                            <span className="text-blue-500 dark:text-blue-400 font-semibold">{leader.rallyePoints}</span>
+                            <span className="text-foreground font-semibold">{leader.rallyePoints}</span>
                             <span className="text-muted-foreground"> Rallye</span>
                           </div>
                         </div>
