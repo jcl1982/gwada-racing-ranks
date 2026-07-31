@@ -325,7 +325,7 @@
 
   .race-number-leader {
     border-left-color: hsl(var(--accent));
-    color: hsl(var(--accent));
+    box-shadow: inset 0 0 0 1px hsl(var(--accent) / 0.5);
   }
 
 
