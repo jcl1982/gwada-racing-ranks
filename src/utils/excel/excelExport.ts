@@ -121,9 +121,7 @@ export const exportAllStandingsToExcel = (
     'Véhicule': standing.driver.carModel || '-',
     'Points Montagne': standing.montagnePoints,
     'Points Rallye': standing.rallyePoints,
-    'Total Points': standing.totalPoints,
-    'Évolution': standing.positionChange > 0 ? `+${standing.positionChange}` : 
-                 standing.positionChange < 0 ? standing.positionChange : '-'
+    'Total Points': standing.totalPoints
   }));
   const generalWorksheet = XLSX.utils.json_to_sheet(generalData);
   XLSX.utils.book_append_sheet(workbook, generalWorksheet, 'Classement Général');
