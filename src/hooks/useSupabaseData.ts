@@ -167,7 +167,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     kartingRaces: races.filter(race => race.type === 'karting'),
     accelerationRaces: races.filter(race => race.type === 'acceleration'),
     
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
@@ -182,7 +181,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     updateStandingsTitles,
     resetAllData: handleResetAllData,
     refreshData: forceRefreshData,
-    autoSaveStandingsForEvolution,
     setChampionshipId
   };
 };
