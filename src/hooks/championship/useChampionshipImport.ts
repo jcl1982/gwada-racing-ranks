@@ -48,15 +48,6 @@ export const useChampionshipImport = (
         copilotes: targetChampionshipDrivers.filter(d => d.driverRole === 'copilote').length
       });
       
-      // Sauvegarder AVANT l'import pour préserver les évolutions
-      console.log('💾 [IMPORT] Sauvegarde du classement avant import...');
-      try {
-        await autoSaveStandings();
-        console.log('✅ [IMPORT] Positions sauvegardées avant import');
-      } catch (error) {
-        console.error('❌ [IMPORT] Erreur lors de la sauvegarde avant import:', error);
-      }
-      
       // Étape 1: Créer une map complète TEMP_ID → REAL_ID pour TOUS les pilotes
       console.log('🗺️ [IMPORT] Construction de la map complète des IDs...');
       console.log(`🗺️ [IMPORT] Pilotes dans newDrivers: ${newDrivers.length}`);
