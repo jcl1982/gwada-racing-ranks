@@ -212,7 +212,7 @@ const HomePage = ({
           return (
             <Card key={championship.id} className="card-glass overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
               {/* Header */}
-              <div className={`bg-gradient-to-r ${colorClass} p-6 text-white text-center relative overflow-hidden`}>
+              <div className={`bg-gradient-to-r ${colorClass} p-6 text-secondary-foreground text-center relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 <div className="relative">
                   <ChampIcon size={36} className="mx-auto mb-3" />
