@@ -84,6 +84,7 @@ All colors MUST be HSL.
   .dark {
     --background: 0 0% 5%;
     --foreground: 0 0% 96%;
+    --light: 0 0% 98%;
     --card: 0 0% 10%;
     --card-foreground: 0 0% 96%;
     --popover: 0 0% 12%;
