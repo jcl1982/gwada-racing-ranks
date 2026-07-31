@@ -68,12 +68,6 @@ export const exportCategoryStandingsToExcel = (
     // Ajouter le total
     row['Total Points'] = standing.points;
 
-    // Ajouter l'évolution
-    if (standing.positionChange !== undefined) {
-      row['Évolution'] = standing.positionChange > 0 ? `+${standing.positionChange}` : 
-                         standing.positionChange < 0 ? standing.positionChange : '-';
-    }
-
     return row;
   });
 
