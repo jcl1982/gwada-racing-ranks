@@ -369,7 +369,7 @@ const HomePage = ({
 
             return (
               <div key={championship.id} className="group">
-                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-white flex items-center gap-2`}>
+                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-secondary-foreground flex items-center gap-2`}>
                   <ChampIcon size={24} />
                   <h4 className="font-serif font-normal">{championship.title}</h4>
                 </div>
@@ -378,7 +378,7 @@ const HomePage = ({
                   {upcomingRaces.length > 0 && (
                     <div>
                       <h5 className="font-semibold text-sm text-foreground mb-2 flex items-center gap-1">
-                        <Calendar size={16} className="text-emerald-600" />
+                        <Calendar size={16} className="text-primary" />
                         À venir
                       </h5>
                       <div className="space-y-2">
