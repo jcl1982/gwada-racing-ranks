@@ -418,7 +418,7 @@ const HomePage = ({
                               </p>
                               {winnerDriver && (
                                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                  <Trophy size={12} className="text-yellow-500" />
+                                  <Trophy size={12} className="text-primary" />
                                   <span className="font-semibold">{winnerDriver.name}</span>
                                 </p>
                               )}
