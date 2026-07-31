@@ -23,7 +23,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     rallyeRaces,
     kartingRaces,
     accelerationRaces,
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
@@ -37,8 +36,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     updateChampionshipConfig,
     updateStandingsTitles,
     resetAllData,
-    refreshData,
-    autoSaveStandingsForEvolution
+    refreshData
   } = useSupabaseData(championshipConfig?.id);
 
   console.log('👥 useChampionshipData - Pilotes chargés:', {
