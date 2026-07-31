@@ -242,7 +242,7 @@ const HomePage = ({
                       <Trophy size={20} className="text-yellow-500" />
                       <h4 className="font-semibold">Leader</h4>
                     </div>
-                    <div className="bg-muted/60 rounded-lg p-3">
+                    <div className="bg-background rounded-lg p-3 border-l-4 border-primary shadow-sm">
                       <p className="font-bold text-lg">{leader.driver.name}</p>
                       <p className="text-sm text-muted-foreground">{leader.driver.team}</p>
                       <div className="mt-2">
