@@ -239,14 +239,14 @@ const HomePage = ({
                 {!isKarting && (leader ? (
                   <div className="border-t border-border pt-4 mt-4">
                     <div className="flex items-center gap-3 mb-2">
-                      <Trophy size={20} className="text-yellow-500" />
+                      <Trophy size={20} className="text-primary" />
                       <h4 className="font-semibold">Leader</h4>
                     </div>
                     <div className="bg-background rounded-lg p-3 border-l-4 border-primary shadow-sm">
                       <p className="font-bold text-lg">{leader.driver.name}</p>
                       <p className="text-sm text-muted-foreground">{leader.driver.team}</p>
                       <div className="mt-2">
-                        <Badge className={`bg-gradient-to-r ${colorClass} text-white font-bold`}>
+                        <Badge className="bg-primary text-primary-foreground font-bold">
                           {leader.totalPoints} points
                         </Badge>
                       </div>
