@@ -10,12 +10,16 @@ const GeneralStandingsHeader = ({ championshipTitle, championshipYear, subtitle 
   return (
     <div className="text-center mb-8">
       <PartnerLogos />
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent mb-2">
+      <h1 className="font-serif text-3xl sm:text-5xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-3 tracking-tight">
         {championshipTitle}
       </h1>
-      <p className="text-xl text-muted-foreground">{subtitle || `Classement Général ${championshipYear}`}</p>
+      <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary via-accent to-primary mb-3" />
+      <p className="text-sm sm:text-base uppercase tracking-[0.2em] text-muted-foreground font-medium">
+        {subtitle || `Classement Général ${championshipYear}`}
+      </p>
     </div>
   );
 };
+
 
 export default GeneralStandingsHeader;
