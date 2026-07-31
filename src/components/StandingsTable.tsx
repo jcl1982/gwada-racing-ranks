@@ -124,11 +124,12 @@ const StandingsTable = ({
         <div className="flex items-center justify-center px-12 sm:px-20">
           <div className="flex items-center gap-2 sm:gap-3">
             <Icon className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
-            <h2 className="font-bold text-sm sm:text-2xl text-center leading-tight">
+            <h2 className="font-serif text-base sm:text-3xl text-center leading-tight tracking-tight">
               {displayTitle}
             </h2>
           </div>
         </div>
+
         
         <div className="absolute bottom-1 right-1 sm:top-6 sm:right-20 sm:bottom-auto">
           <PrintButton onPrintPdf={onPrintPdf} onPrintImage={handlePrintImage} onPrintWeb={handlePrintWeb} onPrintUnicode={handlePrintUnicode} onPrintExcel={handleExportExcel} variant="outline" className="bg-white/20 hover:bg-white/30 border-white/30 no-print h-7 sm:h-9 text-[10px] sm:text-sm px-2 sm:px-3" adminOnly={true} />
@@ -137,28 +138,29 @@ const StandingsTable = ({
 
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
-          <thead className="bg-muted">
+          <thead className="bg-secondary text-secondary-foreground">
             <tr>
-              <th className="text-left py-1 px-1 font-semibold">Pos</th>
-              <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-1 px-1 font-semibold hidden sm:table-cell">Véhicule</th>}
-              {relevantRaces.map(race => <th key={race.id} className="text-center py-1 px-1 font-semibold min-w-[60px] sm:min-w-[80px]">
+              <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pos</th>
+              <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pilote</th>
+              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs hidden sm:table-cell">Véhicule</th>}
+              {relevantRaces.map(race => <th key={race.id} className="text-center py-2 px-1 font-semibold min-w-[60px] sm:min-w-[80px]">
                   <div className="text-[10px] sm:text-xs leading-tight">
                     {race.name}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] text-muted-foreground font-normal">
+                  <div className="text-[9px] sm:text-[10px] opacity-70 font-normal">
                     {formatDateRange(race.date, race.endDate)}
                   </div>
                   {race.organizer && (
-                    <div className="text-[9px] sm:text-[10px] text-muted-foreground font-normal italic hidden sm:block">
+                    <div className="text-[9px] sm:text-[10px] opacity-70 font-normal italic hidden sm:block">
                       {race.organizer}
                     </div>
                   )}
                 </th>)}
-              <th className="text-center py-1 px-1 font-semibold">Total</th>
-              <th className="text-center py-1 px-1 font-semibold">Écart</th>
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Total</th>
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Écart</th>
             </tr>
           </thead>
+
           <tbody>
             {standings.map((standing, index) => {
             const gap = standings[0].points - standing.points;
