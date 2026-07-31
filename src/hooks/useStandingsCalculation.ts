@@ -15,7 +15,6 @@ interface UseStandingsCalculationParams {
   drivers: Driver[];
   montagneRaces?: Race[];
   rallyeRaces?: Race[];
-  previousStandings?: ChampionshipStanding[];
   championshipId: string;
 }
 
