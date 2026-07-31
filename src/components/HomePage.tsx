@@ -344,8 +344,8 @@ const HomePage = ({
       </div>
 
       {/* News Section - Latest and Upcoming Races */}
-      <Card className="card-glass p-6">
-        <h3 className="font-serif text-2xl font-normal mb-8 text-center flex items-center justify-center gap-2">
+      <Card className="card-glass p-6 border-t-4 border-accent">
+        <h3 className="font-display text-2xl font-semibold mb-8 text-center flex items-center justify-center gap-2 uppercase tracking-wide">
           <Clock className="text-primary" />
           Actualités des Championnats
         </h3>
@@ -370,7 +370,7 @@ const HomePage = ({
               <div key={championship.id} className="group">
                 <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-[hsl(var(--light))] flex items-center gap-2`}>
                   <ChampIcon size={24} />
-                  <h4 className="font-serif font-normal">{championship.title}</h4>
+                  <h4 className="font-display font-semibold uppercase tracking-wide text-sm">{championship.title}</h4>
                 </div>
                 
                 <div className="border border-t-0 rounded-b-lg p-4 space-y-4 bg-card/50">
