@@ -166,26 +166,26 @@ All colors MUST be HSL.
 
 @layer components {
   .gradient-caribbean {
-    @apply bg-gradient-to-r from-neutral-800 via-orange-500 to-neutral-700;
+    @apply bg-gradient-to-r from-neutral-900 via-[#c9a84c] to-neutral-800;
   }
 
   .dark .gradient-caribbean {
     background: linear-gradient(to right, 
-      hsl(0 0% 18%), 
-      hsl(14 78% 56%), 
-      hsl(0 0% 25%)
+      hsl(0 0% 5%), 
+      hsl(45 55% 54%), 
+      hsl(0 0% 10%)
     );
   }
 
 
   .gradient-ocean {
-    @apply bg-gradient-to-br from-neutral-700 to-orange-500;
+    @apply bg-gradient-to-br from-neutral-800 to-[#c9a84c];
   }
 
   .dark .gradient-ocean {
     background: linear-gradient(to bottom right, 
-      hsl(0 0% 25%), 
-      hsl(14 70% 50%)
+      hsl(0 0% 10%), 
+      hsl(45 55% 54%)
     );
   }
 
