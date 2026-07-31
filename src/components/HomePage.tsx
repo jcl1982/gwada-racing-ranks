@@ -48,9 +48,9 @@ const HomePage = ({
   };
 
   const getChampionshipColor = (title: string) => {
-    if (title.includes('Accélération')) return 'from-primary dark:from-[hsl(var(--primary-foreground))] to-accent';
-    if (title.includes('Karting')) return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-accent';
-    return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-primary';
+    if (title.includes('Accélération')) return 'from-primary to-accent';
+    if (title.includes('Karting')) return 'from-accent to-primary';
+    return 'from-secondary via-primary to-accent';
   };
 
 
@@ -134,10 +134,10 @@ const HomePage = ({
       {/* Hero Section */}
       <div className="text-center py-10 md:py-14">
         <PartnerLogos />
-        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-normal gradient-caribbean bg-clip-text text-transparent mb-4 py-[10px]">
+        <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold gradient-racing bg-clip-text text-transparent mb-4 py-[10px] uppercase tracking-tight">
           Championnats Automobiles
         </h1>
-        <h2 className="font-serif text-2xl md:text-4xl font-normal text-foreground mb-6">
+        <h2 className="font-display text-2xl md:text-4xl font-semibold text-foreground mb-6 uppercase tracking-wide">
           de Guadeloupe {championshipYear}
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -209,13 +209,13 @@ const HomePage = ({
           }
 
           return (
-            <Card key={championship.id} className="card-glass overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+            <Card key={championship.id} className="card-glass overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-t-4 border-primary">
               {/* Header */}
               <div className={`bg-gradient-to-r ${colorClass} p-6 text-[hsl(var(--light))] text-center relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 <div className="relative">
                   <ChampIcon size={36} className="mx-auto mb-3" />
-                  <h3 className="font-serif text-xl font-normal">{championship.title}</h3>
+                  <h3 className="font-display text-xl font-semibold uppercase tracking-wide">{championship.title}</h3>
                 </div>
               </div>
 
@@ -344,8 +344,8 @@ const HomePage = ({
       </div>
 
       {/* News Section - Latest and Upcoming Races */}
-      <Card className="card-glass p-6">
-        <h3 className="font-serif text-2xl font-normal mb-8 text-center flex items-center justify-center gap-2">
+      <Card className="card-glass p-6 border-t-4 border-accent">
+        <h3 className="font-display text-2xl font-semibold mb-8 text-center flex items-center justify-center gap-2 uppercase tracking-wide">
           <Clock className="text-primary" />
           Actualités des Championnats
         </h3>
@@ -370,7 +370,7 @@ const HomePage = ({
               <div key={championship.id} className="group">
                 <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-[hsl(var(--light))] flex items-center gap-2`}>
                   <ChampIcon size={24} />
-                  <h4 className="font-serif font-normal">{championship.title}</h4>
+                  <h4 className="font-display font-semibold uppercase tracking-wide text-sm">{championship.title}</h4>
                 </div>
                 
                 <div className="border border-t-0 rounded-b-lg p-4 space-y-4 bg-card/50">

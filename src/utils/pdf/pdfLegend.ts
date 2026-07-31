@@ -5,7 +5,7 @@ import { PDF_STYLES } from '../pdfStyles';
 export const addLegendToDoc = (doc: jsPDF) => {
   const finalY = (doc as any).lastAutoTable.finalY + PDF_STYLES.spacing.sectionGap;
   
-  // Titre de la légende avec style du site (gradient-ocean)
+  // Titre de la légende avec style du site (gradient-racing)
   doc.setFillColor(PDF_STYLES.colors.oceanBlue[0], PDF_STYLES.colors.oceanBlue[1], PDF_STYLES.colors.oceanBlue[2]);
   doc.roundedRect(PDF_STYLES.spacing.marginHorizontal, finalY - 5, 170, 18, 3, 3, 'F');
   

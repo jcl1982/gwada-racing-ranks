@@ -57,7 +57,7 @@ const ExcelPreview = ({ previewData, onImport, onCancel }: ExcelPreviewProps) =>
         ))}
         
         <div className="flex gap-2 pt-4">
-          <Button onClick={onImport} className="gradient-caribbean text-white">
+          <Button onClick={onImport} className="gradient-racing text-white">
             Confirmer l'import
           </Button>
           <Button variant="outline" onClick={onCancel}>

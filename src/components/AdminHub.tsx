@@ -46,7 +46,7 @@ const AdminHub = ({ onViewChange }: AdminHubProps) => {
             onClick={() => onViewChange(id)}
             className="card-glass p-6 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 flex flex-col items-center text-center gap-4"
           >
-            <div className="w-14 h-14 rounded-full gradient-caribbean flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full gradient-racing flex items-center justify-center">
               <Icon size={28} className="text-white" />
             </div>
             <h2 className="text-lg font-semibold text-foreground">{label}</h2>

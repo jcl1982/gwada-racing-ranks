@@ -101,7 +101,7 @@ export default {
     		},
       		fontFamily: {
       			sans: [
-      				'Fira Sans',
+      				'Manrope',
       				'ui-sans-serif',
       				'system-ui',
       				'-apple-system',
@@ -114,13 +114,17 @@ export default {
       				'sans-serif'
       			],
       			serif: [
-      				'DM Serif Display',
-      				'ui-serif',
-      				'Georgia',
-      				'Cambria',
-      				'Times New Roman',
-      				'Times',
-      				'serif'
+      				'Sora',
+      				'ui-sans-serif',
+      				'system-ui',
+      				'-apple-system',
+      				'BlinkMacSystemFont',
+      				'Segoe UI',
+      				'Roboto',
+      				'Helvetica Neue',
+      				'Arial',
+      				'Noto Sans',
+      				'sans-serif'
       			],
       			mono: [
       				'Roboto Mono',
@@ -132,6 +136,18 @@ export default {
       				'Liberation Mono',
       				'Courier New',
       				'monospace'
+      			],
+      			display: [
+      				'Sora',
+      				'ui-sans-serif',
+      				'system-ui',
+      				'sans-serif'
+      			],
+      			body: [
+      				'Manrope',
+      				'ui-sans-serif',
+      				'system-ui',
+      				'sans-serif'
       			]
       		}
 

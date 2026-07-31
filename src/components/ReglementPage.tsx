@@ -10,7 +10,7 @@ const ReglementPage = () => {
       <Card className="card-glass p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg gradient-caribbean text-white">
+            <div className="p-3 rounded-lg gradient-racing text-white">
               <FileText size={24} />
             </div>
             <div>
@@ -20,7 +20,7 @@ const ReglementPage = () => {
               </p>
             </div>
           </div>
-          <Button asChild className="gradient-caribbean text-white">
+          <Button asChild className="gradient-racing text-white">
             <a href={PDF_URL} download="LSAG_REGLEMENT_CHAMPIONNATS_2026.pdf">
               <Download className="mr-2" size={18} />
               Télécharger le PDF
