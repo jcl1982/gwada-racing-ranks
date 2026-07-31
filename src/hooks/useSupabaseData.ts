@@ -10,12 +10,6 @@ import { createConfigOperations } from './supabase/configOperations';
 export const useSupabaseData = (initialChampionshipId?: string) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
-  const [previousStandings, setPreviousStandings] = useState<Record<string, ChampionshipStanding[]>>({
-    general: [],
-    montagne: [],
-    rallye: [],
-    r2: []
-  });
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2025');
   const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
