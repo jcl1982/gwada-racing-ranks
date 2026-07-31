@@ -20,9 +20,7 @@ export const exportGeneralStandingsToExcel = (
     'Véhicule': standing.driver.carModel || '-',
     'Points Montagne': standing.montagnePoints,
     'Points Rallye': standing.rallyePoints,
-    'Total Points': standing.totalPoints,
-    'Évolution': standing.positionChange > 0 ? `+${standing.positionChange}` : 
-                 standing.positionChange < 0 ? standing.positionChange : '-'
+    'Total Points': standing.totalPoints
   }));
 
   // Créer un nouveau classeur
