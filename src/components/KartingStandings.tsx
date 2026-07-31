@@ -18,7 +18,6 @@ interface KartingStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
-  previousStandings?: ChampionshipStanding[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
