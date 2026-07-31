@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Driver, Race, ChampionshipStanding } from '@/types/championship';
-import { convertSupabaseDriver, convertSupabaseRace, convertSupabaseStanding } from './converters';
+import { Driver, Race } from '@/types/championship';
+import { convertSupabaseDriver, convertSupabaseRace } from './converters';
 
 export const loadSupabaseData = async (championshipId?: string) => {
   console.log('🔄 Chargement des données depuis Supabase...', { championshipId });
