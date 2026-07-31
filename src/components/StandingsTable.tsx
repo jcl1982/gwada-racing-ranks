@@ -45,10 +45,11 @@ const StandingsTable = ({
   } = useWebPrint();
   const { exportCategoryToExcel } = useExcelExport();
   const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
-  const gradientClass = type === 'montagne' ? 'from-green-600 to-emerald-600' : 
-                       type === 'r2' ? 'from-orange-600 to-red-600' : 
-                       type === 'karting' ? 'from-purple-600 to-pink-600' : 
-                       'from-blue-600 to-cyan-600';
+  const gradientClass = type === 'montagne' ? 'from-emerald-700 via-teal-600 to-cyan-600' :
+                       type === 'r2' ? 'from-amber-600 via-yellow-500 to-amber-500' :
+                       type === 'karting' ? 'from-indigo-700 via-violet-600 to-indigo-500' :
+                       'from-blue-800 via-blue-600 to-cyan-500';
+
   
   // Détecter si c'est un classement copilote pour masquer la colonne véhicule
   const isCopiloteStandings = displayTitle.toLowerCase().includes('copilote');
