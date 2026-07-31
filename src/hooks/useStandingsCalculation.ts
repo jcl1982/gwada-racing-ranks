@@ -54,71 +54,60 @@ export const useStandingsCalculation = ({
   drivers,
   montagneRaces = [],
   rallyeRaces = [],
-  previousStandings,
   championshipId
 }: UseStandingsCalculationParams) => {
-  
-  const championshipDrivers = useMemo(() => 
+
+  const championshipDrivers = useMemo(() =>
     drivers.filter(d => d.championshipId === championshipId),
     [drivers, championshipId]
   );
 
-  const championshipMontagneRaces = useMemo(() => 
+  const championshipMontagneRaces = useMemo(() =>
     montagneRaces.filter(r => r.championshipId === championshipId),
     [montagneRaces, championshipId]
   );
 
-  const championshipRallyeRaces = useMemo(() => 
+  const championshipRallyeRaces = useMemo(() =>
     rallyeRaces.filter(r => r.championshipId === championshipId),
     [rallyeRaces, championshipId]
-  );
-
-  const championshipPreviousStandings = useMemo(() => 
-    previousStandings?.filter(s => s.driver.championshipId === championshipId),
-    [previousStandings, championshipId]
   );
 
   const generalStandings = useMemo(() => {
     return calculateChampionshipStandings(
       championshipDrivers,
       championshipMontagneRaces,
-      championshipRallyeRaces,
-      championshipPreviousStandings
+      championshipRallyeRaces
     );
-  }, [championshipDrivers, championshipMontagneRaces, championshipRallyeRaces, championshipPreviousStandings]);
+  }, [championshipDrivers, championshipMontagneRaces, championshipRallyeRaces]);
 
   const montagneStandings = useMemo(() => {
     return calculateMontagneStandings(
       championshipDrivers,
-      championshipMontagneRaces,
-      championshipPreviousStandings
+      championshipMontagneRaces
     );
-  }, [championshipDrivers, championshipMontagneRaces, championshipPreviousStandings]);
+  }, [championshipDrivers, championshipMontagneRaces]);
 
   const rallyeStandings = useMemo(() => {
     return calculateRallyeStandings(
       championshipDrivers,
-      championshipRallyeRaces,
-      championshipPreviousStandings
+      championshipRallyeRaces
     );
-  }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
+  }, [championshipDrivers, championshipRallyeRaces]);
 
   const r2Standings = useMemo(() => {
     return calculateR2Standings(
       championshipDrivers,
       championshipMontagneRaces,
-      championshipRallyeRaces,
-      championshipPreviousStandings
+      championshipRallyeRaces
     );
-  }, [championshipDrivers, championshipMontagneRaces, championshipRallyeRaces, championshipPreviousStandings]);
+  }, [championshipDrivers, championshipMontagneRaces, championshipRallyeRaces]);
 
   const copiloteStandings = useMemo(() => {
     return calculateCopiloteStandings(
       championshipDrivers,
-      championshipRallyeRaces,
-      championshipPreviousStandings
+      championshipRallyeRaces
     );
-  }, [championshipDrivers, championshipRallyeRaces, championshipPreviousStandings]);
+  }, [championshipDrivers, championshipRallyeRaces]);
 
   // VMRS standings from dedicated vmrs_results table
   const {
