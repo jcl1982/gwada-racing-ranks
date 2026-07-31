@@ -101,9 +101,7 @@ const KartingStandings = ({
           driver,
           points: data.totalPoints,
           bonus: data.totalBonus,
-          position: 0,
-          positionChange: 0,
-          previousPosition: undefined
+          position: 0
         };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null)
