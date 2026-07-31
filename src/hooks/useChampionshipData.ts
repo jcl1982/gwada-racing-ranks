@@ -50,7 +50,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     drivers,
     montagneRaces,
     rallyeRaces,
-    previousStandings: previousStandings.general,
     championshipId: championshipConfig?.id || championshipId || ''
   });
 
@@ -60,8 +59,7 @@ export const useChampionshipData = (currentView: ViewType) => {
   const { handleImport } = useChampionshipImport(
     saveDriverForImport,
     saveRace,
-    refreshData,
-    autoSaveStandingsForEvolution
+    refreshData
   );
 
   const {
