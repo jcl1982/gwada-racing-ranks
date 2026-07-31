@@ -113,54 +113,6 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  const saveStandingsForEvolution = async () => {
-    try {
-      console.log('💾 [AUTO-SAVE] Début de la sauvegarde automatique...');
-      console.log('💾 [AUTO-SAVE] Championship ID:', championshipId);
-
-      if (!championshipId) {
-        const error = 'Championship ID is required for auto-save';
-        console.error('❌ [AUTO-SAVE] Error:', error);
-        toast({
-          title: "Erreur de sauvegarde automatique",
-          description: error,
-          variant: "destructive"
-        });
-        throw new Error(error);
-      }
-
-      // Sauvegarder tous les types de classements
-      const types: Array<'general' | 'montagne' | 'rallye' | 'r2'> = ['general', 'montagne', 'rallye', 'r2'];
-      
-      for (const type of types) {
-        console.log(`💾 [AUTO-SAVE] Sauvegarde du classement ${type}...`);
-        const { error } = await supabase.rpc('save_standings_by_type', {
-          p_championship_id: championshipId,
-          p_standing_type: type,
-          p_save_name: `Auto-save ${type}`
-        });
-
-        if (error) {
-          console.error(`❌ [AUTO-SAVE] Erreur pour ${type}:`, error);
-          // Continue avec les autres types même si un échoue
-        } else {
-          console.log(`✅ [AUTO-SAVE] ${type} sauvegardé`);
-        }
-      }
-      
-      toast({
-        title: "Positions sauvegardées",
-        description: "Les positions actuelles ont été enregistrées pour le calcul de l'évolution.",
-      });
-    } catch (error) {
-      console.error('❌ [AUTO-SAVE] Fatal error:', error);
-      toast({
-        title: "Attention",
-        description: "La sauvegarde automatique a échoué. Les évolutions ne seront pas calculées au prochain import.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const updateStandingsTitles = async (titles: Record<string, string>) => {
     try {
