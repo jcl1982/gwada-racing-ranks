@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Mountain, Car } from "lucide-react";
 import { ChampionshipStanding } from "@/types/championship";
-import { getPositionBadgeColor } from "@/utils/championship";
 import PrintButton from "@/components/PrintButton";
 import Logo from "@/components/Logo";
 interface GeneralStandingsTableProps {
