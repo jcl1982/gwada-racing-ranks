@@ -19,25 +19,25 @@ const KartingCategorySelector = ({ selectedCategory, onCategoryChange }: Karting
           onValueChange={(value) => onCategoryChange(value as KartingCategory)}
           className="flex gap-4 flex-wrap"
         >
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-purple-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="MINI 60" id="mini60" />
             <Label htmlFor="mini60" className="cursor-pointer">
               MINI 60
             </Label>
           </div>
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="SENIOR MASTER GENTLEMAN" id="senior" />
             <Label htmlFor="senior" className="cursor-pointer">
               SENIOR MASTER GENTLEMAN
             </Label>
           </div>
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-red-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="KZ2" id="kz2" />
             <Label htmlFor="kz2" className="cursor-pointer">
               KZ2
             </Label>
           </div>
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-green-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="NATIONALE" id="nationale" />
             <Label htmlFor="nationale" className="cursor-pointer">
               NATIONALE
