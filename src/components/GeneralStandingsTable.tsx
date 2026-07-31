@@ -27,7 +27,7 @@ const GeneralStandingsTable = ({
 }: GeneralStandingsTableProps) => {
   return (
     <Card className="card-glass overflow-hidden" id="general-standings-table">
-      <div className="gradient-racing p-3 sm:p-6 text-white relative">
+      <div className="gradient-racing p-3 sm:p-6 text-white relative carbon-texture">
         {/* Logo de la ligue (haut gauche) */}
         <Logo
           src="/images/lsag-logo.jpg"
@@ -66,9 +66,11 @@ const GeneralStandingsTable = ({
         </div>
       </div>
 
+      <div className="pit-wall-stripe" />
+
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
-          <thead className="bg-secondary text-secondary-foreground">
+          <thead className="bg-secondary text-secondary-foreground carbon-texture">
             <tr>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pos</th>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pilote</th>
@@ -101,7 +103,7 @@ const GeneralStandingsTable = ({
                 className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? "table-row-even" : "table-row-odd"} ${standing.position === 1 ? "champion-row" : ""}`}
               >
                 <td className="py-1 px-1">
-                  <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>{standing.position}</Badge>
+                  <span className={`race-number text-[11px] sm:text-sm ${standing.position === 1 ? "race-number-leader" : ""}`}>{standing.position}</span>
                 </td>
                 <td className="py-1 px-1">
                   <div className="font-semibold text-foreground unicode-enhanced">{standing.driver.name}</div>
@@ -135,7 +137,7 @@ const GeneralStandingsTable = ({
       </div>
 
       {/* Pied de page avec texte d'affiliation */}
-      <div className="bg-muted px-4 py-3 border-t">
+      <div className="bg-muted px-4 py-3 border-t carbon-texture">
         <div className="text-center text-xs text-muted-foreground leading-relaxed">
           <div className="font-semibold">Affilié à la Fédération Française du Sport Automobile sous le code 21</div>
           <div>Déclaré au J.O N°Y0046 DU 15/11/2014 sous le n°01987</div>
