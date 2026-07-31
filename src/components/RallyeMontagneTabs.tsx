@@ -383,12 +383,6 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleRallyePrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(rallyeStandings, "rallye")} />
-          <StandingsEvolutionChart
-            races={rallyeRaces}
-            drivers={drivers}
-            title={`Évolution des points - ${titles.rallye}`}
-            type="rallye"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={rallyeRaces}
