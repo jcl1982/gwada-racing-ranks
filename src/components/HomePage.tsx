@@ -369,7 +369,7 @@ const HomePage = ({
 
             return (
               <div key={championship.id} className="group">
-                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-secondary-foreground flex items-center gap-2`}>
+                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-[hsl(var(--light))] flex items-center gap-2`}>
                   <ChampIcon size={24} />
                   <h4 className="font-serif font-normal">{championship.title}</h4>
                 </div>
