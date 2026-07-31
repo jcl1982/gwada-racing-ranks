@@ -42,11 +42,4 @@ export interface ChampionshipStanding {
   rallyePoints: number;
   totalPoints: number;
   position: number;
-  previousPosition?: number;
-  positionChange: number;
-  // Positions spécifiques pour chaque type de classement
-  previousGeneralPosition?: number;
-  previousMontagnePosition?: number;
-  previousRallyePosition?: number;
-  previousR2Position?: number;
 }
