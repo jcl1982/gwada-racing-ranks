@@ -33,7 +33,6 @@ const KartingStandings = ({
   races, 
   drivers, 
   championshipYear,
-  previousStandings,
   onRaceUpdate
 }: KartingStandingsProps) => {
   
