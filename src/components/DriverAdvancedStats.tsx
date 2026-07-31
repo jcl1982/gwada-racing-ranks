@@ -175,8 +175,8 @@ const DriverAdvancedStats = ({
       label: "Meilleure série de podiums",
       value: bestStreak?.name,
       detail: `${bestStreak?.bestStreak} podium${bestStreak?.bestStreak > 1 ? 's' : ''} consécutif${bestStreak?.bestStreak > 1 ? 's' : ''}`,
-      gradient: "from-purple-500 to-violet-500",
-      textColor: "text-purple-600",
+      gradient: "from-primary to-secondary",
+      textColor: "text-primary",
     },
   ];
 

@@ -26,7 +26,7 @@ const CATEGORY_CONFIG: Record<string, { label: string; icon: any; gradient: stri
   montagne: { label: 'Montagne', icon: Mountain, gradient: 'from-green-600 to-emerald-600' },
   rallye: { label: 'Rallye', icon: Car, gradient: 'from-blue-600 to-cyan-600' },
   r2: { label: 'R2', icon: Award, gradient: 'from-orange-600 to-red-600' },
-  copilote: { label: 'Copilote', icon: Users, gradient: 'from-purple-600 to-pink-600' },
+  copilote: { label: 'Copilote', icon: Users, gradient: 'from-primary to-secondary' },
 };
 
 const ArchiveStandingsTable = ({ standings, activeTab, races }: { standings: any[]; activeTab: string; races: any[] }) => {
