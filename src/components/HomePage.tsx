@@ -48,9 +48,9 @@ const HomePage = ({
   };
 
   const getChampionshipColor = (title: string) => {
-    if (title.includes('Accélération')) return 'from-primary dark:from-[hsl(var(--primary-foreground))] to-accent';
-    if (title.includes('Karting')) return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-accent';
-    return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-primary';
+    if (title.includes('Accélération')) return 'from-primary to-accent';
+    if (title.includes('Karting')) return 'from-accent to-primary';
+    return 'from-secondary via-primary to-accent';
   };
 
 
