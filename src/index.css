@@ -279,6 +279,45 @@
     transform: skewX(12deg);
   }
 
+  /* Texture carbone subtile (tissage fin) */
+  .carbon-texture {
+    background-image:
+      repeating-linear-gradient(45deg, hsl(0 0% 100% / 0.045) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(-45deg, hsl(0 0% 0% / 0.16) 0 1px, transparent 1px 4px);
+    background-size: 6px 6px;
+  }
+
+  /* Liseré "pit-wall" : damier fin en bas d'un bloc */
+  .pit-wall-stripe {
+    height: 6px;
+    width: 100%;
+    background-image:
+      repeating-linear-gradient(90deg,
+        hsl(var(--foreground) / 0.85) 0 8px,
+        hsl(var(--background)) 8px 16px);
+    background-size: 16px 6px;
+    opacity: 0.5;
+  }
+
+  /* Numéro de course façon plaque de portière */
+  .race-number {
+    @apply inline-flex items-center justify-center font-display font-extrabold tabular-nums leading-none;
+    min-width: 1.85rem;
+    height: 1.85rem;
+    padding-inline: 0.35rem;
+    background: hsl(var(--card));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+    border-left: 3px solid hsl(var(--primary));
+    clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+
+  .race-number-leader {
+    border-left-color: hsl(var(--accent));
+    color: hsl(var(--accent));
+  }
+
+
   /* Masquer les éléments no-print lors de l'export en image */
   .no-print {
     @media print {
