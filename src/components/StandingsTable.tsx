@@ -2,7 +2,6 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Mountain, Car, Flame } from 'lucide-react';
 import { Driver, Race } from '@/types/championship';
-import { getPositionBadgeColor } from '@/utils/championship';
 import PrintButton from '@/components/PrintButton';
 import Logo from '@/components/Logo';
 import { useImageExport } from '@/hooks/useImageExport';
@@ -140,7 +139,7 @@ const StandingsTable = ({
 
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
-          <thead className="bg-secondary text-secondary-foreground">
+          <thead className="bg-secondary text-secondary-foreground carbon-texture">
             <tr>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pos</th>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pilote</th>
@@ -228,7 +227,7 @@ const StandingsTable = ({
       </div>
 
       {/* Pied de page avec texte d'affiliation */}
-      <div className="bg-muted px-4 py-3 border-t">
+      <div className="bg-muted px-4 py-3 border-t carbon-texture">
         <div className="text-center text-xs text-muted-foreground leading-relaxed">
           <div className="font-semibold">Affilié à la Fédération Française du Sport Automobile sous le code 21</div>
           <div>Déclaré au J.O N°Y0046 DU 15/11/2014 sous le n°01987</div>
