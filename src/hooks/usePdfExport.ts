@@ -67,8 +67,6 @@ export const usePdfExport = () => {
       driver: Driver;
       points: number;
       position: number;
-      positionChange?: number;
-      previousPosition?: number;
     }>
   ) => {
     try {

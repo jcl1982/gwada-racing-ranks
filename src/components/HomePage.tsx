@@ -203,8 +203,7 @@ const HomePage = ({
                 totalPoints: kartingStandings[0].totalPoints,
                 montagnePoints: 0,
                 rallyePoints: 0,
-                position: 1,
-                positionChange: 0
+                position: 1
               } as ChampionshipStanding;
             }
           }

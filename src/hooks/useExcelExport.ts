@@ -11,8 +11,6 @@ interface CategoryStanding {
   driver: Driver;
   points: number;
   position: number;
-  positionChange?: number;
-  previousPosition?: number;
 }
 
 export const useExcelExport = () => {
