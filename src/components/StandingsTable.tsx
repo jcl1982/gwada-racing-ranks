@@ -168,10 +168,11 @@ const StandingsTable = ({
             const gap = standings[0].points - standing.points;
             return <tr key={standing.driver.id} className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? 'table-row-even' : 'table-row-odd'} ${standing.position === 1 ? 'bg-accent/15 font-semibold' : ''}`}>
                   <td className="py-1 px-1">
-                    <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
+                    <span className={`race-number text-[11px] sm:text-sm ${standing.position === 1 ? 'race-number-leader' : ''}`}>
                       {standing.position}
-                    </Badge>
+                    </span>
                   </td>
+
                   <td className="py-1 px-1">
                     <div className="font-semibold text-foreground unicode-enhanced">
                       {standing.driver.name}
