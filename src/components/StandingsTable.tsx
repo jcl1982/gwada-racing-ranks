@@ -24,8 +24,6 @@ interface StandingsTableProps {
     driver: Driver;
     points: number;
     position: number;
-    positionChange?: number;
-    previousPosition?: number;
   }>;
   onPrintPdf: () => void;
 }
