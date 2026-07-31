@@ -164,7 +164,7 @@ const StandingsTable = ({
           <tbody>
             {standings.map((standing, index) => {
             const gap = standings[0].points - standing.points;
-            return <tr key={standing.driver.id} className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? 'table-row-even' : 'table-row-odd'}`}>
+            return <tr key={standing.driver.id} className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? 'table-row-even' : 'table-row-odd'} ${standing.position === 1 ? 'bg-accent/15 font-semibold' : ''}`}>
                   <td className="py-1 px-1">
                     <Badge className={`${getPositionBadgeColor(standing.position)} font-bold position-badge`}>
                       {standing.position}
@@ -208,15 +208,16 @@ const StandingsTable = ({
                       </td>;
               })}
                   <td className="py-1 px-1 text-center">
-                    <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
+                    <Badge className="bg-primary text-primary-foreground font-bold font-mono tabular-nums hover:bg-primary/90">
                       {standing.points} pts
                     </Badge>
                   </td>
                   <td className="py-1 px-1 text-center">
-                    <Badge variant="outline" className={`${gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                    <Badge variant="outline" className={`font-mono tabular-nums ${gap === 0 ? 'border-accent text-accent-foreground bg-accent/20' : 'border-border text-muted-foreground'}`}>
                       {gap === 0 ? '—' : `-${gap}`}
                     </Badge>
                   </td>
+
                 </tr>;
           })}
           </tbody>
