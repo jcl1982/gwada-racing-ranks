@@ -41,8 +41,7 @@ const convertVmrsToChampionshipStandings = (
       montagnePoints: 0,
       rallyePoints: vs.totalPoints,
       totalPoints: vs.totalPoints,
-      position: vs.position,
-      positionChange: 0,
+      position: vs.position
     };
   });
 };
