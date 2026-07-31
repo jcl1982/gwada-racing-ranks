@@ -43,9 +43,9 @@ const StandingsTable = ({
   } = useWebPrint();
   const { exportCategoryToExcel } = useExcelExport();
   const Icon = type === 'montagne' ? Mountain : type === 'karting' ? Flame : Car;
-  const gradientClass = type === 'montagne' ? 'from-secondary to-primary' :
-                       type === 'r2' ? 'from-secondary to-accent' :
-                       type === 'karting' ? 'from-primary to-accent' :
+  const gradientClass = type === 'montagne' ? 'from-secondary via-primary to-accent' :
+                       type === 'r2' ? 'from-secondary via-accent to-primary' :
+                       type === 'karting' ? 'from-primary via-accent to-secondary' :
                        'from-secondary via-primary to-accent';
 
   
