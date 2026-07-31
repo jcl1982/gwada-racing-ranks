@@ -11,8 +11,7 @@ import { generateSuccessMessage, generateErrorMessage, performFinalRefresh } fro
 export const useChampionshipImport = (
   saveDriver: (driver: Driver) => Promise<string>,
   saveRace: (race: Omit<Race, 'id' | 'results'> | Race) => Promise<void>,
-  refreshData: () => Promise<void>,
-  autoSaveStandings: () => Promise<void>
+  refreshData: () => Promise<void>
 ) => {
   const { toast } = useToast();
 
