@@ -151,5 +151,5 @@ export const createConfigOperations = (toast: ReturnType<typeof useToast>['toast
     }
   };
 
-  return { updateChampionshipConfig, resetAllData, saveStandingsForEvolution, updateStandingsTitles };
+  return { updateChampionshipConfig, resetAllData, updateStandingsTitles };
 };
