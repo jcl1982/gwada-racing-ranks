@@ -134,10 +134,10 @@ const HomePage = ({
       {/* Hero Section */}
       <div className="text-center py-10 md:py-14">
         <PartnerLogos />
-        <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-normal gradient-caribbean bg-clip-text text-transparent mb-4 py-[10px]">
+        <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold gradient-racing bg-clip-text text-transparent mb-4 py-[10px] uppercase tracking-tight">
           Championnats Automobiles
         </h1>
-        <h2 className="font-serif text-2xl md:text-4xl font-normal text-foreground mb-6">
+        <h2 className="font-display text-2xl md:text-4xl font-semibold text-foreground mb-6 uppercase tracking-wide">
           de Guadeloupe {championshipYear}
         </h2>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
