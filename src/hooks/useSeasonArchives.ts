@@ -74,7 +74,6 @@ export const useSeasonArchives = () => {
             montagnePoints: s.montagnePoints,
             rallyePoints: s.rallyePoints,
             totalPoints: s.totalPoints,
-            positionChange: s.positionChange,
             racePoints,
           };
         });

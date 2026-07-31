@@ -23,7 +23,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     rallyeRaces,
     kartingRaces,
     accelerationRaces,
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
@@ -37,8 +36,7 @@ export const useChampionshipData = (currentView: ViewType) => {
     updateChampionshipConfig,
     updateStandingsTitles,
     resetAllData,
-    refreshData,
-    autoSaveStandingsForEvolution
+    refreshData
   } = useSupabaseData(championshipConfig?.id);
 
   console.log('👥 useChampionshipData - Pilotes chargés:', {
@@ -52,7 +50,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     drivers,
     montagneRaces,
     rallyeRaces,
-    previousStandings: previousStandings.general,
     championshipId: championshipConfig?.id || championshipId || ''
   });
 
@@ -62,8 +59,7 @@ export const useChampionshipData = (currentView: ViewType) => {
   const { handleImport } = useChampionshipImport(
     saveDriverForImport,
     saveRace,
-    refreshData,
-    autoSaveStandingsForEvolution
+    refreshData
   );
 
   const {
@@ -84,7 +80,6 @@ export const useChampionshipData = (currentView: ViewType) => {
     kartingRaces,
     accelerationRaces,
     standings,
-    previousStandings,
     championshipTitle: championshipConfig?.title || championshipTitle,
     championshipYear: championshipConfig?.year || championshipYear,
     championshipId: championshipConfig?.id || championshipId,

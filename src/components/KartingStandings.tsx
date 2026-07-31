@@ -18,7 +18,6 @@ interface KartingStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
-  previousStandings?: ChampionshipStanding[];
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
@@ -34,7 +33,6 @@ const KartingStandings = ({
   races, 
   drivers, 
   championshipYear,
-  previousStandings,
   onRaceUpdate
 }: KartingStandingsProps) => {
   
@@ -103,9 +101,7 @@ const KartingStandings = ({
           driver,
           points: data.totalPoints,
           bonus: data.totalBonus,
-          position: 0,
-          positionChange: 0,
-          previousPosition: undefined
+          position: 0
         };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null)

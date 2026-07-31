@@ -7,8 +7,6 @@ export interface SimplifiedStanding {
   driver: Driver;
   points: number;
   position: number;
-  positionChange?: number;
-  previousPosition?: number;
 }
 
 /**
@@ -24,30 +22,24 @@ export const toSimplifiedStanding = (
       return {
         driver: standing.driver,
         points: standing.montagnePoints,
-        position: standing.position,
-        positionChange: standing.positionChange,
-        previousPosition: standing.previousMontagnePosition
+        position: standing.position
       };
-    
+
     case 'rallye':
     case 'copilote':
       return {
         driver: standing.driver,
         points: standing.rallyePoints,
-        position: standing.position,
-        positionChange: standing.positionChange,
-        previousPosition: standing.previousRallyePosition
+        position: standing.position
       };
-    
+
     case 'r2':
     case 'general':
     default:
       return {
         driver: standing.driver,
         points: standing.totalPoints,
-        position: standing.position,
-        positionChange: standing.positionChange,
-        previousPosition: standing.previousGeneralPosition || standing.previousPosition
+        position: standing.position
       };
   }
 };

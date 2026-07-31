@@ -10,12 +10,6 @@ import { createConfigOperations } from './supabase/configOperations';
 export const useSupabaseData = (initialChampionshipId?: string) => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
-  const [previousStandings, setPreviousStandings] = useState<Record<string, ChampionshipStanding[]>>({
-    general: [],
-    montagne: [],
-    rallye: [],
-    r2: []
-  });
   const [championshipTitle, setChampionshipTitle] = useState('Championnat Automobile');
   const [championshipYear, setChampionshipYear] = useState('de Guadeloupe 2025');
   const [championshipId, setChampionshipId] = useState<string | undefined>(initialChampionshipId);
@@ -37,7 +31,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
       const {
         drivers: appDrivers,
         races: appRaces,
-        previousStandings: appPreviousStandings,
         championshipTitle: title,
         championshipYear: year,
         championshipId: id
@@ -52,21 +45,11 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
 
       console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
-        races: appRaces.length,
-        standingsGeneral: appPreviousStandings.general.length,
-        standingsMontagne: appPreviousStandings.montagne.length,
-        standingsRallye: appPreviousStandings.rallye.length,
-        standingsR2: appPreviousStandings.r2.length
+        races: appRaces.length
       });
 
       setDrivers([...appDrivers]);
       setRaces([...appRaces]);
-      setPreviousStandings({
-        general: [...appPreviousStandings.general],
-        montagne: [...appPreviousStandings.montagne],
-        rallye: [...appPreviousStandings.rallye],
-        r2: [...appPreviousStandings.r2]
-      });
       setChampionshipTitle(title);
       setChampionshipYear(year);
       setChampionshipId(id);
@@ -124,17 +107,11 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     return baseSaveRace(raceWithChampionship);
   };
   
-  const { updateChampionshipConfig, resetAllData, saveStandingsForEvolution, updateStandingsTitles } = createConfigOperations(toast, championshipId);
+  const { updateChampionshipConfig, resetAllData, updateStandingsTitles } = createConfigOperations(toast, championshipId);
 
   // Enhanced reset function that reloads data after reset
   const handleResetAllData = async () => {
     await resetAllData();
-    await loadData();
-  };
-
-  // Auto-save standings for evolution tracking
-  const autoSaveStandingsForEvolution = async () => {
-    await saveStandingsForEvolution();
     await loadData();
   };
 
@@ -190,7 +167,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     kartingRaces: races.filter(race => race.type === 'karting'),
     accelerationRaces: races.filter(race => race.type === 'acceleration'),
     
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
@@ -205,7 +181,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
     updateStandingsTitles,
     resetAllData: handleResetAllData,
     refreshData: forceRefreshData,
-    autoSaveStandingsForEvolution,
     setChampionshipId
   };
 };

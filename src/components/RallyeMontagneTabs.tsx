@@ -16,7 +16,7 @@ import { useWebPrint } from "@/hooks/useWebPrint";
 import { useExcelExport } from "@/hooks/useExcelExport";
 import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
-import StandingsEvolutionChart from "@/components/StandingsEvolutionChart";
+
 import DriverAdvancedStats from "@/components/DriverAdvancedStats";
 import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -287,12 +287,6 @@ const RallyeMontagneTabs = ({
             onPrintExcel={handleGeneralExportExcel}
           />
           <GeneralStandingsStats standings={generalStandings} />
-          <StandingsEvolutionChart
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={drivers}
-            title="Évolution des points - Classement Général"
-            type="all"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={[...montagneRaces, ...rallyeRaces]}
@@ -334,12 +328,6 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleMontagnePrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(montagneStandings, "montagne")} />
-          <StandingsEvolutionChart
-            races={montagneRaces}
-            drivers={drivers}
-            title={`Évolution des points - ${titles.montagne}`}
-            type="montagne"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={montagneRaces}
@@ -383,12 +371,6 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleRallyePrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(rallyeStandings, "rallye")} />
-          <StandingsEvolutionChart
-            races={rallyeRaces}
-            drivers={drivers}
-            title={`Évolution des points - ${titles.rallye}`}
-            type="rallye"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={rallyeRaces}
@@ -427,12 +409,6 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleR2PrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(r2Standings, "r2")} />
-          <StandingsEvolutionChart
-            races={[...montagneRaces, ...rallyeRaces]}
-            drivers={drivers}
-            title={`Évolution des points - ${titles.r2}`}
-            type="all"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={[...montagneRaces, ...rallyeRaces]}
@@ -462,12 +438,6 @@ const RallyeMontagneTabs = ({
             onPrintPdf={handleCopiPrintPdf}
           />
           <PodiumSection standings={toSimplifiedStandings(copiloteStandings, "copilote")} />
-          <StandingsEvolutionChart
-            races={rallyeRaces}
-            drivers={copilotes}
-            title={`Évolution des points - ${titles.copilote}`}
-            type="rallye"
-          />
           {isAdmin && (
             <DriverAdvancedStats
               races={rallyeRaces}

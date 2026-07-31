@@ -14,7 +14,6 @@ const ChampionshipApp = () => {
     kartingRaces,
     accelerationRaces,
     standings,
-    previousStandings,
     championshipTitle,
     championshipYear,
     championshipId,
@@ -66,7 +65,6 @@ const ChampionshipApp = () => {
           accelerationRaces={accelerationRaces}
           races={races}
           drivers={drivers}
-          previousStandings={previousStandings}
           handleImport={handleImport}
           handleReset={handleReset}
           handleRacesChange={handleRacesChange}

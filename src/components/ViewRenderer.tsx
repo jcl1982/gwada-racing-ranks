@@ -34,7 +34,6 @@ interface ViewRendererProps {
   accelerationRaces: Race[];
   races: Race[];
   drivers: Driver[];
-  previousStandings: Record<string, ChampionshipStanding[]>;
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => Promise<void>;
   handleReset: () => void;
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
@@ -76,7 +75,6 @@ const ViewRenderer = ({
   accelerationRaces,
   races,
   drivers,
-  previousStandings,
   handleImport,
   handleReset,
   handleRacesChange,
@@ -155,7 +153,6 @@ const ViewRenderer = ({
           type="acceleration"
           championshipYear={championshipYear}
           championshipId={championshipId || ''}
-          previousStandings={[]}
         />
       );
     case 'karting':
@@ -164,7 +161,6 @@ const ViewRenderer = ({
           races={kartingRaces}
           drivers={drivers}
           championshipYear={championshipYear}
-          previousStandings={previousStandings.karting || []}
           onRaceUpdate={async (raceId, results) => {
             console.log('Race update:', raceId, results);
           }}

@@ -25,9 +25,7 @@ const GeneralStandings = ({ standings, championshipTitle, championshipYear }: Ge
     standingsData: standings.slice(0, 3).map(s => ({
       position: s.position,
       name: s.driver.name,
-      totalPoints: s.totalPoints,
-      positionChange: s.positionChange,
-      previousPosition: s.previousPosition
+      totalPoints: s.totalPoints
     }))
   });
 

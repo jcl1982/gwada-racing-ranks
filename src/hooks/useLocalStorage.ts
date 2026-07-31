@@ -6,7 +6,6 @@ interface ChampionshipData {
   drivers: Driver[];
   montagneRaces: Race[];
   rallyeRaces: Race[];
-  previousStandings: ChampionshipStanding[];
   championshipTitle: string;
   championshipYear: string;
 }

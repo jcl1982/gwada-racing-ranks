@@ -22,7 +22,6 @@ interface R2StandingsProps {
   rallyeRaces: Race[];
   championshipYear: string;
   championshipId: string;
-  previousStandings?: ChampionshipStanding[];
 }
 
 const R2Standings = ({ 
@@ -30,8 +29,7 @@ const R2Standings = ({
   montagneRaces, 
   rallyeRaces, 
   championshipYear,
-  championshipId,
-  previousStandings 
+  championshipId
 }: R2StandingsProps) => {
   const { exportCategoryStandings } = usePdfExport();
 
@@ -40,7 +38,6 @@ const R2Standings = ({
     drivers,
     montagneRaces,
     rallyeRaces,
-    previousStandings,
     championshipId
   });
 

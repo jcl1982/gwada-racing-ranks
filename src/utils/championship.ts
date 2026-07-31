@@ -3,10 +3,8 @@ import {
   sortStandingsByPoints,
   sortMontagneStandingsByPoints,
   sortRallyeStandingsByPoints,
-  calculatePositionsAndEvolution,
-  findPreviousStanding,
-  createBaseStanding,
-  type StandingType
+  calculatePositions,
+  createBaseStanding
 } from './championshipEvolution';
 
 // ===== Barème VMRS - Article 7.3 =====
@@ -96,14 +94,12 @@ export const calculateR2DriverPoints = (driverId: string, races: Race[]): number
 export const calculateChampionshipStandings = (
   drivers: Driver[],
   montagneRaces: Race[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   console.log('🏆 Calcul des standings généraux:', {
     drivers: drivers.length,
     montagneRaces: montagneRaces.length,
-    rallyeRaces: rallyeRaces.length,
-    previousStandings: previousStandings?.length || 0
+    rallyeRaces: rallyeRaces.length
   });
 
   // Filtrer uniquement les pilotes (exclure les copilotes)
@@ -112,13 +108,12 @@ export const calculateChampionshipStandings = (
   const standings = pilotes.map(driver => {
     const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-    const previousStanding = findPreviousStanding(driver.id, previousStandings);
-    
-    return createBaseStanding(driver, montagnePoints, rallyePoints, previousStanding);
+
+    return createBaseStanding(driver, montagnePoints, rallyePoints);
   });
 
   sortStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'general');
+  calculatePositions(standings);
 
   return standings;
 };
@@ -126,13 +121,11 @@ export const calculateChampionshipStandings = (
 // Calculer le classement Montagne
 export const calculateMontagneStandings = (
   drivers: Driver[],
-  montagneRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  montagneRaces: Race[]
 ): ChampionshipStanding[] => {
   console.log('⛰️ Calcul des standings montagne:', {
     drivers: drivers.length,
-    montagneRaces: montagneRaces.length,
-    previousStandings: previousStandings?.length || 0
+    montagneRaces: montagneRaces.length
   });
 
   // Filtrer uniquement les pilotes (exclure les copilotes)
@@ -141,14 +134,12 @@ export const calculateMontagneStandings = (
   const standings = pilotes
     .map(driver => {
       const montagnePoints = calculateDriverPoints(driver.id, montagneRaces);
-      const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      
-      return createBaseStanding(driver, montagnePoints, 0, previousStanding);
+      return createBaseStanding(driver, montagnePoints, 0);
     })
     .filter(standing => standing.montagnePoints > 0);
 
   sortMontagneStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'montagne');
+  calculatePositions(standings);
 
   return standings;
 };
@@ -156,13 +147,11 @@ export const calculateMontagneStandings = (
 // Calculer le classement Rallye
 export const calculateRallyeStandings = (
   drivers: Driver[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   console.log('🏁 Calcul des standings rallye:', {
     drivers: drivers.length,
-    rallyeRaces: rallyeRaces.length,
-    previousStandings: previousStandings?.length || 0
+    rallyeRaces: rallyeRaces.length
   });
 
   // Filtrer uniquement les pilotes (exclure les copilotes)
@@ -171,14 +160,12 @@ export const calculateRallyeStandings = (
   const standings = pilotes
     .map(driver => {
       const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
-      const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      
-      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+      return createBaseStanding(driver, 0, rallyePoints);
     })
     .filter(standing => standing.rallyePoints > 0);
 
   sortRallyeStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'rallye');
+  calculatePositions(standings);
 
   return standings;
 };
@@ -187,29 +174,28 @@ export const calculateRallyeStandings = (
 export const calculateR2Standings = (
   drivers: Driver[],
   montagneRaces: Race[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   const allRaces = [...montagneRaces, ...rallyeRaces];
-  
+
   // Filtrer uniquement les pilotes (exclure les copilotes)
   const pilotes = drivers.filter(driver => driver.driverRole === 'pilote');
-  
+
   // Filtrer les pilotes qui ont au moins un résultat avec une C2 R2
   const c2r2Drivers = pilotes.filter(driver => {
     // Vérifier si le pilote a une C2 R2 dans sa fiche
-    const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') && 
+    const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') &&
                            driver.carModel?.toLowerCase().includes('r2');
-    
+
     // Vérifier si le pilote a au moins une course avec une C2 R2
-    const hasC2R2Results = allRaces.some(race => 
-      race.results.some(result => 
-        result.driverId === driver.id && 
-        result.carModel?.toLowerCase().includes('c2') && 
+    const hasC2R2Results = allRaces.some(race =>
+      race.results.some(result =>
+        result.driverId === driver.id &&
+        result.carModel?.toLowerCase().includes('c2') &&
         result.carModel?.toLowerCase().includes('r2')
       )
     );
-    
+
     return hasC2R2Profile || hasC2R2Results;
   });
 
@@ -228,13 +214,11 @@ export const calculateR2Standings = (
   const standings = c2r2Drivers.map(driver => {
     const montagnePoints = calculateR2DriverPoints(driver.id, montagneRaces);
     const rallyePoints = calculateR2DriverPoints(driver.id, rallyeRaces);
-    const previousStanding = findPreviousStanding(driver.id, previousStandings);
-    
-    return createBaseStanding(driver, montagnePoints, rallyePoints, previousStanding);
+    return createBaseStanding(driver, montagnePoints, rallyePoints);
   });
 
   sortStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'r2');
+  calculatePositions(standings);
 
   console.log('✅ Classement R2 calculé:', standings.slice(0, 3).map(s => ({
     name: s.driver.name,
@@ -249,8 +233,7 @@ export const calculateR2Standings = (
 // Calculer le classement Copilote (uniquement les copilotes en Rallye)
 export const calculateCopiloteStandings = (
   drivers: Driver[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   console.log('👥 [COPILOTE] ===== CALCUL DU CLASSEMENT COPILOTE =====');
   console.log('👥 [COPILOTE] Pilotes reçus:', drivers.length);
@@ -284,10 +267,7 @@ export const calculateCopiloteStandings = (
     .map(driver => {
       const rallyePoints = calculateDriverPoints(driver.id, rallyeRaces);
       console.log(`👥 [COPILOTE] ${driver.name}: ${rallyePoints} points`);
-      
-      const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      
-      return createBaseStanding(driver, 0, rallyePoints, previousStanding);
+      return createBaseStanding(driver, 0, rallyePoints);
     })
     .filter(standing => {
       const hasPoints = standing.rallyePoints > 0;
@@ -300,7 +280,7 @@ export const calculateCopiloteStandings = (
   console.log('👥 [COPILOTE] Classement avant tri:', standings.length, 'copilotes avec des points');
 
   sortRallyeStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'rallye');
+  calculatePositions(standings);
 
   console.log('👥 [COPILOTE] ===== CLASSEMENT FINAL =====');
   standings.forEach((standing, idx) => {
@@ -315,8 +295,7 @@ export const calculateCopiloteStandings = (
 // Utilise le barème spécifique VMRS : participation + classement + bonus
 export const calculateVmrsStandings = (
   drivers: Driver[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   console.log('🚗 [VMRS] ===== CALCUL DU CLASSEMENT VMRS (Article 7.3) =====');
 
@@ -326,13 +305,12 @@ export const calculateVmrsStandings = (
     .map(driver => {
       const vmrsPoints = calculateVmrsDriverPoints(driver.id, rallyeRaces);
       console.log(`🚗 [VMRS] ${driver.name}: ${vmrsPoints} pts VMRS`);
-      const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      return createBaseStanding(driver, 0, vmrsPoints, previousStanding);
+      return createBaseStanding(driver, 0, vmrsPoints);
     })
     .filter(standing => standing.rallyePoints > 0);
 
   sortRallyeStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'rallye');
+  calculatePositions(standings);
 
   console.log('🚗 [VMRS] Classement VMRS calculé:', standings.length, 'pilotes');
   return standings;
@@ -341,21 +319,19 @@ export const calculateVmrsStandings = (
 // Calculer le classement VMRS Copilotes (Article 7)
 export const calculateVmrsCopiloteStandings = (
   drivers: Driver[],
-  rallyeRaces: Race[],
-  previousStandings?: ChampionshipStanding[]
+  rallyeRaces: Race[]
 ): ChampionshipStanding[] => {
   const copilotes = drivers.filter(driver => driver.driverRole === 'copilote');
 
   const standings = copilotes
     .map(driver => {
       const vmrsPoints = calculateVmrsDriverPoints(driver.id, rallyeRaces);
-      const previousStanding = findPreviousStanding(driver.id, previousStandings);
-      return createBaseStanding(driver, 0, vmrsPoints, previousStanding);
+      return createBaseStanding(driver, 0, vmrsPoints);
     })
     .filter(standing => standing.rallyePoints > 0);
 
   sortRallyeStandingsByPoints(standings);
-  calculatePositionsAndEvolution(standings, 'rallye');
+  calculatePositions(standings);
 
   return standings;
 };

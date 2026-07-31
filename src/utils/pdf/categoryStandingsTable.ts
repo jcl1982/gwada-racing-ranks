@@ -11,8 +11,6 @@ export const createCategoryStandingsTable = (
     driver: Driver;
     points: number;
     position: number;
-    positionChange?: number;
-    previousPosition?: number;
   }>,
   races: Race[]
 ) => {
