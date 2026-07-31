@@ -34,7 +34,6 @@ interface ViewRendererProps {
   accelerationRaces: Race[];
   races: Race[];
   drivers: Driver[];
-  previousStandings: Record<string, ChampionshipStanding[]>;
   handleImport: (newRaces: Race[], newDrivers: Driver[]) => Promise<void>;
   handleReset: () => void;
   handleRacesChange: (newMontagneRaces: Race[], newRallyeRaces: Race[]) => void;
