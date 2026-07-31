@@ -2,7 +2,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { ChampionshipStanding } from '@/types/championship';
-import { getPositionEvolutionIndicator, getEvolutionColor, PDF_STYLES, getPositionRowStyle } from '../pdfStyles';
+import { PDF_STYLES, getPositionRowStyle } from '../pdfStyles';
 
 export const createGeneralStandingsTable = (
   doc: jsPDF, 
