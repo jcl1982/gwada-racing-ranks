@@ -290,7 +290,7 @@ const ChampionshipSettings = ({
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Aperçu</h3>
         <div className="text-center py-8 bg-muted/50 rounded-lg">
-          <h1 className="text-3xl md:text-4xl font-bold gradient-caribbean bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold gradient-racing bg-clip-text text-transparent mb-2">
             {title || championshipTitle}
           </h1>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">

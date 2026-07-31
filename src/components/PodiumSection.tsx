@@ -39,7 +39,7 @@ const PodiumSection = ({ standings }: PodiumSectionProps) => {
           <h3 className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">
             {standing.position}ᵉ Place
           </h3>
-          <p className="font-serif text-xl sm:text-2xl text-foreground leading-tight">
+          <p className="font-display text-xl sm:text-2xl text-foreground leading-tight">
             {standing.driver.name}
           </p>
           <p className="mt-2 font-mono text-lg font-bold text-primary tabular-nums">

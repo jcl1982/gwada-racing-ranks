@@ -27,7 +27,7 @@ const GeneralStandingsTable = ({
 }: GeneralStandingsTableProps) => {
   return (
     <Card className="card-glass overflow-hidden" id="general-standings-table">
-      <div className="gradient-ocean p-3 sm:p-6 text-white relative">
+      <div className="gradient-racing p-3 sm:p-6 text-white relative">
         {/* Logo de la ligue (haut gauche) */}
         <Logo
           src="/images/lsag-logo.jpg"
@@ -47,7 +47,7 @@ const GeneralStandingsTable = ({
         <div className="flex items-center justify-center px-12 sm:px-20">
           <div className="flex items-center gap-2 sm:gap-3">
             <Trophy className="w-5 h-5 sm:w-8 sm:h-8 shrink-0" />
-            <h2 className="font-serif text-base sm:text-3xl text-center leading-tight tracking-tight">Classement Général - Pilote</h2>
+            <h2 className="font-display text-base sm:text-3xl text-center leading-tight tracking-tight">Classement Général - Pilote</h2>
           </div>
         </div>
 

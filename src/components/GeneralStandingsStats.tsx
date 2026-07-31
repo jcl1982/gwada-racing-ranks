@@ -18,7 +18,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
   return (
     <div className="grid md:grid-cols-3 gap-6">
       <Card className="card-glass p-6 text-center">
-        <div className="gradient-caribbean w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="gradient-racing w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <Trophy className="text-[hsl(var(--light))]" size={32} />
         </div>
         <h3 className="text-lg font-bold mb-2">Leader du Championnat</h3>
@@ -29,7 +29,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
       </Card>
 
       <Card className="card-glass p-6 text-center">
-        <div className="gradient-ocean w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="gradient-racing w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <Mountain className="text-[hsl(var(--light))]" size={32} />
         </div>
         <h3 className="text-lg font-bold mb-2">Meilleur en Montagne</h3>
@@ -42,7 +42,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
       </Card>
 
       <Card className="card-glass p-6 text-center">
-        <div className="gradient-caribbean w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="gradient-racing w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
           <Car className="text-[hsl(var(--light))]" size={32} />
         </div>
         <h3 className="text-lg font-bold mb-2">Meilleur en Rallye</h3>

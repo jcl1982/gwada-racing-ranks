@@ -10,7 +10,7 @@ const GeneralStandingsHeader = ({ championshipTitle, championshipYear, subtitle 
   return (
     <div className="text-center mb-8">
       <PartnerLogos />
-      <h1 className="font-serif text-3xl sm:text-5xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-3 tracking-tight">
+      <h1 className="font-display text-3xl sm:text-5xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-3 tracking-tight">
         {championshipTitle}
       </h1>
       <div className="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary via-accent to-primary mb-3" />
