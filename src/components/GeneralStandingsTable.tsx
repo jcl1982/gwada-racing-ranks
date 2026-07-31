@@ -107,7 +107,7 @@ const GeneralStandingsTable = ({
                   <div className="font-semibold text-foreground unicode-enhanced">{standing.driver.name}</div>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge variant="outline" className="font-mono tabular-nums border-emerald-500/40 text-emerald-700 dark:text-emerald-400 bg-emerald-500/10">
+                  <Badge variant="outline" className="font-mono tabular-nums border-primary/40 text-primary bg-primary/10">
                     {standing.montagnePoints} pts
                   </Badge>
                 </td>
