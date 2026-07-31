@@ -68,28 +68,29 @@ const GeneralStandingsTable = ({
 
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
-          <thead className="bg-muted">
+          <thead className="bg-secondary text-secondary-foreground">
             <tr>
-              <th className="text-left py-1 px-1 font-semibold">Pos</th>
-              <th className="text-left py-1 px-1 font-semibold">Pilote</th>
-              <th className="text-center py-1 px-1 font-semibold">
+              <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pos</th>
+              <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pilote</th>
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">
                 <div className="flex items-center justify-center gap-1">
                   <Mountain className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Montagne</span>
                   <span className="sm:hidden">Mtg</span>
                 </div>
               </th>
-              <th className="text-center py-1 px-1 font-semibold">
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">
                 <div className="flex items-center justify-center gap-1">
                   <Car className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Rallye</span>
                   <span className="sm:hidden">Ral</span>
                 </div>
               </th>
-              <th className="text-center py-1 px-1 font-semibold">Total</th>
-              <th className="text-center py-1 px-1 font-semibold">Écart</th>
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Total</th>
+              <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Écart</th>
             </tr>
           </thead>
+
           <tbody>
             {standings.map((standing, index) => {
               const leaderPoints = standings[0]?.totalPoints || 0;
@@ -106,25 +107,26 @@ const GeneralStandingsTable = ({
                   <div className="font-semibold text-foreground unicode-enhanced">{standing.driver.name}</div>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge variant="outline" className="bg-green-50 border-green-200">
+                  <Badge variant="outline" className="font-mono tabular-nums border-emerald-500/40 text-emerald-700 dark:text-emerald-400 bg-emerald-500/10">
                     {standing.montagnePoints} pts
                   </Badge>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge variant="outline" className="bg-blue-50 border-blue-200">
+                  <Badge variant="outline" className="font-mono tabular-nums border-primary/40 text-primary bg-primary/10">
                     {standing.rallyePoints} pts
                   </Badge>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge className="bg-slate-400 hover:bg-slate-500 text-white font-bold">
+                  <Badge className="bg-primary text-primary-foreground font-bold font-mono tabular-nums hover:bg-primary/90">
                     {standing.totalPoints} pts
                   </Badge>
                 </td>
                 <td className="py-1 px-1 text-center">
-                  <Badge variant="outline" className={`${gap === 0 ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                  <Badge variant="outline" className={`font-mono tabular-nums ${gap === 0 ? 'border-accent text-accent-foreground bg-accent/20' : 'border-border text-muted-foreground'}`}>
                     {gap === 0 ? '—' : `-${gap}`}
                   </Badge>
                 </td>
+
               </tr>
             );
             })}
