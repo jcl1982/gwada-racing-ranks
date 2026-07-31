@@ -31,7 +31,6 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
       const {
         drivers: appDrivers,
         races: appRaces,
-        previousStandings: appPreviousStandings,
         championshipTitle: title,
         championshipYear: year,
         championshipId: id
@@ -46,21 +45,11 @@ export const useSupabaseData = (initialChampionshipId?: string) => {
 
       console.log('📊 Données chargées depuis Supabase:', {
         drivers: appDrivers.length,
-        races: appRaces.length,
-        standingsGeneral: appPreviousStandings.general.length,
-        standingsMontagne: appPreviousStandings.montagne.length,
-        standingsRallye: appPreviousStandings.rallye.length,
-        standingsR2: appPreviousStandings.r2.length
+        races: appRaces.length
       });
 
       setDrivers([...appDrivers]);
       setRaces([...appRaces]);
-      setPreviousStandings({
-        general: [...appPreviousStandings.general],
-        montagne: [...appPreviousStandings.montagne],
-        rallye: [...appPreviousStandings.rallye],
-        r2: [...appPreviousStandings.r2]
-      });
       setChampionshipTitle(title);
       setChampionshipYear(year);
       setChampionshipId(id);
