@@ -34,10 +34,10 @@ const Navigation = ({
   const isKartingView = ['karting', 'admin-karting'].includes(currentView);
   const isAdminView = ['admin', 'admin-acceleration', 'admin-karting', 'admin-hub', 'import'].includes(currentView);
 
-  const activeClass = 'gradient-caribbean text-white shadow-lg transform scale-105';
-  const inactiveClass = 'bg-card/70 text-foreground hover:bg-card/90 hover:shadow-md hover:scale-102';
+  const activeClass = 'gradient-caribbean text-white shadow-lg transform scale-105 font-semibold uppercase tracking-wider';
+  const inactiveClass = 'bg-card/70 text-foreground hover:bg-card/90 hover:shadow-md hover:scale-102 font-medium uppercase tracking-wider';
 
-  const btnBase = 'flex items-center justify-center gap-1.5 px-2.5 py-2 sm:px-4 sm:gap-2 rounded-lg font-medium transition-all duration-300 shrink-0';
+  const btnBase = 'flex items-center justify-center gap-1.5 px-2.5 py-2 sm:px-4 sm:gap-2 rounded-lg font-display transition-all duration-300 shrink-0';
 
   return (
     <Card className="card-glass p-3 sm:p-4 mb-4 sm:mb-8">
