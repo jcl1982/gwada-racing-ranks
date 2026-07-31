@@ -161,7 +161,6 @@ const ViewRenderer = ({
           races={kartingRaces}
           drivers={drivers}
           championshipYear={championshipYear}
-          previousStandings={previousStandings.karting || []}
           onRaceUpdate={async (raceId, results) => {
             console.log('Race update:', raceId, results);
           }}
