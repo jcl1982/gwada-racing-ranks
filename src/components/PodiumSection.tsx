@@ -15,9 +15,9 @@ interface PodiumSectionProps {
 const PodiumSection = ({ standings }: PodiumSectionProps) => {
   const medals = ['🥇', '🥈', '🥉'];
   const rings = [
-    'from-accent to-yellow-500',
+    'from-primary to-accent',
     'from-muted-foreground/60 to-muted-foreground',
-    'from-amber-600 to-amber-800',
+    'from-secondary to-primary',
   ];
   // Ordre visuel : 2e, 1er, 3e sur desktop
   const order = ['md:order-2', 'md:order-1', 'md:order-3'];
