@@ -116,79 +116,9 @@ export const loadSupabaseData = async (championshipId?: string) => {
       });
     }
 
-    // Load previous standings by type (only the most recent save per type for evolution tracking)
-    console.log('📊 Chargement des classements précédents par type...');
-    const standingsQuery = supabase
-      .from('previous_standings')
-      .select(`
-        *,
-        drivers (*)
-      `)
-      .order('saved_at', { ascending: false });
-
-    // Filter by championship if we have one
-    if (championshipId) {
-      standingsQuery.eq('championship_id', championshipId);
-    }
-
-    const { data: standingsData, error: standingsError } = await standingsQuery;
-
-    if (standingsError) {
-      console.error('❌ Erreur lors du chargement des classements:', standingsError);
-      throw standingsError;
-    }
-
-    // Group standings by type and get the most recent save for each type
-    const standingsByType: Record<string, ChampionshipStanding[]> = {
-      general: [],
-      montagne: [],
-      rallye: [],
-      r2: []
-    };
-
-    if (standingsData && standingsData.length > 0) {
-      // Get unique save times per standing type
-      const typeGroups: Record<string, string[]> = {};
-      standingsData.forEach(s => {
-        const type = s.standing_type || 'general';
-        if (!typeGroups[type]) {
-          typeGroups[type] = [];
-        }
-        if (!typeGroups[type].includes(s.saved_at)) {
-          typeGroups[type].push(s.saved_at);
-        }
-      });
-
-      // Sort save times for each type
-      Object.keys(typeGroups).forEach(type => {
-        typeGroups[type].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-      });
-
-      // Get the most recent save for each type
-      Object.keys(standingsByType).forEach(type => {
-        const latestSaveForType = typeGroups[type]?.[0];
-        if (latestSaveForType) {
-          standingsByType[type] = standingsData
-            .filter(s => (s.standing_type || 'general') === type && s.saved_at === latestSaveForType)
-            .map(convertSupabaseStanding);
-        }
-      });
-
-      console.log('✅ Classements précédents chargés par type:', {
-        total: standingsData.length,
-        general: { count: standingsByType.general.length, latestSave: typeGroups.general?.[0] },
-        montagne: { count: standingsByType.montagne.length, latestSave: typeGroups.montagne?.[0] },
-        rallye: { count: standingsByType.rallye.length, latestSave: typeGroups.rallye?.[0] },
-        r2: { count: standingsByType.r2.length, latestSave: typeGroups.r2?.[0] }
-      });
-    }
-    
-    const previousStandings = standingsByType;
-
     const result = {
       drivers,
       races,
-      previousStandings,
       championshipTitle,
       championshipYear,
       championshipId
@@ -196,8 +126,7 @@ export const loadSupabaseData = async (championshipId?: string) => {
 
     console.log('🎉 Toutes les données chargées avec succès:', {
       drivers: result.drivers.length,
-      races: result.races.length,
-      previousStandings: result.previousStandings.length
+      races: result.races.length
     });
 
     return result;
