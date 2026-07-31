@@ -145,9 +145,9 @@ All colors MUST be HSL.
   /* Light mode body gradient */
   :root body {
     background: linear-gradient(135deg, 
-      hsl(210 40% 96%) 0%, 
-      hsl(47 60% 96%) 50%, 
-      hsl(0 40% 96%) 100%
+      hsl(210 50% 97%) 0%, 
+      hsl(48 80% 96%) 50%, 
+      hsl(210 40% 98%) 100%
     );
     background-attachment: fixed;
   }
@@ -155,12 +155,13 @@ All colors MUST be HSL.
   /* Dark mode body gradient */
   .dark body {
     background: linear-gradient(135deg, 
-      hsl(220 15% 8%) 0%, 
-      hsl(230 12% 10%) 50%, 
-      hsl(220 15% 8%) 100%
+      hsl(222 47% 8%) 0%, 
+      hsl(220 35% 12%) 50%, 
+      hsl(222 47% 8%) 100%
     );
     background-attachment: fixed;
   }
+
 }
 
 @layer components {
