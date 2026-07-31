@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Mountain, Car } from "lucide-react";
 import { ChampionshipStanding } from "@/types/championship";
-import { getPositionBadgeColor } from "@/utils/championship";
 import PrintButton from "@/components/PrintButton";
 import Logo from "@/components/Logo";
 interface GeneralStandingsTableProps {
@@ -27,7 +26,7 @@ const GeneralStandingsTable = ({
 }: GeneralStandingsTableProps) => {
   return (
     <Card className="card-glass overflow-hidden" id="general-standings-table">
-      <div className="gradient-racing p-3 sm:p-6 text-white relative">
+      <div className="gradient-racing p-3 sm:p-6 text-white relative carbon-texture">
         {/* Logo de la ligue (haut gauche) */}
         <Logo
           src="/images/lsag-logo.jpg"
@@ -66,6 +65,8 @@ const GeneralStandingsTable = ({
         </div>
       </div>
 
+      <div className="pit-wall-stripe" />
+
       <div className="overflow-x-auto">
         <table className="w-full text-[11px] sm:text-sm">
           <thead className="bg-secondary text-secondary-foreground">
@@ -101,7 +102,7 @@ const GeneralStandingsTable = ({
                 className={`border-b transition-colors table-row-hover ${index % 2 === 0 ? "table-row-even" : "table-row-odd"} ${standing.position === 1 ? "champion-row" : ""}`}
               >
                 <td className="py-1 px-1">
-                  <Badge className={`${getPositionBadgeColor(standing.position)} font-bold`}>{standing.position}</Badge>
+                  <span className={`race-number text-[11px] sm:text-sm ${standing.position === 1 ? "race-number-leader" : ""}`}>{standing.position}</span>
                 </td>
                 <td className="py-1 px-1">
                   <div className="font-semibold text-foreground unicode-enhanced">{standing.driver.name}</div>
