@@ -383,7 +383,7 @@ const HomePage = ({
                       </h5>
                       <div className="space-y-2">
                         {upcomingRaces.map(race => (
-                          <div key={race.id} className="bg-emerald-500/10 dark:bg-emerald-500/15 rounded-lg p-2 border-l-4 border-emerald-500">
+                          <div key={race.id} className="bg-primary/10 dark:bg-primary/15 rounded-lg p-2 border-l-4 border-primary">
                             <p className="font-medium text-sm">{race.name}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar size={12} />
