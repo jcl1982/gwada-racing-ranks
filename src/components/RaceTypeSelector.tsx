@@ -19,24 +19,24 @@ const RaceTypeSelector = ({ selectedType, onTypeChange }: RaceTypeSelectorProps)
           onValueChange={(value) => onTypeChange(value as 'montagne' | 'rallye' | 'karting')}
           className="flex gap-4 flex-wrap"
         >
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-green-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="montagne" id="montagne" />
             <Label htmlFor="montagne" className="flex items-center gap-2 cursor-pointer">
-              <Mountain className="w-5 h-5 text-green-600" />
+              <Mountain className="w-5 h-5 text-primary" />
               <span>Trophée de la montagne</span>
             </Label>
           </div>
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-blue-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="rallye" id="rallye" />
             <Label htmlFor="rallye" className="flex items-center gap-2 cursor-pointer">
-              <Car className="w-5 h-5 text-blue-600" />
+              <Car className="w-5 h-5 text-foreground" />
               <span>Trophée des rallyes</span>
             </Label>
           </div>
-          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-orange-50 transition-colors">
+          <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-primary/10 transition-colors">
             <RadioGroupItem value="karting" id="karting" />
             <Label htmlFor="karting" className="flex items-center gap-2 cursor-pointer">
-              <CircleDot className="w-5 h-5 text-orange-600" />
+              <CircleDot className="w-5 h-5 text-muted-foreground" />
               <span>Championnat Karting</span>
             </Label>
           </div>
