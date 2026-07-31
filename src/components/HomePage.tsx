@@ -48,9 +48,9 @@ const HomePage = ({
   };
 
   const getChampionshipColor = (title: string) => {
-    if (title.includes('Accélération')) return 'from-yellow-500 to-amber-500';
-    if (title.includes('Karting')) return 'from-blue-600 to-indigo-500';
-    return 'from-blue-700 to-blue-500';
+    if (title.includes('Accélération')) return 'from-primary dark:from-[hsl(var(--primary-foreground))] to-accent';
+    if (title.includes('Karting')) return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-accent';
+    return 'from-secondary dark:from-[hsl(var(--primary-foreground))] to-primary';
   };
 
 
@@ -212,7 +212,7 @@ const HomePage = ({
           return (
             <Card key={championship.id} className="card-glass overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
               {/* Header */}
-              <div className={`bg-gradient-to-r ${colorClass} p-6 text-white text-center relative overflow-hidden`}>
+              <div className={`bg-gradient-to-r ${colorClass} p-6 text-[hsl(var(--light))] text-center relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 <div className="relative">
                   <ChampIcon size={36} className="mx-auto mb-3" />
@@ -239,25 +239,25 @@ const HomePage = ({
                 {!isKarting && (leader ? (
                   <div className="border-t border-border pt-4 mt-4">
                     <div className="flex items-center gap-3 mb-2">
-                      <Trophy size={20} className="text-yellow-500" />
+                      <Trophy size={20} className="text-primary" />
                       <h4 className="font-semibold">Leader</h4>
                     </div>
                     <div className="bg-background rounded-lg p-3 border-l-4 border-primary shadow-sm">
                       <p className="font-bold text-lg">{leader.driver.name}</p>
                       <p className="text-sm text-muted-foreground">{leader.driver.team}</p>
                       <div className="mt-2">
-                        <Badge className={`bg-gradient-to-r ${colorClass} text-white font-bold`}>
+                        <Badge className="bg-primary text-primary-foreground font-bold">
                           {leader.totalPoints} points
                         </Badge>
                       </div>
                       {championship.title === 'Championnat Rallye-Montagne' && (
                         <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
                           <div className="text-center p-2 rounded bg-background/50">
-                            <span className="text-emerald-500 dark:text-emerald-400 font-semibold">{leader.montagnePoints}</span>
+                            <span className="text-primary font-semibold">{leader.montagnePoints}</span>
                             <span className="text-muted-foreground"> Montagne</span>
                           </div>
                           <div className="text-center p-2 rounded bg-background/50">
-                            <span className="text-blue-500 dark:text-blue-400 font-semibold">{leader.rallyePoints}</span>
+                            <span className="text-foreground font-semibold">{leader.rallyePoints}</span>
                             <span className="text-muted-foreground"> Rallye</span>
                           </div>
                         </div>
@@ -369,7 +369,7 @@ const HomePage = ({
 
             return (
               <div key={championship.id} className="group">
-                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-white flex items-center gap-2`}>
+                <div className={`bg-gradient-to-r ${colorClass} p-4 rounded-t-lg text-[hsl(var(--light))] flex items-center gap-2`}>
                   <ChampIcon size={24} />
                   <h4 className="font-serif font-normal">{championship.title}</h4>
                 </div>
@@ -378,12 +378,12 @@ const HomePage = ({
                   {upcomingRaces.length > 0 && (
                     <div>
                       <h5 className="font-semibold text-sm text-foreground mb-2 flex items-center gap-1">
-                        <Calendar size={16} className="text-emerald-600" />
+                        <Calendar size={16} className="text-primary" />
                         À venir
                       </h5>
                       <div className="space-y-2">
                         {upcomingRaces.map(race => (
-                          <div key={race.id} className="bg-emerald-500/10 dark:bg-emerald-500/15 rounded-lg p-2 border-l-4 border-emerald-500">
+                          <div key={race.id} className="bg-primary/10 dark:bg-primary/15 rounded-lg p-2 border-l-4 border-primary">
                             <p className="font-medium text-sm">{race.name}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                               <Calendar size={12} />
@@ -418,7 +418,7 @@ const HomePage = ({
                               </p>
                               {winnerDriver && (
                                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                  <Trophy size={12} className="text-yellow-500" />
+                                  <Trophy size={12} className="text-primary" />
                                   <span className="font-semibold">{winnerDriver.name}</span>
                                 </p>
                               )}

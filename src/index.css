@@ -14,6 +14,7 @@ All colors MUST be HSL.
   :root {
     --background: 0 0% 96%;
     --foreground: 0 0% 10%;
+    --light: 0 0% 98%;
 
     --card: 0 0% 98%;
     --card-foreground: 0 0% 10%;
@@ -21,38 +22,38 @@ All colors MUST be HSL.
     --popover: 0 0% 92%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 14 78% 56%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 45 55% 54%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 0 0% 29%;
+    --secondary: 0 0% 18%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 65%;
     --muted-foreground: 0 0% 35%;
 
-    --accent: 14 78% 56%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 45 76% 74%;
+    --accent-foreground: 0 0% 10%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 85% 97%;
 
     --border: 0 0% 85%;
     --input: 0 0% 85%;
-    --ring: 14 78% 56%;
+    --ring: 45 55% 54%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 10%;
-    --sidebar-primary: 14 78% 56%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 29%;
+    --sidebar-primary: 45 55% 54%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 18%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 85%;
-    --sidebar-ring: 14 78% 56%;
+    --sidebar-ring: 45 55% 54%;
 
-    --chart-1: 14 78% 56%;
-    --chart-2: 14 60% 45%;
+    --chart-1: 45 55% 54%;
+    --chart-2: 45 45% 45%;
     --chart-3: 0 0% 65%;
     --chart-4: 0 0% 50%;
     --chart-5: 0 0% 35%;
@@ -81,40 +82,41 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 0 0% 10%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 96%;
-    --card: 0 0% 14%;
+    --light: 0 0% 98%;
+    --card: 0 0% 10%;
     --card-foreground: 0 0% 96%;
-    --popover: 0 0% 18%;
+    --popover: 0 0% 12%;
     --popover-foreground: 0 0% 96%;
-    --primary: 14 78% 56%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 45 70% 58%;
+    --primary-foreground: 0 0% 10%;
     --secondary: 0 0% 83%;
     --secondary-foreground: 0 0% 10%;
     --muted: 0 0% 50%;
     --muted-foreground: 0 0% 80%;
-    --accent: 14 78% 56%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 45 76% 74%;
+    --accent-foreground: 0 0% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 85% 97%;
-    --border: 0 0% 25%;
-    --input: 0 0% 25%;
-    --ring: 14 78% 56%;
-    --sidebar-background: 0 0% 8%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 45 70% 58%;
+    --sidebar-background: 0 0% 6%;
     --sidebar-foreground: 0 0% 96%;
-    --sidebar-primary: 14 78% 56%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 0 0% 25%;
+    --sidebar-primary: 45 70% 58%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 22%;
     --sidebar-accent-foreground: 0 0% 96%;
-    --sidebar-border: 0 0% 25%;
-    --sidebar-ring: 14 78% 56%;
+    --sidebar-border: 0 0% 22%;
+    --sidebar-ring: 45 70% 58%;
 
-    --chart-1: 14 78% 56%;
-    --chart-2: 14 65% 45%;
+    --chart-1: 45 70% 58%;
+    --chart-2: 45 55% 48%;
     --chart-3: 0 0% 50%;
     --chart-4: 0 0% 65%;
     --chart-5: 0 0% 80%;
-    --sidebar: 0 0% 14%;
+    --sidebar: 0 0% 10%;
     --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
     --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
@@ -124,8 +126,8 @@ All colors MUST be HSL.
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 
-    --surface-elevated: 0 0% 14%;
-    --surface-sunken: 0 0% 8%;
+    --surface-elevated: 0 0% 12%;
+    --surface-sunken: 0 0% 6%;
     --text-primary: 0 0% 96%;
     --text-secondary: 0 0% 70%;
     --text-tertiary: 0 0% 55%;
@@ -146,7 +148,7 @@ All colors MUST be HSL.
   :root body {
     background: linear-gradient(135deg, 
       hsl(0 0% 98%) 0%, 
-      hsl(14 30% 95%) 50%, 
+      hsl(45 25% 95%) 50%, 
       hsl(0 0% 96%) 100%
     );
     background-attachment: fixed;
@@ -155,9 +157,9 @@ All colors MUST be HSL.
   /* Dark mode body gradient */
   .dark body {
     background: linear-gradient(135deg, 
-      hsl(0 0% 8%) 0%, 
-      hsl(0 0% 12%) 50%, 
-      hsl(0 0% 8%) 100%
+      hsl(0 0% 5%) 0%, 
+      hsl(0 0% 10%) 50%, 
+      hsl(0 0% 5%) 100%
     );
     background-attachment: fixed;
   }
@@ -166,26 +168,26 @@ All colors MUST be HSL.
 
 @layer components {
   .gradient-caribbean {
-    @apply bg-gradient-to-r from-neutral-800 via-orange-500 to-neutral-700;
+    @apply bg-gradient-to-r from-neutral-900 via-[#c9a84c] to-neutral-800;
   }
 
   .dark .gradient-caribbean {
     background: linear-gradient(to right, 
-      hsl(0 0% 18%), 
-      hsl(14 78% 56%), 
-      hsl(0 0% 25%)
+      hsl(0 0% 5%), 
+      hsl(45 55% 54%), 
+      hsl(0 0% 10%)
     );
   }
 
 
   .gradient-ocean {
-    @apply bg-gradient-to-br from-neutral-700 to-orange-500;
+    @apply bg-gradient-to-br from-neutral-800 to-[#c9a84c];
   }
 
   .dark .gradient-ocean {
     background: linear-gradient(to bottom right, 
-      hsl(0 0% 25%), 
-      hsl(14 70% 50%)
+      hsl(0 0% 10%), 
+      hsl(45 55% 54%)
     );
   }
 
