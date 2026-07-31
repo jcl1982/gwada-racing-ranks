@@ -295,7 +295,7 @@ const HomePage = ({
                               standings.map((standing, index) => {
                                 const positions = ['🥇', '🥈', '🥉'];
                                 return (
-                                  <div key={standing.driver.id} className="flex items-center justify-between bg-muted/50 rounded-lg p-2">
+                                  <div key={standing.driver.id} className="flex items-center justify-between bg-background rounded-lg p-2 border border-border/50">
                                     <div className="flex items-center gap-2">
                                       <span className="text-lg">{positions[index]}</span>
                                       <div>
@@ -324,7 +324,7 @@ const HomePage = ({
                       {championship.standings.slice(0, 3).map((standing, index) => {
                         const positions = ['🥇', '🥈', '🥉'];
                         return (
-                          <div key={standing.driver.id} className="flex items-center justify-between bg-muted/50 rounded-lg p-2">
+                          <div key={standing.driver.id} className="flex items-center justify-between bg-background rounded-lg p-2 border border-border/50">
                             <div className="flex items-center gap-2">
                               <span className="text-xl">{positions[index]}</span>
                               <div>
