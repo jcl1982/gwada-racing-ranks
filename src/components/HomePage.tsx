@@ -8,6 +8,8 @@ import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
 import PartnerLogos from '@/components/PartnerLogos';
 import { useAllChampionshipsData } from '@/hooks/useAllChampionshipsData';
+import { useUserRole } from '@/hooks/useUserRole';
+import AddCalendarRaceDialog from '@/components/AddCalendarRaceDialog';
 import { ChampionshipStanding } from '@/types/championship';
 
 function parseLocalDate(dateString: string): Date {
@@ -26,7 +28,8 @@ const HomePage = ({
 }: HomePageProps) => {
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
-  const { championships, loading } = useAllChampionshipsData();
+  const { championships, loading, refetch } = useAllChampionshipsData();
+  const { isAdmin } = useUserRole();
 
   if (loading) {
     return (
@@ -365,31 +368,39 @@ const HomePage = ({
 
         return (
           <Card className="card-glass p-6 border-t-4 border-primary">
-            <div className="relative mb-8">
-              <h3 className="font-display text-2xl font-semibold text-center flex items-center justify-center gap-2 uppercase tracking-wide">
+            <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h3 className="font-display text-2xl font-semibold flex items-center gap-2 uppercase tracking-wide">
                 <Calendar className="text-primary" />
                 Calendrier des Courses
               </h3>
-              <Button
-                size="sm"
-                variant="outline"
-                className="absolute right-0 top-1/2 -translate-y-1/2 no-export no-print"
-                onClick={() => exportCalendarToExcel(
-                  allRaces.map(({ race, championshipTitle: champTitle }) => ({
-                    name: race.name,
-                    date: race.date,
-                    endDate: race.endDate,
-                    type: race.type,
-                    organizer: race.organizer,
-                    championshipTitle: champTitle
-                  })),
-                  championshipYear
+              <div className="flex flex-wrap items-center gap-2 no-export no-print">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => exportCalendarToExcel(
+                    allRaces.map(({ race, championshipTitle: champTitle }) => ({
+                      name: race.name,
+                      date: race.date,
+                      endDate: race.endDate,
+                      type: race.type,
+                      organizer: race.organizer,
+                      championshipTitle: champTitle
+                    })),
+                    championshipYear
+                  )}
+                >
+                  <FileSpreadsheet size={16} className="mr-2" />
+                  Export Excel
+                </Button>
+                {isAdmin && (
+                  <AddCalendarRaceDialog
+                    championships={championships.map(c => ({ id: c.id, title: c.title }))}
+                    onCreated={refetch}
+                  />
                 )}
-              >
-                <FileSpreadsheet size={16} className="mr-2" />
-                Export Excel
-              </Button>
+              </div>
             </div>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allRaces.map(({ race, championshipTitle: champTitle }) => {
                 const isPast = parseLocalDate(race.date) < today;
