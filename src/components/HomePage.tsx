@@ -1,6 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight } from 'lucide-react';
+import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight, FileSpreadsheet } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { exportCalendarToExcel } from '@/utils/excel/excelExport';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
