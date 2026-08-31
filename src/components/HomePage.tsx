@@ -8,6 +8,8 @@ import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
 import PartnerLogos from '@/components/PartnerLogos';
 import { useAllChampionshipsData } from '@/hooks/useAllChampionshipsData';
+import { useUserRole } from '@/hooks/useUserRole';
+import AddCalendarRaceDialog from '@/components/AddCalendarRaceDialog';
 import { ChampionshipStanding } from '@/types/championship';
 
 function parseLocalDate(dateString: string): Date {
@@ -26,7 +28,8 @@ const HomePage = ({
 }: HomePageProps) => {
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
-  const { championships, loading } = useAllChampionshipsData();
+  const { championships, loading, refetch } = useAllChampionshipsData();
+  const { isAdmin } = useUserRole();
 
   if (loading) {
     return (
