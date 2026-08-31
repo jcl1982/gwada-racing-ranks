@@ -343,7 +343,65 @@ const HomePage = ({
         })}
       </div>
 
+      {/* Calendrier global des courses */}
+      {(() => {
+        const normalizeName = (s: string) => s.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const seen = new Set<string>();
+        const allRaces = championships.flatMap(c =>
+          c.races.map(r => ({ race: r, championshipTitle: c.title }))
+        ).filter(({ race }) => {
+          const key = `${race.type}|${race.date}|${normalizeName(race.name)}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).sort((a, b) => parseLocalDate(a.race.date).getTime() - parseLocalDate(b.race.date).getTime());
+
+        if (allRaces.length === 0) return null;
+
+        return (
+          <Card className="card-glass p-6 border-t-4 border-primary">
+            <h3 className="font-display text-2xl font-semibold mb-8 text-center flex items-center justify-center gap-2 uppercase tracking-wide">
+              <Calendar className="text-primary" />
+              Calendrier des Courses
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allRaces.map(({ race, championshipTitle: champTitle }) => {
+                const isPast = parseLocalDate(race.date) < today;
+                const dateLabel = race.endDate && race.endDate !== race.date
+                  ? `${parseLocalDate(race.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} – ${parseLocalDate(race.endDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`
+                  : parseLocalDate(race.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+                return (
+                  <div
+                    key={`${race.id}-${race.date}`}
+                    className={`rounded-lg p-4 border-l-4 border-primary bg-card/60 border border-border transition-colors ${isPast ? 'opacity-60' : ''}`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-semibold leading-tight">{race.name}</p>
+                      <Badge variant={isPast ? 'secondary' : 'default'} className="shrink-0 text-[10px] uppercase">
+                        {isPast ? 'Terminée' : 'À venir'}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2 flex items-center gap-1">
+                      <Calendar size={14} />
+                      {dateLabel}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{champTitle}</p>
+                    {race.organizer && (
+                      <p className="text-xs text-muted-foreground mt-1 italic">Organisateur : {race.organizer}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        );
+      })()}
+
       {/* News Section - Latest and Upcoming Races */}
+
       <Card className="card-glass p-6 border-t-4 border-accent">
         <h3 className="font-display text-2xl font-semibold mb-8 text-center flex items-center justify-center gap-2 uppercase tracking-wide">
           <Clock className="text-primary" />
