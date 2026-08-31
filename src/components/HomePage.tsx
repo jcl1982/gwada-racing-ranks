@@ -1,6 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight } from 'lucide-react';
+import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight, FileSpreadsheet } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { exportCalendarToExcel } from '@/utils/excel/excelExport';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
@@ -363,10 +365,31 @@ const HomePage = ({
 
         return (
           <Card className="card-glass p-6 border-t-4 border-primary">
-            <h3 className="font-display text-2xl font-semibold mb-8 text-center flex items-center justify-center gap-2 uppercase tracking-wide">
-              <Calendar className="text-primary" />
-              Calendrier des Courses
-            </h3>
+            <div className="relative mb-8">
+              <h3 className="font-display text-2xl font-semibold text-center flex items-center justify-center gap-2 uppercase tracking-wide">
+                <Calendar className="text-primary" />
+                Calendrier des Courses
+              </h3>
+              <Button
+                size="sm"
+                variant="outline"
+                className="absolute right-0 top-1/2 -translate-y-1/2 no-export no-print"
+                onClick={() => exportCalendarToExcel(
+                  allRaces.map(({ race, championshipTitle: champTitle }) => ({
+                    name: race.name,
+                    date: race.date,
+                    endDate: race.endDate,
+                    type: race.type,
+                    organizer: race.organizer,
+                    championshipTitle: champTitle
+                  })),
+                  championshipYear
+                )}
+              >
+                <FileSpreadsheet size={16} className="mr-2" />
+                Export Excel
+              </Button>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {allRaces.map(({ race, championshipTitle: champTitle }) => {
                 const isPast = parseLocalDate(race.date) < today;
