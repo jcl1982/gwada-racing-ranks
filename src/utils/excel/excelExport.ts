@@ -168,3 +168,42 @@ export const exportAllStandingsToExcel = (
   const filename = `tous-classements-${championshipYear.replace(/\s+/g, '-')}.xlsx`;
   XLSX.writeFile(workbook, filename);
 };
+
+export interface CalendarRaceEntry {
+  name: string;
+  date: string;
+  endDate?: string;
+  type: string;
+  organizer?: string;
+  championshipTitle: string;
+}
+
+export const exportCalendarToExcel = (
+  races: CalendarRaceEntry[],
+  championshipYear: string
+) => {
+  const workbook = XLSX.utils.book_new();
+  const byChampionship = new Map<string, CalendarRaceEntry[]>();
+  races.forEach(race => {
+    const list = byChampionship.get(race.championshipTitle) || [];
+    list.push(race);
+    byChampionship.set(race.championshipTitle, list);
+  });
+
+  byChampionship.forEach((champRaces, champTitle) => {
+    const data = champRaces.map((race, index) => ({
+      'N°': index + 1,
+      'Course': race.name,
+      'Date début': race.date,
+      'Date fin': race.endDate && race.endDate !== race.date ? race.endDate : '-',
+      'Type': race.type,
+      'Organisateur': race.organizer || '-'
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const sheetName = champTitle.replace(/[\[\]\*\?\/\\:]/g, ' ').replace('Championnat', '').trim().slice(0, 31) || 'Calendrier';
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  });
+
+  const filename = `calendrier-courses-${championshipYear.replace(/\s+/g, '-')}.xlsx`;
+  XLSX.writeFile(workbook, filename);
+};
