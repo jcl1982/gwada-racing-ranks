@@ -16,6 +16,7 @@ export interface ChampionshipData {
 export const useAllChampionshipsData = () => {
   const [championships, setChampionships] = useState<ChampionshipData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const loadAllChampionships = async () => {
@@ -105,7 +106,7 @@ export const useAllChampionshipsData = () => {
     };
 
     loadAllChampionships();
-  }, []);
+  }, [refreshKey]);
 
-  return { championships, loading };
+  return { championships, loading, refetch: () => setRefreshKey(k => k + 1) };
 };
