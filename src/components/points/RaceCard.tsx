@@ -151,6 +151,8 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
   const Icon = race.type === 'montagne' ? Mountain : Car;
   const colorClass = race.type === 'montagne' ? 'text-primary' : 'text-foreground';
   const isKarting = race.type === 'karting';
+  const isAcceleration = race.type === 'acceleration';
+  const showCategoryColumn = isKarting || isAcceleration;
 
   // Filtrer les pilotes selon le type de course
   // Pour rallye : pilotes + copilotes

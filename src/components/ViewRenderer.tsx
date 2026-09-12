@@ -146,13 +146,13 @@ const ViewRenderer = ({
       );
     case 'acceleration':
       return (
-        <CategoryStandings
-          title={titles.general || "Classement Accélération"}
+        <AccelerationStandings
           races={accelerationRaces}
           drivers={drivers}
-          type="acceleration"
           championshipYear={championshipYear}
-          championshipId={championshipId || ''}
+          onRaceUpdate={async () => {
+            await refreshData();
+          }}
         />
       );
     case 'karting':
