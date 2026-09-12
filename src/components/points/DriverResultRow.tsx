@@ -17,6 +17,7 @@ interface DriverResultRowProps {
   showCategory?: boolean;
   showBonus?: boolean;
   showCarModel?: boolean;
+  categoryOptions?: string[];
 }
 
 const DriverResultRow = ({

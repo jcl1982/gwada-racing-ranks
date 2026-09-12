@@ -9,6 +9,18 @@ import { useToast } from '@/hooks/use-toast';
 import { useUserRole } from '@/hooks/useUserRole';
 import DriverResultRow from './DriverResultRow';
 
+const KARTING_CATEGORY_OPTIONS = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE'];
+const ACCELERATION_CATEGORY_OPTIONS = [
+  'ET Pro A',
+  'ET Pro B',
+  'ET Pro C',
+  'ET Spt A',
+  'ET Spt B',
+  'ET Spt C',
+  'ET Spt D',
+  'ET Spt E',
+];
+
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
   const [year, month, day] = dateString.split('-').map(Number);
