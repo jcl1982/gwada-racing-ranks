@@ -4,6 +4,7 @@ import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import R2Standings from '@/components/R2Standings';
 import KartingStandings from '@/components/KartingStandings';
+import AccelerationStandings from '@/components/AccelerationStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
 import VmrsImport from '@/components/VmrsImport';
@@ -146,13 +147,13 @@ const ViewRenderer = ({
       );
     case 'acceleration':
       return (
-        <CategoryStandings
-          title={titles.general || "Classement Accélération"}
+        <AccelerationStandings
           races={accelerationRaces}
           drivers={drivers}
-          type="acceleration"
           championshipYear={championshipYear}
-          championshipId={championshipId || ''}
+          onRaceUpdate={async () => {
+            await refreshData();
+          }}
         />
       );
     case 'karting':

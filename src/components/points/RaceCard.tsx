@@ -9,6 +9,18 @@ import { useToast } from '@/hooks/use-toast';
 import { useUserRole } from '@/hooks/useUserRole';
 import DriverResultRow from './DriverResultRow';
 
+const KARTING_CATEGORY_OPTIONS = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE'];
+const ACCELERATION_CATEGORY_OPTIONS = [
+  'ET Pro A',
+  'ET Pro B',
+  'ET Pro C',
+  'ET Spt A',
+  'ET Spt B',
+  'ET Spt C',
+  'ET Spt D',
+  'ET Spt E',
+];
+
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
   const [year, month, day] = dateString.split('-').map(Number);
@@ -151,6 +163,8 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
   const Icon = race.type === 'montagne' ? Mountain : Car;
   const colorClass = race.type === 'montagne' ? 'text-primary' : 'text-foreground';
   const isKarting = race.type === 'karting';
+  const isAcceleration = race.type === 'acceleration';
+  const showCategoryColumn = isKarting || isAcceleration;
 
   // Filtrer les pilotes selon le type de course
   // Pour rallye : pilotes + copilotes
@@ -226,7 +240,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
           <TableRow>
             <TableHead className="text-center">Position</TableHead>
             <TableHead>{driverLabel}</TableHead>
-            {isKarting && <TableHead className="text-center">Catégorie</TableHead>}
+            {showCategoryColumn && <TableHead className="text-center">Catégorie</TableHead>}
             {isKarting && <TableHead className="text-center">Bonus</TableHead>}
             <TableHead className="text-center">Points</TableHead>
             {!isKarting && <TableHead className="text-center">Modèle de voiture</TableHead>}
@@ -244,7 +258,8 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
               onCarModelChange={handleCarModelChange}
               onCategoryChange={handleCategoryChange}
               onBonusChange={handleBonusChange}
-              showCategory={isKarting}
+              showCategory={showCategoryColumn}
+              categoryOptions={isAcceleration ? ACCELERATION_CATEGORY_OPTIONS : KARTING_CATEGORY_OPTIONS}
               showBonus={isKarting}
               showCarModel={!isKarting}
             />

@@ -17,6 +17,7 @@ interface DriverResultRowProps {
   showCategory?: boolean;
   showBonus?: boolean;
   showCarModel?: boolean;
+  categoryOptions?: string[];
 }
 
 const DriverResultRow = ({
@@ -30,7 +31,8 @@ const DriverResultRow = ({
   onBonusChange,
   showCategory = false,
   showBonus = false,
-  showCarModel = true
+  showCarModel = true,
+  categoryOptions = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE']
 }: DriverResultRowProps) => {
   return (
     <TableRow>
@@ -59,10 +61,9 @@ const DriverResultRow = ({
                 <SelectValue placeholder="Catégorie" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="MINI 60">MINI 60</SelectItem>
-                <SelectItem value="SENIOR MASTER GENTLEMAN">SENIOR MASTER GENTLEMAN</SelectItem>
-                <SelectItem value="KZ2">KZ2</SelectItem>
-                <SelectItem value="NATIONALE">NATIONALE</SelectItem>
+                {categoryOptions.map((option) => (
+                  <SelectItem key={option} value={option}>{option}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           ) : (

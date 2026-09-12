@@ -10,6 +10,13 @@ interface KartingRaceResultsProps {
 }
 
 const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingRaceResultsProps) => {
+  const normalize = (value?: string) =>
+    (value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '');
+
   // Récupérer tous les pilotes qui ont participé aux courses de cette catégorie
   const getCategoryDrivers = () => {
     const driverIds = new Set<string>();
@@ -20,7 +27,9 @@ const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingR
         const searchCategory = category.toLowerCase();
         
         let isMatchingCategory = false;
-        if (searchCategory === 'mini60') {
+        if (!searchCategory) {
+          isMatchingCategory = true;
+        } else if (searchCategory === 'mini60') {
           isMatchingCategory = resultCategory.includes('mini') && resultCategory.includes('60');
         } else if (searchCategory === 'senior') {
           isMatchingCategory = resultCategory.includes('senior') || 
@@ -30,6 +39,8 @@ const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingR
           isMatchingCategory = resultCategory.includes('kz2') || resultCategory.includes('kz 2');
         } else if (searchCategory === 'nationale') {
           isMatchingCategory = resultCategory.includes('national');
+        } else {
+          isMatchingCategory = normalize(result.category) === normalize(category);
         }
         
         if (isMatchingCategory) {
@@ -49,7 +60,9 @@ const KartingRaceResults = ({ races, drivers, category, onRaceUpdate }: KartingR
     ? "Aucune course SENIOR MASTER GENTLEMAN disponible"
     : category === 'nationale'
     ? "Aucune course NATIONALE disponible"
-    : "Aucune course KZ2 disponible";
+    : category === 'kz2'
+    ? "Aucune course KZ2 disponible"
+    : "Aucune course disponible";
 
   if (races.length === 0) {
     return (
