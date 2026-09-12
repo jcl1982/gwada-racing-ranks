@@ -4,6 +4,7 @@ import GeneralStandings from '@/components/GeneralStandings';
 import CategoryStandings from '@/components/CategoryStandings';
 import R2Standings from '@/components/R2Standings';
 import KartingStandings from '@/components/KartingStandings';
+import AccelerationStandings from '@/components/AccelerationStandings';
 import RallyeMontagneTabs from '@/components/RallyeMontagneTabs';
 import ExcelImport from '@/components/ExcelImport';
 import VmrsImport from '@/components/VmrsImport';
