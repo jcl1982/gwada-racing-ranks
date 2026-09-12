@@ -31,7 +31,8 @@ const DriverResultRow = ({
   onBonusChange,
   showCategory = false,
   showBonus = false,
-  showCarModel = true
+  showCarModel = true,
+  categoryOptions = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE']
 }: DriverResultRowProps) => {
   return (
     <TableRow>
