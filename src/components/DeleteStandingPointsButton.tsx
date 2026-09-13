@@ -136,7 +136,9 @@ const DeleteStandingPointsButton = ({
           <AlertDialogTitle>Supprimer les points de « {standingTitle} » ?</AlertDialogTitle>
           <AlertDialogDescription>
             Tous les points enregistrés pour ce classement seront définitivement effacés
-            ({raceIds.length} course{raceIds.length > 1 ? 's' : ''} concernée{raceIds.length > 1 ? 's' : ''}).
+            {usePairs
+              ? ` (${pairs!.length} résultat${pairs!.length > 1 ? 's' : ''} concerné${pairs!.length > 1 ? 's' : ''})`
+              : ` (${raceIds.length} course${raceIds.length > 1 ? 's' : ''} concernée${raceIds.length > 1 ? 's' : ''})`}.
             Les pilotes et les courses sont conservés. Cette action est irréversible.
           </AlertDialogDescription>
         </AlertDialogHeader>
