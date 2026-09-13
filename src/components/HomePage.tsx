@@ -1,15 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight, FileSpreadsheet } from 'lucide-react';
+import { Trophy, Mountain, Car, Calendar, Users, Award, Zap, Circle, Clock, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { exportCalendarToExcel } from '@/utils/excel/excelExport';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import PrintButton from '@/components/PrintButton';
 import PartnerLogos from '@/components/PartnerLogos';
 import { useAllChampionshipsData } from '@/hooks/useAllChampionshipsData';
-import { useUserRole } from '@/hooks/useUserRole';
-import AddCalendarRaceDialog from '@/components/AddCalendarRaceDialog';
 import { ChampionshipStanding } from '@/types/championship';
 
 function parseLocalDate(dateString: string): Date {
@@ -28,8 +25,7 @@ const HomePage = ({
 }: HomePageProps) => {
   const { exportToImage } = useImageExport();
   const { printWebPage, printWithUnicodeSupport } = useWebPrint();
-  const { championships, loading, refetch } = useAllChampionshipsData();
-  const { isAdmin } = useUserRole();
+  const { championships, loading } = useAllChampionshipsData();
 
   if (loading) {
     return (
