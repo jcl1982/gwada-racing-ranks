@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Settings, Zap, Circle, FileText } from 'lucide-react';
+import { Trophy, Home, Settings, Zap, Circle, FileText, Calendar } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -88,10 +88,21 @@ const Navigation = ({
             <span className="hidden sm:inline lg:hidden">Karting</span>
           </button>
 
+          {/* Calendrier menu */}
+          <button
+            onClick={() => onViewChange('calendrier')}
+            aria-label="Calendrier des Courses"
+            className={`${btnBase} ${currentView === 'calendrier' ? activeClass : inactiveClass}`}
+          >
+            <Calendar className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            <span className="hidden lg:inline">CALENDRIER</span>
+            <span className="hidden sm:inline lg:hidden">Calendrier</span>
+          </button>
+
           {/* Règlement menu */}
-          <button 
-            onClick={() => onViewChange('reglement')} 
-            aria-label="Règlement Championnat" 
+          <button
+            onClick={() => onViewChange('reglement')}
+            aria-label="Règlement Championnat"
             className={`${btnBase} ${currentView === 'reglement' ? activeClass : inactiveClass}`}
           >
             <FileText className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
