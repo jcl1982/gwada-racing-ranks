@@ -97,7 +97,7 @@ const DeleteStandingPointsButton = ({
           if (error) throw error;
         }
       } else
-      for (const raceChunk of chunk(raceIds, CHUNK)) {
+      for (const raceChunk of chunk(raceIds.filter(isAllowed), CHUNK)) {
         if (source === 'vmrs') {
           let query = supabase.from('vmrs_results').delete().in('race_id', raceChunk);
           if (championshipId) query = query.eq('championship_id', championshipId);
