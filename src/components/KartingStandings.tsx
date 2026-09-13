@@ -229,6 +229,16 @@ const KartingStandings = ({
           standings={currentStandings}
           onPrintPdf={() => {}}
         />
+        <div className="flex justify-end">
+          <DeleteStandingPointsButton
+            standingTitle={currentDisplayTitle}
+            raceIds={races.map((r) => r.id)}
+            pairs={currentPairs}
+            onDeleted={async () => {
+              await onRaceUpdate('', []);
+            }}
+          />
+        </div>
         <PodiumSection standings={currentStandings} />
       </div>
       
