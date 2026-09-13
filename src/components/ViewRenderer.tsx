@@ -164,8 +164,8 @@ const ViewRenderer = ({
           races={kartingRaces}
           drivers={drivers}
           championshipYear={championshipYear}
-          onRaceUpdate={async (raceId, results) => {
-            console.log('Race update:', raceId, results);
+          onRaceUpdate={async () => {
+            await refreshData();
           }}
         />
       );
