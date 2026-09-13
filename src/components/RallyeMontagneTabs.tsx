@@ -521,6 +521,15 @@ const RallyeMontagneTabs = ({
             {/* Général VMRS = Montagne + Rallye agrégés par moyenne */}
             <TabsContent value="general" className="space-y-6 mt-6">
               <RaceCalendar races={vmrsRaces} />
+              <div className="flex justify-end">
+                <DeleteStandingPointsButton
+                  standingTitle={`${titles.vmrs} Général`}
+                  raceIds={vmrsRaces.map((r) => r.id)}
+                  source="vmrs"
+                  championshipId={championshipId}
+                  onDeleted={handleStandingRefresh}
+                />
+              </div>
               {vmrsRaces.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">
                   Aucune course avec résultats VMRS pour le moment.
@@ -592,6 +601,15 @@ const RallyeMontagneTabs = ({
               return (
                 <TabsContent key={raceType} value={raceType} className="space-y-6 mt-6">
                   <RaceCalendar races={filteredRaces} />
+                  <div className="flex justify-end">
+                    <DeleteStandingPointsButton
+                      standingTitle={`${titles.vmrs} ${typeLabel}`}
+                      raceIds={filteredRaces.map((r) => r.id)}
+                      source="vmrs"
+                      championshipId={championshipId}
+                      onDeleted={handleStandingRefresh}
+                    />
+                  </div>
 
                   {filteredRaces.length === 0 ? (
                     <p className="text-muted-foreground text-center py-8">
