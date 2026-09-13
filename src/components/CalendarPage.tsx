@@ -140,14 +140,14 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
       ) : (
         <div>
           <div className="mb-4 flex items-center justify-between gap-2 border-y border-border py-3">
-            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(month => addMonths(month, -1))} aria-label="Mois précédent">
+            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(addMonths(displayedMonth, -1))} aria-label="Mois précédent">
               <ChevronLeft size={18} />
             </Button>
             <div className="text-center">
               <h3 className="font-display text-lg font-bold uppercase sm:text-xl">{format(displayedMonth, 'MMMM yyyy', { locale: fr })}</h3>
               <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => setSelectedMonth(startOfMonth(today))}>Aujourd’hui</Button>
             </div>
-            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(month => addMonths(month, 1))} aria-label="Mois suivant">
+            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(addMonths(displayedMonth, 1))} aria-label="Mois suivant">
               <ChevronRight size={18} />
             </Button>
           </div>
