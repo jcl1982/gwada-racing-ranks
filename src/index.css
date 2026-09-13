@@ -363,13 +363,4 @@
   }
 }
 
-/* Classe pour masquer les éléments lors de la capture html2canvas */
-@media screen {
-  [data-html2canvas-ignore],
-  .no-export {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    position: absolute !important;
-    visibility: hidden !important;
-  }
-}
+/* Les éléments .no-export restent visibles à l'écran ; le module d'export les ignore. */
