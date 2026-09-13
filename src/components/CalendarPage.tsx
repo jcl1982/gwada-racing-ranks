@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, ChevronLeft, ChevronRight, FileSpreadsheet, MapPin } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, FileSpreadsheet, Flag, MapPin, Timer } from 'lucide-react';
 import { addDays, addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -65,6 +65,12 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
   });
 
   const monthRaceDays = calendarDays.filter(day => isSameMonth(day, displayedMonth) && racesForDay(day).length > 0);
+  const monthRaces = allRaces.filter(({ race }) => {
+    const start = parseLocalDate(race.date);
+    const end = parseLocalDate(race.endDate || race.date);
+    return start <= endOfMonth(displayedMonth) && end >= startOfMonth(displayedMonth);
+  });
+  const upcomingCount = monthRaces.filter(({ race }) => parseLocalDate(race.endDate || race.date) >= today).length;
 
   const eventTone = (type: string) => {
     if (type === 'montagne') return 'border-primary bg-primary/10 text-foreground';
@@ -77,12 +83,12 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
     const { race, championshipTitle: champTitle } = item;
     const isPast = parseLocalDate(race.endDate || race.date) < today;
     return (
-      <div className={cn('border-l-4 bg-card transition-colors', eventTone(race.type), isPast && 'opacity-60', compact ? 'rounded p-2' : 'rounded-md p-3')}>
+      <div className={cn('group/event relative overflow-hidden border-l-4 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md', eventTone(race.type), isPast && 'opacity-60', compact ? 'rounded p-2' : 'rounded-md p-3')}>
         <div className="flex items-start justify-between gap-2">
           <p className={cn('font-semibold leading-tight', compact ? 'text-xs' : 'text-sm')}>{race.name}</p>
           {!compact && <Badge variant={isPast ? 'secondary' : 'default'} className="shrink-0 text-[9px] uppercase">{isPast ? 'Terminée' : 'À venir'}</Badge>}
         </div>
-        <p className={cn('mt-1 text-muted-foreground uppercase', compact ? 'line-clamp-1 text-[9px]' : 'text-[10px]')}>{champTitle}</p>
+        <p className={cn('mt-1 text-muted-foreground uppercase', compact ? 'line-clamp-1 text-[9px]' : 'text-[10px]')}>{race.type} · {champTitle}</p>
         {!compact && race.organizer && <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><MapPin size={12} />{race.organizer}</p>}
       </div>
     );
@@ -100,16 +106,26 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
   }
 
   return (
-    <Card className="card-glass border-t-4 border-primary p-4 sm:p-6">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="font-display text-2xl font-semibold flex items-center gap-2 uppercase tracking-wide">
-          <Calendar className="text-primary" />
-          Calendrier des Courses
-        </h2>
-        <div className="flex flex-wrap items-center gap-2 no-export no-print">
+    <Card className="card-glass calendar-shell overflow-hidden border-0 p-0">
+      <header className="carbon-texture bg-secondary text-secondary-foreground">
+        <div className="pit-wall-stripe" />
+        <div className="flex flex-col gap-5 p-5 sm:p-7 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-accent">
+              <Flag size={15} /> Saison {championshipYear}
+            </div>
+            <h2 className="font-display text-3xl font-extrabold uppercase leading-none sm:text-4xl">
+              Calendrier <span className="text-primary">des courses</span>
+            </h2>
+            <p className="mt-3 flex items-center gap-2 text-sm text-secondary-foreground/70">
+              <Timer size={15} /> {allRaces.length} épreuves programmées
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 no-export no-print">
           <Button
             size="sm"
             variant="outline"
+            className="border-secondary-foreground/20 bg-secondary-foreground/10 text-secondary-foreground hover:bg-secondary-foreground/20 hover:text-secondary-foreground"
             disabled={allRaces.length === 0}
             onClick={() => exportCalendarToExcel(
               allRaces.map(({ race, championshipTitle: champTitle }) => ({
@@ -132,37 +148,39 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
               onCreated={refetch}
             />
           )}
+          </div>
         </div>
-      </div>
+      </header>
 
       {allRaces.length === 0 ? (
         <p className="text-muted-foreground text-center py-8">Aucune course programmée pour le moment.</p>
       ) : (
-        <div>
-          <div className="mb-4 flex items-center justify-between gap-2 border-y border-border py-3">
-            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(addMonths(displayedMonth, -1))} aria-label="Mois précédent">
+        <div className="p-4 sm:p-6">
+          <div className="mb-5 grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-md border border-border bg-muted/20 p-3 sm:p-4">
+            <Button variant="outline" size="icon" className="rounded-full" onClick={() => setSelectedMonth(addMonths(displayedMonth, -1))} aria-label="Mois précédent">
               <ChevronLeft size={18} />
             </Button>
             <div className="text-center">
-              <h3 className="font-display text-lg font-bold uppercase sm:text-xl">{format(displayedMonth, 'MMMM yyyy', { locale: fr })}</h3>
-              <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => setSelectedMonth(startOfMonth(today))}>Aujourd’hui</Button>
+              <p className="mb-1 text-[10px] font-bold uppercase text-primary">{monthRaces.length} épreuves · {upcomingCount} à venir</p>
+              <h3 className="font-display text-2xl font-extrabold uppercase leading-none sm:text-4xl">{format(displayedMonth, 'MMMM', { locale: fr })} <span className="text-muted-foreground">{format(displayedMonth, 'yyyy')}</span></h3>
+              <Button variant="link" size="sm" className="mt-1 h-auto p-0 text-xs" onClick={() => setSelectedMonth(startOfMonth(today))}>Revenir à aujourd’hui</Button>
             </div>
-            <Button variant="outline" size="icon" onClick={() => setSelectedMonth(addMonths(displayedMonth, 1))} aria-label="Mois suivant">
+            <Button variant="outline" size="icon" className="rounded-full" onClick={() => setSelectedMonth(addMonths(displayedMonth, 1))} aria-label="Mois suivant">
               <ChevronRight size={18} />
             </Button>
           </div>
 
-          <div className="hidden overflow-hidden rounded-md border border-border md:block">
+          <div className="hidden overflow-hidden rounded-md border border-border shadow-lg md:block">
             <div className="grid grid-cols-7 bg-secondary text-secondary-foreground">
-              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(day => <div key={day} className="py-2 text-center text-xs font-bold uppercase">{day}</div>)}
+              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day, index) => <div key={day} className={cn('border-r border-secondary-foreground/10 py-3 text-center text-[10px] font-bold uppercase', index > 4 && 'text-accent')}>{day}</div>)}
             </div>
             <div className="grid grid-cols-7">
               {calendarDays.map(day => {
                 const events = racesForDay(day);
                 return (
-                  <div key={day.toISOString()} className={cn('min-h-32 border-b border-r border-border p-2', !isSameMonth(day, displayedMonth) && 'bg-muted/20 text-muted-foreground')}>
-                    <div className={cn('mb-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold', isSameDay(day, today) && 'bg-primary text-primary-foreground')}>
-                      {format(day, 'd')}
+                  <div key={day.toISOString()} className={cn('min-h-36 border-b border-r border-border bg-card p-2 transition-colors hover:bg-muted/20', !isSameMonth(day, displayedMonth) && 'bg-muted/30 text-muted-foreground')}>
+                    <div className={cn('mb-2 flex h-8 min-w-8 w-fit items-center justify-center border-l-2 border-primary px-2 font-mono text-sm font-bold', isSameDay(day, today) && 'bg-primary text-primary-foreground')}>
+                      {format(day, 'dd')}
                     </div>
                     <div className="space-y-1.5">{events.map(item => <RaceEvent key={`${item.race.id}-${day.toISOString()}`} item={item} compact />)}</div>
                   </div>
@@ -175,14 +193,21 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
             {monthRaceDays.length === 0 ? (
               <p className="py-8 text-center text-sm text-muted-foreground">Aucune course prévue ce mois-ci.</p>
             ) : monthRaceDays.map(day => (
-              <section key={day.toISOString()} className="grid grid-cols-[3.25rem_1fr] gap-3 border-b border-border pb-3">
-                <div className={cn('flex h-14 flex-col items-center justify-center rounded-md bg-secondary text-secondary-foreground', isSameDay(day, today) && 'bg-primary text-primary-foreground')}>
+              <section key={day.toISOString()} className="grid grid-cols-[3.5rem_1fr] gap-3 border-b border-border pb-3">
+                <div className={cn('carbon-texture flex h-16 flex-col items-center justify-center rounded-md bg-secondary text-secondary-foreground shadow-md', isSameDay(day, today) && 'bg-primary text-primary-foreground')}>
                   <span className="text-[10px] font-bold uppercase">{format(day, 'EEE', { locale: fr })}</span>
                   <span className="font-display text-xl font-bold">{format(day, 'd')}</span>
                 </div>
                 <div className="space-y-2">{racesForDay(day).map(item => <RaceEvent key={`${item.race.id}-${day.toISOString()}`} item={item} />)}</div>
               </section>
             ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-[10px] font-bold uppercase text-muted-foreground">
+            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-sm bg-primary" /> Montagne</span>
+            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-sm bg-accent" /> Rallye</span>
+            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-sm bg-secondary" /> Karting</span>
+            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-sm bg-muted-foreground" /> Accélération</span>
           </div>
         </div>
       )}
