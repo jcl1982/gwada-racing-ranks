@@ -47,6 +47,7 @@ const DeleteStandingPointsButton = ({
   driverIds,
   source = 'classic',
   championshipId,
+  pairs,
   onDeleted,
 }: DeleteStandingPointsButtonProps) => {
   const { isAdmin } = useUserRole();
