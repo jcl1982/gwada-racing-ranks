@@ -18,6 +18,7 @@ import { toSimplifiedStandings } from "@/utils/standingsConverter";
 import PointsEditor from "@/components/PointsEditor";
 
 import DriverAdvancedStats from "@/components/DriverAdvancedStats";
+import DeleteStandingPointsButton from "@/components/DeleteStandingPointsButton";
 import DriverComparator from "@/components/DriverComparator";
 import { useUserRole } from "@/hooks/useUserRole";
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from "@/hooks/useChampionshipConfig";
@@ -232,6 +233,11 @@ const RallyeMontagneTabs = ({
     exportCategoryToExcel(simplifiedStandings, rallyeRaces, titles.copilote, "rallye");
   };
 
+  // Rafraîchissement après suppression des points d'un classement
+  const handleStandingRefresh = async () => {
+    await onRaceUpdate?.("", []);
+  };
+
   // VMRS handlers
   const handleVmrsPrintPdf = () => {
     const simplifiedStandings = toSimplifiedStandings(vmrsStandings, "rallye");
@@ -327,6 +333,14 @@ const RallyeMontagneTabs = ({
             standings={toSimplifiedStandings(montagneStandings, "montagne")}
             onPrintPdf={handleMontagnePrintPdf}
           />
+          <div className="flex justify-end">
+            <DeleteStandingPointsButton
+              standingTitle={titles.montagne}
+              raceIds={montagneRaces.map((r) => r.id)}
+              driverIds={piloteIds}
+              onDeleted={handleStandingRefresh}
+            />
+          </div>
           <PodiumSection standings={toSimplifiedStandings(montagneStandings, "montagne")} />
           {isAdmin && (
             <DriverAdvancedStats
@@ -370,6 +384,14 @@ const RallyeMontagneTabs = ({
             standings={toSimplifiedStandings(rallyeStandings, "rallye")}
             onPrintPdf={handleRallyePrintPdf}
           />
+          <div className="flex justify-end">
+            <DeleteStandingPointsButton
+              standingTitle={titles.rallye}
+              raceIds={rallyeRaces.map((r) => r.id)}
+              driverIds={piloteIds}
+              onDeleted={handleStandingRefresh}
+            />
+          </div>
           <PodiumSection standings={toSimplifiedStandings(rallyeStandings, "rallye")} />
           {isAdmin && (
             <DriverAdvancedStats
@@ -437,6 +459,14 @@ const RallyeMontagneTabs = ({
             standings={toSimplifiedStandings(copiloteStandings, "copilote")}
             onPrintPdf={handleCopiPrintPdf}
           />
+          <div className="flex justify-end">
+            <DeleteStandingPointsButton
+              standingTitle={titles.copilote}
+              raceIds={rallyeRaces.map((r) => r.id)}
+              driverIds={copiloteIds}
+              onDeleted={handleStandingRefresh}
+            />
+          </div>
           <PodiumSection standings={toSimplifiedStandings(copiloteStandings, "copilote")} />
           {isAdmin && (
             <DriverAdvancedStats
