@@ -19,6 +19,7 @@ interface AccelerationStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
+  championshipId?: string;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
