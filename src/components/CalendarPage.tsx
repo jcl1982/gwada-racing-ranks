@@ -16,6 +16,9 @@ function parseLocalDate(dateString: string): Date {
   return new Date(year, month - 1, day);
 }
 
+const normalizeName = (value: string) =>
+  value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
+
 interface CalendarPageProps {
   championshipYear: string;
 }
@@ -24,8 +27,6 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
   const { championships, loading, refetch } = useAllChampionshipsData();
   const { isAdmin } = useUserRole();
 
-  const normalizeName = (s: string) =>
-    s.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -46,15 +47,16 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
     const reference = upcoming ?? allRaces[allRaces.length - 1];
     return reference ? startOfMonth(parseLocalDate(reference.race.date)) : startOfMonth(today);
   }, [allRaces]);
-  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
+  const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
+  const displayedMonth = selectedMonth ?? initialMonth;
 
   const calendarDays = useMemo(() => {
-    const first = startOfWeek(startOfMonth(selectedMonth), { weekStartsOn: 1 });
-    const last = endOfWeek(endOfMonth(selectedMonth), { weekStartsOn: 1 });
+    const first = startOfWeek(startOfMonth(displayedMonth), { weekStartsOn: 1 });
+    const last = endOfWeek(endOfMonth(displayedMonth), { weekStartsOn: 1 });
     const days: Date[] = [];
     for (let day = first; day <= last; day = addDays(day, 1)) days.push(day);
     return days;
-  }, [selectedMonth]);
+  }, [displayedMonth]);
 
   const racesForDay = (day: Date) => allRaces.filter(({ race }) => {
     const start = parseLocalDate(race.date);
@@ -62,7 +64,7 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
     return day >= start && day <= end;
   });
 
-  const monthRaceDays = calendarDays.filter(day => isSameMonth(day, selectedMonth) && racesForDay(day).length > 0);
+  const monthRaceDays = calendarDays.filter(day => isSameMonth(day, displayedMonth) && racesForDay(day).length > 0);
 
   const eventTone = (type: string) => {
     if (type === 'montagne') return 'border-primary bg-primary/10 text-foreground';
@@ -142,7 +144,7 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
               <ChevronLeft size={18} />
             </Button>
             <div className="text-center">
-              <h3 className="font-display text-lg font-bold uppercase sm:text-xl">{format(selectedMonth, 'MMMM yyyy', { locale: fr })}</h3>
+              <h3 className="font-display text-lg font-bold uppercase sm:text-xl">{format(displayedMonth, 'MMMM yyyy', { locale: fr })}</h3>
               <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => setSelectedMonth(startOfMonth(today))}>Aujourd’hui</Button>
             </div>
             <Button variant="outline" size="icon" onClick={() => setSelectedMonth(month => addMonths(month, 1))} aria-label="Mois suivant">
@@ -158,7 +160,7 @@ const CalendarPage = ({ championshipYear }: CalendarPageProps) => {
               {calendarDays.map(day => {
                 const events = racesForDay(day);
                 return (
-                  <div key={day.toISOString()} className={cn('min-h-32 border-b border-r border-border p-2', !isSameMonth(day, selectedMonth) && 'bg-muted/20 text-muted-foreground')}>
+                  <div key={day.toISOString()} className={cn('min-h-32 border-b border-r border-border p-2', !isSameMonth(day, displayedMonth) && 'bg-muted/20 text-muted-foreground')}>
                     <div className={cn('mb-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold', isSameDay(day, today) && 'bg-primary text-primary-foreground')}>
                       {format(day, 'd')}
                     </div>
