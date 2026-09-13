@@ -57,15 +57,30 @@ const DeleteStandingPointsButton = ({
 
   if (!isAdmin) return null;
 
+  const usePairs = Array.isArray(pairs);
+  const nothingToDelete = usePairs ? pairs!.length === 0 : raceIds.length === 0;
+
   const handleDelete = async () => {
-    if (raceIds.length === 0) {
-      toast({ title: 'Aucun point à supprimer', description: `Aucune course dans « ${standingTitle} ».` });
+    if (nothingToDelete) {
+      toast({ title: 'Aucun point à supprimer', description: `Aucun résultat dans « ${standingTitle} ».` });
       setOpen(false);
       return;
     }
 
     setDeleting(true);
     try {
+      if (usePairs) {
+        for (const pair of pairs!) {
+          let query = supabase
+            .from('race_results')
+            .delete()
+            .eq('race_id', pair.raceId)
+            .eq('driver_id', pair.driverId);
+          if (pair.category) query = query.eq('category', pair.category);
+          const { error } = await query;
+          if (error) throw error;
+        }
+      } else
       for (const raceChunk of chunk(raceIds, CHUNK)) {
         if (source === 'vmrs') {
           let query = supabase.from('vmrs_results').delete().in('race_id', raceChunk);
