@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Settings, Zap, Circle, FileText, ShieldCheck } from 'lucide-react';
+import { Trophy, Home, Settings, Zap, Circle, FileText, ShieldCheck, Scale } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';
@@ -107,6 +107,16 @@ const Navigation = ({
           >
             <ShieldCheck className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             <span className="hidden lg:inline">CONFIDENTIALITÉ</span>
+          </button>
+
+          {/* Mentions légales menu */}
+          <button 
+            onClick={() => onViewChange('mentions-legales')} 
+            aria-label="Mentions légales" 
+            className={`${btnBase} ${currentView === 'mentions-legales' ? activeClass : inactiveClass}`}
+          >
+            <Scale className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            <span className="hidden lg:inline">MENTIONS LÉGALES</span>
           </button>
 
           {/* Separator before admin */}
