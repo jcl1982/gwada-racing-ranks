@@ -18,6 +18,7 @@ import AdminAccessDenied from '@/components/AdminAccessDenied';
 import AdminBreadcrumb from '@/components/AdminBreadcrumb';
 import SeasonArchivesViewer from '@/components/SeasonArchivesViewer';
 import ReglementPage from '@/components/ReglementPage';
+import PrivacyPage from '@/components/PrivacyPage';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
@@ -171,6 +172,8 @@ const ViewRenderer = ({
       return <SeasonArchivesViewer />;
     case 'reglement':
       return <ReglementPage />;
+    case 'confidentialite':
+      return <PrivacyPage />;
     case 'admin-hub':
       return (
         <RoleProtectedComponent 

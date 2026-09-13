@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type ViewType = 'home' | 'montagne' | 'rallye' | 'general' | 'r2' | 'import' | 'admin' | 'acceleration' | 'karting' | 'admin-acceleration' | 'admin-karting' | 'archives' | 'admin-hub' | 'reglement';
+export type ViewType = 'home' | 'montagne' | 'rallye' | 'general' | 'r2' | 'import' | 'admin' | 'acceleration' | 'karting' | 'admin-acceleration' | 'admin-karting' | 'archives' | 'admin-hub' | 'reglement' | 'confidentialite';
 
-const VALID_VIEWS: ViewType[] = ['home', 'montagne', 'rallye', 'general', 'r2', 'import', 'admin', 'acceleration', 'karting', 'admin-acceleration', 'admin-karting', 'archives', 'admin-hub', 'reglement'];
+const VALID_VIEWS: ViewType[] = ['home', 'montagne', 'rallye', 'general', 'r2', 'import', 'admin', 'acceleration', 'karting', 'admin-acceleration', 'admin-karting', 'archives', 'admin-hub', 'reglement', 'confidentialite'];
 
 const getViewFromHash = (): ViewType => {
   if (typeof window === 'undefined') return 'home';
