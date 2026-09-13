@@ -171,6 +171,8 @@ const ViewRenderer = ({
       return <SeasonArchivesViewer />;
     case 'reglement':
       return <ReglementPage />;
+    case 'confidentialite':
+      return <PrivacyPage />;
     case 'admin-hub':
       return (
         <RoleProtectedComponent 

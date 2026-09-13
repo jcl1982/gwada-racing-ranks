@@ -99,6 +99,16 @@ const Navigation = ({
             <span className="hidden sm:inline lg:hidden">Règlement</span>
           </button>
 
+          {/* Confidentialité menu */}
+          <button 
+            onClick={() => onViewChange('confidentialite')} 
+            aria-label="Politique de confidentialité" 
+            className={`${btnBase} ${currentView === 'confidentialite' ? activeClass : inactiveClass}`}
+          >
+            <ShieldCheck className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            <span className="hidden lg:inline">CONFIDENTIALITÉ</span>
+          </button>
+
           {/* Separator before admin */}
           {isAuthenticated && isAdmin && (
             <div className="hidden sm:block h-8 w-px bg-border mx-1 sm:mx-2 shrink-0" />
