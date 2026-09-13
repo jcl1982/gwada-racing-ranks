@@ -31,8 +31,9 @@ const PrivacyPage = () => {
           <p>
             Le responsable du traitement des données personnelles collectées sur ce site est la
             LSAG (Ligue Sport Automobile de Guadeloupe). Pour toute question relative à vos
-            données, vous pouvez nous contacter via les coordonnées indiquées sur nos supports
-            officiels.
+            données, vous pouvez nous contacter au{' '}
+            <a href="tel:+590690532123" className="text-primary hover:underline">0690 53 21 23</a>{' '}
+            (coordonnées complètes dans les Mentions légales).
           </p>
         </Section>
 
@@ -84,8 +85,9 @@ const PrivacyPage = () => {
           <p>
             Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement,
             de limitation et d'opposition concernant vos données personnelles. Vous pouvez exercer
-            ces droits en nous contactant via nos canaux officiels. Vous pouvez également introduire
-            une réclamation auprès de la CNIL (www.cnil.fr).
+            ces droits en nous contactant au{' '}
+            <a href="tel:+590690532123" className="text-primary hover:underline">0690 53 21 23</a>.
+            Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr).
           </p>
         </Section>
 
