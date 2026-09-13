@@ -27,6 +27,8 @@ interface DeleteStandingPointsButtonProps {
   source?: 'classic' | 'vmrs';
   /** Championnat (requis pour la source VMRS) */
   championshipId?: string;
+  /** Ciblage précis (course + pilote [+ catégorie]) — prioritaire sur raceIds/driverIds */
+  pairs?: Array<{ raceId: string; driverId: string; category?: string }>;
   /** Rafraîchissement après suppression */
   onDeleted?: () => void | Promise<void>;
 }
