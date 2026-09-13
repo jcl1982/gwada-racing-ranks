@@ -12,6 +12,7 @@ import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import KartingRaceResults from '@/components/points/KartingRaceResults';
+import DeleteStandingPointsButton from '@/components/DeleteStandingPointsButton';
 import { useUrlTab } from '@/hooks/useUrlTab';
 
 interface AccelerationStandingsProps {
@@ -102,6 +103,19 @@ const AccelerationStandings = ({
   const currentStandings = standingsByCategory[tab] || standingsByCategory.general;
   const currentLabel = tab === 'general' ? 'Général (toutes catégories)' : tab;
 
+  // Résultats concernés par le classement affiché (course + pilote + catégorie)
+  const currentPairs = useMemo(() => {
+    const target = tab === 'general' ? null : normalizeAccelerationCategory(tab);
+    const pairs: Array<{ raceId: string; driverId: string; category?: string }> = [];
+    races.forEach((race) => {
+      race.results.forEach((result) => {
+        if (target && normalizeAccelerationCategory(result.category) !== target) return;
+        pairs.push({ raceId: race.id, driverId: result.driverId, category: result.category });
+      });
+    });
+    return pairs;
+  }, [races, tab]);
+
   return (
     <div className="space-y-6">
       <CategoryHeader
@@ -137,6 +151,16 @@ const AccelerationStandings = ({
           standings={currentStandings}
           onPrintPdf={() => {}}
         />
+        <div className="flex justify-end">
+          <DeleteStandingPointsButton
+            standingTitle={`Accélération - ${currentLabel}`}
+            raceIds={races.map((r) => r.id)}
+            pairs={currentPairs}
+            onDeleted={async () => {
+              await onRaceUpdate('', []);
+            }}
+          />
+        </div>
         <PodiumSection standings={currentStandings} />
       </div>
 
