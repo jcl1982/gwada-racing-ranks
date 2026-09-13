@@ -171,6 +171,19 @@ const KartingStandings = ({
                                kartingTab === 'nationale' ? 'Classement Général NATIONALE' :
                                'Classement Général KZ2';
 
+  // Résultats concernés par le classement affiché
+  const currentPairs = useMemo(() => {
+    const pairs: Array<{ raceId: string; driverId: string; category?: string }> = [];
+    races.forEach((race) => {
+      race.results.forEach((result) => {
+        if (matchesCategory(result.category, kartingTab)) {
+          pairs.push({ raceId: race.id, driverId: result.driverId, category: result.category });
+        }
+      });
+    });
+    return pairs;
+  }, [races, kartingTab]);
+
   const currentRaceTitle = kartingTab === 'mini60' ? 'Résultats par Course MINI 60' :
                             kartingTab === 'senior' ? 'Résultats par Course SENIOR MASTER GENTLEMAN' :
                             kartingTab === 'nationale' ? 'Résultats par Course NATIONALE' :
