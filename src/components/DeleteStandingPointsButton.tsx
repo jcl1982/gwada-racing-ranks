@@ -69,8 +69,24 @@ const DeleteStandingPointsButton = ({
 
     setDeleting(true);
     try {
+      // Garde-fou : ne jamais toucher à une course d'un autre championnat
+      let allowedRaceIds: Set<string> | null = null;
+      if (championshipId) {
+        const ids = Array.from(
+          new Set(usePairs ? pairs!.map((p) => p.raceId) : raceIds)
+        );
+        const { data, error } = await supabase
+          .from('races')
+          .select('id')
+          .in('id', ids)
+          .eq('championship_id', championshipId);
+        if (error) throw error;
+        allowedRaceIds = new Set((data || []).map((r: { id: string }) => r.id));
+      }
+      const isAllowed = (raceId: string) => !allowedRaceIds || allowedRaceIds.has(raceId);
+
       if (usePairs) {
-        for (const pair of pairs!) {
+        for (const pair of pairs!.filter((p) => isAllowed(p.raceId))) {
           let query = supabase
             .from('race_results')
             .delete()
@@ -81,7 +97,7 @@ const DeleteStandingPointsButton = ({
           if (error) throw error;
         }
       } else
-      for (const raceChunk of chunk(raceIds, CHUNK)) {
+      for (const raceChunk of chunk(raceIds.filter(isAllowed), CHUNK)) {
         if (source === 'vmrs') {
           let query = supabase.from('vmrs_results').delete().in('race_id', raceChunk);
           if (championshipId) query = query.eq('championship_id', championshipId);

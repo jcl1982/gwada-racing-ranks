@@ -19,6 +19,7 @@ interface AccelerationStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
+  championshipId?: string;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
@@ -44,6 +45,7 @@ const AccelerationStandings = ({
   races,
   drivers,
   championshipYear,
+  championshipId,
   onRaceUpdate,
 }: AccelerationStandingsProps) => {
   const [tab, setTab] = useUrlTab('acceleration', 'general');
@@ -156,6 +158,7 @@ const AccelerationStandings = ({
             standingTitle={`Accélération - ${currentLabel}`}
             raceIds={races.map((r) => r.id)}
             pairs={currentPairs}
+            championshipId={championshipId}
             onDeleted={async () => {
               await onRaceUpdate('', []);
             }}

@@ -19,6 +19,7 @@ interface KartingStandingsProps {
   races: Race[];
   drivers: Driver[];
   championshipYear: string;
+  championshipId?: string;
   onRaceUpdate: (raceId: string, results: RaceResult[]) => Promise<void>;
 }
 
@@ -34,6 +35,7 @@ const KartingStandings = ({
   races, 
   drivers, 
   championshipYear,
+  championshipId,
   onRaceUpdate
 }: KartingStandingsProps) => {
   
@@ -234,6 +236,7 @@ const KartingStandings = ({
             standingTitle={currentDisplayTitle}
             raceIds={races.map((r) => r.id)}
             pairs={currentPairs}
+            championshipId={championshipId}
             onDeleted={async () => {
               await onRaceUpdate('', []);
             }}

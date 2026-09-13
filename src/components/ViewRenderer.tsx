@@ -153,6 +153,7 @@ const ViewRenderer = ({
           races={accelerationRaces}
           drivers={drivers}
           championshipYear={championshipYear}
+          championshipId={championshipId}
           onRaceUpdate={async () => {
             await refreshData();
           }}
@@ -164,6 +165,7 @@ const ViewRenderer = ({
           races={kartingRaces}
           drivers={drivers}
           championshipYear={championshipYear}
+          championshipId={championshipId}
           onRaceUpdate={async () => {
             await refreshData();
           }}
