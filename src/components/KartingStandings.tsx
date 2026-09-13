@@ -35,6 +35,7 @@ const KartingStandings = ({
   races, 
   drivers, 
   championshipYear,
+  championshipId,
   onRaceUpdate
 }: KartingStandingsProps) => {
   

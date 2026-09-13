@@ -45,6 +45,7 @@ const AccelerationStandings = ({
   races,
   drivers,
   championshipYear,
+  championshipId,
   onRaceUpdate,
 }: AccelerationStandingsProps) => {
   const [tab, setTab] = useUrlTab('acceleration', 'general');
