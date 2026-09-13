@@ -158,6 +158,7 @@ const AccelerationStandings = ({
             standingTitle={`Accélération - ${currentLabel}`}
             raceIds={races.map((r) => r.id)}
             pairs={currentPairs}
+            championshipId={championshipId}
             onDeleted={async () => {
               await onRaceUpdate('', []);
             }}

@@ -236,6 +236,7 @@ const KartingStandings = ({
             standingTitle={currentDisplayTitle}
             raceIds={races.map((r) => r.id)}
             pairs={currentPairs}
+            championshipId={championshipId}
             onDeleted={async () => {
               await onRaceUpdate('', []);
             }}
