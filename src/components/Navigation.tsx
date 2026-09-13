@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Trophy, Home, Settings, Zap, Circle, FileText, ShieldCheck, Scale } from 'lucide-react';
+import { Trophy, Home, Settings, Zap, Circle, FileText } from 'lucide-react';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import AuthButton from './AuthButton';

@@ -1,6 +1,7 @@
 
 import Navigation from '@/components/Navigation';
 import ViewRenderer from '@/components/ViewRenderer';
+import SiteFooter from '@/components/SiteFooter';
 import { useChampionshipData } from '@/hooks/useChampionshipData';
 import { useViewNavigation } from '@/hooks/useViewNavigation';
 
@@ -92,6 +93,7 @@ const ChampionshipApp = () => {
           vmrsCopiloteBasse={standingsCalculation.vmrsCopiloteBasse}
           vmrsByType={standingsCalculation.vmrsByType}
         />
+        <SiteFooter currentView={currentView} onViewChange={setCurrentView} />
       </div>
     </div>
   );
