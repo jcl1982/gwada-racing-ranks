@@ -48,7 +48,7 @@ const AccelerationStandings = ({
   const [tab, setTab] = useUrlTab('acceleration', 'general');
 
   const computeStandings = (category: string | null) => {
-    const map = new Map<string, { totalPoints: number; totalBonus: number }>();
+    const map = new Map<string, { totalPoints: number; totalBonus: number; categories: Set<string> }>();
     const target = category ? normalizeAccelerationCategory(category) : null;
 
     races.forEach((race) => {
@@ -57,10 +57,17 @@ const AccelerationStandings = ({
           const resultCat = normalizeAccelerationCategory(result.category);
           if (resultCat !== target) return;
         }
-        const current = map.get(result.driverId) || { totalPoints: 0, totalBonus: 0 };
+        const current = map.get(result.driverId) || {
+          totalPoints: 0,
+          totalBonus: 0,
+          categories: new Set<string>(),
+        };
+        const resultCategory = result.category?.trim();
+        if (resultCategory) current.categories.add(resultCategory);
         map.set(result.driverId, {
           totalPoints: current.totalPoints + result.points + (result.bonus || 0),
           totalBonus: current.totalBonus + (result.bonus || 0),
+          categories: current.categories,
         });
       });
     });
@@ -69,7 +76,13 @@ const AccelerationStandings = ({
       .map(([driverId, data]) => {
         const driver = drivers.find((d) => d.id === driverId);
         if (!driver) return null;
-        return { driver, points: data.totalPoints, bonus: data.totalBonus, position: 0 };
+        return {
+          driver,
+          points: data.totalPoints,
+          bonus: data.totalBonus,
+          categories: Array.from(data.categories).sort((a, b) => a.localeCompare(b)),
+          position: 0,
+        };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null)
       .sort((a, b) => b.points - a.points)

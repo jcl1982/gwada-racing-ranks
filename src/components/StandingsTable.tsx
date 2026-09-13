@@ -23,6 +23,7 @@ interface StandingsTableProps {
     driver: Driver;
     points: number;
     position: number;
+    categories?: string[];
   }>;
   onPrintPdf: () => void;
 }
@@ -50,6 +51,8 @@ const StandingsTable = ({
   
   // Détecter si c'est un classement copilote pour masquer la colonne véhicule
   const isCopiloteStandings = displayTitle.toLowerCase().includes('copilote');
+  const isAccelerationGeneral = type === 'acceleration' && displayTitle.toLowerCase().includes('général');
+  const showVehicleColumn = type !== 'karting' && type !== 'acceleration' && !isCopiloteStandings;
   
   // Filtrer les courses pour n'afficher que celles pertinentes au rôle
   const relevantRaces = races.filter(race => {
@@ -143,7 +146,8 @@ const StandingsTable = ({
             <tr>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pos</th>
               <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Pilote</th>
-              {type !== 'karting' && !isCopiloteStandings && <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs hidden sm:table-cell">Véhicule</th>}
+              {showVehicleColumn && <th className="text-left py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs hidden sm:table-cell">Véhicule</th>}
+              {isAccelerationGeneral && <th className="text-center py-2 px-1 font-semibold uppercase tracking-wider text-[10px] sm:text-xs">Catégorie</th>}
               {relevantRaces.map(race => <th key={race.id} className="text-center py-2 px-1 font-semibold min-w-[60px] sm:min-w-[80px]">
                   <div className="text-[10px] sm:text-xs leading-tight">
                     {race.name}
@@ -177,7 +181,7 @@ const StandingsTable = ({
                       {standing.driver.name}
                     </div>
                   </td>
-                   {type !== 'karting' && !isCopiloteStandings && (() => {
+                   {showVehicleColumn && (() => {
                     // Modèles utilisés à chaque course (chronologique). Fallback sur le profil pilote si le résultat n'a pas de modèle enregistré.
                     const usedModels: string[] = [];
                     [...races]
@@ -199,6 +203,17 @@ const StandingsTable = ({
                       </td>
                     );
                   })()}
+                  {isAccelerationGeneral && (
+                    <td className="py-1 px-1 text-center">
+                      <div className="flex flex-wrap justify-center gap-1">
+                        {(standing.categories?.length ? standing.categories : ['—']).map((category) => (
+                          <Badge key={category} variant="outline" className="text-[10px] sm:text-xs whitespace-nowrap">
+                            {category}
+                          </Badge>
+                        ))}
+                      </div>
+                    </td>
+                  )}
                   {relevantRaces.map(race => {
                 const result = race.results.find(r => r.driverId === standing.driver.id);
                 const points = result?.points || 0;
