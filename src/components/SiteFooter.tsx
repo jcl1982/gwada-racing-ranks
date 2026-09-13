@@ -15,7 +15,7 @@ const SiteFooter = ({ currentView, onViewChange }: SiteFooterProps) => {
     }`;
 
   return (
-    <footer className="card-glass no-export mt-8 py-6 px-4">
+    <footer className="card-glass mt-8 py-6 px-4">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-center sm:text-left">
           <p className="font-display text-sm font-semibold uppercase tracking-wider text-foreground">
