@@ -20,6 +20,7 @@ import SeasonArchivesViewer from '@/components/SeasonArchivesViewer';
 import ReglementPage from '@/components/ReglementPage';
 import PrivacyPage from '@/components/PrivacyPage';
 import LegalPage from '@/components/LegalPage';
+import CalendarPage from '@/components/CalendarPage';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
@@ -110,11 +111,13 @@ const ViewRenderer = ({
   switch (currentView) {
     case 'home':
       return (
-        <HomePage 
+        <HomePage
           championshipTitle={championshipTitle}
           championshipYear={championshipYear}
         />
       );
+    case 'calendrier':
+      return <CalendarPage championshipYear={championshipYear} />;
     case 'general':
     case 'montagne':
     case 'rallye':
