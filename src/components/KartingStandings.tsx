@@ -12,6 +12,7 @@ import RaceCalendar from '@/components/RaceCalendar';
 import StandingsTable from '@/components/StandingsTable';
 import PodiumSection from '@/components/PodiumSection';
 import KartingRaceResults from '@/components/points/KartingRaceResults';
+import DeleteStandingPointsButton from '@/components/DeleteStandingPointsButton';
 import { useUrlTab } from '@/hooks/useUrlTab';
 
 interface KartingStandingsProps {
@@ -36,6 +37,22 @@ const KartingStandings = ({
   onRaceUpdate
 }: KartingStandingsProps) => {
   
+  // Correspondance entre une catégorie de résultat et l'onglet sélectionné
+  const matchesCategory = (resultCategoryRaw: string | undefined, category: string) => {
+    const resultCategory = resultCategoryRaw?.toLowerCase() || '';
+    const searchCategory = category.toLowerCase();
+    if (searchCategory === 'mini60') return resultCategory.includes('mini') && resultCategory.includes('60');
+    if (searchCategory === 'senior')
+      return (
+        resultCategory.includes('senior') ||
+        resultCategory.includes('master') ||
+        resultCategory.includes('gentleman')
+      );
+    if (searchCategory === 'kz2') return resultCategory.includes('kz2') || resultCategory.includes('kz 2');
+    if (searchCategory === 'nationale') return resultCategory.includes('national');
+    return false;
+  };
+
   // Fonction pour calculer les classements par catégorie basée sur les résultats importés
   const calculateCategoryStandings = (category: string) => {
     console.log(`📊 Calcul du classement pour la catégorie: ${category}`);
