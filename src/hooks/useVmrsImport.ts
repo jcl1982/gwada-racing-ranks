@@ -200,6 +200,6 @@ export const useVmrsImport = () => {
   return {
     isLoading, error, previewData, success,
     selectedRaceType, setSelectedRaceType,
-    handleFileUpload, proceedWithImport, resetForm,
+    handleFileUpload, proceedWithImport, resetForm, setPreviewData,
   };
 };
