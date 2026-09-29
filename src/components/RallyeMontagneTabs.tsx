@@ -140,11 +140,13 @@ const RallyeMontagneTabs = ({
     return [...montagneRaces, ...rallyeRaces].filter((r) => vmrsRaceIds.has(r.id));
   }, [vmrsByType, montagneRaces, rallyeRaces, vmrsRaceIds]);
 
-  // Garde uniquement les points par course de la moyenne affichée
-  const racesForMoyenne = (list: Race[], moyenne: string): Race[] => 
+  // VMRS : un résultat sans moyenne explicite ne doit jamais être affiché dans
+  // une catégorie par défaut. Le filtre strict empêche les points d'une autre
+  // moyenne d'apparaître dans les cellules du tableau.
+  const racesForMoyenne = (list: Race[], moyenne: string): Race[] =>
     list.map((r) => ({
       ...r,
-      results: (r.results || []).filter((res: any) => !res.moyenne || res.moyenne === moyenne),
+      results: (r.results || []).filter((res: any) => res.moyenne === moyenne),
     }));
 
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
