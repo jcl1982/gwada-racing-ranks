@@ -4,43 +4,29 @@ import autoTable from 'jspdf-autotable';
 import { Race, Driver } from '@/types/championship';
 import { getPositionRowStyle, PDF_STYLES } from '../pdfStyles';
 
+type PdfStanding = { driver: Driver; points: number; position: number };
+
+export const buildCategoryTableRows = (standings: PdfStanding[], races: Race[]): string[][] =>
+  standings.map((standing) => {
+    const row = [standing.position.toString(), standing.driver.name, standing.driver.carModel || '-'];
+    races.forEach(race => {
+      const result = race.results.find(r => r.driverId === standing.driver.id);
+      row.push(result ? `${result.points} pts (P${result.position})` : '-');
+    });
+    row.push(`${standing.points}`);
+    const leaderPoints = standings[0]?.points || 0;
+    const gap = leaderPoints - standing.points;
+    row.push(gap === 0 ? '—' : `-${gap}`);
+    return row;
+  });
+
 export const createCategoryStandingsTable = (
   doc: jsPDF,
   headers: string[],
-  standings: Array<{
-    driver: Driver;
-    points: number;
-    position: number;
-  }>,
+  standings: PdfStanding[],
   races: Race[]
 ) => {
-  const tableData = standings.map((standing) => {
-    const row = [standing.position.toString(), standing.driver.name, standing.driver.carModel || '-'];
-    
-    let previousTotal = 0;
-    races.forEach(race => {
-      const result = race.results.find(r => r.driverId === standing.driver.id);
-      if (result) {
-        const currentRacePoints = result.points;
-        const newTotal = previousTotal + currentRacePoints;
-        row.push(`${currentRacePoints} pts (P${result.position})`);
-        previousTotal = newTotal;
-      } else {
-        row.push('-');
-      }
-    });
-    
-    // Ajouter les points totaux
-    row.push(`${standing.points}`);
-    
-    // Ajouter l'écart de points
-    const leaderPoints = standings[0]?.points || 0;
-    const gap = leaderPoints - standing.points;
-    const gapText = gap === 0 ? '—' : `-${gap}`;
-    row.push(gapText);
-    
-    return row;
-  });
+  const tableData = buildCategoryTableRows(standings, races);
 
   console.log('📄 Données du tableau PDF (catégorie):', tableData);
   
