@@ -562,6 +562,7 @@ const RallyeMontagneTabs = ({
                           <StandingsTable
                             displayTitle={`${titles.vmrs} Général - Moyenne ${label} - Pilotes`}
                             races={racesForMoyenne(vmrsRaces, key)}
+                            resultMoyenne={key}
                             type="rallye"
                             standings={toSimplifiedStandings(piloteList, "rallye")}
                             onPrintPdf={() => {
@@ -580,6 +581,7 @@ const RallyeMontagneTabs = ({
                           <StandingsTable
                             displayTitle={`${titles.vmrs} Général - Moyenne ${label} - Copilotes`}
                             races={racesForMoyenne(vmrsRaces, key)}
+                            resultMoyenne={key}
                             type="rallye"
                             standings={toSimplifiedStandings(copiloteList, "copilote")}
                             onPrintPdf={() => {
@@ -643,6 +645,7 @@ const RallyeMontagneTabs = ({
                               <StandingsTable
                                 displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`}
                                 races={racesForMoyenne(filteredRaces, key)}
+                                resultMoyenne={key}
                                 type="rallye"
                                 standings={toSimplifiedStandings(piloteList, "rallye")}
                                 onPrintPdf={() => {
@@ -661,6 +664,7 @@ const RallyeMontagneTabs = ({
                               <StandingsTable
                                 displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`}
                                 races={racesForMoyenne(filteredRaces, key)}
+                                resultMoyenne={key}
                                 type="rallye"
                                 standings={toSimplifiedStandings(copiloteList, "copilote")}
                                 onPrintPdf={() => {

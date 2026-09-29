@@ -26,13 +26,15 @@ interface StandingsTableProps {
     categories?: string[];
   }>;
   onPrintPdf: () => void;
+  resultMoyenne?: 'haute' | 'intermediaire' | 'basse';
 }
 const StandingsTable = ({
   displayTitle,
   races,
   type,
   standings,
-  onPrintPdf
+  onPrintPdf,
+  resultMoyenne
 }: StandingsTableProps) => {
   const {
     exportToImage
@@ -58,7 +60,10 @@ const StandingsTable = ({
   const relevantRaces = races.filter(race => {
     // Une course est pertinente si au moins un pilote du classement actuel y a des points
     return standings.some(standing => {
-      const result = race.results.find(r => r.driverId === standing.driver.id);
+      const result = race.results.find(r =>
+        r.driverId === standing.driver.id &&
+        (!resultMoyenne || r.moyenne === resultMoyenne)
+      );
       return result && result.points > 0;
     });
   });
@@ -76,7 +81,10 @@ const StandingsTable = ({
 
   // Fonction pour obtenir les points d'un pilote pour une course spécifique
   const getDriverPointsForRace = (driverId: string, race: Race): number => {
-    const result = race.results.find(r => r.driverId === driverId);
+    const result = race.results.find(r =>
+      r.driverId === driverId &&
+      (!resultMoyenne || r.moyenne === resultMoyenne)
+    );
     return result?.points || 0;
   };
 
@@ -187,7 +195,10 @@ const StandingsTable = ({
                     [...races]
                       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                       .forEach(race => {
-                        const r = race.results.find(x => x.driverId === standing.driver.id);
+                        const r = race.results.find(x =>
+                          x.driverId === standing.driver.id &&
+                          (!resultMoyenne || x.moyenne === resultMoyenne)
+                        );
                         if (!r) return;
                         const m = (r.carModel?.trim()) || standing.driver.carModel?.trim();
                         if (m && !usedModels.includes(m)) usedModels.push(m);
@@ -215,7 +226,10 @@ const StandingsTable = ({
                     </td>
                   )}
                   {relevantRaces.map(race => {
-                const result = race.results.find(r => r.driverId === standing.driver.id);
+                const result = race.results.find(r =>
+                  r.driverId === standing.driver.id &&
+                  (!resultMoyenne || r.moyenne === resultMoyenne)
+                );
                 const points = result?.points || 0;
                 const isValid = isR2Valid(result);
                 return <td key={race.id} className="py-1 px-1 text-center">
