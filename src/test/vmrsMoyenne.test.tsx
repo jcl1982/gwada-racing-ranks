@@ -75,7 +75,7 @@ describe("StandingsTable VMRS - pilote changeant de moyenne", () => {
     render(<StandingsTable displayTitle="VMRS Montagne - Moyenne Intermédiaire" races={filterRacesByMoyenne(races, "intermediaire")}
       type="montagne" standings={standingsInter} onPrintPdf={() => {}} resultMoyenne="intermediaire" />);
     const row = within(rowOf("BORDEY Steeve"));
-    expect(row.getByText("17 pts")).toBeInTheDocument();
+    expect(row.getAllByText("17 pts")).toHaveLength(2); // cellule Bananier + total
     expect(row.queryByText("20 pts")).toBeNull();
     expect(row.queryByText("22 pts")).toBeNull();
     expect(screen.queryByText("La Canne")).toBeNull();
