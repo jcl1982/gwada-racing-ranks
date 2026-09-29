@@ -141,11 +141,11 @@ const RallyeMontagneTabs = ({
   }, [vmrsByType, montagneRaces, rallyeRaces, vmrsRaceIds]);
 
   // Garde uniquement les points par course de la moyenne affichée
-  const racesForMoyenne = (list: Race[], moyenne: string): Race[] => { console.log('DBG', moyenne, JSON.stringify(list.map(r=>r.results))); return (
+  const racesForMoyenne = (list: Race[], moyenne: string): Race[] => 
     list.map((r) => ({
       ...r,
       results: (r.results || []).filter((res: any) => !res.moyenne || res.moyenne === moyenne),
-    })));};
+    }));
 
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
@@ -559,12 +559,12 @@ const RallyeMontagneTabs = ({
                         <>
                           <StandingsTable
                             displayTitle={`${titles.vmrs} Général - Moyenne ${label} - Pilotes`}
-                            races={vmrsRaces}
+                            races={racesForMoyenne(vmrsRaces, key)}
                             type="rallye"
                             standings={toSimplifiedStandings(piloteList, "rallye")}
                             onPrintPdf={() => {
                               const s = toSimplifiedStandings(piloteList, "rallye");
-                              exportCategoryStandings(`${titles.vmrs} Général - Moyenne ${label} - Pilotes`, vmrsRaces, drivers, championshipYear, s);
+                              exportCategoryStandings(`${titles.vmrs} Général - Moyenne ${label} - Pilotes`, racesForMoyenne(vmrsRaces, key), drivers, championshipYear, s);
                             }}
                           />
                           <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
@@ -577,12 +577,12 @@ const RallyeMontagneTabs = ({
                         <>
                           <StandingsTable
                             displayTitle={`${titles.vmrs} Général - Moyenne ${label} - Copilotes`}
-                            races={vmrsRaces}
+                            races={racesForMoyenne(vmrsRaces, key)}
                             type="rallye"
                             standings={toSimplifiedStandings(copiloteList, "copilote")}
                             onPrintPdf={() => {
                               const s = toSimplifiedStandings(copiloteList, "copilote");
-                              exportCategoryStandings(`${titles.vmrs} Général - Moyenne ${label} - Copilotes`, vmrsRaces, drivers, championshipYear, s);
+                              exportCategoryStandings(`${titles.vmrs} Général - Moyenne ${label} - Copilotes`, racesForMoyenne(vmrsRaces, key), drivers, championshipYear, s);
                             }}
                           />
                           <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
@@ -640,12 +640,12 @@ const RallyeMontagneTabs = ({
                             <>
                               <StandingsTable
                                 displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`}
-                                races={filteredRaces}
+                                races={racesForMoyenne(filteredRaces, key)}
                                 type="rallye"
                                 standings={toSimplifiedStandings(piloteList, "rallye")}
                                 onPrintPdf={() => {
                                   const s = toSimplifiedStandings(piloteList, "rallye");
-                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`, filteredRaces, drivers, championshipYear, s);
+                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Pilotes`, racesForMoyenne(filteredRaces, key), drivers, championshipYear, s);
                                 }}
                               />
                               <PodiumSection standings={toSimplifiedStandings(piloteList, "rallye")} />
@@ -658,12 +658,12 @@ const RallyeMontagneTabs = ({
                             <>
                               <StandingsTable
                                 displayTitle={`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`}
-                                races={filteredRaces}
+                                races={racesForMoyenne(filteredRaces, key)}
                                 type="rallye"
                                 standings={toSimplifiedStandings(copiloteList, "copilote")}
                                 onPrintPdf={() => {
                                   const s = toSimplifiedStandings(copiloteList, "copilote");
-                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`, filteredRaces, drivers, championshipYear, s);
+                                  exportCategoryStandings(`${titles.vmrs} ${typeLabel} - Moyenne ${label} - Copilotes`, racesForMoyenne(filteredRaces, key), drivers, championshipYear, s);
                                 }}
                               />
                               <PodiumSection standings={toSimplifiedStandings(copiloteList, "copilote")} />
