@@ -6,12 +6,13 @@ import { useVmrsImport } from '@/hooks/useVmrsImport';
 import ExcelFileUpload from '@/components/ExcelFileUpload';
 import VmrsTemplateDownload from '@/components/VmrsTemplateDownload';
 import VmrsRaceTypeSelector from '@/components/VmrsRaceTypeSelector';
+import VmrsAiExtractor from '@/components/VmrsAiExtractor';
 
 const VmrsImport = () => {
   const {
     isLoading, error, previewData, success,
     selectedRaceType, setSelectedRaceType,
-    handleFileUpload, proceedWithImport, resetForm,
+    handleFileUpload, proceedWithImport, resetForm, setPreviewData,
   } = useVmrsImport();
 
   const handleFileUploadWrapper = (files: File[]) => {
@@ -65,6 +66,8 @@ const VmrsImport = () => {
           <VmrsTemplateDownload />
         </CardContent>
       </Card>
+
+      <VmrsAiExtractor raceType={selectedRaceType} onValidated={setPreviewData} />
 
       {previewData && previewData.length > 0 && (
         <Card className="card-glass">
