@@ -1,0 +1,1 @@
+- AI extraction of results sheets runs in the Supabase edge function extract-vmrs-results (admin-only, Lovable AI Gateway); output is only a draft reviewed in VmrsAiExtractor before the existing VMRS import saves it. Why: keep the key server-side and never write unreviewed AI data.
