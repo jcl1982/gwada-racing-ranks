@@ -140,6 +140,13 @@ const RallyeMontagneTabs = ({
     return [...montagneRaces, ...rallyeRaces].filter((r) => vmrsRaceIds.has(r.id));
   }, [vmrsByType, montagneRaces, rallyeRaces, vmrsRaceIds]);
 
+  // Garde uniquement les points par course de la moyenne affichée
+  const racesForMoyenne = (list: Race[], moyenne: string): Race[] =>
+    list.map((r) => ({
+      ...r,
+      results: (r.results || []).filter((res: any) => !res.moyenne || res.moyenne === moyenne),
+    }));
+
   const pilotes = drivers.filter((d) => d.driverRole === "pilote");
   const copilotes = drivers.filter((d) => d.driverRole === "copilote");
   const piloteIds = pilotes.map((d) => d.id);
