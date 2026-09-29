@@ -143,9 +143,11 @@ export const useVmrsStandings = (championshipId?: string) => {
       );
 
       // Aggregate VMRS points per (race, driver) so StandingsTable can render per-race columns
-      const perRaceDriverPoints = new Map<string, Map<string, { points: number; carModel?: string }>>();
+      // Key per (driver, moyenne) so a driver's points in one moyenne never leak into another
+      const perRaceDriverPoints = new Map<string, Map<string, { driverId: string; moyenne: VmrsMoyenne; points: number; carModel?: string }>>();
       (results as any[]).forEach((r: any) => {
         if (!r.race_id || !r.driver_id) return;
+        const moyenne = ((r.moyenne as VmrsMoyenne) || 'haute');
         const pts =
           (r.participation_points || 0) +
           (r.dnf ? 0 : (r.classification_points || 0)) +
@@ -155,8 +157,11 @@ export const useVmrsStandings = (championshipId?: string) => {
           perDriver = new Map();
           perRaceDriverPoints.set(r.race_id, perDriver);
         }
-        const existing = perDriver.get(r.driver_id);
-        perDriver.set(r.driver_id, {
+        const key = `${r.driver_id}::${moyenne}`;
+        const existing = perDriver.get(key);
+        perDriver.set(key, {
+          driverId: r.driver_id,
+          moyenne,
           points: (existing?.points || 0) + pts,
           carModel: existing?.carModel || r.car_model || undefined,
         });
@@ -164,8 +169,9 @@ export const useVmrsStandings = (championshipId?: string) => {
       perRaceDriverPoints.forEach((perDriver, raceId) => {
         const info = raceInfoMap.get(raceId);
         if (!info) return;
-        info.results = Array.from(perDriver.entries()).map(([driverId, v]) => ({
-          driverId,
+        info.results = Array.from(perDriver.values()).map((v) => ({
+          driverId: v.driverId,
+          moyenne: v.moyenne,
           points: v.points,
           carModel: v.carModel,
         }));
