@@ -15,6 +15,7 @@ export interface RaceResult {
   driverId: string;
   position: number;
   points: number;
+  moyenne?: 'haute' | 'intermediaire' | 'basse';
   time?: string;
   dnf?: boolean;
   carModel?: string;
