@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { filterRacesByMoyenne } from "@/utils/vmrsMoyenne";
 import { ChampionshipStanding, Race, Driver } from "@/types/championship";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
