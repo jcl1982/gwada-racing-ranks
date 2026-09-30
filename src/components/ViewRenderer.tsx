@@ -21,7 +21,7 @@ import ReglementPage from '@/components/ReglementPage';
 import PrivacyPage from '@/components/PrivacyPage';
 import LegalPage from '@/components/LegalPage';
 import CalendarPage from '@/components/CalendarPage';
-import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+import { Driver, Race, RaceResult, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
 
