@@ -21,7 +21,7 @@ import ReglementPage from '@/components/ReglementPage';
 import PrivacyPage from '@/components/PrivacyPage';
 import LegalPage from '@/components/LegalPage';
 import CalendarPage from '@/components/CalendarPage';
-import { Driver, Race, ChampionshipStanding } from '@/types/championship';
+import { Driver, Race, RaceResult, ChampionshipStanding } from '@/types/championship';
 import { ViewType } from '@/hooks/useViewNavigation';
 import { StandingsTitles, DEFAULT_STANDINGS_TITLES } from '@/hooks/useChampionshipConfig';
 
@@ -108,6 +108,17 @@ const ViewRenderer = ({
 }: ViewRendererProps) => {
   const titles = standingsTitles || DEFAULT_STANDINGS_TITLES;
 
+  // Sauvegarde réelle des résultats modifiés depuis les pages de classement
+  const handleRaceUpdate = async (raceId: string, results: RaceResult[]) => {
+    const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
+    const raceToUpdate = allRaces.find(race => race.id === raceId);
+    if (!raceToUpdate) {
+      throw new Error('Course introuvable');
+    }
+    await saveRace({ ...raceToUpdate, results });
+    await refreshData();
+  };
+
   switch (currentView) {
     case 'home':
       return (
@@ -145,9 +156,7 @@ const ViewRenderer = ({
           montagneRaces={montagneRaces}
           rallyeRaces={rallyeRaces}
           drivers={drivers}
-          onRaceUpdate={async (raceId, results) => {
-            await refreshData();
-          }}
+          onRaceUpdate={handleRaceUpdate}
         />
       );
     case 'acceleration':
@@ -157,9 +166,7 @@ const ViewRenderer = ({
           drivers={drivers}
           championshipYear={championshipYear}
           championshipId={championshipId}
-          onRaceUpdate={async () => {
-            await refreshData();
-          }}
+          onRaceUpdate={handleRaceUpdate}
         />
       );
     case 'karting':
@@ -169,9 +176,7 @@ const ViewRenderer = ({
           drivers={drivers}
           championshipYear={championshipYear}
           championshipId={championshipId}
-          onRaceUpdate={async () => {
-            await refreshData();
-          }}
+          onRaceUpdate={handleRaceUpdate}
         />
       );
     case 'archives':
