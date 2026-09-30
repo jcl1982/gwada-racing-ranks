@@ -202,6 +202,8 @@ const StandingsTable = ({
                         );
                         if (!r) return;
                         const m = (r.carModel?.trim()) || standing.driver.carModel?.trim();
+                        // Trophée R2 : ne pas afficher les véhicules autres que la C2 R2
+                        if (type === 'r2' && !isR2CarModel(m)) return;
                         if (m && !usedModels.includes(m)) usedModels.push(m);
                       });
                     const display = usedModels.length > 0
@@ -231,10 +233,10 @@ const StandingsTable = ({
                   r.driverId === standing.driver.id &&
                   (!resultMoyenne || r.moyenne === resultMoyenne)
                 );
-                const points = result?.points || 0;
-                const isValid = isR2Valid(result);
+                // Trophée R2 : ne pas afficher les points marqués avec un autre véhicule
+                const points = result && (type !== 'r2' || isR2CarModel(result.carModel)) ? result.points : 0;
                 return <td key={race.id} className="py-1 px-1 text-center">
-                        {points > 0 ? <Badge variant="outline" className={`text-xs ${!isValid ? 'bg-destructive/10 text-destructive border-destructive/30' : ''}`}>
+                        {points > 0 ? <Badge variant="outline" className="text-xs">
                             {points} pts
                           </Badge> : <span className="text-muted-foreground text-xs">-</span>}
                       </td>;
