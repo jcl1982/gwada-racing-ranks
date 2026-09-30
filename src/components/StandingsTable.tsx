@@ -56,6 +56,13 @@ const StandingsTable = ({
   const isAccelerationGeneral = type === 'acceleration' && displayTitle.toLowerCase().includes('général');
   const showVehicleColumn = type !== 'karting' && type !== 'acceleration' && !isCopiloteStandings;
   
+  // Vérifie si un modèle de véhicule est une Citroën C2 R2
+  const isR2CarModel = (carModel?: string | null): boolean => {
+    if (!carModel) return false;
+    const m = carModel.toLowerCase();
+    return m.includes('c2') && m.includes('r2');
+  };
+
   // Filtrer les courses pour n'afficher que celles pertinentes au rôle
   const relevantRaces = races.filter(race => {
     // Une course est pertinente si au moins un pilote du classement actuel y a des points
@@ -64,6 +71,8 @@ const StandingsTable = ({
         r.driverId === standing.driver.id &&
         (!resultMoyenne || r.moyenne === resultMoyenne)
       );
+      // Trophée R2 : ne retenir que les résultats obtenus avec une C2 R2
+      if (type === 'r2' && !isR2CarModel(result?.carModel)) return false;
       return result && result.points > 0;
     });
   });
@@ -86,14 +95,6 @@ const StandingsTable = ({
       (!resultMoyenne || r.moyenne === resultMoyenne)
     );
     return result?.points || 0;
-  };
-
-  // Fonction pour vérifier si les points sont comptabilisés dans le classement C2 R2
-  const isR2Valid = (result: any): boolean => {
-    if (type !== 'r2') return true;
-    if (!result?.carModel) return false;
-    const carModel = result.carModel.toLowerCase();
-    return carModel.includes('c2') && carModel.includes('r2');
   };
   const handlePrintImage = () => {
     console.log('📸 Export image demandé - Classement catégorie:', displayTitle);
@@ -201,6 +202,8 @@ const StandingsTable = ({
                         );
                         if (!r) return;
                         const m = (r.carModel?.trim()) || standing.driver.carModel?.trim();
+                        // Trophée R2 : ne pas afficher les véhicules autres que la C2 R2
+                        if (type === 'r2' && !isR2CarModel(m)) return;
                         if (m && !usedModels.includes(m)) usedModels.push(m);
                       });
                     const display = usedModels.length > 0
@@ -230,10 +233,10 @@ const StandingsTable = ({
                   r.driverId === standing.driver.id &&
                   (!resultMoyenne || r.moyenne === resultMoyenne)
                 );
-                const points = result?.points || 0;
-                const isValid = isR2Valid(result);
+                // Trophée R2 : ne pas afficher les points marqués avec un autre véhicule
+                const points = result && (type !== 'r2' || isR2CarModel(result.carModel)) ? result.points : 0;
                 return <td key={race.id} className="py-1 px-1 text-center">
-                        {points > 0 ? <Badge variant="outline" className={`text-xs ${!isValid ? 'bg-destructive/10 text-destructive border-destructive/30' : ''}`}>
+                        {points > 0 ? <Badge variant="outline" className="text-xs">
                             {points} pts
                           </Badge> : <span className="text-muted-foreground text-xs">-</span>}
                       </td>;
