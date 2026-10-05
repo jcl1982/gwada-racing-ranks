@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Driver, Race, ChampionshipStanding } from '@/types/championship';
 import { useStandingsCalculation } from '@/hooks/useStandingsCalculation';
 import { toSimplifiedStandings } from '@/utils/standingsConverter';
+import { isR2CarModel } from '@/utils/r2CarModel';
 
 // Parse une date YYYY-MM-DD en Date locale sans décalage de fuseau horaire
 function parseLocalDate(dateString: string): Date {
@@ -60,15 +61,13 @@ const R2Standings = ({
   );
 
   const handlePrintPdf = () => {
-    // Filtrer les pilotes qui ont au moins couru avec une C2 R2
+    // Filtrer les pilotes qui ont au moins couru avec un véhicule R2 (C2 R2, Twingo R2, etc.)
     const r2Drivers = drivers.filter(driver => {
-      const hasR2Profile = driver.carModel?.toLowerCase().includes('c2') && 
-                             driver.carModel?.toLowerCase().includes('r2');
-      const hasR2Results = allRaces.some(race => 
-        race.results.some(result => 
-          result.driverId === driver.id && 
-          result.carModel?.toLowerCase().includes('c2') && 
-          result.carModel?.toLowerCase().includes('r2')
+      const hasR2Profile = isR2CarModel(driver.carModel);
+      const hasR2Results = allRaces.some(race =>
+        race.results.some(result =>
+          result.driverId === driver.id &&
+          isR2CarModel(result.carModel)
         )
       );
       return hasR2Profile || hasR2Results;
@@ -102,7 +101,7 @@ const R2Standings = ({
       <Alert className="bg-primary/10 border-primary/30 text-primary">
         <Info className="h-4 w-4 text-primary" />
         <AlertDescription className="text-foreground">
-          <strong>Règlement du Trophée R2 :</strong> Seules les courses disputées avec une Citroën C2 R2 sont prises en compte pour ce classement. 
+          <strong>Règlement du Trophée R2 :</strong> Seules les courses disputées avec un véhicule de catégorie R2 (Citroën C2 R2, Renault Twingo R2, etc.) sont prises en compte pour ce classement. 
           Les points marqués avec d'autres véhicules n'entrent pas dans le calcul du trophée.
         </AlertDescription>
       </Alert>

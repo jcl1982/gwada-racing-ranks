@@ -6,6 +6,7 @@ import {
   calculatePositions,
   createBaseStanding
 } from './championshipEvolution';
+import { isR2CarModel } from './r2CarModel';
 
 // ===== Barème VMRS - Article 7.3 =====
 
@@ -83,8 +84,8 @@ export const calculateDriverPoints = (driverId: string, races: Race[]): number =
 export const calculateR2DriverPoints = (driverId: string, races: Race[]): number => {
   return races.reduce((total, race) => {
     const result = race.results.find(r => r.driverId === driverId);
-    // Ne compter que si le car_model contient "C2" et "R2"
-    if (result && result.carModel?.toLowerCase().includes('c2') && result.carModel?.toLowerCase().includes('r2')) {
+    // Ne compter que si le véhicule est éligible au Trophée R2 (C2 R2, Twingo R2, etc.)
+    if (result && isR2CarModel(result.carModel)) {
       return total + result.points;
     }
     return total;
@@ -183,16 +184,14 @@ export const calculateR2Standings = (
 
   // Filtrer les pilotes qui ont au moins un résultat avec une C2 R2
   const c2r2Drivers = pilotes.filter(driver => {
-    // Vérifier si le pilote a une C2 R2 dans sa fiche
-    const hasC2R2Profile = driver.carModel?.toLowerCase().includes('c2') &&
-                           driver.carModel?.toLowerCase().includes('r2');
+    // Vérifier si le pilote a un véhicule R2 dans sa fiche
+    const hasC2R2Profile = isR2CarModel(driver.carModel);
 
-    // Vérifier si le pilote a au moins une course avec une C2 R2
+    // Vérifier si le pilote a au moins une course avec un véhicule R2
     const hasC2R2Results = allRaces.some(race =>
       race.results.some(result =>
         result.driverId === driver.id &&
-        result.carModel?.toLowerCase().includes('c2') &&
-        result.carModel?.toLowerCase().includes('r2')
+        isR2CarModel(result.carModel)
       )
     );
 
