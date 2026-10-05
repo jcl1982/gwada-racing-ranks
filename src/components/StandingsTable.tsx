@@ -7,6 +7,7 @@ import Logo from '@/components/Logo';
 import { useImageExport } from '@/hooks/useImageExport';
 import { useWebPrint } from '@/hooks/useWebPrint';
 import { useExcelExport } from '@/hooks/useExcelExport';
+import { isR2CarModel } from '@/utils/r2CarModel';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
@@ -56,12 +57,8 @@ const StandingsTable = ({
   const isAccelerationGeneral = type === 'acceleration' && displayTitle.toLowerCase().includes('général');
   const showVehicleColumn = type !== 'karting' && type !== 'acceleration' && !isCopiloteStandings;
   
-  // Vérifie si un modèle de véhicule est une Citroën C2 R2
-  const isR2CarModel = (carModel?: string | null): boolean => {
-    if (!carModel) return false;
-    const m = carModel.toLowerCase();
-    return m.includes('c2') && m.includes('r2');
-  };
+  // Vérifie si un modèle de véhicule est éligible au Trophée R2 (C2 R2, Twingo R2, etc.)
+  // isR2CarModel est importé depuis @/utils/r2CarModel
 
   // Filtrer les courses pour n'afficher que celles pertinentes au rôle
   const relevantRaces = races.filter(race => {

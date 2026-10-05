@@ -6,6 +6,7 @@ import {
   calculatePositions,
   createBaseStanding
 } from './championshipEvolution';
+import { isR2CarModel } from './r2CarModel';
 
 // ===== Barème VMRS - Article 7.3 =====
 
