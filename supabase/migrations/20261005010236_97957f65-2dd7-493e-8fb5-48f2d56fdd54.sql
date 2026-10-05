@@ -1,0 +1,1 @@
+UPDATE public.race_results rr SET car_model = 'Renault TWINGO R2' FROM public.drivers d WHERE d.id = rr.driver_id AND d.name ILIKE '%facorat%' AND rr.car_model = 'Renault TWINGO II';
