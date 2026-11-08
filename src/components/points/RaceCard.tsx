@@ -261,6 +261,7 @@ const RaceCard = ({ race, drivers, onRaceUpdate, driverLabel = "Pilote", roleLab
               showCategory={showCategoryColumn}
               categoryOptions={isAcceleration ? ACCELERATION_CATEGORY_OPTIONS : KARTING_CATEGORY_OPTIONS}
               showBonus={isKarting}
+              pointsStep={isAcceleration ? 0.5 : 1}
               showCarModel={!isKarting && !isAcceleration}
             />
           ))}

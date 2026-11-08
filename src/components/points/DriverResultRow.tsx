@@ -18,6 +18,7 @@ interface DriverResultRowProps {
   showBonus?: boolean;
   showCarModel?: boolean;
   categoryOptions?: string[];
+  pointsStep?: number;
 }
 
 const DriverResultRow = ({
@@ -32,6 +33,7 @@ const DriverResultRow = ({
   showCategory = false,
   showBonus = false,
   showCarModel = true,
+  pointsStep = 1,
   categoryOptions = ['MINI 60', 'SENIOR MASTER GENTLEMAN', 'KZ2', 'NATIONALE']
 }: DriverResultRowProps) => {
   return (
@@ -95,8 +97,9 @@ const DriverResultRow = ({
           <Input
             type="number"
             min="0"
+            step={pointsStep}
             value={result?.points || ''}
-            onChange={(e) => onPointsChange(driver.id, parseInt(e.target.value) || 0)}
+            onChange={(e) => onPointsChange(driver.id, Number(e.target.value) || 0)}
             className="w-20 text-center"
           />
         ) : (
