@@ -202,7 +202,7 @@ const KartingStandings = ({
 
       <div className="bg-muted/50 border border-border rounded-lg p-4">
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold">Note :</span> Bonus = Points issus du meilleur temps dans la finale
+          <span className="font-semibold">Note :</span> Bonus = pts issus du meilleur temps dans la finale
         </p>
       </div>
 
