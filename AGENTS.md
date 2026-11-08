@@ -1,1 +1,2 @@
 - AI extraction of results sheets runs in the Supabase edge function extract-vmrs-results (admin-only, Lovable AI Gateway); output is only a draft reviewed in VmrsAiExtractor before the existing VMRS import saves it. Why: keep the key server-side and never write unreviewed AI data.
+- Store race result points and archived totals as numeric values and preserve fractions through editing and aggregation; acceleration point inputs use fractional steps. Why: half points must survive saving and season snapshots.
