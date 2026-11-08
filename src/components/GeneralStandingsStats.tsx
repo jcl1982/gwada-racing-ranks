@@ -25,7 +25,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
         <p className="text-2xl font-bold text-foreground">
           {leader?.driver.name}
         </p>
-        <p className="text-muted-foreground">{leader?.totalPoints} points</p>
+        <p className="text-muted-foreground">{leader?.totalPoints} pts</p>
       </Card>
 
       <Card className="card-glass p-6 text-center">
@@ -37,7 +37,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
           {bestMontagne?.driver.name}
         </p>
         <p className="text-muted-foreground">
-          {bestMontagne?.montagnePoints} points
+          {bestMontagne?.montagnePoints} pts
         </p>
       </Card>
 
@@ -50,7 +50,7 @@ const GeneralStandingsStats = ({ standings }: GeneralStandingsStatsProps) => {
           {bestRallye?.driver.name}
         </p>
         <p className="text-muted-foreground">
-          {bestRallye?.rallyePoints} points
+          {bestRallye?.rallyePoints} pts
         </p>
       </Card>
     </div>

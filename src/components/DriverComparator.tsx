@@ -102,7 +102,7 @@ function computeStats(driver: Driver, races: Race[]): ComparedDriverStats {
 }
 
 const statRows: { key: keyof ComparedDriverStats; label: string; icon?: React.ReactNode; format?: (v: any) => string }[] = [
-  { key: 'totalPoints', label: 'Points totaux', icon: <Target size={14} className="text-primary" /> },
+  { key: 'totalPoints', label: 'Total pts', icon: <Target size={14} className="text-primary" /> },
   { key: 'victories', label: 'Victoires', icon: <Trophy size={14} className="text-amber-500" /> },
   { key: 'podiums', label: 'Podiums (top 3)', icon: <Medal size={14} className="text-blue-500" /> },
   { key: 'topFiveFinishes', label: 'Top 5' },

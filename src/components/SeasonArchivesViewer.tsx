@@ -232,10 +232,10 @@ const SeasonArchivesViewer = () => {
         }
 
         if (key === 'general') {
-          row['Points Montagne'] = s.montagnePoints || 0;
-          row['Points Rallye'] = s.rallyePoints || 0;
+          row['Montagne (pts)'] = s.montagnePoints || 0;
+          row['Rallye (pts)'] = s.rallyePoints || 0;
         }
-        row['Total Points'] = s.totalPoints || 0;
+        row['Total (pts)'] = s.totalPoints || 0;
         return row;
       });
 

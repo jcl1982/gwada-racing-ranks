@@ -18,7 +18,7 @@ export const exportGeneralStandingsToExcel = (
     'Pilote': standing.driver.name,
     'Équipe': standing.driver.team || '-',
     'Véhicule': standing.driver.carModel || '-',
-    'Points Montagne': standing.montagnePoints,
+    'Montagne (pts)': standing.montagnePoints,
     'Points Rallye': standing.rallyePoints,
     'Total Points': standing.totalPoints
   }));
@@ -119,7 +119,7 @@ export const exportAllStandingsToExcel = (
     'Pilote': standing.driver.name,
     'Équipe': standing.driver.team || '-',
     'Véhicule': standing.driver.carModel || '-',
-    'Points Montagne': standing.montagnePoints,
+    'Montagne (pts)': standing.montagnePoints,
     'Points Rallye': standing.rallyePoints,
     'Total Points': standing.totalPoints
   }));

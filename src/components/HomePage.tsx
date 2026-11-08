@@ -247,7 +247,7 @@ const HomePage = ({
                       <p className="text-sm text-muted-foreground">{leader.driver.team}</p>
                       <div className="mt-2">
                         <Badge className="bg-primary text-primary-foreground font-bold">
-                          {leader.totalPoints} points
+                          {leader.totalPoints} pts
                         </Badge>
                       </div>
                       {championship.title === 'Championnat Rallye-Montagne' && (
