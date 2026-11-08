@@ -276,7 +276,7 @@ const DriverComparator = ({ races, drivers, title = "Comparateur de pilotes" }: 
           {/* Points per race chart (simple bar comparison) */}
           {comparedStats[0]?.raceNames.length > 0 && (
             <div className="mt-4">
-              <h4 className="font-semibold text-foreground mb-3">Points par course</h4>
+              <h4 className="font-semibold text-foreground mb-3">pts par course</h4>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
