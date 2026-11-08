@@ -289,7 +289,7 @@ const DriverAdvancedStats = ({
       <div className="mt-3 text-xs text-muted-foreground flex flex-wrap gap-4">
         <span><Trophy size={12} className="inline mr-1 text-amber-500" />V = Victoires</span>
         <span><Medal size={12} className="inline mr-1 text-blue-500" />P = Podiums (top 3)</span>
-        <span>Moy. = Points moyens par course</span>
+        <span>Moy. = pts moyens par course</span>
         <span>Série = Meilleure série de podiums consécutifs</span>
       </div>
     </Card>

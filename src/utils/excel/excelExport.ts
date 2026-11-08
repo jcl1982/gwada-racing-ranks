@@ -18,9 +18,9 @@ export const exportGeneralStandingsToExcel = (
     'Pilote': standing.driver.name,
     'Équipe': standing.driver.team || '-',
     'Véhicule': standing.driver.carModel || '-',
-    'Points Montagne': standing.montagnePoints,
-    'Points Rallye': standing.rallyePoints,
-    'Total Points': standing.totalPoints
+    'Montagne (pts)': standing.montagnePoints,
+    'Rallye (pts)': standing.rallyePoints,
+    'Total (pts)': standing.totalPoints
   }));
 
   // Créer un nouveau classeur
@@ -66,7 +66,7 @@ export const exportCategoryStandingsToExcel = (
     });
 
     // Ajouter le total
-    row['Total Points'] = standing.points;
+    row['Total (pts)'] = standing.points;
 
     return row;
   });
@@ -119,9 +119,9 @@ export const exportAllStandingsToExcel = (
     'Pilote': standing.driver.name,
     'Équipe': standing.driver.team || '-',
     'Véhicule': standing.driver.carModel || '-',
-    'Points Montagne': standing.montagnePoints,
-    'Points Rallye': standing.rallyePoints,
-    'Total Points': standing.totalPoints
+    'Montagne (pts)': standing.montagnePoints,
+    'Rallye (pts)': standing.rallyePoints,
+    'Total (pts)': standing.totalPoints
   }));
   const generalWorksheet = XLSX.utils.json_to_sheet(generalData);
   XLSX.utils.book_append_sheet(workbook, generalWorksheet, 'Classement Général');
@@ -148,7 +148,7 @@ export const exportAllStandingsToExcel = (
         row[`Course ${index + 1}`] = points > 0 ? points : '-';
       });
 
-      row['Total Points'] = standing.points;
+      row['Total (pts)'] = standing.points;
 
       return row;
     });

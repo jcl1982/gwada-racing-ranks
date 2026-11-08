@@ -147,7 +147,7 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
             <div>
               <h3 className="text-lg font-semibold">Leader du Championnat</h3>
               <p className="text-gray-600">{topDriver.driver.name}</p>
-              <p className="text-sm text-gray-500">{topDriver.totalPoints} points</p>
+              <p className="text-sm text-gray-500">{topDriver.totalPoints} pts</p>
             </div>
           </div>
         </Card>
@@ -168,7 +168,7 @@ const AdminStats = ({ drivers, races, standings, championshipType }: AdminStatsP
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-primary">{topDriver.points}</p>
-                  <p className="text-xs text-gray-500">points</p>
+                  <p className="text-xs text-gray-500">pts</p>
                 </div>
               </div>
             ))}
