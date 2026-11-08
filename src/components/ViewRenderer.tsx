@@ -110,6 +110,11 @@ const ViewRenderer = ({
 
   // Sauvegarde réelle des résultats modifiés depuis les pages de classement
   const handleRaceUpdate = async (raceId: string, results: RaceResult[]) => {
+    // Les suppressions utilisent un identifiant vide comme signal de rafraîchissement.
+    if (raceId === '') {
+      await refreshData();
+      return;
+    }
     const allRaces = [...montagneRaces, ...rallyeRaces, ...kartingRaces, ...accelerationRaces];
     const raceToUpdate = allRaces.find(race => race.id === raceId);
     if (!raceToUpdate) {
