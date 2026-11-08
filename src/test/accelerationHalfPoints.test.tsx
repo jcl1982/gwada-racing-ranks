@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import RaceCard from '@/components/points/RaceCard';
 import AccelerationStandings from '@/components/AccelerationStandings';
 import { Driver, Race } from '@/types/championship';
@@ -22,13 +22,15 @@ const race: Race = {
 };
 
 describe('Demi-points Accélération', () => {
-  it('transmet 10,5 pts à la sauvegarde sans les tronquer', () => {
+  it('transmet 10,5 pts à la sauvegarde sans les tronquer', async () => {
     const save = vi.fn().mockResolvedValue(undefined);
     render(<RaceCard race={race} drivers={[driver]} onRaceUpdate={save} />);
     fireEvent.click(screen.getByRole('button', { name: 'Modifier' }));
     const pointsInput = screen.getAllByRole('spinbutton')[1];
     fireEvent.change(pointsInput, { target: { value: '10.5' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Sauvegarder' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Sauvegarder' }));
+    });
     expect(save).toHaveBeenCalledWith('race-1', [expect.objectContaining({ driverId: 'driver-1', points: 10.5 })]);
   });
 
